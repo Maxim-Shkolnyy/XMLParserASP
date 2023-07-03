@@ -59,21 +59,21 @@ namespace xmlParserASP
 
 
 
-            var serviceProvider = new ServiceCollection()
-                .AddSingleton<ReadAttributesTo3Columns>()
-                .AddTransient<ReadUniqueCategorys>()
-                .AddSingleton<WriteToXL>()
-                .AddSingleton<Program>()
-                .AddSingleton<MyDBContext>()
-                //.AddSingleton<PathListVarModel>()
-                .BuildServiceProvider();
+            //var serviceProvider = new ServiceCollection()
+            //    .AddSingleton<ReadAttributesTo3Columns>()
+            //    .AddTransient<ReadUniqueCategorys>()
+            //    .AddSingleton<WriteToXL>()
+            //    .AddSingleton<Program>()
+            //    .AddSingleton<MyDBContext>()
+            //    //.AddSingleton<PathListVarModel>()
+            //    .BuildServiceProvider();
 
-            var rAtr = serviceProvider.GetService<ReadAttributesTo3Columns>();
-            var writeToXL = serviceProvider.GetService<WriteToXL>();
-            var myDb = serviceProvider.GetService<MyDBContext>();
+            //var rAtr = serviceProvider.GetService<ReadAttributesTo3Columns>();
+            //var writeToXL = serviceProvider.GetService<WriteToXL>();
+            //var myDb = serviceProvider.GetService<MyDBContext>();
 
-            rAtr.ReadAttrXMLTo3Columns();
-            writeToXL.WriteSheet("ru");  // ua
+            //rAtr.ReadAttrXMLTo3Columns();
+            //writeToXL.WriteSheet("ru");  // ua
 
             //var rUniq = serviceProvider.GetService<ReadUniqueCategorys>();
             //rUniq.ReadXMLUniqueCategorys();
