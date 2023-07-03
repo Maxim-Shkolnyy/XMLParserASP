@@ -18,11 +18,10 @@ namespace xmlParserASP
                 // "Server=DESKTOP-5KP5B17\\SQLEXPRESS;Database=MAX;Trusted_Connection=True;TrustServerCertificate=True"; // work desktop
                 "Database=zi391919_maxim;Data Source=zi391919.mysql.tools;User Id=zi391919_maxim;Password=y5E~v52!Cv;"; // gamma max
 
-             var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
 
              builder.Services.AddDbContext<MyDBContext>(options =>
-                 options.UseMySql(connectionString, serverVersion));
-             builder.Services.AddScoped<MyDBContext>(options => options.GetService<MyDBContext>());
+                 options.UseMySQL(connectionString));
+           
 
             // Add services to the container.
             //builder.Services.AddDbContext<MyDBContext>(options => options.UseMySql( serverVersion));
@@ -59,31 +58,31 @@ namespace xmlParserASP
 
 
 
-            var serviceProvider = new ServiceCollection()
-                .AddSingleton<ReadAttributesTo3Columns>()
-                .AddTransient<ReadUniqueCategorys>()
-                .AddSingleton<WriteToXL>()
-                .AddSingleton<Program>()
-                .AddSingleton<MyDBContext>()
-                //.AddSingleton<PathListVarModel>()
-                .BuildServiceProvider();
+            //var serviceProvider = new ServiceCollection()
+            //    .AddSingleton<ReadAttributesTo3Columns>()
+            //    .AddTransient<ReadUniqueCategorys>()
+            //    .AddSingleton<WriteToXL>()
+            //    .AddSingleton<Program>()
+            //    .AddSingleton<MyDBContext>()
+            //    //.AddSingleton<PathListVarModel>()
+            //    .BuildServiceProvider();
 
-            var rAtr = serviceProvider.GetService<ReadAttributesTo3Columns>();
-            var writeToXL = serviceProvider.GetService<WriteToXL>();
-            var myDb = serviceProvider.GetService<MyDBContext>();
+            //var rAtr = serviceProvider.GetService<ReadAttributesTo3Columns>();
+            //var writeToXL = serviceProvider.GetService<WriteToXL>();
+            //var myDb = serviceProvider.GetService<MyDBContext>();
 
-            rAtr.ReadAttrXMLTo3Columns();
-            writeToXL.WriteSheet("ru");  // ua
+            //rAtr.ReadAttrXMLTo3Columns();
+            //writeToXL.WriteSheet("ru");  // ua
 
-            //var rUniq = serviceProvider.GetService<ReadUniqueCategorys>();
-            //rUniq.ReadXMLUniqueCategorys();
+            ////var rUniq = serviceProvider.GetService<ReadUniqueCategorys>();
+            ////rUniq.ReadXMLUniqueCategorys();
 
-            //UniqNodesInXML.Read();
+            ////UniqNodesInXML.Read();
 
-            // var model = serviceProvider.GetService<PathListVarModel>();
+            //// var model = serviceProvider.GetService<PathListVarModel>();
 
 
-            //SQLQuery.ConnectToDB();
+            ////SQLQuery.ConnectToDB();
 
 
 
