@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IQueryable<xmlParserASP.Models.MyCategory>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,6 +10,32 @@
     <title>Оформление заказа</title>
 </head>
 <body>
+<div>
+    <table>
+        <tr>
+            <th>
+                Category Id
+            </th>
+            <th>
+                Category Name
+            </th>
+        </tr>
+        @foreach(var cat in Model)
+        {
+            <tr>
+                <td>
+                    @cat.CatId
+                </td>
+                <td>
+                    @cat.Cat_Name
+                </td>
+            </tr>               
+
+        }
+
+    </table>
+</div>
+@*
 <div>
     <h3>Форма оформления покупки</h3>
     <p>Для оформления покупки заполните следующие поля:</p>
@@ -36,6 +64,8 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+*@
+
 </body>
 </html>
 
