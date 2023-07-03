@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using XMLparser.Model;
+﻿using System.Xml;
+using xmlParserASP.Models;
 
-namespace XMLparser.Services;
+namespace xmlParserASP.Services;
 
 public static class UniqNodesInXML
 {

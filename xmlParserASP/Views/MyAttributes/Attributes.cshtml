@@ -1,0 +1,17 @@
+﻿@model xmlParserASP.Models.MyAttribute
+@using (Html.BeginForm())
+{
+
+    @Html.HiddenFor(m => m.AttrId)
+
+    <label>Course Name</label>
+    @Html.EditorFor(m => m.Attr_Name)
+
+    <label>Course Description</label>
+    @Html.EditorFor(m => m.SuppAttrIdEqualsOurAttr)
+
+    <label>Course Description</label>
+    @Html.EditorFor(m => m.SuppAttrNameEqualsOurAttr)
+
+    <input type="submit" value="Save" />
+}

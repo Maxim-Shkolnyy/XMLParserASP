@@ -1,12 +1,9 @@
-﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Xml;
-using static XMLparser.Services.TranslitMethods;
-using DocumentFormat.OpenXml.Spreadsheet;
-using XMLparser.Model;
+﻿using System.Xml;
+using ClosedXML.Excel;
+using xmlParserASP.Models;
+using static xmlParserASP.Services.TranslitMethods;
 
-namespace XMLparser.Services;
+namespace xmlParserASP.Services;
 
 internal class WriteToXL
 {

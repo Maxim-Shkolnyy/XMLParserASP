@@ -2,7 +2,40 @@
     ViewData["Title"] = "Home Page";
 }
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Оформление заказа</title>
+</head>
+<body>
+<div>
+    <h3>Форма оформления покупки</h3>
+    <p>Для оформления покупки заполните следующие поля:</p>
+    <form method="post">
+        <input type="hidden" value="@ViewBag.PhoneId" name="PhoneId" />
+        <table>
+            <tr>
+                <td>Имя:</td>
+                <td><input type="text" name="User" /> </td>
+            </tr>
+            <tr>
+                <td>Адрес:</td>
+                <td><input type="text" name="Address" /></td>
+            </tr>
+            <tr>
+                <td>Телефон:</td>
+                <td><input type="text" name="ContactPhone" /></td>
+            </tr>
+            <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
+        </table>
+    </form>
+</div>
+
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+</body>
+</html>
+

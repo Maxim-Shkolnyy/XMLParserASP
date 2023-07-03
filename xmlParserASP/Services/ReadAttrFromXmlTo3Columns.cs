@@ -1,8 +1,7 @@
 ﻿using System.Xml;
-using System.Xml.Linq;
-using XMLparser.Model;
+using xmlParserASP.Models;
 
-namespace XMLparser.Services;
+namespace xmlParserASP.Services;
 
 public class ReadAttributesTo3Columns
 {

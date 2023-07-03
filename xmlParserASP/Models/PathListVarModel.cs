@@ -1,4 +1,4 @@
-﻿namespace XMLparser.Model;
+﻿namespace xmlParserASP.Models;
 
 public static class PathListVarModel
 {

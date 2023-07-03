@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using System.Xml.Linq;
-using XMLparser.Model;
+using xmlParserASP.Models;
 
-namespace XMLparser.Services;
+namespace xmlParserASP.Services;
 
 internal class ReadUniqueCategorys
 {

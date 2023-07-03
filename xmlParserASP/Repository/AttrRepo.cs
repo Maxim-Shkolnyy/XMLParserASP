@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using XMLparser.Presistant;
-using XMLparser.TablesModels;
+﻿using System.Linq.Expressions;
+using xmlParserASP.Models;
+using xmlParserASP.Presistant;
 
-
-namespace XMLparser.Repository
+namespace xmlParserASP.Repository
 {
     public class AttrRepo
     {    
