@@ -54,7 +54,9 @@ namespace xmlParserASP
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.Run();
+
+
+
 
 
             var serviceProvider = new ServiceCollection()
@@ -82,6 +84,14 @@ namespace xmlParserASP
 
 
             //SQLQuery.ConnectToDB();
+
+
+
+
+            app.Run();
+
+
+            
         }
     }
 }
