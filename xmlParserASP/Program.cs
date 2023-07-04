@@ -21,15 +21,6 @@ public class Program
 
         builder.Services.AddDbContext<MyDBContext>(options =>
             options.UseMySQL(connectionString));
-           
-
-        // Add services to the container.
-        //builder.Services.AddDbContext<MyDBContext>(options => options.UseMySql( serverVersion));
-        //builder.Services.AddDbContextPool<MyDBContext>(options =>
-        //{
-        //    var connetionString = Configuration.GetConnectionString("DefaultConnection");
-        //    options.UseMySql(connetionString, ServerVersion.AutoDetect(connetionString));
-        //});
 
         builder.Services.AddControllersWithViews();
         var app = builder.Build();
@@ -63,7 +54,7 @@ public class Program
             .AddTransient<ReadUniqueCategorys>()
             .AddSingleton<WriteToXL>()
             .AddSingleton<Program>()
-            .AddSingleton<MyDBContext>()
+            .AddScoped<MyDBContext>()
             //.AddSingleton<PathListVarModel>()
             .BuildServiceProvider();
 

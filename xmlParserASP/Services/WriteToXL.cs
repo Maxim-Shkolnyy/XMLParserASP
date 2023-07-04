@@ -2,12 +2,18 @@
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
 using xmlParserASP.Models;
+using xmlParserASP.Presistant;
 using static xmlParserASP.Services.TranslitMethods;
 
 namespace xmlParserASP.Services;
 
 internal class WriteToXL
 {
+    private readonly MyDBContext _db;
+    public WriteToXL(MyDBContext db)
+    {
+        _db = db;
+    }
     public void WriteSheet(string lang)
     {
 
@@ -74,7 +80,8 @@ internal class WriteToXL
                 string image = item.SelectSingleNode("image")?.InnerText ?? "";
                 string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
                 Translitter trn = new();
-                string seoKeyword = trn.Translit(name, TranslitType.Gost).ToLowerInvariant().Replace(",", "-").Replace("--", "-").Replace("---", "-").Replace("\'", "");
+                string seoKeyword = trn.Translit(name, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
+                    .Replace("--", "-").Replace("---", "-").Replace("\'", "");
                 string dateAdded = "2023-06-06 00:00:00";
                 DateTime dateModified = DateTime.Now;
                 string dateAvailable = "2023-06-06 00:00:00";
@@ -101,29 +108,32 @@ internal class WriteToXL
 
                 productsWorksheet.Row(row).Height = 15;
                 row++;
-            
 
 
-            // Создайте экземпляр модели Product и заполните его данными
-            Product product = new Product
-            {
-                ProductId = product_id,
-                SupplierId = supplier_id,
-                LanguageId = 1, // Ваш идентификатор языка
-                ProductName = name,
-                MyCatId = int.Parse(categoryId),
-                model = int.Parse(model),
-                quantity = quantity,
-                Price = price,
-                image_name = image,
-                description = description,
-                manufacturer = vendor,
-                date_added = dateAdded,
-                date_modified = dateModifiedStr,
-                date_available = dateAvailable,
-                seo_keyword = seoKeyword,
-                status = null
-            };
+
+                // Создайте экземпляр модели Product и заполните его данными
+                Product product = new Product
+                {
+                    ProductId = int.Parse(product_id),
+                    SupplierId = int.Parse(supplier_id),
+                    LanguageId = 1, // Ваш идентификатор языка
+                    ProductName = name,
+                    MyCatId = int.Parse(categoryId),
+                    model = int.Parse(model),
+                    quantity = int.Parse(quantity),
+                    Price =  float.Parse(price),
+                    image_name = image,
+                    description = description,
+                    manufacturer = vendor,
+                    date_added = dateAdded,
+                    date_modified = dateModifiedStr,
+                    date_available = dateAvailable,
+                    seo_keyword = seoKeyword,
+                    status = null
+                };
+                _db.Products.Add(product);
+            }
+            _db.SaveChanges();
 
 
             var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1, productsWorksheet.FirstCellUsed().Address.ColumnNumber,
