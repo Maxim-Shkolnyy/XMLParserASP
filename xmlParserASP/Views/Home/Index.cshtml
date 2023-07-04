@@ -1,4 +1,4 @@
-﻿@model IQueryable<xmlParserASP.Models.MyCategory>
+﻿@model IQueryable<xmlParserASP.Models.MyAttribute>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -24,10 +24,10 @@
         {
             <tr>
                 <td>
-                    @cat.CatId
+                    @cat.MyAttrId
                 </td>
                 <td>
-                    @cat.Cat_Name
+                    @cat.MyAttrName
                 </td>
             </tr>               
 

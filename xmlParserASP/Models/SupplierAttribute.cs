@@ -4,18 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xmlParserASP.Models;
 
-[PrimaryKey(nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
-public class SupplierAttribute
+[PrimaryKey(nameof(SupAttrId), nameof(SupplierId), nameof(LanguageId))]
+public class SupplierCategory
 {
     [Required]
-    public int SupplierCatId { get; set; }
-
-    [Required]
+    public int SupAttrId { get; set; }
     public int SupplierId { get; set; }
 
-    public int ParentSupCatId { get; set; }
     [Required]
-    public string Cat_Name { get; set; }
+    public string SupAttrName { get; set; }
+
     [Required]
     public int LanguageId { get; set; }
 

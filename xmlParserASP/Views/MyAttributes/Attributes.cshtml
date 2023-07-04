@@ -2,16 +2,12 @@
 @using (Html.BeginForm())
 {
 
-    @Html.HiddenFor(m => m.AttrId)
+    @Html.HiddenFor(m => m.MyAttrId)
 
     <label>Course Name</label>
-    @Html.EditorFor(m => m.Attr_Name)
+    @Html.EditorFor(m => m.MyAttrName)
 
-    <label>Course Description</label>
-    @Html.EditorFor(m => m.SuppAttrIdEqualsOurAttr)
-
-    <label>Course Description</label>
-    @Html.EditorFor(m => m.SuppAttrNameEqualsOurAttr)
+    
 
     <input type="submit" value="Save" />
 }

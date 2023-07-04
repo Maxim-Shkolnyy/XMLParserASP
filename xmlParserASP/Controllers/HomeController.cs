@@ -8,18 +8,18 @@ namespace xmlParserASP.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly MyDBContext _context;
+        private readonly MyDBContext _db;
 
-        public HomeController(ILogger<HomeController> logger, MyDBContext context)
+        public HomeController(ILogger<HomeController> logger, MyDBContext db)
         { 
-            _context = context;
+            _db = db;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
             
-            return View(_context.MyCategories);
+            return View(_db.MyAttributes);
         }
 
         public IActionResult Privacy()

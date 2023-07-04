@@ -11,6 +11,8 @@ public class MyDBContext : DbContext
     public DbSet<MyAttribute> MyAttributes { get; set; }
     public DbSet<MyCategory> MyCategories { get; set; }
     public DbSet<CategoryRelation> CategoriesRelation { get; set; }
+    public DbSet<AttributeRelation> AttributesRelation { get; set; }
+    public DbSet<SupplierAttribute> SupplierAttributes { get; set; }
     public DbSet<SupplierCategory> SupplierCategories { get; set; }
     public DbSet<Language> Languages { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }

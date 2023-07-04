@@ -22,7 +22,7 @@ namespace xmlParserASP.Repository
 
         public bool DeleteById(int id)
         {
-            var attr = _db.MyAttributes.FirstOrDefault(x => x.AttrId == id);
+            var attr = _db.MyAttributes.FirstOrDefault(x => x.MyAttrId == id);
 
             //if (attr?.Id == null || _db.Groups.Count(x => x.CourseId == id) > 0)
             //    return false;
@@ -35,7 +35,7 @@ namespace xmlParserASP.Repository
 
         public MyAttribute FindById(int id)
         {
-            return _db.MyAttributes.FirstOrDefault(x => x.AttrId == id);
+            return _db.MyAttributes.FirstOrDefault(x => x.MyAttrId == id);
         }
 
         public IEnumerable<MyAttribute> GetAll()
@@ -50,20 +50,18 @@ namespace xmlParserASP.Repository
 
         public IEnumerable<MyAttribute> GetPaged(int take, int skip)
         {
-            return _db.MyAttributes.OrderBy(x => x.AttrId).Skip(skip).Take(take);
+            return _db.MyAttributes.OrderBy(x => x.MyAttrId).Skip(skip).Take(take);
         }
 
         public MyAttribute Update(MyAttribute entity)
         {
-            MyAttribute course = _db.MyAttributes.FirstOrDefault(x => x.AttrId == entity.AttrId);
+            MyAttribute course = _db.MyAttributes.FirstOrDefault(x => x.MyAttrId == entity.MyAttrId);
 
             if (course != null)
             {
-                course.AttrId = entity.AttrId;
-                course.Attr_Name = entity.Attr_Name;
-                course.ParentAttrId = entity.ParentAttrId;
-                course.SuppAttrNameEqualsOurAttr = entity.SuppAttrNameEqualsOurAttr;
-                course.SuppAttrIdEqualsOurAttr = entity.SuppAttrIdEqualsOurAttr;
+                course.MyAttrId = entity.MyAttrId;
+                course.MyAttrName = entity.MyAttrName;
+                
                 _db.SaveChanges();
             }
             return course;
@@ -81,7 +79,7 @@ namespace xmlParserASP.Repository
 
         public IEnumerable<MyAttribute> GetFilteredAndPaged(Expression<Func<MyAttribute, bool>> filter, int take, int skip)
         {
-            return _db.MyAttributes.OrderBy(x => x.AttrId).Where(filter).Skip(skip).Take(take);
+            return _db.MyAttributes.OrderBy(x => x.MyAttrId).Where(filter).Skip(skip).Take(take);
         }
     }
 }

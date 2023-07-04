@@ -6,15 +6,14 @@ public class MyAttribute
 {
     [Key]
     [Required]
-    public int AttrId {get; set;}
-    [Required]
-    public int ParentAttrId { get; set; }
-
+    public int MyAttrId {get; set;}
+    
     [Required] 
-    public string Attr_Name { get; set; }
-    public ICollection<Supplier> Suppliers { get; set; }
-    public int SuppAttrIdEqualsOurAttr { get; set; }
-    public int SuppAttrNameEqualsOurAttr { get; set; }
+    public string MyAttrName { get; set; }
     [Required]
-    public ICollection<Language> Languages { get; set; }
+    public int LanguageId { get; set; }
+    //public ICollection<Supplier> Suppliers { get; set; }
+    //public int SuppAttrIdEqualsOurAttr { get; set; }
+    //public int SuppAttrNameEqualsOurAttr { get; set; }
+
 }
