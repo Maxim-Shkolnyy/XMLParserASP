@@ -5,8 +5,7 @@ namespace xmlParserASP.Models;
 
 [PrimaryKey(nameof(MyCatId), nameof(LanguageId))]
 public class MyCategory
-{
-    [Key]
+{    
     [Required]
     public int MyCatId {get; set;}
     public int MyParentCatId { get; set; }

@@ -12,5 +12,4 @@ public class MyAttribute
     public string MyAttrName { get; set; }
     [Required]
     public int LanguageId { get; set; }
-
 }

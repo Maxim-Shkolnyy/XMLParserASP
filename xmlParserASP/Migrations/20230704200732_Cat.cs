@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class Attr : Migration
+    public partial class Cat : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,7 +89,50 @@ namespace xmlParserASP.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SupplierId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    MyCatId = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "longtext", nullable: false),
+                    sku = table.Column<int>(type: "int", nullable: true),
+                    model = table.Column<int>(type: "int", nullable: true),
+                    quantity = table.Column<int>(type: "int", nullable: true),
+                    Price = table.Column<float>(type: "float", nullable: false),
+                    image_name = table.Column<string>(type: "longtext", nullable: true),
+                    description = table.Column<string>(type: "longtext", nullable: true),
+                    manufacturer = table.Column<string>(type: "longtext", nullable: true),
+                    date_added = table.Column<string>(type: "longtext", nullable: true),
+                    date_modified = table.Column<string>(type: "longtext", nullable: true),
+                    date_available = table.Column<string>(type: "longtext", nullable: true),
+                    seo_keyword = table.Column<string>(type: "longtext", nullable: true),
+                    status = table.Column<string>(type: "longtext", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => new { x.ProductId, x.LanguageId, x.MyCatId, x.SupplierId });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "SupplierAttributes",
+                columns: table => new
+                {
+                    SupAttrId = table.Column<int>(type: "int", nullable: false),
+                    SupplierId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    SupAttrName = table.Column<string>(type: "longtext", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupplierAttributes", x => new { x.SupAttrId, x.SupplierId, x.LanguageId });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "SupplierCategories",
                 columns: table => new
                 {
                     SupplierCatId = table.Column<int>(type: "int", nullable: false),
@@ -100,22 +143,7 @@ namespace xmlParserASP.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SupplierAttributes", x => new { x.SupplierCatId, x.SupplierId, x.LanguageId });
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "SupplierCategories",
-                columns: table => new
-                {
-                    SupAttrId = table.Column<int>(type: "int", nullable: false),
-                    SupplierId = table.Column<int>(type: "int", nullable: false),
-                    LanguageId = table.Column<int>(type: "int", nullable: false),
-                    SupAttrName = table.Column<string>(type: "longtext", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SupplierCategories", x => new { x.SupAttrId, x.SupplierId, x.LanguageId });
+                    table.PrimaryKey("PK_SupplierCategories", x => new { x.SupplierCatId, x.SupplierId, x.LanguageId });
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -151,6 +179,9 @@ namespace xmlParserASP.Migrations
 
             migrationBuilder.DropTable(
                 name: "MyCategories");
+
+            migrationBuilder.DropTable(
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "SupplierAttributes");

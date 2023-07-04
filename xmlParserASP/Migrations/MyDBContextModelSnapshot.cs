@@ -124,6 +124,9 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
+                    b.Property<float>("Price")
+                        .HasColumnType("float");
+
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -147,9 +150,6 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<int?>("model")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("price")
                         .HasColumnType("int");
 
                     b.Property<int?>("quantity")
@@ -185,6 +185,26 @@ namespace xmlParserASP.Migrations
 
             modelBuilder.Entity("xmlParserASP.Models.SupplierAttribute", b =>
                 {
+                    b.Property<int>("SupAttrId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SupAttrName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("SupAttrId", "SupplierId", "LanguageId");
+
+                    b.ToTable("SupplierAttributes");
+                });
+
+            modelBuilder.Entity("xmlParserASP.Models.SupplierCategory", b =>
+                {
                     b.Property<int>("SupplierCatId")
                         .HasColumnType("int");
 
@@ -202,26 +222,6 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("SupplierCatId", "SupplierId", "LanguageId");
-
-                    b.ToTable("SupplierAttributes");
-                });
-
-            modelBuilder.Entity("xmlParserASP.Models.SupplierCategory", b =>
-                {
-                    b.Property<int>("SupAttrId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SupAttrName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("SupAttrId", "SupplierId", "LanguageId");
 
                     b.ToTable("SupplierCategories");
                 });

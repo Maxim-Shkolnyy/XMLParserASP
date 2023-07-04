@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace xmlParserASP.Models;
 
 [PrimaryKey(nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
-public class SupplierAttribute
+public class SupplierCategory
 {
     [Required]
     public int SupplierCatId { get; set; }
