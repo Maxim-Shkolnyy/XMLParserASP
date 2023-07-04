@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using xmlParserASP.Models;
 using static xmlParserASP.Services.TranslitMethods;
 
@@ -56,9 +57,7 @@ internal class WriteToXL
             XmlNodeList itemsList = xmlDoc.GetElementsByTagName("item");
             XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 
-
             int row = 2;
-
             int startIdFrom = 2255;
             // Получение значений из XML и вставка в соответствующие колонки листа Products
             foreach (XmlNode item in itemsList)
@@ -102,7 +101,29 @@ internal class WriteToXL
 
                 productsWorksheet.Row(row).Height = 15;
                 row++;
-            }
+            
+
+
+            // Создайте экземпляр модели Product и заполните его данными
+            Product product = new Product
+            {
+                ProductId = product_id,
+                SupplierId = supplier_id,
+                LanguageId = 1, // Ваш идентификатор языка
+                ProductName = name,
+                MyCatId = int.Parse(categoryId),
+                model = int.Parse(model),
+                quantity = quantity,
+                Price = price,
+                image_name = image,
+                description = description,
+                manufacturer = vendor,
+                date_added = dateAdded,
+                date_modified = dateModifiedStr,
+                date_available = dateAvailable,
+                seo_keyword = seoKeyword,
+                status = null
+            };
 
 
             var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1, productsWorksheet.FirstCellUsed().Address.ColumnNumber,

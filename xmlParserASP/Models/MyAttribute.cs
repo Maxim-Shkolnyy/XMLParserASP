@@ -12,8 +12,5 @@ public class MyAttribute
     public string MyAttrName { get; set; }
     [Required]
     public int LanguageId { get; set; }
-    //public ICollection<Supplier> Suppliers { get; set; }
-    //public int SuppAttrIdEqualsOurAttr { get; set; }
-    //public int SuppAttrNameEqualsOurAttr { get; set; }
 
 }

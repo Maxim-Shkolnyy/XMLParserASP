@@ -17,7 +17,9 @@ public class Product
     public int? sku { get; set; }
     public int? model { get; set; }
     public int? quantity { get; set; }
-    public int? price { get; set; }
+    
+    [Range(0, float.MaxValue)] 
+    public float Price { get; set; }
     public string? image_name { get; set; }
     public string? description { get; set; }
     public string? manufacturer { get; set; }
