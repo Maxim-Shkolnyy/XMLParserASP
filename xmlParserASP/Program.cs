@@ -44,11 +44,6 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
-
-
-
-
-
         var serviceProvider = new ServiceCollection()
             .AddSingleton<ReadAttributesTo3Columns>()
             .AddTransient<ReadUniqueCategorys>()
