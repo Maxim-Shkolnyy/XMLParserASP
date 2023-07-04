@@ -14,13 +14,4 @@ public class MyCategory
     public string MyCatName { get; set;}
     [Required]
     public int LanguageId { get; set; }
-
-
-
-    //[Required]
-    //public ICollection<Supplier> Suppliers { get; set; }
-    //public int SuppCatIdEqualsOurCat { get; set; }
-    //public int SuppCatNameEqualsOurCat { get; set; }
-    //[Required]
-    //public ICollection<Language> Languages { get; set; }
 }

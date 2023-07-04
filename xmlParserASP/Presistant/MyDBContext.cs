@@ -16,6 +16,9 @@ public class MyDBContext : DbContext
     public DbSet<SupplierCategory> SupplierCategories { get; set; }
     public DbSet<Language> Languages { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
+    public DbSet<Product> Products { get; set; }
+
+
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
     //    IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -32,7 +35,7 @@ public class MyDBContext : DbContext
 
     //    bool isConnected = Database.CanConnect();
     //    Database.EnsureCreated();
-   
+
     //}
 }
 
