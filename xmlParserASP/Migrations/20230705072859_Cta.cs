@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class Cat : Migration
+    public partial class Cta : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,14 +62,13 @@ namespace xmlParserASP.Migrations
                 name: "MyAttributes",
                 columns: table => new
                 {
-                    MyAttrId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    MyAttrName = table.Column<string>(type: "longtext", nullable: false),
-                    LanguageId = table.Column<int>(type: "int", nullable: false)
+                    MyAttrId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    MyAttrName = table.Column<string>(type: "longtext", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MyAttributes", x => x.MyAttrId);
+                    table.PrimaryKey("PK_MyAttributes", x => new { x.MyAttrId, x.LanguageId });
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 

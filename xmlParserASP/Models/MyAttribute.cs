@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace xmlParserASP.Models;
 
+[PrimaryKey(nameof(MyAttrId), nameof(LanguageId))]
 public class MyAttribute
 {
-    [Key]
     [Required]
     public int MyAttrId {get; set;}
     

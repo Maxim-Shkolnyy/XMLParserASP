@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230704200732_Cat")]
-    partial class Cat
+    [Migration("20230705072859_Cta")]
+    partial class Cta
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,6 @@ namespace xmlParserASP.Migrations
             modelBuilder.Entity("xmlParserASP.Models.MyAttribute", b =>
                 {
                     b.Property<int>("MyAttrId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("LanguageId")
@@ -88,7 +87,7 @@ namespace xmlParserASP.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("MyAttrId");
+                    b.HasKey("MyAttrId", "LanguageId");
 
                     b.ToTable("MyAttributes");
                 });

@@ -22,6 +22,7 @@ public class Program
         builder.Services.AddDbContext<MyDBContext>(options =>
             options.UseMySQL(connectionString));
 
+
         builder.Services.AddControllersWithViews();
         var app = builder.Build();
 
@@ -44,21 +45,8 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
-        var serviceProvider = new ServiceCollection()
-            .AddSingleton<ReadAttributesTo3Columns>()
-            .AddTransient<ReadUniqueCategorys>()
-            .AddSingleton<WriteToXL>()
-            .AddSingleton<Program>()
-            .AddScoped<MyDBContext>()
-            //.AddSingleton<PathListVarModel>()
-            .BuildServiceProvider();
 
-        var rAtr = serviceProvider.GetService<ReadAttributesTo3Columns>();
-        var writeToXL = serviceProvider.GetService<WriteToXL>();
-        //var myDb = serviceProvider.GetService<MyDBContext>();
 
-        rAtr.ReadAttrXMLTo3Columns();
-        writeToXL.WriteSheet("ru");  // ua
 
         ////var rUniq = serviceProvider.GetService<ReadUniqueCategorys>();
         ////rUniq.ReadXMLUniqueCategorys();

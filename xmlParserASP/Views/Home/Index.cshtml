@@ -11,6 +11,11 @@
 </head>
 <body>
 <div>
+    <a href="@Url.Action("ProcessExcel")"> Process Excel</a>
+    
+    <a href="@Url.Action("Attributes", "MyAttributes")"> Attributes</a>
+</div>
+<div>
     <table>
         <tr>
             <th>
@@ -20,7 +25,7 @@
                 Category Name
             </th>
         </tr>
-        @foreach(var cat in Model)
+        @foreach (var cat in Model)
         {
             <tr>
                 <td>
@@ -29,7 +34,7 @@
                 <td>
                     @cat.MyAttrName
                 </td>
-            </tr>               
+            </tr>
 
         }
 

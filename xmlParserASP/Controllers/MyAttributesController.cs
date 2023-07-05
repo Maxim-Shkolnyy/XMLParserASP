@@ -1,82 +1,73 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using xmlParserASP.Models;
+using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
 
 public class MyAttributesController : Controller
 {
+
+    private readonly ILogger<HomeController> _logger;
+    private readonly MyDBContext _db;
+
+    public MyAttributesController(ILogger<HomeController> logger, MyDBContext db)
+    {
+        _db = db;
+        _logger = logger;
+    }
+
+
+
     // GET: MyAttributesController
-    public ActionResult Index()
+    public ActionResult Attributes()
     {
-        return View();
+
+        var model = new List<MyAttributeViewModel>();
+
+        foreach (MyAttribute dbMyAttribute in _db.MyAttributes)
+        {
+
+            var viewAttribute = new MyAttributeViewModel
+            {
+                MyAttributeId = dbMyAttribute.MyAttrId,
+                MyAttributeName = dbMyAttribute.MyAttrName
+            };
+
+            model.Add(viewAttribute);
+
+        }
+
+        List<SupplierAttributeViewModel> SupplierAttributes = new List<SupplierAttributeViewModel>();
+        foreach (SupplierAttribute dbSupplierAttribute in _db.SupplierAttributes)
+        {
+
+            var bagAttribute = new SupplierAttributeViewModel
+            {
+                SupplierAttributeId = dbSupplierAttribute.SupAttrId, 
+                SupplierAttributeName = dbSupplierAttribute.SupAttrName
+            };
+
+            SupplierAttributes.Add(bagAttribute);
+
+        }
+        ViewBag.SupplierAttributes = SupplierAttributes;
+
+
+        return View(model);
     }
 
-    // GET: MyAttributesController/Details/5
-    public ActionResult Details(int id)
-    {
-        return View();
-    }
-
-    // GET: MyAttributesController/Create
-    public ActionResult Create()
-    {
-        return View();
-    }
-
-    // POST: MyAttributesController/Create
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Create(IFormCollection collection)
+    public ActionResult Attributes(MyAttributeViewModel[] saveattributes)
     {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
+
+        return new EmptyResult();
+
+        //1 идти по списку
+        // для каждого єk брать ID
+        // firsr or deafault для кажого елемента. Если нет- new .. Add() ессли есть то SupplierArrtId = 
+        //save changes
+        //
     }
 
-    // GET: MyAttributesController/Edit/5
-    public ActionResult Edit(int id)
-    {
-        return View();
-    }
-
-    // POST: MyAttributesController/Edit/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, IFormCollection collection)
-    {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
-    }
-
-    // GET: MyAttributesController/Delete/5
-    public ActionResult Delete(int id)
-    {
-        return View();
-    }
-
-    // POST: MyAttributesController/Delete/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Delete(int id, IFormCollection collection)
-    {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
-    }
 }

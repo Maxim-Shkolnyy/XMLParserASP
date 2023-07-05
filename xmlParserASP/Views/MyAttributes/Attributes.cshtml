@@ -1,13 +1,38 @@
-﻿@model xmlParserASP.Models.MyAttribute
+﻿@model List<xmlParserASP.Models.MyAttributeViewModel>
+@{
+    List<SupplierAttributeViewModel> SupplierAttributes = ViewBag.SupplierAttributes;
+
+}
 @using (Html.BeginForm())
 {
 
-    @Html.HiddenFor(m => m.MyAttrId)
+    <table>
+        @{int i = 0;}
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>
+                    <input type="hidden" value="@m.MyAttributeId" name="saveattributes[@i].MyAttributeId" />
+                    <input type="text" value="@m.MyAttributeName" name="saveattributes[@i].MyAttributeName" />
+                </td>
+                <td>
+                    <select name="saveattributes[@i].SupplierAttributeId">
+                        @foreach (var o in SupplierAttributes)
+                        {
+                            <option value="@o.SupplierAttributeId">@o.SupplierAttributeName</option>
+                        }
+                    </select>
 
-    <label>Course Name</label>
-    @Html.EditorFor(m => m.MyAttrName)
+                </td>
 
-    
+            </tr>
+
+            i++;
+
+        }
+
+
+    </table>
 
     <input type="submit" value="Save" />
 }

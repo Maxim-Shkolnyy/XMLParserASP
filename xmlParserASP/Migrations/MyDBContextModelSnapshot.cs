@@ -75,7 +75,6 @@ namespace xmlParserASP.Migrations
             modelBuilder.Entity("xmlParserASP.Models.MyAttribute", b =>
                 {
                     b.Property<int>("MyAttrId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("LanguageId")
@@ -85,7 +84,7 @@ namespace xmlParserASP.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("MyAttrId");
+                    b.HasKey("MyAttrId", "LanguageId");
 
                     b.ToTable("MyAttributes");
                 });

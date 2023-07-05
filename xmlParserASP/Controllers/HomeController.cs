@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
+using xmlParserASP.Services;
 
 namespace xmlParserASP.Controllers;
 
@@ -26,6 +28,21 @@ public class HomeController : Controller
     {
         return View();
     }
+    public IActionResult ProcessExcel()
+    {
+
+        var rAtr = new ReadAttributesTo3Columns();
+        var writeToXL = new WriteToXL(_db);
+        //var myDb = serviceProvider.GetService<MyDBContext>();
+
+        rAtr.ReadAttrXMLTo3Columns();
+        writeToXL.WriteSheet("ru");  // ua
+
+
+
+        return new EmptyResult();
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
