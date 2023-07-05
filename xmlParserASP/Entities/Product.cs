@@ -15,7 +15,7 @@ public class Product
     public string? ProductName { get; set; }
     public int MyCatId { get; set; }
     public int? sku { get; set; }
-    public int? model { get; set; }
+    public string model { get; set; }
     public int? quantity { get; set; }
 
     [Range(0, float.MaxValue)]
@@ -27,6 +27,6 @@ public class Product
     public string? date_modified { get; set; }
     public string? date_available { get; set; }
     public string? seo_keyword { get; set; }
-    public string? status { get; set; }
+    public bool? status { get; set; }
 
 }

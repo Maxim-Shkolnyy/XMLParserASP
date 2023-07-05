@@ -43,6 +43,11 @@ public class HomeController : Controller
         return new EmptyResult();
     }
 
+    public IActionResult Suppliers()
+    {
+        return View(_db.Suppliers);
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

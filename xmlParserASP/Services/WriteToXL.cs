@@ -17,8 +17,6 @@ public class WriteToXL
     }
     public void WriteSheet(string lang)
     {
-
-
         using (XLWorkbook workbook = new XLWorkbook())
         {
             IXLWorksheet productsWorksheet = workbook.Worksheets.Add("Products");
@@ -56,8 +54,6 @@ public class WriteToXL
             int descriptionUAColumnIndex = GetColumnIndex(productsWorksheet, "description(uk-ua)");
 
 
-
-
             XmlDocument xmlDoc = new();
             xmlDoc.Load(PathListVarModel.Path);
 
@@ -69,7 +65,6 @@ public class WriteToXL
             // Получение значений из XML и вставка в соответствующие колонки листа Products
             foreach (XmlNode item in itemsList)
             {
-
                 startIdFrom++;
                 string product_id = startIdFrom.ToString();
                 string model = item.SelectSingleNode("model")?.InnerText ?? "";
@@ -111,31 +106,30 @@ public class WriteToXL
                 row++;
 
 
-
                 // Создайте экземпляр модели Product и заполните его данными
-                Product product = new Product
-                {
-                    ProductId = int.Parse(product_id),
-                    SupplierId = int.Parse(supplier_id),
-                    LanguageId = 1, // Ваш идентификатор языка
-                    ProductName = name,
-                    MyCatId = int.Parse(categoryId),
-                    model = int.Parse(model),
-                    quantity = int.Parse(quantity),
-                    Price =  float.Parse(price),
-                    image_name = image,
-                    description = description,
-                    manufacturer = vendor,
-                    date_added = dateAdded,
-                    date_modified = dateModifiedStr,
-                    date_available = dateAvailable,
-                    seo_keyword = seoKeyword,
-                    status = null
-                };
-                _db.Products.Add(product);
+                //    Product product = new Product
+                //    {
+                //        ProductId = int.Parse(product_id),
+                //        SupplierId = int.Parse(supplier_id),
+                //        LanguageId = 1, // Ваш идентификатор языка
+                //        ProductName = name,
+                //        MyCatId = int.Parse(categoryId),
+                //        model = int.Parse(model),
+                //        quantity = int.Parse(quantity),
+                //        Price =  float.Parse(price),
+                //        image_name = image,
+                //        description = description,
+                //        manufacturer = vendor,
+                //        date_added = dateAdded,
+                //        date_modified = dateModifiedStr,
+                //        date_available = dateAvailable,
+                //        seo_keyword = seoKeyword,
+                //        status = null
+                //    };
+                //    _db.Products.Add(product);
+                //}
+                //_db.SaveChanges();
             }
-            _db.SaveChanges();
-
 
             var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1, productsWorksheet.FirstCellUsed().Address.ColumnNumber,
                             productsWorksheet.LastCellUsed().Address.RowNumber, productsWorksheet.LastCellUsed().Address.ColumnNumber);

@@ -8,6 +8,6 @@ public class Supplier
     [Required]
     public int SupplierId { get; set; }
     [Required]
-    public int SupplierName { get; set; }
+    public string SupplierName { get; set; }
 
 }
