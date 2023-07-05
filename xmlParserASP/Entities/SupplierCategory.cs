@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace xmlParserASP.Models;
+namespace xmlParserASP.Entities;
 
 [PrimaryKey(nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
 public class SupplierCategory

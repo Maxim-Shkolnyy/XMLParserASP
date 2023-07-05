@@ -1,17 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
 
-namespace xmlParserASP.Models;
+namespace xmlParserASP.Entities;
 
-
-[PrimaryKey(nameof(MyAttrId), nameof(SupAttrId), nameof(SupplierId), nameof(LanguageId))]
-public class AttributeRelation
+[PrimaryKey(nameof(SupAttrId), nameof(SupplierId), nameof(LanguageId))]
+public class SupplierAttribute
 {
-    public int MyAttrId { get; set; }
-
+    [Required]
     public int SupAttrId { get; set; }
     public int SupplierId { get; set; }
+
+    [Required]
+    public string SupAttrName { get; set; }
+
+    [Required]
     public int LanguageId { get; set; }
 }

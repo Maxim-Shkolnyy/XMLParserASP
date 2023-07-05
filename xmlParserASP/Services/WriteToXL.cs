@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
+using xmlParserASP.Entities;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using static xmlParserASP.Services.TranslitMethods;
 
 namespace xmlParserASP.Services;
 
-internal class WriteToXL
+public class WriteToXL
 {
     private readonly MyDBContext _db;
     public WriteToXL(MyDBContext db)

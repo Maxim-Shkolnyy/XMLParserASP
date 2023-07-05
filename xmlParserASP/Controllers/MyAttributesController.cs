@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using xmlParserASP.Entities;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 

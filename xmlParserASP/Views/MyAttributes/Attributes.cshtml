@@ -1,4 +1,6 @@
-﻿@model List<xmlParserASP.Models.MyAttributeViewModel>
+﻿@using xmlParserASP.Entities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<xmlParserASP.Models.MyAttributeViewModel>
 @{
     List<SupplierAttributeViewModel> SupplierAttributes = ViewBag.SupplierAttributes;
 
@@ -12,11 +14,14 @@
         {
             <tr>
                 <td>
-                    <input type="hidden" value="@m.MyAttributeId" name="saveattributes[@i].MyAttributeId" />
-                    <input type="text" value="@m.MyAttributeName" name="saveattributes[@i].MyAttributeName" />
+                    <div class="column">
+                    <input type="hidden" value="@m.MyAttributeId" name="saveattributes[@i].MyAttributeId"/>
+                    <input type="text" readonly value="@m.MyAttributeName" name="saveattributes[@i].MyAttributeName"/>
+                    </div>
                 </td>
                 <td>
                     <select name="saveattributes[@i].SupplierAttributeId">
+                        <option value="" selected>Оберіть атрибут</option>
                         @foreach (var o in SupplierAttributes)
                         {
                             <option value="@o.SupplierAttributeId">@o.SupplierAttributeName</option>

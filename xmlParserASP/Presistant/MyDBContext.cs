@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using xmlParserASP.Models;
+using xmlParserASP.Entities;
 
 namespace xmlParserASP.Presistant;
 

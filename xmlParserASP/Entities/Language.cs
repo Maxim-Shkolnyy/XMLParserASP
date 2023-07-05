@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace xmlParserASP.Models;
+namespace xmlParserASP.Entities;
 
 public class Language
 {

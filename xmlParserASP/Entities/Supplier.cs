@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace xmlParserASP.Models;
+namespace xmlParserASP.Entities;
 
 public class Supplier
 {
     [Key]
     [Required]
-    public int SupplierId {get; set;}
+    public int SupplierId { get; set; }
     [Required]
     public int SupplierName { get; set; }
 

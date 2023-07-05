@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using xmlParserASP.Models;
+using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Repository;

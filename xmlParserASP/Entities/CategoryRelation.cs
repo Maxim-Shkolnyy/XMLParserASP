@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
-namespace xmlParserASP.Models;
+namespace xmlParserASP.Entities;
 
 
 [PrimaryKey(nameof(MyCatId), nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
