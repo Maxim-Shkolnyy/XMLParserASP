@@ -18,9 +18,15 @@ public class Program
             // "Server=DESKTOP-5KP5B17\\SQLEXPRESS;Database=MAX;Trusted_Connection=True;TrustServerCertificate=True"; // work desktop
             "Database=zi391919_maxim;Data Source=zi391919.mysql.tools;User Id=zi391919_maxim;Password=y5E~v52!Cv;"; // gamma max
 
+        string connectionStringTestGamma =
+            "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // gamma max
+
 
         builder.Services.AddDbContext<MyDBContext>(options =>
             options.UseMySQL(connectionString));
+
+        builder.Services.AddDbContext<TestGammaDBContext>(options =>
+            options.UseMySQL(connectionStringTestGamma));
 
 
         builder.Services.AddControllersWithViews();

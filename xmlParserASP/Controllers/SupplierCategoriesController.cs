@@ -10,87 +10,87 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers
 {
-    public class SuppliersController : Controller
+    public class SupplierCategoriesController : Controller
     {
         private readonly MyDBContext _context;
 
-        public SuppliersController(MyDBContext context)
+        public SupplierCategoriesController(MyDBContext context)
         {
             _context = context;
         }
 
-        // GET: Suppliers
+        // GET: SupplierCategories
         public async Task<IActionResult> Index()
         {
-              return _context.Suppliers != null ? 
-                          View(await _context.Suppliers.ToListAsync()) :
-                          Problem("Entity set 'MyDBContext.Suppliers'  is null.");
+              return _context.SupplierCategories != null ? 
+                          View(await _context.SupplierCategories.ToListAsync()) :
+                          Problem("Entity set 'MyDBContext.SupplierCategories'  is null.");
         }
 
-        // GET: Suppliers/Details/5
+        // GET: SupplierCategories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.SupplierCategories == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
-            if (supplier == null)
+            var supplierCategory = await _context.SupplierCategories
+                .FirstOrDefaultAsync(m => m.SupplierCatId == id);
+            if (supplierCategory == null)
             {
                 return NotFound();
             }
 
-            return View(supplier);
+            return View(supplierCategory);
         }
 
-        // GET: Suppliers/Create
+        // GET: SupplierCategories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Suppliers/Create
+        // POST: SupplierCategories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierId,SupplierName")] Supplier supplier)
+        public async Task<IActionResult> Create([Bind("SupplierCatId,SupplierId,ParentSupCatId,Cat_Name,LanguageId")] SupplierCategory supplierCategory)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(supplier);
+                _context.Add(supplierCategory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(supplierCategory);
         }
 
-        // GET: Suppliers/Edit/5
+        // GET: SupplierCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.SupplierCategories == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier == null)
+            var supplierCategory = await _context.SupplierCategories.FindAsync(id);
+            if (supplierCategory == null)
             {
                 return NotFound();
             }
-            return View(supplier);
+            return View(supplierCategory);
         }
 
-        // POST: Suppliers/Edit/5
+        // POST: SupplierCategories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierId,SupplierName")] Supplier supplier)
+        public async Task<IActionResult> Edit(int id, [Bind("SupplierCatId,SupplierId,ParentSupCatId,Cat_Name,LanguageId")] SupplierCategory supplierCategory)
         {
-            if (id != supplier.SupplierId)
+            if (id != supplierCategory.SupplierCatId)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace xmlParserASP.Controllers
             {
                 try
                 {
-                    _context.Update(supplier);
+                    _context.Update(supplierCategory);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SupplierExists(supplier.SupplierId))
+                    if (!SupplierCategoryExists(supplierCategory.SupplierCatId))
                     {
                         return NotFound();
                     }
@@ -115,54 +115,49 @@ namespace xmlParserASP.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(supplierCategory);
         }
 
-        // GET: Suppliers/Delete/5
+        // GET: SupplierCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.SupplierCategories == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
-            if (supplier == null)
+            var supplierCategory = await _context.SupplierCategories
+                .FirstOrDefaultAsync(m => m.SupplierCatId == id);
+            if (supplierCategory == null)
             {
                 return NotFound();
             }
 
-            var supplierAttributes = _context.SupplierAttributes.Where(n => n.SupplierId == id );
-            var suppliersAttrRelations = _context.AttributesRelation.Where(n => n.SupplierId == id);
-
-            var viewModels = new SupplierDetailsViewModel
-
-            return View(supplier);
+            return View(supplierCategory);
         }
 
-        // POST: Suppliers/Delete/5
+        // POST: SupplierCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Suppliers == null)
+            if (_context.SupplierCategories == null)
             {
-                return Problem("Entity set 'MyDBContext.Suppliers'  is null.");
+                return Problem("Entity set 'MyDBContext.SupplierCategories'  is null.");
             }
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier != null)
+            var supplierCategory = await _context.SupplierCategories.FindAsync(id);
+            if (supplierCategory != null)
             {
-                _context.Suppliers.Remove(supplier);
+                _context.SupplierCategories.Remove(supplierCategory);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SupplierExists(int id)
+        private bool SupplierCategoryExists(int id)
         {
-          return (_context.Suppliers?.Any(e => e.SupplierId == id)).GetValueOrDefault();
+          return (_context.SupplierCategories?.Any(e => e.SupplierCatId == id)).GetValueOrDefault();
         }
     }
 }

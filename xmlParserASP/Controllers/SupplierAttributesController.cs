@@ -10,87 +10,87 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers
 {
-    public class SuppliersController : Controller
+    public class SupplierAttributesController : Controller
     {
         private readonly MyDBContext _context;
 
-        public SuppliersController(MyDBContext context)
+        public SupplierAttributesController(MyDBContext context)
         {
             _context = context;
         }
 
-        // GET: Suppliers
+        // GET: SupplierAttributes
         public async Task<IActionResult> Index()
         {
-              return _context.Suppliers != null ? 
-                          View(await _context.Suppliers.ToListAsync()) :
-                          Problem("Entity set 'MyDBContext.Suppliers'  is null.");
+              return _context.SupplierAttributes != null ? 
+                          View(await _context.SupplierAttributes.ToListAsync()) :
+                          Problem("Entity set 'MyDBContext.SupplierAttributes'  is null.");
         }
 
-        // GET: Suppliers/Details/5
+        // GET: SupplierAttributes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.SupplierAttributes == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
-            if (supplier == null)
+            var supplierAttribute = await _context.SupplierAttributes
+                .FirstOrDefaultAsync(m => m.SupAttrId == id);
+            if (supplierAttribute == null)
             {
                 return NotFound();
             }
 
-            return View(supplier);
+            return View(supplierAttribute);
         }
 
-        // GET: Suppliers/Create
+        // GET: SupplierAttributes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Suppliers/Create
+        // POST: SupplierAttributes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierId,SupplierName")] Supplier supplier)
+        public async Task<IActionResult> Create([Bind("SupAttrId,SupplierId,SupAttrName,LanguageId")] SupplierAttribute supplierAttribute)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(supplier);
+                _context.Add(supplierAttribute);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(supplierAttribute);
         }
 
-        // GET: Suppliers/Edit/5
+        // GET: SupplierAttributes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.SupplierAttributes == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier == null)
+            var supplierAttribute = await _context.SupplierAttributes.FindAsync(id);
+            if (supplierAttribute == null)
             {
                 return NotFound();
             }
-            return View(supplier);
+            return View(supplierAttribute);
         }
 
-        // POST: Suppliers/Edit/5
+        // POST: SupplierAttributes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierId,SupplierName")] Supplier supplier)
+        public async Task<IActionResult> Edit(int id, [Bind("SupAttrId,SupplierId,SupAttrName,LanguageId")] SupplierAttribute supplierAttribute)
         {
-            if (id != supplier.SupplierId)
+            if (id != supplierAttribute.SupAttrId)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace xmlParserASP.Controllers
             {
                 try
                 {
-                    _context.Update(supplier);
+                    _context.Update(supplierAttribute);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SupplierExists(supplier.SupplierId))
+                    if (!SupplierAttributeExists(supplierAttribute.SupAttrId))
                     {
                         return NotFound();
                     }
@@ -115,54 +115,49 @@ namespace xmlParserASP.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(supplierAttribute);
         }
 
-        // GET: Suppliers/Delete/5
+        // GET: SupplierAttributes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.SupplierAttributes == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
-            if (supplier == null)
+            var supplierAttribute = await _context.SupplierAttributes
+                .FirstOrDefaultAsync(m => m.SupAttrId == id);
+            if (supplierAttribute == null)
             {
                 return NotFound();
             }
 
-            var supplierAttributes = _context.SupplierAttributes.Where(n => n.SupplierId == id );
-            var suppliersAttrRelations = _context.AttributesRelation.Where(n => n.SupplierId == id);
-
-            var viewModels = new SupplierDetailsViewModel
-
-            return View(supplier);
+            return View(supplierAttribute);
         }
 
-        // POST: Suppliers/Delete/5
+        // POST: SupplierAttributes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Suppliers == null)
+            if (_context.SupplierAttributes == null)
             {
-                return Problem("Entity set 'MyDBContext.Suppliers'  is null.");
+                return Problem("Entity set 'MyDBContext.SupplierAttributes'  is null.");
             }
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier != null)
+            var supplierAttribute = await _context.SupplierAttributes.FindAsync(id);
+            if (supplierAttribute != null)
             {
-                _context.Suppliers.Remove(supplier);
+                _context.SupplierAttributes.Remove(supplierAttribute);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SupplierExists(int id)
+        private bool SupplierAttributeExists(int id)
         {
-          return (_context.Suppliers?.Any(e => e.SupplierId == id)).GetValueOrDefault();
+          return (_context.SupplierAttributes?.Any(e => e.SupAttrId == id)).GetValueOrDefault();
         }
     }
 }

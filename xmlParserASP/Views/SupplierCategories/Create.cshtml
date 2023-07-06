@@ -1,0 +1,53 @@
+﻿@model xmlParserASP.Entities.SupplierCategory
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>SupplierCategory</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SupplierCatId" class="control-label"></label>
+                <input asp-for="SupplierCatId" class="form-control" />
+                <span asp-validation-for="SupplierCatId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierId" class="control-label"></label>
+                <input asp-for="SupplierId" class="form-control" />
+                <span asp-validation-for="SupplierId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParentSupCatId" class="control-label"></label>
+                <input asp-for="ParentSupCatId" class="form-control" />
+                <span asp-validation-for="ParentSupCatId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cat_Name" class="control-label"></label>
+                <input asp-for="Cat_Name" class="form-control" />
+                <span asp-validation-for="Cat_Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LanguageId" class="control-label"></label>
+                <input asp-for="LanguageId" class="form-control" />
+                <span asp-validation-for="LanguageId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
