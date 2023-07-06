@@ -13,18 +13,23 @@ namespace xmlParserASP.Controllers
     public class MyCategoriesController : Controller
     {
         private readonly MyDBContext _context;
+        private readonly TestGammaDBContext _gammaContext;
 
-        public MyCategoriesController(MyDBContext context)
+        public MyCategoriesController(MyDBContext context, TestGammaDBContext gammaContext)
         {
             _context = context;
+            _gammaContext=gammaContext;
         }
 
         // GET: MyCategories
         public async Task<IActionResult> Index()
         {
-              return _context.MyCategories != null ? 
-                          View(await _context.MyCategories.ToListAsync()) :
-                          Problem("Entity set 'MyDBContext.MyCategories'  is null.");
+            return _context.MyCategories != null ?
+                View(await _context.MyCategories.ToListAsync()) :
+                Problem("Entity set 'MyDBContext.MyCategories'  is null.");
+            //return _gammaContext.GammaCategory != null ? 
+            //              View(await _gammaContext.GammaCategory.ToListAsync()) :
+            //              Problem("Entity set 'MyDBContext.MyCategories'  is null.");
         }
 
         // GET: MyCategories/Details/5
