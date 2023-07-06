@@ -37,5 +37,7 @@ public class MyDBContext : DbContext
     //    Database.EnsureCreated();
 
     //}
+    // створити всі абстракції таблиць із існуючої бд
+    //  dotnet ef dbcontext scaffold "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;" MySql.EntityFrameworkCore -o Entities/GammaTables;
 }
 
