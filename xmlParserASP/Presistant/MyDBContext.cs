@@ -18,6 +18,17 @@ public class MyDBContext : DbContext
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Product> Products { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<MyAttribute>(b =>
+        {
+            //b.
+            //HasMany 
+        });
+    }
+
 
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
