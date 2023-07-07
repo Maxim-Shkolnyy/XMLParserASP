@@ -27,6 +27,7 @@
     <Folder Include="Entities\GammaTables\" />
     <Folder Include="Migrations\" />
     <Folder Include="Repository\" />
+    <Folder Include="wwwroot\UploadedFiles\" />
   </ItemGroup>
 
 </Project>

@@ -38,6 +38,7 @@ public class HomeController : Controller
         rAtr.ReadAttrXMLTo3Columns();
         writeToXL.WriteSheet("ru");  // ua
 
+        UniqNodesInXML.Read();
 
 
         return new EmptyResult();

@@ -1,4 +1,4 @@
-﻿namespace xmlParserASP.Entities
+﻿namespace xmlParserASP.Models
 {
     public class SupplierAttributeViewModel
     {
