@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace xmlParserASP.Entities;
 
-[PrimaryKey(nameof(MyCatId), nameof(LanguageId))]
+//[PrimaryKey(nameof(MyCatId), nameof(LanguageId))]
 public class MyCategory
 {
     [Required]

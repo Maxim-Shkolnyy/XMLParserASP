@@ -29,7 +29,11 @@ public class MyDBContext : DbContext
         });
     }
 
-
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.UseCamelCaseNamingConvention();
+    }
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
     //    IConfigurationRoot configuration = new ConfigurationBuilder()

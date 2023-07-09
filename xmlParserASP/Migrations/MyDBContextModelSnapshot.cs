@@ -35,7 +35,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("MyAttrId", "SupAttrId", "SupplierId", "LanguageId");
 
-                    b.ToTable("AttributesRelation");
+                    b.ToTable("AttributesRelation", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.CategoryRelation", b =>
@@ -54,7 +54,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("MyCatId", "SupplierCatId", "SupplierId", "LanguageId");
 
-                    b.ToTable("CategoriesRelation");
+                    b.ToTable("CategoriesRelation", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.Language", b =>
@@ -69,7 +69,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("LanguageId");
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.MyAttribute", b =>
@@ -86,7 +86,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("MyAttrId", "LanguageId");
 
-                    b.ToTable("MyAttributes");
+                    b.ToTable("MyAttributes", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.MyCategory", b =>
@@ -106,7 +106,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("MyCatId", "LanguageId");
 
-                    b.ToTable("MyCategories");
+                    b.ToTable("MyCategories", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.Product", b =>
@@ -166,7 +166,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("ProductId", "LanguageId", "MyCatId", "SupplierId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.Supplier", b =>
@@ -181,7 +181,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.SupplierAttribute", b =>
@@ -201,7 +201,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("SupAttrId", "SupplierId", "LanguageId");
 
-                    b.ToTable("SupplierAttributes");
+                    b.ToTable("SupplierAttributes", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.SupplierCategory", b =>
@@ -224,7 +224,7 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("SupplierCatId", "SupplierId", "LanguageId");
 
-                    b.ToTable("SupplierCategories");
+                    b.ToTable("SupplierCategories", (string)null);
                 });
 #pragma warning restore 612, 618
         }

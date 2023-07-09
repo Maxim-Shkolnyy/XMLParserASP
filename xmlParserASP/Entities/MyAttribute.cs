@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace xmlParserASP.Entities;
 
-[PrimaryKey(nameof(MyAttrId), nameof(LanguageId))]
+//[PrimaryKey(nameof(MyAttrId), nameof(LanguageId))]
 public class MyAttribute
 {
     [Required]

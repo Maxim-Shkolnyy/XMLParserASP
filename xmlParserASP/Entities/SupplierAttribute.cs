@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xmlParserASP.Entities;
 
-[PrimaryKey(nameof(SupAttrId), nameof(SupplierId), nameof(LanguageId))]
+//[PrimaryKey(nameof(SupAttrId), nameof(SupplierId), nameof(LanguageId))]
 public class SupplierAttribute
 {
     [Required]
