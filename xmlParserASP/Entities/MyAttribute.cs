@@ -10,7 +10,9 @@ public class MyAttribute
     public int MyAttrId { get; set; }
 
     [Required]
-    public string MyAttrName { get; set; }
+    public string MyAttrNameRU { get; set; }
     [Required]
-    public int LanguageId { get; set; }
+    public string MyAttrNameUA { get; set; }
+    public ICollection <SupplierAttribute> SupplierAttributes {get; set;} 
+
 }
