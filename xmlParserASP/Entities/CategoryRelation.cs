@@ -6,11 +6,11 @@ using System.Runtime.Serialization;
 namespace xmlParserASP.Entities;
 
 
-[PrimaryKey(nameof(MyCatId), nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
-public class CategoryRelation
-{
-    public int MyCatId { get; set; }
-    public int SupplierCatId { get; set; }
-    public int SupplierId { get; set; }
-    public int LanguageId { get; set; }
-}
+//[PrimaryKey(nameof(MyCatId), nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
+//public class CategoryRelation
+//{
+//    public int MyCatId { get; set; }
+//    public int SupplierCatId { get; set; }
+//    public int SupplierId { get; set; }
+//    public int LanguageId { get; set; }
+//}
