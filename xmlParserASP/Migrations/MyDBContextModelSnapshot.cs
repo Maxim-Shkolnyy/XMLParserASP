@@ -19,7 +19,7 @@ namespace xmlParserASP.Migrations
                 .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("xmlParserASP.Entities.AttributeRelation", b =>
+            modelBuilder.Entity("xmlParserASP.Models.AttributeRelation", b =>
                 {
                     b.Property<int>("MyAttrId")
                         .HasColumnType("int");
@@ -38,7 +38,7 @@ namespace xmlParserASP.Migrations
                     b.ToTable("AttributesRelation", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.CategoryRelation", b =>
+            modelBuilder.Entity("xmlParserASP.Models.CategoryRelation", b =>
                 {
                     b.Property<int>("MyCatId")
                         .HasColumnType("int");
@@ -57,7 +57,7 @@ namespace xmlParserASP.Migrations
                     b.ToTable("CategoriesRelation", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.Language", b =>
+            modelBuilder.Entity("xmlParserASP.Models.Language", b =>
                 {
                     b.Property<int>("LanguageId")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace xmlParserASP.Migrations
                     b.ToTable("Languages", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.MyAttribute", b =>
+            modelBuilder.Entity("xmlParserASP.Models.MyAttribute", b =>
                 {
                     b.Property<int>("MyAttrId")
                         .HasColumnType("int");
@@ -89,7 +89,7 @@ namespace xmlParserASP.Migrations
                     b.ToTable("MyAttributes", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.MyCategory", b =>
+            modelBuilder.Entity("xmlParserASP.Models.MyCategory", b =>
                 {
                     b.Property<int>("MyCatId")
                         .HasColumnType("int");
@@ -109,7 +109,7 @@ namespace xmlParserASP.Migrations
                     b.ToTable("MyCategories", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.Product", b =>
+            modelBuilder.Entity("xmlParserASP.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -148,9 +148,8 @@ namespace xmlParserASP.Migrations
                     b.Property<string>("manufacturer")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("model")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int?>("model")
+                        .HasColumnType("int");
 
                     b.Property<int?>("quantity")
                         .HasColumnType("int");
@@ -161,30 +160,29 @@ namespace xmlParserASP.Migrations
                     b.Property<int?>("sku")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("status")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<string>("status")
+                        .HasColumnType("longtext");
 
                     b.HasKey("ProductId", "LanguageId", "MyCatId", "SupplierId");
 
                     b.ToTable("Products", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.Supplier", b =>
+            modelBuilder.Entity("xmlParserASP.Models.Supplier", b =>
                 {
                     b.Property<int>("SupplierId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("SupplierName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("SupplierName")
+                        .HasColumnType("int");
 
                     b.HasKey("SupplierId");
 
                     b.ToTable("Suppliers", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.SupplierAttribute", b =>
+            modelBuilder.Entity("xmlParserASP.Models.SupplierAttribute", b =>
                 {
                     b.Property<int>("SupAttrId")
                         .HasColumnType("int");
@@ -204,7 +202,7 @@ namespace xmlParserASP.Migrations
                     b.ToTable("SupplierAttributes", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.SupplierCategory", b =>
+            modelBuilder.Entity("xmlParserASP.Models.SupplierCategory", b =>
                 {
                     b.Property<int>("SupplierCatId")
                         .HasColumnType("int");

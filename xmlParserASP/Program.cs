@@ -23,7 +23,7 @@ public class Program
 
 
         builder.Services.AddDbContext<MyDBContext>(options =>
-            options.UseMySQL(connectionString));
+            options.UseMySQL(connectionString));        
 
         builder.Services.AddDbContext<TestGammaDBContext>(options =>
             options.UseMySQL(connectionStringTestGamma));

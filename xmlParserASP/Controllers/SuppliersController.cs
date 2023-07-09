@@ -7,17 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using xmlParserASP.Models;
+using DocumentFormat.OpenXml.InkML;
 
 namespace xmlParserASP.Controllers
 {
     public class SuppliersController : Controller
     {
         private readonly MyDBContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public SuppliersController(MyDBContext context)
+
+        public SuppliersController(MyDBContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
+        
 
         // GET: Suppliers
         public async Task<IActionResult> Index()
@@ -26,6 +34,8 @@ namespace xmlParserASP.Controllers
                           View(await _context.Suppliers.ToListAsync()) :
                           Problem("Entity set 'MyDBContext.Suppliers'  is null.");
         }
+
+       
 
         // GET: Suppliers/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -44,6 +54,39 @@ namespace xmlParserASP.Controllers
 
             return View(supplier);
         }
+
+        [HttpPost]
+        public IActionResult Details(int? id, IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                // Обработка выбранного файла
+                // ...
+
+                var filePath = Path.GetFullPath(file.FileName);
+                ViewBag.FilePath = filePath;
+            }
+
+            return View();
+        }
+
+
+        //[HttpPost]
+        //public IActionResult Details(int? id,  string filePath)
+        //{
+            
+        //    var p = Path.GetFullPath(filePath);
+        //    //IFormCollection file = 
+        //    if (!string.IsNullOrEmpty(filePath))
+        //    {
+        //        var file = new FileInfo(filePath);
+        //        PathListVarModel.Path = file.FullName;
+        //        ViewBag.FilePath = file.FullName;
+        //        return RedirectToAction("Details", new { id }); // Замените "1" на соответствующий ID поставщика
+        //    }
+
+        //    return View(filePath);
+        //}
 
         // GET: Suppliers/Create
         public IActionResult Create()

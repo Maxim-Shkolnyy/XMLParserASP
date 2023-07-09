@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
+using EFCore.NamingConventions;
+using Microsoft.EntityFrameworkCore.to
 
 namespace xmlParserASP.Presistant;
 
@@ -21,12 +23,13 @@ public class MyDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+              
+    }
 
-        modelBuilder.Entity<MyAttribute>(b =>
-        {
-            //b.
-            //HasMany 
-        });
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.UseCamelCaseNamingConvention();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
