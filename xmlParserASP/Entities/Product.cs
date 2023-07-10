@@ -3,30 +3,33 @@ using System.ComponentModel.DataAnnotations;
 
 namespace xmlParserASP.Entities;
 
-[PrimaryKey(nameof(ProductId), nameof(LanguageId), nameof(MyCatId), nameof(SupplierId))]
+//[PrimaryKey(nameof(ProductId), nameof(MyCatId), nameof(SupplierId))]
 public class Product
 {
+    [Key]
     [Required]
     public int ProductId { get; set; }
     public int SupplierId { get; set; }
     [Required]
-    public int LanguageId { get; set; }
-    [Required]
-    public string? ProductName { get; set; }
+    public string? ProductNameRU { get; set; }
+    public string? ProductNameUA { get; set; }
+
     public int MyCatId { get; set; }
-    public int? sku { get; set; }
-    public string model { get; set; }
-    public int? quantity { get; set; }
+    public int? Sku { get; set; }
+    public string Model { get; set; }
+    public int? Quantity { get; set; }
 
     [Range(0, float.MaxValue)]
     public float Price { get; set; }
-    public string? image_name { get; set; }
-    public string? description { get; set; }
-    public string? manufacturer { get; set; }
-    public string? date_added { get; set; }
-    public string? date_modified { get; set; }
-    public string? date_available { get; set; }
-    public string? seo_keyword { get; set; }
-    public bool? status { get; set; }
+    public string? ImageName { get; set; }
+    public string? DescriptionRU { get; set; }
+    public string? DescriptionUA { get; set; }
+
+    public string? Manufacturer { get; set; }
+    public string? DateAdded { get; set; }
+    public string? DateModified { get; set; }
+    public string? DateAvailable { get; set; }
+    public string? SeoKeyword { get; set; }
+    public bool? Status { get; set; }
 
 }

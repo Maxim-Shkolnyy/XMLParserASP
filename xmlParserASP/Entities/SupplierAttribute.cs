@@ -10,4 +10,5 @@ public class SupplierAttribute
     public int SupplierId { get; set; }
     public string SupAttrNameRU { get; set; }
     public string SupAttrNameUA { get; set; }
+    public ICollection<MyAttribute> MyAttributes { get; set; }
 }
