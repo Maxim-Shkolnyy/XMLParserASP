@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
 using EFCore.NamingConventions;
-using Microsoft.EntityFrameworkCore.to
 
 namespace xmlParserASP.Presistant;
 
@@ -12,8 +11,8 @@ public class MyDBContext : DbContext
 
     public DbSet<MyAttribute> MyAttributes { get; set; }
     public DbSet<MyCategory> MyCategories { get; set; }
-    public DbSet<CategoryRelation> CategoriesRelation { get; set; }
-    public DbSet<AttributeRelation> AttributesRelation { get; set; }
+    //public DbSet<CategoryRelation> CategoriesRelation { get; set; }
+    //public DbSet<AttributeRelation> AttributesRelation { get; set; }
     public DbSet<SupplierAttribute> SupplierAttributes { get; set; }
     public DbSet<SupplierCategory> SupplierCategories { get; set; }
     public DbSet<Language> Languages { get; set; }
@@ -32,11 +31,7 @@ public class MyDBContext : DbContext
         optionsBuilder.UseCamelCaseNamingConvention();
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-        optionsBuilder.UseCamelCaseNamingConvention();
-    }
+    
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
     //    IConfigurationRoot configuration = new ConfigurationBuilder()

@@ -12,16 +12,16 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MyAttrName)
+            @Html.DisplayNameFor(model => model.MyAttrNameRU)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MyAttrName)
+            @Html.DisplayFor(model => model.MyAttrNameRU)
         </dd>
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="MyAttrId" />
-        <input type="hidden" asp-for="LanguageId" />
+        @*<input type="hidden" asp-for="LanguageId" />*@
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

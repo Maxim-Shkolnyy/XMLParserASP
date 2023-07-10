@@ -5,7 +5,9 @@
 
         public int MyAttributeId{ get; set; }
 
-        public string MyAttributeName { get; set; }
+        public string MyAttributeNameRU { get; set; }
+
+        public string MyAttributeNameUA { get; set; }
 
         public int SupplierAttributeId { get; set; }
 

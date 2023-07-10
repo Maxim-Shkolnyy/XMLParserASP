@@ -32,7 +32,8 @@ public class MyAttributesController : Controller
             var viewAttribute = new MyAttributeViewModel
             {
                 MyAttributeId = dbMyAttribute.MyAttrId,
-                MyAttributeName = dbMyAttribute.MyAttrName
+                MyAttributeNameRU = dbMyAttribute.MyAttrNameRU,
+                MyAttributeNameUA = dbMyAttribute.MyAttrNameUA
             };
 
             model.Add(viewAttribute);

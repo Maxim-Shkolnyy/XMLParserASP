@@ -177,7 +177,7 @@ namespace xmlParserASP.Controllers
             }
 
             var supplierAttributes = _context.SupplierAttributes.Where(n => n.SupplierId == id );
-            var suppliersAttrRelations = _context.AttributesRelation.Where(n => n.SupplierId == id);
+            //var suppliersAttrRelations = _context.AttributesRelation.Where(n => n.SupplierId == id);
 
             //var viewModels = new SupplierDetailsViewModel
 
