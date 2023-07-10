@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace xmlParserASP.Entities;
+namespace xmlParserASP.Entities.GammaTables.MyTempToGamma;
 
 public class Language
 {

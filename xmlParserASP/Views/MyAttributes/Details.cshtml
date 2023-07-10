@@ -1,0 +1,86 @@
+﻿@model List<xmlParserASP.Models.MyAttributeViewModel>
+@{
+    List<SupplierAttributeViewModel> SupplierAttributes = ViewBag.SupplierAttributes;
+
+}
+@using (Html.BeginForm())
+{
+
+    <table>
+        @{
+            int i = 0;
+        }
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>
+                    <div class="column">
+                        <input type="hidden" value="@m.MyAttributeId" name="saveattributes[@i].MyAttributeId" />
+                        <input type="text" readonly value="@m.MyAttributeNameRU" name="saveattributes[@i].MyAttributeName" />
+                    </div>
+                </td>
+                <td>
+                    <select name="saveattributes[@i].SupplierAttributeId">
+                        <option value="" selected>Оберіть атрибут</option>
+                        @foreach (var o in SupplierAttributes)
+                        {
+                            <option value="@o.SupplierAttributeId">@o.SupplierAttributeName</option>
+                        }
+                    </select>
+
+                </td>
+
+            </tr>
+
+            i++;
+
+        }
+
+
+    </table>
+
+    <input type="submit" value="Save" />
+}
+
+
+
+@*@model xmlParserASP.Entities.MyAttribute
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>MyAttribute</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MyAttrNameRU)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MyAttrNameRU)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MyAttrNameUA)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MyAttrNameUA)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MyAttrGroup)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MyAttrGroup)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.MyAttrId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+
+
+

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,9 +11,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230710144308_CatAttrTables")]
+    partial class CatAttrTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +67,7 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("myAttrId");
 
-                    b.Property<int?>("MyAttrGroup")
+                    b.Property<int>("MyAttrGroup")
                         .HasColumnType("int")
                         .HasColumnName("myAttrGroup");
 

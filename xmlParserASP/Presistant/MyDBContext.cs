@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
+using xmlParserASP.Entities.GammaTables.MyTempToGamma;
 
 namespace xmlParserASP.Presistant;
 
@@ -9,19 +10,28 @@ public class MyDBContext : DbContext
     : base(options) { }
 
     public DbSet<MyAttribute> MyAttributes { get; set; }
-    public DbSet<MyCategory> MyCategories { get; set; }
-    //public DbSet<CategoryRelation> CategoriesRelation { get; set; }
-    //public DbSet<AttributeRelation> AttributesRelation { get; set; }
     public DbSet<SupplierAttribute> SupplierAttributes { get; set; }
+
+    public DbSet<MyCategory> MyCategories { get; set; }
     public DbSet<SupplierCategory> SupplierCategories { get; set; }
-    public DbSet<Language> Languages { get; set; }
+
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Product> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-              
+
+        modelBuilder.Entity<MyAttribute>()
+            .HasMany(m => m.SupplierAttributes)
+            .WithMany(c => c.MyAttributes)
+            .UsingEntity(j=>j.ToTable("MyAttributesSupplierAttributes"));
+
+        modelBuilder.Entity<MyCategory>()
+            .HasMany(n => n.SupplierCategories)
+            .WithMany(j => j.MyCategories)
+            .UsingEntity(k => k.ToTable("MyCategoriesSupplierCategories"));
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

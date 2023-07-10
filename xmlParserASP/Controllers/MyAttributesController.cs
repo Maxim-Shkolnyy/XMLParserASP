@@ -10,87 +10,87 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers
 {
-    public class SuppliersController : Controller
+    public class MyAttributesController : Controller
     {
         private readonly MyDBContext _context;
 
-        public SuppliersController(MyDBContext context)
+        public MyAttributesController(MyDBContext context)
         {
             _context = context;
         }
 
-        // GET: Suppliers
+        // GET: MyAttributes
         public async Task<IActionResult> Index()
         {
-              return _context.Suppliers != null ? 
-                          View(await _context.Suppliers.ToListAsync()) :
-                          Problem("Entity set 'MyDBContext.Suppliers'  is null.");
+              return _context.MyAttributes != null ? 
+                          View(await _context.MyAttributes.ToListAsync()) :
+                          Problem("Entity set 'MyDBContext.MyAttributes'  is null.");
         }
 
-        // GET: Suppliers/Details/5
+        // GET: MyAttributes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.MyAttributes == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
-            if (supplier == null)
+            var myAttribute = await _context.MyAttributes
+                .FirstOrDefaultAsync(m => m.MyAttrId == id);
+            if (myAttribute == null)
             {
                 return NotFound();
             }
 
-            return View(supplier);
+            return View(myAttribute);
         }
 
-        // GET: Suppliers/Create
+        // GET: MyAttributes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Suppliers/Create
+        // POST: MyAttributes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierId,SupplierName")] Supplier supplier)
+        public async Task<IActionResult> Create([Bind("MyAttrId,MyAttrNameRU,MyAttrNameUA,MyAttrGroup")] MyAttribute myAttribute)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(supplier);
+                _context.Add(myAttribute);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(myAttribute);
         }
 
-        // GET: Suppliers/Edit/5
+        // GET: MyAttributes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.MyAttributes == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier == null)
+            var myAttribute = await _context.MyAttributes.FindAsync(id);
+            if (myAttribute == null)
             {
                 return NotFound();
             }
-            return View(supplier);
+            return View(myAttribute);
         }
 
-        // POST: Suppliers/Edit/5
+        // POST: MyAttributes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierId,SupplierName")] Supplier supplier)
+        public async Task<IActionResult> Edit(int id, [Bind("MyAttrId,MyAttrNameRU,MyAttrNameUA,MyAttrGroup")] MyAttribute myAttribute)
         {
-            if (id != supplier.SupplierId)
+            if (id != myAttribute.MyAttrId)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace xmlParserASP.Controllers
             {
                 try
                 {
-                    _context.Update(supplier);
+                    _context.Update(myAttribute);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SupplierExists(supplier.SupplierId))
+                    if (!MyAttributeExists(myAttribute.MyAttrId))
                     {
                         return NotFound();
                     }
@@ -115,49 +115,49 @@ namespace xmlParserASP.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(myAttribute);
         }
 
-        // GET: Suppliers/Delete/5
+        // GET: MyAttributes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Suppliers == null)
+            if (id == null || _context.MyAttributes == null)
             {
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
-            if (supplier == null)
+            var myAttribute = await _context.MyAttributes
+                .FirstOrDefaultAsync(m => m.MyAttrId == id);
+            if (myAttribute == null)
             {
                 return NotFound();
             }
 
-            return View(supplier);
+            return View(myAttribute);
         }
 
-        // POST: Suppliers/Delete/5
+        // POST: MyAttributes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Suppliers == null)
+            if (_context.MyAttributes == null)
             {
-                return Problem("Entity set 'MyDBContext.Suppliers'  is null.");
+                return Problem("Entity set 'MyDBContext.MyAttributes'  is null.");
             }
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier != null)
+            var myAttribute = await _context.MyAttributes.FindAsync(id);
+            if (myAttribute != null)
             {
-                _context.Suppliers.Remove(supplier);
+                _context.MyAttributes.Remove(myAttribute);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SupplierExists(int id)
+        private bool MyAttributeExists(int id)
         {
-          return (_context.Suppliers?.Any(e => e.SupplierId == id)).GetValueOrDefault();
+          return (_context.MyAttributes?.Any(e => e.MyAttrId == id)).GetValueOrDefault();
         }
     }
 }

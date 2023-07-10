@@ -5,6 +5,7 @@ namespace xmlParserASP.Entities;
 //[PrimaryKey(nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
 public class SupplierCategory
 {
+    [Key]
     [Required]
     public int SupplierCatId { get; set; }
     [Required]
