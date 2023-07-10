@@ -25,19 +25,19 @@ public class MyDBContext : DbContext
         modelBuilder.Entity<MyAttribute>()
             .HasMany(m => m.SupplierAttributes)
             .WithMany(c => c.MyAttributes)
-            .UsingEntity(j=>j.ToTable("MyAttributesSupplierAttributes"));
+            .UsingEntity(j=>j.ToTable("my_attributes_supplier_attributes"));
 
         modelBuilder.Entity<MyCategory>()
             .HasMany(n => n.SupplierCategories)
             .WithMany(j => j.MyCategories)
-            .UsingEntity(k => k.ToTable("MyCategoriesSupplierCategories"));
+            .UsingEntity(k => k.ToTable("my_categories_supplier_categories"));
 
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-        optionsBuilder.UseCamelCaseNamingConvention();
+        optionsBuilder.UseSnakeCaseNamingConvention();
     }
 
     

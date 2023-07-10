@@ -6,36 +6,91 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
+using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers
 {
     public class MyAttributesController : Controller
     {
-        private readonly MyDBContext _context;
+        private readonly MyDBContext _db;
 
         public MyAttributesController(MyDBContext context)
         {
-            _context = context;
+            _db = context;
         }
 
         // GET: MyAttributes
         public async Task<IActionResult> Index()
         {
-              return _context.MyAttributes != null ? 
-                          View(await _context.MyAttributes.ToListAsync()) :
+              return _db.MyAttributes != null ? 
+                          View(await _db.MyAttributes.ToListAsync()) :
                           Problem("Entity set 'MyDBContext.MyAttributes'  is null.");
+        }
+
+        public ActionResult Attributes()
+        {
+
+            var model = new List<MyAttributeViewModel>();
+
+            foreach (MyAttribute dbMyAttribute in _db.MyAttributes)
+            {
+
+                var viewAttribute = new MyAttributeViewModel
+                {
+                    MyAttributeId = dbMyAttribute.MyAttrId,
+                    MyAttributeNameRU = dbMyAttribute.MyAttrNameRU,
+                    MyAttributeNameUA = dbMyAttribute.MyAttrNameUA
+
+                };
+
+                model.Add(viewAttribute);
+
+            }
+
+            List<SupplierAttributeViewModel> SupplierAttributes = new List<SupplierAttributeViewModel>();
+            foreach (SupplierAttribute dbSupplierAttribute in _db.SupplierAttributes)
+            {
+
+                var bagAttribute = new SupplierAttributeViewModel
+                {
+                    SupplierAttributeId = dbSupplierAttribute.SupAttrId,
+                    SupplierAttributeName = dbSupplierAttribute.SupAttrNameRU
+                    //SupplierAttributeName = dbSupplierAttribute.SupAttrNameRU
+
+                };
+
+                SupplierAttributes.Add(bagAttribute);
+
+            }
+            ViewBag.SupplierAttributes = SupplierAttributes;
+
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Attributes(MyAttributeViewModel[] saveattributes)
+        {
+
+            return new EmptyResult();
+
+            //1 идти по списку
+            // для каждого єk брать ID
+            // firsr or deafault для кажого елемента. Если нет- new .. Add() ессли есть то SupplierArrtId = 
+            //save changes
+            //
         }
 
         // GET: MyAttributes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.MyAttributes == null)
+            if (id == null || _db.MyAttributes == null)
             {
                 return NotFound();
             }
 
-            var myAttribute = await _context.MyAttributes
+            var myAttribute = await _db.MyAttributes
                 .FirstOrDefaultAsync(m => m.MyAttrId == id);
             if (myAttribute == null)
             {
@@ -60,8 +115,8 @@ namespace xmlParserASP.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(myAttribute);
-                await _context.SaveChangesAsync();
+                _db.Add(myAttribute);
+                await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(myAttribute);
@@ -70,12 +125,12 @@ namespace xmlParserASP.Controllers
         // GET: MyAttributes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.MyAttributes == null)
+            if (id == null || _db.MyAttributes == null)
             {
                 return NotFound();
             }
 
-            var myAttribute = await _context.MyAttributes.FindAsync(id);
+            var myAttribute = await _db.MyAttributes.FindAsync(id);
             if (myAttribute == null)
             {
                 return NotFound();
@@ -99,8 +154,8 @@ namespace xmlParserASP.Controllers
             {
                 try
                 {
-                    _context.Update(myAttribute);
-                    await _context.SaveChangesAsync();
+                    _db.Update(myAttribute);
+                    await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,12 +176,12 @@ namespace xmlParserASP.Controllers
         // GET: MyAttributes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.MyAttributes == null)
+            if (id == null || _db.MyAttributes == null)
             {
                 return NotFound();
             }
 
-            var myAttribute = await _context.MyAttributes
+            var myAttribute = await _db.MyAttributes
                 .FirstOrDefaultAsync(m => m.MyAttrId == id);
             if (myAttribute == null)
             {
@@ -141,23 +196,23 @@ namespace xmlParserASP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.MyAttributes == null)
+            if (_db.MyAttributes == null)
             {
                 return Problem("Entity set 'MyDBContext.MyAttributes'  is null.");
             }
-            var myAttribute = await _context.MyAttributes.FindAsync(id);
+            var myAttribute = await _db.MyAttributes.FindAsync(id);
             if (myAttribute != null)
             {
-                _context.MyAttributes.Remove(myAttribute);
+                _db.MyAttributes.Remove(myAttribute);
             }
             
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MyAttributeExists(int id)
         {
-          return (_context.MyAttributes?.Any(e => e.MyAttrId == id)).GetValueOrDefault();
+          return (_db.MyAttributes?.Any(e => e.MyAttrId == id)).GetValueOrDefault();
         }
     }
 }

@@ -23,38 +23,38 @@ namespace xmlParserASP.Migrations
                 {
                     b.Property<int>("MyAttributesMyAttrId")
                         .HasColumnType("int")
-                        .HasColumnName("myAttributesMyAttrId");
+                        .HasColumnName("my_attributes_my_attr_id");
 
                     b.Property<int>("SupplierAttributesSupAttrId")
                         .HasColumnType("int")
-                        .HasColumnName("supplierAttributesSupAttrId");
+                        .HasColumnName("supplier_attributes_sup_attr_id");
 
                     b.HasKey("MyAttributesMyAttrId", "SupplierAttributesSupAttrId")
-                        .HasName("pK_MyAttributesSupplierAttributes");
+                        .HasName("pk_my_attributes_supplier_attributes");
 
                     b.HasIndex("SupplierAttributesSupAttrId")
-                        .HasDatabaseName("iX_MyAttributesSupplierAttributes_supplierAttributesSupAttrId");
+                        .HasDatabaseName("ix_my_attributes_supplier_attributes_supplier_attributes_sup_at");
 
-                    b.ToTable("MyAttributesSupplierAttributes", (string)null);
+                    b.ToTable("my_attributes_supplier_attributes", (string)null);
                 });
 
             modelBuilder.Entity("MyCategorySupplierCategory", b =>
                 {
                     b.Property<int>("MyCategoriesMyCatId")
                         .HasColumnType("int")
-                        .HasColumnName("myCategoriesMyCatId");
+                        .HasColumnName("my_categories_my_cat_id");
 
                     b.Property<int>("SupplierCategoriesSupplierCatId")
                         .HasColumnType("int")
-                        .HasColumnName("supplierCategoriesSupplierCatId");
+                        .HasColumnName("supplier_categories_supplier_cat_id");
 
                     b.HasKey("MyCategoriesMyCatId", "SupplierCategoriesSupplierCatId")
-                        .HasName("pK_MyCategoriesSupplierCategories");
+                        .HasName("pk_my_categories_supplier_categories");
 
                     b.HasIndex("SupplierCategoriesSupplierCatId")
-                        .HasDatabaseName("iX_MyCategoriesSupplierCategories_supplierCategoriesSupplierCat~");
+                        .HasDatabaseName("ix_my_categories_supplier_categories_supplier_categories_suppli");
 
-                    b.ToTable("MyCategoriesSupplierCategories", (string)null);
+                    b.ToTable("my_categories_supplier_categories", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.MyAttribute", b =>
@@ -62,26 +62,26 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("MyAttrId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("myAttrId");
+                        .HasColumnName("my_attr_id");
 
                     b.Property<int?>("MyAttrGroup")
                         .HasColumnType("int")
-                        .HasColumnName("myAttrGroup");
+                        .HasColumnName("my_attr_group");
 
                     b.Property<string>("MyAttrNameRU")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("myAttrNameRU");
+                        .HasColumnName("my_attr_name_ru");
 
                     b.Property<string>("MyAttrNameUA")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("myAttrNameUA");
+                        .HasColumnName("my_attr_name_ua");
 
                     b.HasKey("MyAttrId")
-                        .HasName("pK_myAttributes");
+                        .HasName("pk_my_attributes");
 
-                    b.ToTable("myAttributes", (string)null);
+                    b.ToTable("my_attributes", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.MyCategory", b =>
@@ -89,26 +89,26 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("MyCatId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("myCatId");
+                        .HasColumnName("my_cat_id");
 
                     b.Property<string>("MyCatNameRU")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("myCatNameRU");
+                        .HasColumnName("my_cat_name_ru");
 
                     b.Property<string>("MyCatNameUA")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("myCatNameUA");
+                        .HasColumnName("my_cat_name_ua");
 
                     b.Property<int>("MyParentCatId")
                         .HasColumnType("int")
-                        .HasColumnName("myParentCatId");
+                        .HasColumnName("my_parent_cat_id");
 
                     b.HasKey("MyCatId")
-                        .HasName("pK_myCategories");
+                        .HasName("pk_my_categories");
 
-                    b.ToTable("myCategories", (string)null);
+                    b.ToTable("my_categories", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.Product", b =>
@@ -116,31 +116,31 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("productId");
+                        .HasColumnName("product_id");
 
                     b.Property<string>("DateAdded")
                         .HasColumnType("longtext")
-                        .HasColumnName("dateAdded");
+                        .HasColumnName("date_added");
 
                     b.Property<string>("DateAvailable")
                         .HasColumnType("longtext")
-                        .HasColumnName("dateAvailable");
+                        .HasColumnName("date_available");
 
                     b.Property<string>("DateModified")
                         .HasColumnType("longtext")
-                        .HasColumnName("dateModified");
+                        .HasColumnName("date_modified");
 
                     b.Property<string>("DescriptionRU")
                         .HasColumnType("longtext")
-                        .HasColumnName("descriptionRU");
+                        .HasColumnName("description_ru");
 
                     b.Property<string>("DescriptionUA")
                         .HasColumnType("longtext")
-                        .HasColumnName("descriptionUA");
+                        .HasColumnName("description_ua");
 
                     b.Property<string>("ImageName")
                         .HasColumnType("longtext")
-                        .HasColumnName("imageName");
+                        .HasColumnName("image_name");
 
                     b.Property<string>("Manufacturer")
                         .HasColumnType("longtext")
@@ -153,7 +153,7 @@ namespace xmlParserASP.Migrations
 
                     b.Property<int>("MyCatId")
                         .HasColumnType("int")
-                        .HasColumnName("myCatId");
+                        .HasColumnName("my_cat_id");
 
                     b.Property<float>("Price")
                         .HasColumnType("float")
@@ -162,11 +162,11 @@ namespace xmlParserASP.Migrations
                     b.Property<string>("ProductNameRU")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("productNameRU");
+                        .HasColumnName("product_name_ru");
 
                     b.Property<string>("ProductNameUA")
                         .HasColumnType("longtext")
-                        .HasColumnName("productNameUA");
+                        .HasColumnName("product_name_ua");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int")
@@ -174,7 +174,7 @@ namespace xmlParserASP.Migrations
 
                     b.Property<string>("SeoKeyword")
                         .HasColumnType("longtext")
-                        .HasColumnName("seoKeyword");
+                        .HasColumnName("seo_keyword");
 
                     b.Property<int?>("Sku")
                         .HasColumnType("int")
@@ -186,10 +186,10 @@ namespace xmlParserASP.Migrations
 
                     b.Property<int>("SupplierId")
                         .HasColumnType("int")
-                        .HasColumnName("supplierId");
+                        .HasColumnName("supplier_id");
 
                     b.HasKey("ProductId")
-                        .HasName("pK_products");
+                        .HasName("pk_products");
 
                     b.ToTable("products", (string)null);
                 });
@@ -199,15 +199,15 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("SupplierId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("supplierId");
+                        .HasColumnName("supplier_id");
 
                     b.Property<string>("SupplierName")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("supplierName");
+                        .HasColumnName("supplier_name");
 
                     b.HasKey("SupplierId")
-                        .HasName("pK_suppliers");
+                        .HasName("pk_suppliers");
 
                     b.ToTable("suppliers", (string)null);
                 });
@@ -217,26 +217,26 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("SupAttrId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("supAttrId");
+                        .HasColumnName("sup_attr_id");
 
                     b.Property<string>("SupAttrNameRU")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("supAttrNameRU");
+                        .HasColumnName("sup_attr_name_ru");
 
                     b.Property<string>("SupAttrNameUA")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("supAttrNameUA");
+                        .HasColumnName("sup_attr_name_ua");
 
                     b.Property<int>("SupplierId")
                         .HasColumnType("int")
-                        .HasColumnName("supplierId");
+                        .HasColumnName("supplier_id");
 
                     b.HasKey("SupAttrId")
-                        .HasName("pK_supplierAttributes");
+                        .HasName("pk_supplier_attributes");
 
-                    b.ToTable("supplierAttributes", (string)null);
+                    b.ToTable("supplier_attributes", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.SupplierCategory", b =>
@@ -244,30 +244,30 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("SupplierCatId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("supplierCatId");
+                        .HasColumnName("supplier_cat_id");
 
                     b.Property<string>("CatNameRU")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("catNameRU");
+                        .HasColumnName("cat_name_ru");
 
                     b.Property<string>("CatNameUA")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("catNameUA");
+                        .HasColumnName("cat_name_ua");
 
                     b.Property<int>("ParentSupCatId")
                         .HasColumnType("int")
-                        .HasColumnName("parentSupCatId");
+                        .HasColumnName("parent_sup_cat_id");
 
                     b.Property<int>("SupplierId")
                         .HasColumnType("int")
-                        .HasColumnName("supplierId");
+                        .HasColumnName("supplier_id");
 
                     b.HasKey("SupplierCatId")
-                        .HasName("pK_supplierCategories");
+                        .HasName("pk_supplier_categories");
 
-                    b.ToTable("supplierCategories", (string)null);
+                    b.ToTable("supplier_categories", (string)null);
                 });
 
             modelBuilder.Entity("MyAttributeSupplierAttribute", b =>
@@ -277,14 +277,14 @@ namespace xmlParserASP.Migrations
                         .HasForeignKey("MyAttributesMyAttrId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fK_MyAttributesSupplierAttributes_myAttributes_myAttributesMyAt~");
+                        .HasConstraintName("fk_my_attributes_supplier_attributes_my_attributes_my_attribute");
 
                     b.HasOne("xmlParserASP.Entities.SupplierAttribute", null)
                         .WithMany()
                         .HasForeignKey("SupplierAttributesSupAttrId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fK_MyAttributesSupplierAttributes_supplierAttributes_supplierAt~");
+                        .HasConstraintName("fk_my_attributes_supplier_attributes_supplier_attributes_suppli");
                 });
 
             modelBuilder.Entity("MyCategorySupplierCategory", b =>
@@ -294,14 +294,14 @@ namespace xmlParserASP.Migrations
                         .HasForeignKey("MyCategoriesMyCatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fK_MyCategoriesSupplierCategories_myCategories_myCategoriesMyCa~");
+                        .HasConstraintName("fk_my_categories_supplier_categories_my_categories_my_categorie");
 
                     b.HasOne("xmlParserASP.Entities.SupplierCategory", null)
                         .WithMany()
                         .HasForeignKey("SupplierCategoriesSupplierCatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fK_MyCategoriesSupplierCategories_supplierCategories_supplierCa~");
+                        .HasConstraintName("fk_my_categories_supplier_categories_supplier_categories_suppli");
                 });
 #pragma warning restore 612, 618
         }
