@@ -5,13 +5,13 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
 
-public class MyAttributesController : Controller
+public class MyAttributes111Controller : Controller
 {
 
     private readonly ILogger<HomeController> _logger;
     private readonly MyDBContext _db;
 
-    public MyAttributesController(ILogger<HomeController> logger, MyDBContext db)
+    public MyAttributes111Controller(ILogger<HomeController> logger, MyDBContext db)
     {
         _db = db;
         _logger = logger;

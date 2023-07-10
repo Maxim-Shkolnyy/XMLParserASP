@@ -5,11 +5,11 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers
 {
-    public class MyCategoriesController : Controller
+    public class MyCategories111Controller : Controller
     {
         private readonly MyDBContext _context;
 
-        public MyCategoriesController(MyDBContext context)
+        public MyCategories111Controller(MyDBContext context)
         {
             _context = context;
         }
