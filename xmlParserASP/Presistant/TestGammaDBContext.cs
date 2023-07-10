@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using xmlParserASP.Entities;
 using xmlParserASP.Entities.GammaTables;
 
 namespace xmlParserASP.Presistant;

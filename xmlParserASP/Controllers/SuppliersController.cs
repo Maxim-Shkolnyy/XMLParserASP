@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Hosting;
-using xmlParserASP.Models;
-using DocumentFormat.OpenXml.InkML;
 
 namespace xmlParserASP.Controllers
 {

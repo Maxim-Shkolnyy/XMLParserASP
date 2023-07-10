@@ -196,7 +196,7 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SupAttrName")
+                    b.Property<string>("SupAttrNameRU")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -216,7 +216,7 @@ namespace xmlParserASP.Migrations
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Cat_Name")
+                    b.Property<string>("CatNameRU")
                         .IsRequired()
                         .HasColumnType("longtext");
 

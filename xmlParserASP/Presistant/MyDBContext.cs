@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
-using EFCore.NamingConventions;
 
 namespace xmlParserASP.Presistant;
 

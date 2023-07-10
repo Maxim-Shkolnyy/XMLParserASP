@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace xmlParserASP.Entities.GammaTables;
+﻿namespace xmlParserASP.Entities.GammaTables;
 
 public partial class OcCart
 {

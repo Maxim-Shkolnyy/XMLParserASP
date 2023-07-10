@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
-
-namespace xmlParserASP.Entities.GammaTables.MyTempToGamma;
+﻿namespace xmlParserASP.Entities.GammaTables.MyTempToGamma;
 
 
 //[PrimaryKey(nameof(MyCatId), nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]

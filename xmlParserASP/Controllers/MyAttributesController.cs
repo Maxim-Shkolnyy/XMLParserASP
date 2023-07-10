@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using xmlParserASP.Entities;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
@@ -47,7 +46,7 @@ public class MyAttributesController : Controller
             var bagAttribute = new SupplierAttributeViewModel
             {
                 SupplierAttributeId = dbSupplierAttribute.SupAttrId, 
-                SupplierAttributeName = dbSupplierAttribute.SupAttrName
+                SupplierAttributeName = dbSupplierAttribute.SupAttrNameRU
             };
 
             SupplierAttributes.Add(bagAttribute);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
@@ -56,7 +51,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupAttrId,SupplierId,SupAttrName,LanguageId")] SupplierAttribute supplierAttribute)
+        public async Task<IActionResult> Create([Bind("SupAttrId,SupplierId,SupAttrNameRU,LanguageId")] SupplierAttribute supplierAttribute)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +83,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupAttrId,SupplierId,SupAttrName,LanguageId")] SupplierAttribute supplierAttribute)
+        public async Task<IActionResult> Edit(int id, [Bind("SupAttrId,SupplierId,SupAttrNameRU,LanguageId")] SupplierAttribute supplierAttribute)
         {
             if (id != supplierAttribute.SupAttrId)
             {

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace xmlParserASP.Entities;
 
@@ -10,10 +8,6 @@ public class SupplierAttribute
     [Required]
     public int SupAttrId { get; set; }
     public int SupplierId { get; set; }
-
-    [Required]
-    public string SupAttrName { get; set; }
-
-    [Required]
-    public int LanguageId { get; set; }
+    public string SupAttrNameRU { get; set; }
+    public string SupAttrNameUA { get; set; }
 }

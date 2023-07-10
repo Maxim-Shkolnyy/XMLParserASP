@@ -1,9 +1,6 @@
-using System;
-using System.Configuration;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Presistant;
-using xmlParserASP.Services;
+
 //using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace xmlParserASP;

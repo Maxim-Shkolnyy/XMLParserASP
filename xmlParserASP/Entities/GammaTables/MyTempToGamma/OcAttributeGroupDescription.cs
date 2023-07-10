@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace xmlParserASP.Entities.GammaTables.MyTempToGamma;
+﻿namespace xmlParserASP.Entities.GammaTables.MyTempToGamma;
 
 public partial class OcAttributeGroupDescription
 {

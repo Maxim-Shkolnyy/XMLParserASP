@@ -1,7 +1,5 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
-using xmlParserASP.Entities;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using static xmlParserASP.Services.TranslitMethods;
