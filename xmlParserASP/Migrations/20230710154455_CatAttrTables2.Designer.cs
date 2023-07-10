@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230710153600_CatAttrTables1")]
-    partial class CatAttrTables1
+    [Migration("20230710154455_CatAttrTables2")]
+    partial class CatAttrTables2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,8 +67,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("my_attr_id");
 
-                    b.Property<int?>("MyAttrGroup")
-                        .HasColumnType("int")
+                    b.Property<string>("MyAttrGroup")
+                        .HasColumnType("longtext")
                         .HasColumnName("my_attr_group");
 
                     b.Property<string>("MyAttrNameRU")

@@ -64,8 +64,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("my_attr_id");
 
-                    b.Property<int?>("MyAttrGroup")
-                        .HasColumnType("int")
+                    b.Property<string>("MyAttrGroup")
+                        .HasColumnType("longtext")
                         .HasColumnName("my_attr_group");
 
                     b.Property<string>("MyAttrNameRU")

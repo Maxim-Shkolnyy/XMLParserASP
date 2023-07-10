@@ -14,7 +14,7 @@ public class MyAttribute
     [Required]
     public string MyAttrNameUA { get; set; }
 
-    public int? MyAttrGroup { get; set; }
+    public string? MyAttrGroup { get; set; }
     public ICollection <SupplierAttribute> SupplierAttributes {get; set;} 
 
 }

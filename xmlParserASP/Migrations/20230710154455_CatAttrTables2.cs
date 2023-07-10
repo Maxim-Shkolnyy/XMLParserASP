@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class CatAttrTables1 : Migration
+    public partial class CatAttrTables2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,7 @@ namespace xmlParserASP.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     my_attr_name_ru = table.Column<string>(type: "longtext", nullable: false),
                     my_attr_name_ua = table.Column<string>(type: "longtext", nullable: false),
-                    my_attr_group = table.Column<int>(type: "int", nullable: true)
+                    my_attr_group = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
