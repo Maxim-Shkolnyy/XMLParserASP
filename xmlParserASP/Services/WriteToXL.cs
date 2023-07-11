@@ -25,7 +25,8 @@ public class WriteToXL
 
 
             List<List<string>> productsColumns = new();
-            productsColumns.Add(new List<string> { "product_id", "name(ru-ru)", "name(uk-ua)", "categories", "sku", "upc", "ean", "jan", "isbn", "mpn", "location", "quantity", "model", "supplier_id", "manufacturer", "image_name", "shipping", "price", "points", "date_added", "date_modified", "date_available", "unit_id", "weight", "weight_unit", "length", "width", "height", "length_unit", "status", "tax_class_id", "seo_keyword", "description(ru-ru)", "description(uk-ua)", "meta_title(ru-ru)", "meta_title(uk-ua)", "meta_description(ru-ru)", "meta_description(uk-ua)", "meta_keywords(ru-ru)", "meta_keywords(uk-ua)", "stock_status_id", "store_ids", "layout", "related_ids", "tags(ru-ru)", "tags(uk-ua)", "sort_order", "subtract", "minimum", "kd_code", "on_order_status" });
+            //"model", "supplier_id", "manufacturer",
+            productsColumns.Add(new List<string> { "product_id", "name(ru-ru)", "name(uk-ua)", "categories", "sku", "upc", "ean", "jan", "isbn", "mpn", "location", "quantity", "model", "manufacturer", "image_name", "shipping", "price", "points", "date_added", "date_modified", "date_available", "unit_id", "weight", "weight_unit", "length", "width", "height", "length_unit", "status", "tax_class_id", "seo_keyword", "description(ru-ru)", "description(uk-ua)", "meta_title(ru-ru)", "meta_title(uk-ua)", "meta_description(ru-ru)", "meta_description(uk-ua)", "meta_keywords(ru-ru)", "meta_keywords(uk-ua)", "stock_status_id", "store_ids", "layout", "related_ids", "tags(ru-ru)", "tags(uk-ua)", "sort_order", "subtract", "minimum", "kd_code", "on_order_status" });
 
             for (int j = 0; j < productsColumns[0].Count; j++)
             {
@@ -40,7 +41,7 @@ public class WriteToXL
             int skuColumnIndex = GetColumnIndex(productsWorksheet, "sku");
             int quantityColumnIndex = GetColumnIndex(productsWorksheet, "quantity");
             int modelColumnIndex = GetColumnIndex(productsWorksheet, "model");
-            int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
+            //int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
             int manufacturerColumnIndex = GetColumnIndex(productsWorksheet, "manufacturer");
             int image_nameColumnIndex = GetColumnIndex(productsWorksheet, "image_name");
             int priceColumnIndex = GetColumnIndex(productsWorksheet, "price");
@@ -55,7 +56,8 @@ public class WriteToXL
             XmlDocument xmlDoc = new();
             xmlDoc.Load(PathListVarModel.Path);
 
-            XmlNodeList itemsList = xmlDoc.GetElementsByTagName("item");
+            XmlNodeList itemsList = xmlDoc.GetElementsByTagName("item");  //feron
+            //XmlNodeList itemsList = xmlDoc.GetElementsByTagName("offer");  //khoroz
             XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 
             int row = 2;
@@ -80,7 +82,7 @@ public class WriteToXL
                 DateTime dateModified = DateTime.Now;
                 string dateAvailable = "2023-06-06 00:00:00";
                 string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
-                string supplier_id = "1";
+                //string supplier_id = "1";
 
                 productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
                 productsWorksheet.Cell(row, nameRUColumnIndex).Value = name;
@@ -91,7 +93,7 @@ public class WriteToXL
                 productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
                 productsWorksheet.Cell(row, priceColumnIndex).Value = price;
                 productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
-                productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
+                //productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
                 productsWorksheet.Cell(row, date_addedColumnIndex).Value = dateAdded;
                 productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
                 productsWorksheet.Cell(row, date_availableColumnIndex).Value = dateAvailable;

@@ -12,8 +12,13 @@ public static class UniqNodesInXML
         var nodeNames = new List<string>();
         var parameterLists = new List<List<string>>();
 
+        XmlReaderSettings settings = new XmlReaderSettings();
+        settings.DtdProcessing = DtdProcessing.Parse;
+        settings.MaxCharactersFromEntities = 1024;
+
         using (XmlReader reader = XmlReader.Create(xmlFilePath))
         {
+            
             while (reader.Read())
             {
                 if (reader.NodeType == XmlNodeType.Element)

@@ -10,7 +10,9 @@ public class ReadAttributesTo3Columns
         XmlDocument doc = new XmlDocument();
         doc.Load(PathListVarModel.Path);
 
-        XmlNodeList itemsList = doc.GetElementsByTagName("item");
+        XmlNodeList itemsList = doc.GetElementsByTagName("item"); //feron
+        //XmlNodeList itemsList = doc.GetElementsByTagName("offer"); // khoroz
+
         XmlNodeList paramListForCount = doc.GetElementsByTagName("param");
 
         int paramsCount = paramListForCount.Count;
@@ -27,7 +29,10 @@ public class ReadAttributesTo3Columns
 
         foreach (XmlNode item in itemsList)
         {
-            string modelID = item.SelectSingleNode("model")?.InnerText;
+            string modelID = item.SelectSingleNode("model")?.InnerText; //feron
+
+            //XmlNode idInModelTag = item.SelectSingleNode("offer");      //Khoroz
+            //string modelID = item.Attributes["id"]?.Value;              //Khoroz
 
             XmlNodeList paramList = item.SelectNodes("param");
 
@@ -36,7 +41,7 @@ public class ReadAttributesTo3Columns
                 string paramGroup = "Характеристики";
                 string paramName = param.Attributes["name"]?.Value;
                 string paramValue = param.InnerText;
-                string paramId = "ua-attr";
+                string paramId = "ru-attr";
 
 
                 array[paramIndex, 0] = modelID;
