@@ -161,15 +161,23 @@ public class WriteToXL
                 }
             }
 
-            array = newArray;
+            
 
             attrWorksheet.SheetView.FreezeRows(1);
             attrWorksheet.Columns().Style.Alignment.WrapText = false;
             IXLRow firstAttrRow = attrWorksheet.Row(1);
             firstAttrRow.Style.Font.Bold = true;
 
+            for (int roww = 0; row < newArray.GetLength(0); roww++)
+            {
+                for (int col = 0; col < newArray.GetLength(1); col++)
+                {
+                    attrWorksheet.Cell(roww + 2, col + 1).Value = newArray[roww, col];
+                }
+            }
+
             var rangeAttr = attrWorksheet.Range(attrWorksheet.FirstCellUsed().Address.RowNumber + 1, attrWorksheet.FirstCellUsed().Address.ColumnNumber,
-                            attrWorksheet.LastCellUsed().Address.RowNumber, attrWorksheet.LastCellUsed().Address.ColumnNumber);
+                attrWorksheet.LastCellUsed().Address.RowNumber, attrWorksheet.LastCellUsed().Address.ColumnNumber);
             rangeAttr.Sort();
 
             if (lang == "ua")
@@ -180,6 +188,7 @@ public class WriteToXL
             {
                 workbook.SaveAs(@"D:\Downloads\12.07.2023.xlsx");
             }
+
         }
     }
 
