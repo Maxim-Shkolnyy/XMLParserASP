@@ -141,13 +141,27 @@ public class WriteToXL
 
             var array = PathListVarModel.SheetAtributes;
 
-            for (int i = 0; i < array.GetLength(0); i++)
+            // duplicates in attributes check
+
+            var uniqueRows = Enumerable.Range(0, array.GetLength(0))
+                .GroupBy(row => $"{array[row, 0]}-{array[row, 2]}")
+                .Select(g => g.First())
+                .ToArray();
+
+            int numRows = uniqueRows.Length;
+            int numCols = array.GetLength(1);
+
+            string[,] newArray = new string[numRows, numCols];
+
+            for (int i = 0; i < numRows; i++)
             {
-                for (int j = 0; j < array.GetLength(1); j++)
+                for (int j = 0; j < numCols; j++)
                 {
-                    attrWorksheet.Cell(i + 1, j + 1).Value = array[i, j];
+                    newArray[i, j] = array[uniqueRows[i], j];
                 }
             }
+
+            array = newArray;
 
             attrWorksheet.SheetView.FreezeRows(1);
             attrWorksheet.Columns().Style.Alignment.WrapText = false;
@@ -160,11 +174,11 @@ public class WriteToXL
 
             if (lang == "ua")
             {
-                workbook.SaveAs(@"D:\Downloads\output_ua.xlsx");
+                workbook.SaveAs(@"D:\Downloads\output_12.07.xlsx");
             }
             else
             {
-                workbook.SaveAs(@"D:\Downloads\output_ru.xlsx");
+                workbook.SaveAs(@"D:\Downloads\12.07.2023.xlsx");
             }
         }
     }
