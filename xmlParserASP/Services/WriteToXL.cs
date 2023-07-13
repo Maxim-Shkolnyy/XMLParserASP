@@ -53,7 +53,7 @@ public class WriteToXL
             int skuColumnIndex = GetColumnIndex(productsWorksheet, "sku");
             int quantityColumnIndex = GetColumnIndex(productsWorksheet, "quantity");
             int modelColumnIndex = GetColumnIndex(productsWorksheet, "model");
-            int? supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
+            //int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
             int manufacturerColumnIndex = GetColumnIndex(productsWorksheet, "manufacturer");
             int image_nameColumnIndex = GetColumnIndex(productsWorksheet, "image_name");
             int priceColumnIndex = GetColumnIndex(productsWorksheet, "price");
@@ -106,7 +106,7 @@ public class WriteToXL
                     productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
 
                     productsWorksheet.Cell(row, nameRUColumnIndex).Value = nameRU;
-                    productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameRU;
+                    //productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameRU;
                     productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
                     productsWorksheet.Cell(row, modelColumnIndex).Value = model;
                     productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
