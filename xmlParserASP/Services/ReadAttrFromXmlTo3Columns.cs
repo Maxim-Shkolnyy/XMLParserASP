@@ -10,8 +10,7 @@ public class ReadAttributesTo3Columns
         XmlDocument doc = new XmlDocument();
         doc.Load(PathListVarModel.Path);
 
-        XmlNodeList itemsList = doc.GetElementsByTagName("item"); //feron
-        //XmlNodeList itemsList = doc.GetElementsByTagName("offer"); // khoroz
+        XmlNodeList itemsList = doc.GetElementsByTagName(PathListVarModel.XMLProductNode);
 
         XmlNodeList paramListForCount = doc.GetElementsByTagName("param");
 
@@ -25,37 +24,73 @@ public class ReadAttributesTo3Columns
         array[0, 3] = "text(ru-ru)";
         array[0, 4] = "text(uk-ua)";
 
+
         int itemIndex = 0;
-
-        foreach (XmlNode item in itemsList)
+        if (PathListVarModel.Language == Language.Ru)
         {
-            //string modelID = item.SelectSingleNode("model")?.InnerText; //feron
-            string modelID = item.Attributes["id"]?.Value;              //Khoroz
-
-
-            XmlNodeList paramList = item.SelectNodes("param");
-
-            foreach (XmlNode param in paramList)
+            foreach (XmlNode item in itemsList)
             {
-                string paramGroup = "Характеристики";
-                string paramName = param.Attributes["name"]?.Value;
-                string paramValue = param.InnerText;
-                string paramId = "ru-attr";
+                //string modelID = item.SelectSingleNode("model")?.InnerText; //feron
+                string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
-                array[paramIndex, 0] = modelID;
-                array[paramIndex, 1] = paramGroup;
-                array[paramIndex, 2] = paramName;
-                array[paramIndex, 3] = paramValue;
-                array[paramIndex, 4] = paramId;
-                array[paramIndex, 5] = modelID;
+                XmlNodeList paramList = item.SelectNodes("param");
 
-                paramIndex++;
+                foreach (XmlNode param in paramList)
+                {
+                    string paramGroup = "Характеристики";
+                    string paramName = param.Attributes["name"]?.Value;
+                    string paramValue = param.InnerText;
+                    string paramId = "ru-attr";
+
+
+                    array[paramIndex, 0] = modelID;
+                    array[paramIndex, 1] = paramGroup;
+                    array[paramIndex, 2] = paramName;
+                    array[paramIndex, 3] = paramValue;
+                    array[paramIndex, 4] = paramId;
+                    array[paramIndex, 5] = modelID;
+
+                    paramIndex++;
+                }
+
+                itemIndex++;
             }
 
-            itemIndex++;
+            PathListVarModel.SheetAtributes = array;
         }
+        else
+        {
+            foreach (XmlNode item in itemsList)
+            {
+                //string modelID = item.SelectSingleNode("model")?.InnerText; //feron
+                string modelID = item.Attributes["id"]?.Value; //Khoroz
 
-        PathListVarModel.SheetAtributes = array;
+
+                XmlNodeList paramList = item.SelectNodes("param");
+
+                foreach (XmlNode param in paramList)
+                {
+                    string paramGroup = "Характеристики";
+                    string paramName = param.Attributes["name"]?.Value;
+                    string paramValue = param.InnerText;
+                    string paramId = "ru-attr";
+
+
+                    array[paramIndex, 0] = modelID;
+                    array[paramIndex, 1] = paramGroup;
+                    array[paramIndex, 2] = paramName;
+                    array[paramIndex, 3] = paramValue;
+                    array[paramIndex, 4] = paramId;
+                    array[paramIndex, 5] = modelID;
+
+                    paramIndex++;
+                }
+
+                itemIndex++;
+            }
+
+            PathListVarModel.SheetAtributes = array;
+        }
     }
 }

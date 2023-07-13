@@ -1,85 +1,85 @@
-﻿using System.Xml;
-using ClosedXML.Excel;
-using xmlParserASP.Entities;
-using xmlParserASP.Entities.GammaTables.MyTempToGamma;
+﻿using ClosedXML.Excel;
+using static xmlParserASP.Services.TranslitMethods;
+using System.Xml;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
-using static xmlParserASP.Services.TranslitMethods;
 
-namespace xmlParserASP.Services;
-
-public class WriteToXL
+namespace xmlParserASP.Services
 {
-    private readonly MyDBContext _db;
-    public WriteToXL(MyDBContext db)
+    public class WriteUaToXL
     {
-        _db = db;
-    }
-    public void WriteSheet()
-    {
-        using (XLWorkbook workbook = new XLWorkbook())
+        private readonly MyDBContext _db;
+        public WriteUaToXL(MyDBContext db)
         {
-            IXLWorksheet productsWorksheet = workbook.Worksheets.Add("Products");
-            productsWorksheet.SheetView.FreezeRows(1);
-            productsWorksheet.Columns().Style.Alignment.WrapText = false;
-            IXLRow firstRow = productsWorksheet.Row(1);
-            firstRow.Style.Font.Bold = true;
+            _db = db;
+        }
 
-
-            List<List<string>> productsColumns = new();
-            //"model", "supplier_id", "manufacturer",
-            productsColumns.Add(new List<string>
+        public void WriteUaColumnsToXL()
+        {
+            using (XLWorkbook workbook = new XLWorkbook())
             {
-                "product_id", "name(ru-ru)", "name(uk-ua)", "categories", "sku", "upc", "ean", "jan", "isbn", "mpn",
-                "location", "quantity", "model", "manufacturer", "image_name", "shipping", "price", "points",
-                "date_added", "date_modified", "date_available", "unit_id", "weight", "weight_unit", "length", "width",
-                "height", "length_unit", "status", "tax_class_id", "seo_keyword", "description(ru-ru)",
-                "description(uk-ua)", "meta_title(ru-ru)", "meta_title(uk-ua)", "meta_description(ru-ru)",
-                "meta_description(uk-ua)", "meta_keywords(ru-ru)", "meta_keywords(uk-ua)", "stock_status_id",
-                "store_ids", "layout", "related_ids", "tags(ru-ru)", "tags(uk-ua)", "sort_order", "subtract", "minimum",
-                "kd_code", "on_order_status"
-            });
-
-            for (int j = 0; j < productsColumns[0].Count; j++)
-            {
-                productsWorksheet.Cell(1, j + 1).Value = productsColumns[0][j];
-            }
-
-            // Получение индексов столбцов EXCEL на основе их имен
-            int product_idColumnIndex = GetColumnIndex(productsWorksheet, "product_id");
-            int nameRUColumnIndex = GetColumnIndex(productsWorksheet, "name(ru-ru)");
-            int nameUAColumnIndex = GetColumnIndex(productsWorksheet, "name(uk-ua)");
-            int categoriesColumnIndex = GetColumnIndex(productsWorksheet, "categories");
-            int skuColumnIndex = GetColumnIndex(productsWorksheet, "sku");
-            int quantityColumnIndex = GetColumnIndex(productsWorksheet, "quantity");
-            int modelColumnIndex = GetColumnIndex(productsWorksheet, "model");
-            //int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
-            int manufacturerColumnIndex = GetColumnIndex(productsWorksheet, "manufacturer");
-            int image_nameColumnIndex = GetColumnIndex(productsWorksheet, "image_name");
-            int priceColumnIndex = GetColumnIndex(productsWorksheet, "price");
-            int date_addedColumnIndex = GetColumnIndex(productsWorksheet, "date_added");
-            int date_modifiedColumnIndex = GetColumnIndex(productsWorksheet, "date_modified");
-            int date_availableColumnIndex = GetColumnIndex(productsWorksheet, "date_available");
-            int seo_keywordColumnIndex = GetColumnIndex(productsWorksheet, "seo_keyword");
-            int descriptionRUColumnIndex = GetColumnIndex(productsWorksheet, "description(ru-ru)");
-            int descriptionUAColumnIndex = GetColumnIndex(productsWorksheet, "description(uk-ua)");
+                IXLWorksheet productsWorksheet = workbook.Worksheets.Add("Products");
+                productsWorksheet.SheetView.FreezeRows(1);
+                productsWorksheet.Columns().Style.Alignment.WrapText = false;
+                IXLRow firstRow = productsWorksheet.Row(1);
+                firstRow.Style.Font.Bold = true;
 
 
+                List<List<string>> productsColumns = new();
+                //"model", "supplier_id", "manufacturer",
+                productsColumns.Add(new List<string>
+                {
+                    "product_id", "name(ru-ru)", "name(uk-ua)", "categories", "sku", "upc", "ean", "jan", "isbn", "mpn",
+                    "location", "quantity", "model", "manufacturer", "image_name", "shipping", "price", "points",
+                    "date_added", "date_modified", "date_available", "unit_id", "weight", "weight_unit", "length",
+                    "width",
+                    "height", "length_unit", "status", "tax_class_id", "seo_keyword", "description(ru-ru)",
+                    "description(uk-ua)", "meta_title(ru-ru)", "meta_title(uk-ua)", "meta_description(ru-ru)",
+                    "meta_description(uk-ua)", "meta_keywords(ru-ru)", "meta_keywords(uk-ua)", "stock_status_id",
+                    "store_ids", "layout", "related_ids", "tags(ru-ru)", "tags(uk-ua)", "sort_order", "subtract",
+                    "minimum",
+                    "kd_code", "on_order_status"
+                });
 
-            XmlDocument xmlDoc = new();
-            xmlDoc.Load(PathListVarModel.Path);
+                for (int j = 0; j < productsColumns[0].Count; j++)
+                {
+                    productsWorksheet.Cell(1, j + 1).Value = productsColumns[0][j];
+                }
 
-            // Настройки выгрузки поставщика
+                // Получение индексов столбцов EXCEL на основе их имен
+                int product_idColumnIndex = GetColumnIndex(productsWorksheet, "product_id");
+                int nameRUColumnIndex = GetColumnIndex(productsWorksheet, "name(ru-ru)");
+                int nameUAColumnIndex = GetColumnIndex(productsWorksheet, "name(uk-ua)");
+                int categoriesColumnIndex = GetColumnIndex(productsWorksheet, "categories");
+                int skuColumnIndex = GetColumnIndex(productsWorksheet, "sku");
+                int quantityColumnIndex = GetColumnIndex(productsWorksheet, "quantity");
+                int modelColumnIndex = GetColumnIndex(productsWorksheet, "model");
+                //int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
+                int manufacturerColumnIndex = GetColumnIndex(productsWorksheet, "manufacturer");
+                int image_nameColumnIndex = GetColumnIndex(productsWorksheet, "image_name");
+                int priceColumnIndex = GetColumnIndex(productsWorksheet, "price");
+                int date_addedColumnIndex = GetColumnIndex(productsWorksheet, "date_added");
+                int date_modifiedColumnIndex = GetColumnIndex(productsWorksheet, "date_modified");
+                int date_availableColumnIndex = GetColumnIndex(productsWorksheet, "date_available");
+                int seo_keywordColumnIndex = GetColumnIndex(productsWorksheet, "seo_keyword");
+                int descriptionRUColumnIndex = GetColumnIndex(productsWorksheet, "description(ru-ru)");
+                int descriptionUAColumnIndex = GetColumnIndex(productsWorksheet, "description(uk-ua)");
 
-            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathListVarModel.XMLProductNode);
-            
-            XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 
-            int row = 2;
-            int startIdFrom = 2255;
 
-            if (PathListVarModel.Language == Language.Ru)
-            {
+                XmlDocument xmlDoc = new();
+                xmlDoc.Load(PathListVarModel.Path);
+
+                // Настройки выгрузки поставщика
+
+                XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathListVarModel.XMLProductNode);
+
+                XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
+
+                int row = 2;
+                int startIdFrom = 2255;
+
+
                 // Получение значений из XML и вставка в соответствующие колонки листа Products
 
                 foreach (XmlNode item in itemsList)
@@ -210,25 +210,21 @@ public class WriteToXL
                 workbook.SaveAs(@"D:\Downloads\output_add_UA.xlsx");
 
             }
-            else // if Language = Ua
-            {
-                WriteUaToXL writeUaToXL = new(_db);
-                writeUaToXL.WriteUaColumnsToXL();
-            }
         }
-    }
+    
 
 
-    private int GetColumnIndex(IXLWorksheet worksheet, string columnName)
-    {
-
-        int columnIndex = 1;
-
-        while (worksheet.Cell(1, columnIndex).Value.ToString() != columnName)
+        private int GetColumnIndex(IXLWorksheet worksheet, string columnName)
         {
-            columnIndex++;
-        }
 
-        return columnIndex;
+            int columnIndex = 1;
+
+            while (worksheet.Cell(1, columnIndex).Value.ToString() != columnName)
+            {
+                columnIndex++;
+            }
+
+            return columnIndex;
+        }
     }
 }
