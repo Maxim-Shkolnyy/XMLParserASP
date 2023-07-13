@@ -78,9 +78,9 @@ public class WriteToXL
                 Translitter trn = new();
                 string seoKeyword = trn.Translit(name, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
                     .Replace("--", "-").Replace("---", "-").Replace("\'", "");
-                string dateAdded = "2023-06-06 00:00:00";
+                string dateAdded = "2023-07-06 00:00:00";
                 DateTime dateModified = DateTime.Now;
-                string dateAvailable = "2023-06-06 00:00:00";
+                string dateAvailable = "2023-07-06 00:00:00";
                 string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
                 //string supplier_id = "1";
 
@@ -141,12 +141,14 @@ public class WriteToXL
 
             var array = PathListVarModel.SheetAtributes;
 
+
             // duplicates in attributes check
 
             var uniqueRows = Enumerable.Range(0, array.GetLength(0))
-                .GroupBy(row => $"{array[row, 0]}-{array[row, 2]}")
+                .GroupBy(row => $"{array[row, 0]}-{array[row, 2]}", StringComparer.OrdinalIgnoreCase)
                 .Select(g => g.First())
                 .ToArray();
+
 
             int numRows = uniqueRows.Length;
             int numCols = array.GetLength(1);
@@ -168,11 +170,11 @@ public class WriteToXL
             IXLRow firstAttrRow = attrWorksheet.Row(1);
             firstAttrRow.Style.Font.Bold = true;
 
-            for (int roww = 0; row < newArray.GetLength(0); roww++)
+            for (int roww = 0; roww < newArray.GetLength(0); roww++)
             {
                 for (int col = 0; col < newArray.GetLength(1); col++)
                 {
-                    attrWorksheet.Cell(roww + 2, col + 1).Value = newArray[roww, col];
+                    attrWorksheet.Cell(roww + 1, col + 1).Value = newArray[roww, col];
                 }
             }
 
