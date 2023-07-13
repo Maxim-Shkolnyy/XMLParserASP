@@ -35,7 +35,7 @@ public class HomeController : Controller
         //var myDb = serviceProvider.GetService<MyDBContext>();
 
         rAtr.ReadAttrXMLTo3Columns();
-        writeToXL.WriteSheet("ru");  // ua
+        writeToXL.WriteSheet();  // ua
 
         //UniqNodesInXML.Read();
 

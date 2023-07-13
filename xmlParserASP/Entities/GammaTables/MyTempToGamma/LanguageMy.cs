@@ -2,7 +2,7 @@
 
 namespace xmlParserASP.Entities.GammaTables.MyTempToGamma;
 
-public class Language
+public class LanguageMy
 {
     [Key]
     [Required]
