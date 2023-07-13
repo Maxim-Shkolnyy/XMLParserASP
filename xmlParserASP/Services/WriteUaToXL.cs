@@ -85,23 +85,23 @@ namespace xmlParserASP.Services
                 foreach (XmlNode item in itemsList)
                 {
                     startIdFrom++;
-                    string product_id = startIdFrom.ToString();
-                    string model = item.SelectSingleNode("model")?.InnerText ?? "";
-                    string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
-                    string price = item.SelectSingleNode("price")?.InnerText ?? "";
-                    string quantity = item.SelectSingleNode("quantity")?.InnerText ?? "";
+                    //string product_id = startIdFrom.ToString();
+                    //string model = item.SelectSingleNode("model")?.InnerText ?? "";
+                    //string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
+                    //string price = item.SelectSingleNode("price")?.InnerText ?? "";
+                    //string quantity = item.SelectSingleNode("quantity")?.InnerText ?? "";
                     string nameRU = item.SelectSingleNode("name")?.InnerText ?? "";
                     string description = item.SelectSingleNode("description")?.InnerText ?? "";
-                    string image = item.SelectSingleNode("image")?.InnerText ?? "";
-                    string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
-                    Translitter trn = new();
-                    string seoKeyword = trn.Translit(nameRU, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
-                        .Replace("--", "-").Replace("---", "-").Replace("\'", "");
-                    string dateAdded = "2023-07-06 00:00:00";
-                    DateTime dateModified = DateTime.Now;
-                    string dateAvailable = "2023-07-06 00:00:00";
-                    string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
-                    string supplier_id = "1";
+                    //string image = item.SelectSingleNode("image")?.InnerText ?? "";
+                    //string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
+                    //Translitter trn = new();
+                    //string seoKeyword = trn.Translit(nameRU, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
+                    //    .Replace("--", "-").Replace("---", "-").Replace("\'", "");
+                    //string dateAdded = "2023-07-06 00:00:00";
+                    //DateTime dateModified = DateTime.Now;
+                    //string dateAvailable = "2023-07-06 00:00:00";
+                    //string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
+                    //string supplier_id = "1";
 
                     productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
                     productsWorksheet.Cell(row, nameRUColumnIndex).Value = nameRU;
