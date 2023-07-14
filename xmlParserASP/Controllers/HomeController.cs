@@ -33,15 +33,12 @@ public class HomeController : Controller
         var rAtr = new ReadAttributesTo3Columns();
         var writeToXL = new WriteToXL(_db);
         var readCategories = new ReadUniqueCategorys();
+        UniqNodesInXML.Read();
+        readCategories.ReadXMLUniqueCategorys();
         //var myDb = serviceProvider.GetService<MyDBContext>();
 
         rAtr.ReadAttrXMLTo3Columns();
         writeToXL.WriteSheet();
-
-        UniqNodesInXML.Read();
-        readCategories.ReadXMLUniqueCategorys();
-
-
 
         return View("Unloading");
     }

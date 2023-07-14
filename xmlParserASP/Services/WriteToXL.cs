@@ -73,12 +73,12 @@ public class WriteToXL
 
             XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.XMLProductNode);
             
-            XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName(PathModel.XMLParamNode);
+            //XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName(PathModel.XMLParamNode);
 
             int row = 2;
             int startIdFrom = PathModel.StartGammaIDFrom;
 
-            if (PathModel.Language == Language.Ru)
+            if (PathModel.Language == Language.Ua)
             {
                 // Получение значений из XML и вставка в соответствующие колонки листа Products
 
@@ -86,8 +86,8 @@ public class WriteToXL
                 {
                     startIdFrom++;
                     string product_id = startIdFrom.ToString();
-                    //string model = item.SelectSingleNode(PathModel.XMLProductNode)?.InnerText ?? "";
-                    string model = item.Attributes["id"]?.Value;
+                    string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
+                    //string model = item.Attributes["id"]?.Value;
 
                     string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
                     string price = item.SelectSingleNode("price")?.InnerText ?? "";
@@ -105,7 +105,7 @@ public class WriteToXL
                     string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
                     string supplier_id = "1";
 
-                    productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
+                    productsWorksheet.Cell(row, product_idColumnIndex).Value = model;
                     productsWorksheet.Cell(row, nameRUColumnIndex).Value = nameRU;
                     productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
                     productsWorksheet.Cell(row, modelColumnIndex).Value = model;
@@ -206,15 +206,59 @@ public class WriteToXL
                     attrWorksheet.LastCellUsed().Address.ColumnNumber);
                 rangeAttr.Sort();
 
+                // adding uniq cat attr to sheets
+
+                IXLWorksheet uniqCatSheet = workbook.Worksheets.Add("Categories");
+
+                uniqCatSheet.SheetView.FreezeRows(1);
+                uniqCatSheet.Columns().Style.Alignment.WrapText = false;
+                IXLRow firstCatRow = attrWorksheet.Row(1);
+                firstCatRow.Style.Font.Bold = true;
+
+                //int? categ = PathModel.UniqXMLCategorys.Count;
+                int rowCateg = 2;
+
+                uniqCatSheet.Cell(1, 1).Value = "Category ID";
+                uniqCatSheet.Cell(1, 2).Value = "Category Name";
+
+                
 
 
-                workbook.SaveAs(@"D:\Downloads\output_add_RU.xlsx");
+                foreach (var category in PathModel.UniqXMLCategorys)
+                {
+                    uniqCatSheet.Cell(rowCateg, 2).Value = category;
+                    rowCateg++;
+                }
+
+
+                // adding uniq Attributes to sheets
+
+                IXLWorksheet uniqAttrSheet = workbook.Worksheets.Add("Attributes");
+
+                uniqCatSheet.SheetView.FreezeRows(1);
+                uniqCatSheet.Columns().Style.Alignment.WrapText = false;
+                IXLRow firstAtrRow = attrWorksheet.Row(1);
+                firstAtrRow.Style.Font.Bold = true;
+
+                //int? categ = PathModel.UniqXMLCategorys.Count;
+                int rowAttr = 2;
+
+                uniqCatSheet.Cell(1, 1).Value = "Attribute name";
+
+                foreach (var attr in PathModel.UniqXMLAttr)
+                {
+                    uniqCatSheet.Cell(rowAttr, 2).Value = attr;
+                    rowAttr++;
+                }
+
+
+                workbook.SaveAs(@"D:\Downloads\output_NO_RU.xlsx");
 
             }
-            else // if Language = Ua
+            else // if Language = Ru
             {
-                WriteUaToXL writeUaToXL = new(_db);
-                writeUaToXL.WriteUaColumnsToXL();
+                WriteRuToXL writeRuToXL = new(_db);
+                writeRuToXL.WriteRuColumnsToXL();
             }
         }
     }

@@ -6,15 +6,15 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Services
 {
-    public class WriteUaToXL
+    public class WriteRuToXL
     {
         private readonly MyDBContext _db;
-        public WriteUaToXL(MyDBContext db)
+        public WriteRuToXL(MyDBContext db)
         {
             _db = db;
         }
 
-        public void WriteUaColumnsToXL()
+        public void WriteRuColumnsToXL()
         {
             using (XLWorkbook workbook = new XLWorkbook())
             {
