@@ -1,4 +1,6 @@
-﻿using System.Xml;
+﻿using System.Configuration;
+using System.Xml;
+using System.Xml.Schema;
 using xmlParserASP.Models;
 
 namespace xmlParserASP.Services;
@@ -7,16 +9,19 @@ public static class UniqNodesInXML
 {
     public static void Read()
     {
-        string xmlFilePath = PathListVarModel.Path; // work
+        string xmlFilePath = PathModel.Path; // work
 
         var nodeNames = new List<string>();
         var parameterLists = new List<List<string>>();
 
         XmlReaderSettings settings = new XmlReaderSettings();
         settings.DtdProcessing = DtdProcessing.Parse;
-        settings.MaxCharactersFromEntities = 1024;
+        settings.ProhibitDtd = false;
+        //settings.MaxCharactersFromEntities = 1024;
+        //settings.ValidationType = ValidationType.DTD;
+        //settings.ValidationEventHandler += new ValidationEventHandler(ValidationCallBack);
 
-        using (XmlReader reader = XmlReader.Create(xmlFilePath))
+        using (XmlReader reader = XmlReader.Create(xmlFilePath, settings))
         {
             
             while (reader.Read())
@@ -49,7 +54,7 @@ public static class UniqNodesInXML
         }
 
         Console.WriteLine("Variables: \n");
-        PathListVarModel.UniqXMLAttr = nodeNames;
+        PathModel.UniqXMLAttr = nodeNames;
 
         foreach (var nodeName in nodeNames)
         {

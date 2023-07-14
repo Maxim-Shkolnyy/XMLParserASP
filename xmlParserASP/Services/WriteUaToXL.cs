@@ -52,27 +52,18 @@ namespace xmlParserASP.Services
                 int nameUAColumnIndex = GetColumnIndex(productsWorksheet, "name(uk-ua)");
                 int categoriesColumnIndex = GetColumnIndex(productsWorksheet, "categories");
                 int skuColumnIndex = GetColumnIndex(productsWorksheet, "sku");
-                int quantityColumnIndex = GetColumnIndex(productsWorksheet, "quantity");
                 int modelColumnIndex = GetColumnIndex(productsWorksheet, "model");
                 //int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
-                int manufacturerColumnIndex = GetColumnIndex(productsWorksheet, "manufacturer");
-                int image_nameColumnIndex = GetColumnIndex(productsWorksheet, "image_name");
-                int priceColumnIndex = GetColumnIndex(productsWorksheet, "price");
-                int date_addedColumnIndex = GetColumnIndex(productsWorksheet, "date_added");
-                int date_modifiedColumnIndex = GetColumnIndex(productsWorksheet, "date_modified");
-                int date_availableColumnIndex = GetColumnIndex(productsWorksheet, "date_available");
-                int seo_keywordColumnIndex = GetColumnIndex(productsWorksheet, "seo_keyword");
-                int descriptionRUColumnIndex = GetColumnIndex(productsWorksheet, "description(ru-ru)");
                 int descriptionUAColumnIndex = GetColumnIndex(productsWorksheet, "description(uk-ua)");
 
 
 
                 XmlDocument xmlDoc = new();
-                xmlDoc.Load(PathListVarModel.Path);
+                xmlDoc.Load(PathModel.Path);
 
                 // Настройки выгрузки поставщика
 
-                XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathListVarModel.XMLProductNode);
+                XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.XMLProductNode);
 
                 XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 
@@ -85,70 +76,15 @@ namespace xmlParserASP.Services
                 foreach (XmlNode item in itemsList)
                 {
                     startIdFrom++;
-                    //string product_id = startIdFrom.ToString();
-                    //string model = item.SelectSingleNode("model")?.InnerText ?? "";
-                    //string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
-                    //string price = item.SelectSingleNode("price")?.InnerText ?? "";
-                    //string quantity = item.SelectSingleNode("quantity")?.InnerText ?? "";
-                    string nameRU = item.SelectSingleNode("name")?.InnerText ?? "";
-                    string description = item.SelectSingleNode("description")?.InnerText ?? "";
-                    //string image = item.SelectSingleNode("image")?.InnerText ?? "";
-                    //string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
-                    //Translitter trn = new();
-                    //string seoKeyword = trn.Translit(nameRU, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
-                    //    .Replace("--", "-").Replace("---", "-").Replace("\'", "");
-                    //string dateAdded = "2023-07-06 00:00:00";
-                    //DateTime dateModified = DateTime.Now;
-                    //string dateAvailable = "2023-07-06 00:00:00";
-                    //string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
-                    //string supplier_id = "1";
+                    
+                    string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
+                    string descriptionUA = item.SelectSingleNode("description")?.InnerText ?? "";
 
-                    productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
-                    productsWorksheet.Cell(row, nameRUColumnIndex).Value = nameRU;
-                    //productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameRU;
-                    productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
-                    productsWorksheet.Cell(row, modelColumnIndex).Value = model;
-                    productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
-                    productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
-                    productsWorksheet.Cell(row, priceColumnIndex).Value = price;
-                    productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
-                    //productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
-                    productsWorksheet.Cell(row, date_addedColumnIndex).Value = dateAdded;
-                    productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
-                    productsWorksheet.Cell(row, date_availableColumnIndex).Value = dateAvailable;
-
-                    productsWorksheet.Cell(row, descriptionRUColumnIndex).Value = description;
-                    productsWorksheet.Cell(row, descriptionUAColumnIndex).Value = description;
-                    productsWorksheet.Cell(row, seo_keywordColumnIndex).Value = seoKeyword;
-
-                    productsWorksheet.Row(row).Height = 15;
+                    productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameUA;
+                    productsWorksheet.Cell(row, descriptionUAColumnIndex).Value = descriptionUA;
                     row++;
-
-
-                    //   // Создайте экземпляр модели Product и заполните его данными
-                    //        Product product = new Product
-                    //        {
-                    //            ProductId = int.Parse(product_id),
-                    //            SupplierId = int.Parse(supplier_id),
-
-                    //            ProductName = nameRU,
-                    //            MyCatId = int.Parse(categoryId),
-                    //            model = int.Parse(model),
-                    //            quantity = int.Parse(quantity),
-                    //            Price =  float.Parse(price),
-                    //            image_name = image,
-                    //            description = description,
-                    //            manufacturer = vendor,
-                    //            date_added = dateAdded,
-                    //            date_modified = dateModifiedStr,
-                    //            date_available = dateAvailable,
-                    //            seo_keyword = seoKeyword,
-                    //            status = null
-                    //        };
-                    //    _db.Products.Add(product);
                 }
-                //_db.SaveChanges();
-
+               
 
                 var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
                     productsWorksheet.FirstCellUsed().Address.ColumnNumber,
@@ -160,7 +96,7 @@ namespace xmlParserASP.Services
                 // write attributes to sheet
                 IXLWorksheet attrWorksheet = workbook.Worksheets.Add("ProductAttributes");
 
-                var array = PathListVarModel.SheetAtributes;
+                var array = PathModel.SheetAtributes;
 
 
                 // duplicates in attributes check

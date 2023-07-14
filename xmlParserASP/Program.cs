@@ -56,7 +56,7 @@ public class Program
 
         ////UniqNodesInXML.Read();
 
-        //// var model = serviceProvider.GetService<PathListVarModel>();
+        //// var model = serviceProvider.GetService<PathModel>();
 
 
         ////SQLQuery.ConnectToDB();

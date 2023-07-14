@@ -67,18 +67,18 @@ public class WriteToXL
 
 
             XmlDocument xmlDoc = new();
-            xmlDoc.Load(PathListVarModel.Path);
+            xmlDoc.Load(PathModel.Path);
 
             // Настройки выгрузки поставщика
 
-            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathListVarModel.XMLProductNode);
+            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.XMLProductNode);
             
-            XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
+            XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName(PathModel.XMLParamNode);
 
             int row = 2;
-            int startIdFrom = 2255;
+            int startIdFrom = PathModel.StartGammaIDFrom;
 
-            if (PathListVarModel.Language == Language.Ru)
+            if (PathModel.Language == Language.Ru)
             {
                 // Получение значений из XML и вставка в соответствующие колонки листа Products
 
@@ -86,13 +86,15 @@ public class WriteToXL
                 {
                     startIdFrom++;
                     string product_id = startIdFrom.ToString();
-                    string model = item.SelectSingleNode("model")?.InnerText ?? "";
+                    //string model = item.SelectSingleNode(PathModel.XMLProductNode)?.InnerText ?? "";
+                    string model = item.Attributes["id"]?.Value;
+
                     string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
                     string price = item.SelectSingleNode("price")?.InnerText ?? "";
                     string quantity = item.SelectSingleNode("quantity")?.InnerText ?? "";
                     string nameRU = item.SelectSingleNode("name")?.InnerText ?? "";
                     string description = item.SelectSingleNode("description")?.InnerText ?? "";
-                    string image = item.SelectSingleNode("image")?.InnerText ?? "";
+                    string image = item.SelectSingleNode(PathModel.XMLPictureNode)?.InnerText ?? "";
                     string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
                     Translitter trn = new();
                     string seoKeyword = trn.Translit(nameRU, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
@@ -105,7 +107,6 @@ public class WriteToXL
 
                     productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
                     productsWorksheet.Cell(row, nameRUColumnIndex).Value = nameRU;
-                    //productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameRU;
                     productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
                     productsWorksheet.Cell(row, modelColumnIndex).Value = model;
                     productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
@@ -160,7 +161,7 @@ public class WriteToXL
                 // write attributes to sheet
                 IXLWorksheet attrWorksheet = workbook.Worksheets.Add("ProductAttributes");
 
-                var array = PathListVarModel.SheetAtributes;
+                var array = PathModel.SheetAtributes;
 
 
                 // duplicates in attributes check
@@ -207,7 +208,7 @@ public class WriteToXL
 
 
 
-                workbook.SaveAs(@"D:\Downloads\output_add_UA.xlsx");
+                workbook.SaveAs(@"D:\Downloads\output_add_RU.xlsx");
 
             }
             else // if Language = Ua

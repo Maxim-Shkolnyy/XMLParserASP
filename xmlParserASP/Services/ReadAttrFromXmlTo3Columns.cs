@@ -8,9 +8,9 @@ public class ReadAttributesTo3Columns
     public void ReadAttrXMLTo3Columns()
     {
         XmlDocument doc = new XmlDocument();
-        doc.Load(PathListVarModel.Path);
+        doc.Load(PathModel.Path);
 
-        XmlNodeList itemsList = doc.GetElementsByTagName(PathListVarModel.XMLProductNode);
+        XmlNodeList itemsList = doc.GetElementsByTagName(PathModel.XMLProductNode);
 
         XmlNodeList paramListForCount = doc.GetElementsByTagName("param");
 
@@ -26,7 +26,7 @@ public class ReadAttributesTo3Columns
 
 
         int itemIndex = 0;
-        if (PathListVarModel.Language == Language.Ru)
+        if (PathModel.Language == Language.Ru)
         {
             foreach (XmlNode item in itemsList)
             {
@@ -34,7 +34,7 @@ public class ReadAttributesTo3Columns
                 string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
-                XmlNodeList paramList = item.SelectNodes("param");
+                XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
 
                 foreach (XmlNode param in paramList)
                 {
@@ -57,7 +57,7 @@ public class ReadAttributesTo3Columns
                 itemIndex++;
             }
 
-            PathListVarModel.SheetAtributes = array;
+            PathModel.SheetAtributes = array;
         }
         else
         {
@@ -67,7 +67,7 @@ public class ReadAttributesTo3Columns
                 string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
-                XmlNodeList paramList = item.SelectNodes("param");
+                XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
 
                 foreach (XmlNode param in paramList)
                 {
@@ -90,7 +90,7 @@ public class ReadAttributesTo3Columns
                 itemIndex++;
             }
 
-            PathListVarModel.SheetAtributes = array;
+            PathModel.SheetAtributes = array;
         }
     }
 }
