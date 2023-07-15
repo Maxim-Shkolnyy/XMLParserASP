@@ -10,16 +10,16 @@ internal class ReadUniqueCategorys
     {
         XDocument doc = XDocument.Load(PathModel.Path); //work
 
-        var categoryNames = doc.Descendants("category")
-            .Select(category => new string[]
-            {
-                (category.Attribute("id")?.Value ?? "").ToString(),
-                category.Value.Trim()
-            })
-            .ToArray();
+        //var categoryNames = doc.Descendants("category")
+        //    .Select(category => new string[]
+        //    {
+        //        (category.Attribute("id")?.Value ?? "").ToString(),
+        //        category.Value.Trim()
+        //    })
+        //    .ToArray();
 
 
-        PathModel.CategList = categoryNames;
+        //PathModel.CategList = categoryNames;
 
 
         //XElement? rootelement = doc.Element("params");

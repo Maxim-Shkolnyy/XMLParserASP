@@ -224,11 +224,11 @@ public class WriteToXL
                 
 
 
-                foreach (var category in PathModel.UniqXMLCategorys)
-                {
-                    uniqCatSheet.Cell(rowCateg, 2).Value = category;
-                    rowCateg++;
-                }
+                //foreach (var category in PathModel.UniqXMLCategorys)
+                //{
+                //    uniqCatSheet.Cell(rowCateg, 2).Value = category;
+                //    rowCateg++;
+                //}
 
 
                 // adding uniq Attributes to sheets
