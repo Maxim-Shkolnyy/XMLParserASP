@@ -229,6 +229,7 @@ public class WriteToXL
 
                 int rowAttrib = 2;
 
+                uniqAttrSheet.Cell(1, 1).Value = "Attr ID";
                 uniqAttrSheet.Cell(1, 2).Value = "Attribute name";
 
                 foreach (var attr in PathModel.UniqXMLAttr)

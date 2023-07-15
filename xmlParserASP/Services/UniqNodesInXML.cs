@@ -52,13 +52,12 @@ public static class UniqNodesInXML
                 }
             }
         }
-
-        Console.WriteLine("Variables: \n");
         PathModel.UniqXMLAttr = nodeNames;
 
-        foreach (var nodeName in nodeNames)
-        {
-            Console.WriteLine(nodeName);
-        }
+        //Console.WriteLine("Variables: \n");
+        //foreach (var nodeName in nodeNames)
+        //{
+        //    Console.WriteLine(nodeName);
+        //}
     }
 }
