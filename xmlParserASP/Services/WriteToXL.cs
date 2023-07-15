@@ -232,11 +232,66 @@ public class WriteToXL
                 uniqAttrSheet.Cell(1, 1).Value = "Attr ID";
                 uniqAttrSheet.Cell(1, 2).Value = "Attribute name";
 
-                foreach (var attr in PathModel.UniqXMLAttr)
+                var paramNames = new HashSet<string>();
+                var paramIndex = 1;
+                var paramId = 1;
+
+                foreach (XmlNode item in itemsList)
                 {
-                    uniqAttrSheet.Cell(rowAttrib + 1, 2).Value = attr;
-                    rowAttrib++;
+                    XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
+
+                    foreach (XmlNode param in paramList)
+                    {
+                        string paramName = param.Attributes["name"]?.Value;
+
+                        // Add the param name to the HashSet if it doesn't already exist
+                        if (!paramNames.Contains(paramName))
+                        {
+                            paramNames.Add(paramName);
+
+                            // Output the param name to Excel worksheet
+                            uniqAttrSheet.Cell(paramIndex + 1, 1).Value = paramId;
+                            uniqAttrSheet.Cell(paramIndex + 1, 2).Value = paramName;
+                            
+                            paramIndex++;
+                            paramId++;
+                        }
+                    }
+
+                    //itemIndex++;
                 }
+
+
+                //var paramValues = new HashSet<string>();
+                //var paramIndex = 1;
+                //foreach (XmlNode item in itemsList)
+                //{
+                //    XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
+
+                //    foreach (XmlNode param in paramList)
+                //    {
+                //        string paramValue = param.InnerText;
+
+                //        // Add the param value to the HashSet if it doesn't already exist
+                //        if (!paramValues.Contains(paramValue))
+                //        {
+                //            paramValues.Add(paramValue);
+
+                //            // Output the param value to Excel worksheet
+                //            uniqAttrSheet.Cell(paramIndex + 1, 1).Value = paramValue;
+                //            paramIndex++;
+                //        }
+                //    }
+
+                //   // itemIndex++;
+                //}
+
+
+                //foreach (var attr in PathModel.UniqXMLAttr)
+                //{
+                //    uniqAttrSheet.Cell(rowAttrib + 1, 2).Value = attr;
+                //    rowAttrib++;
+                //}
                 #endregion
 
                 #region Unique nodes
