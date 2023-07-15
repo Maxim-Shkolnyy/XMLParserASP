@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using xmlParserASP.Entities;
 using xmlParserASP.Entities.GammaTables.MyTempToGamma;
 using xmlParserASP.Models;
@@ -80,6 +81,7 @@ public class WriteToXL
 
             if (PathModel.Language == Language.Ua)
             {
+                #region Получение значений из XML и вставка в соответствующие колонки листа Products
                 // Получение значений из XML и вставка в соответствующие колонки листа Products
 
                 foreach (XmlNode item in itemsList)
@@ -124,45 +126,26 @@ public class WriteToXL
 
                     productsWorksheet.Row(row).Height = 15;
                     row++;
-
-
-                    //   // Создайте экземпляр модели Product и заполните его данными
+                   
                     //        Product product = new Product
-                    //        {
-                    //            ProductId = int.Parse(product_id),
-                    //            SupplierId = int.Parse(supplier_id),
-
-                    //            ProductName = nameRU,
-                    //            MyCatId = int.Parse(categoryId),
-                    //            model = int.Parse(model),
-                    //            quantity = int.Parse(quantity),
-                    //            Price =  float.Parse(price),
-                    //            image_name = image,
-                    //            description = description,
-                    //            manufacturer = vendor,
-                    //            date_added = dateAdded,
-                    //            date_modified = dateModifiedStr,
-                    //            date_available = dateAvailable,
-                    //            seo_keyword = seoKeyword,
-                    //            status = null
-                    //        };
+                    //        {ProductId = int.Parse(product_id), SupplierId = int.Parse(supplier_id), ProductName = nameRU, MyCatId = int.Parse(categoryId), model = int.Parse(model), quantity = int.Parse(quantity), Price =  float.Parse(price), image_name = image, description = description, manufacturer = vendor, date_added = dateAdded, date_modified = dateModifiedStr, date_available = dateAvailable, seo_keyword = seoKeyword, status = null};
                     //    _db.Products.Add(product);
                 }
                 //_db.SaveChanges();
-
+                
 
                 var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
                     productsWorksheet.FirstCellUsed().Address.ColumnNumber,
                     productsWorksheet.LastCellUsed().Address.RowNumber,
                     productsWorksheet.LastCellUsed().Address.ColumnNumber);
                 rangeProd.Sort();
+                #endregion
 
-
+                #region ProductAttributes
                 // write attributes to sheet
                 IXLWorksheet attrWorksheet = workbook.Worksheets.Add("ProductAttributes");
 
                 var array = PathModel.SheetAtributes;
-
 
                 // duplicates in attributes check
 
@@ -184,7 +167,7 @@ public class WriteToXL
                         newArray[i, j] = array[uniqueRows[i], j];
                     }
                 }
-
+                
 
 
                 attrWorksheet.SheetView.FreezeRows(1);
@@ -205,52 +188,76 @@ public class WriteToXL
                     attrWorksheet.LastCellUsed().Address.RowNumber,
                     attrWorksheet.LastCellUsed().Address.ColumnNumber);
                 rangeAttr.Sort();
+                #endregion
 
-                // adding uniq cat attr to sheets
+                #region Categories
 
                 IXLWorksheet uniqCatSheet = workbook.Worksheets.Add("Categories");
 
                 uniqCatSheet.SheetView.FreezeRows(1);
                 uniqCatSheet.Columns().Style.Alignment.WrapText = false;
-                IXLRow firstCatRow = attrWorksheet.Row(1);
+                IXLRow firstCatRow = uniqCatSheet.Row(1);
                 firstCatRow.Style.Font.Bold = true;
 
-                //int? categ = PathModel.UniqXMLCategorys.Count;
-                int rowCateg = 2;
+                uniqCatSheet.Cell(1, 1).Value = "Cat ID";
+                uniqCatSheet.Cell(1, 2).Value = "Cat name";
 
-                uniqCatSheet.Cell(1, 1).Value = "Category ID";
-                uniqCatSheet.Cell(1, 2).Value = "Category Name";
+                XmlNodeList categoryNodes = xmlDoc.SelectNodes("//category");
 
-                
+                int rowNum = 1;
+                foreach (XmlNode categoryNode in categoryNodes)
+                {
+                    string id = categoryNode.Attributes["id"]?.Value ?? "";
+                    string name = categoryNode.InnerText.Trim();
+
+                    uniqCatSheet.Cell(rowNum + 1, 1).Value = id;
+                    uniqCatSheet.Cell(rowNum +1, 2).Value = name;
+
+                    rowNum++;
+                }
+                #endregion
 
 
-                //foreach (var category in PathModel.UniqXMLCategorys)
-                //{
-                //    uniqCatSheet.Cell(rowCateg, 2).Value = category;
-                //    rowCateg++;
-                //}
-
-
-                // adding uniq Attributes to sheets
+                #region Adding uniq Attributes to sheets
 
                 IXLWorksheet uniqAttrSheet = workbook.Worksheets.Add("Attributes");
 
-                uniqCatSheet.SheetView.FreezeRows(1);
-                uniqCatSheet.Columns().Style.Alignment.WrapText = false;
-                IXLRow firstAtrRow = attrWorksheet.Row(1);
+                uniqAttrSheet.SheetView.FreezeRows(1);
+                uniqAttrSheet.Columns().Style.Alignment.WrapText = false;
+                IXLRow firstAtrRow = uniqAttrSheet.Row(1);
                 firstAtrRow.Style.Font.Bold = true;
 
-                //int? categ = PathModel.UniqXMLCategorys.Count;
-                int rowAttr = 2;
+                int rowAttrib = 2;
 
-                uniqCatSheet.Cell(1, 1).Value = "Attribute name";
+                uniqAttrSheet.Cell(1, 2).Value = "Attribute name";
 
                 foreach (var attr in PathModel.UniqXMLAttr)
                 {
-                    uniqCatSheet.Cell(rowAttr, 2).Value = attr;
+                    uniqAttrSheet.Cell(rowAttrib + 1, 2).Value = attr;
+                    rowAttrib++;
+                }
+                #endregion
+
+                #region Unique nodes
+
+                IXLWorksheet uniqueAttrSheet = workbook.Worksheets.Add("Unique nodes");
+
+                uniqueAttrSheet.SheetView.FreezeRows(1);
+                uniqueAttrSheet.Columns().Style.Alignment.WrapText = false;
+                IXLRow firstUAtrRow = uniqueAttrSheet.Row(1);
+                firstUAtrRow.Style.Font.Bold = true;
+
+                ////int? categ = PathModel.UniqXMLCategorys.Count;
+                int rowAttr = 2;
+
+                uniqueAttrSheet.Cell(1, 2).Value = "Unique nodes";
+
+                foreach (var attr in PathModel.UniqXMLAttr)
+                {
+                    uniqueAttrSheet.Cell(rowAttr + 1, 2).Value = attr;
                     rowAttr++;
                 }
-
+                #endregion
 
                 workbook.SaveAs(@"D:\Downloads\output_NO_RU.xlsx");
 
