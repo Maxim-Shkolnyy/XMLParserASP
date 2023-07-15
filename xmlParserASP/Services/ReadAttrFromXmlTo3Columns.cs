@@ -48,7 +48,7 @@ public class ReadAttributesTo3Columns
                     array[paramIndex, 1] = paramGroup;
                     array[paramIndex, 2] = paramName;
                     array[paramIndex, 3] = paramValue;
-                    array[paramIndex, 4] = paramId;
+                    array[paramIndex, 4] = "";
                     array[paramIndex, 5] = modelID;
 
                     paramIndex++;
@@ -80,8 +80,8 @@ public class ReadAttributesTo3Columns
                     array[paramIndex, 0] = modelID;
                     array[paramIndex, 1] = paramGroup;
                     array[paramIndex, 2] = paramName;
-                    array[paramIndex, 3] = paramValue;
-                    array[paramIndex, 4] = paramId;
+                    array[paramIndex, 3] = "";
+                    array[paramIndex, 4] = paramValue;
                     array[paramIndex, 5] = modelID;
 
                     paramIndex++;

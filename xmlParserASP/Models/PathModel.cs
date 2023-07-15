@@ -13,7 +13,7 @@ public static class PathModel
     //public static string? Path { get; set; } = @"https://horoz-electric.com.ua/products_feed.xml?hash_tag=143483e1e045e0b718c4c5f63cc41ea5&sales_notes=&product_ids=&label_ids=&exclude_fields=&html_description=0&yandex_cpa=&process_presence_sure=&languages=ru&group_ids=";
     public static string? Path { get; set; } = @"D:\Downloads\Telegram Desktop\promua_2405ru.xml"; //home
 
-    public static Language Language { get; set; } = Language.Ua;    // Ua  Ru
+    public static Language Language { get; } = Language.Ru;    // Ua  Ru
 
     public const int StartGammaIDFrom = 2255;
 

@@ -120,7 +120,7 @@ public class WriteToXL
                     productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
                     productsWorksheet.Cell(row, date_availableColumnIndex).Value = dateAvailable;
 
-                    productsWorksheet.Cell(row, descriptionRUColumnIndex).Value = description;
+                    //productsWorksheet.Cell(row, descriptionRUColumnIndex).Value = description;
                     productsWorksheet.Cell(row, descriptionUAColumnIndex).Value = description;
                     productsWorksheet.Cell(row, seo_keywordColumnIndex).Value = seoKeyword;
 
