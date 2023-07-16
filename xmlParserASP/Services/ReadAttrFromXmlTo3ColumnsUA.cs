@@ -26,45 +26,11 @@ public class ReadAttrFromXmlTo3ColumnsUA
 
 
         int itemIndex = 0;
-        //if (PathModel.Language == Language.Ru)
-        //{
-        //    foreach (XmlNode item in itemsList)
-        //    {
-        //        string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
-        //        //string modelID = item.Attributes["id"]?.Value; //Khoroz
-
-
-        //        XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
-
-        //        foreach (XmlNode param in paramList)
-        //        {
-        //            string paramGroup = "Характеристики";
-        //            string paramName = param.Attributes["name"]?.Value;
-        //            string paramValue = param.InnerText;
-        //            string paramId = "ru-attr";
-
-
-        //            array[paramIndex, 0] = modelID;
-        //            array[paramIndex, 1] = paramGroup;
-        //            array[paramIndex, 2] = paramName;
-        //            array[paramIndex, 3] = paramValue;
-        //            array[paramIndex, 4] = "";
-        //            array[paramIndex, 5] = modelID;
-
-        //            paramIndex++;
-        //        }
-
-        //        itemIndex++;
-        //    }
-
-        //    PathModel.SheetAtributes = array;
-        //}
-        //else
-        //{
+     
             foreach (XmlNode item in itemsList)
             {
-                string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
-                //string modelID = item.Attributes["id"]?.Value; //Khoroz
+            //string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
+            string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
                 XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
@@ -89,8 +55,6 @@ public class ReadAttrFromXmlTo3ColumnsUA
 
                 itemIndex++;
             }
-
-            PathModel.SheetAtributes = array;
-        //}
+            PathModel.SheetAtributes = array;       
     }
 }
