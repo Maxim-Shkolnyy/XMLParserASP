@@ -29,16 +29,28 @@ public class HomeController : Controller
     }
     public IActionResult ProcessExcel()
     {
-
-        var rAtr = new ReadAttributesTo3Columns();
-        var writeToXL = new WriteToXL(_db);
-        //var readCategories = new ReadUniqueCategorys();
         UniqNodesInXML.Read();
-        //readCategories.ReadXMLUniqueCategorys();
-        //var myDb = serviceProvider.GetService<MyDBContext>();
 
-        rAtr.ReadAttrXMLTo3Columns();
-        writeToXL.WriteSheet();
+        if (PathModel.Language == Language.Ua)
+        {
+            var rAtr = new ReadAttrFromXmlTo3ColumnsUA();
+            rAtr.ReadAttrTo3();
+
+            var writeToXL = new WriteToXL(_db);
+            writeToXL.WriteSheet();            
+        }
+        else
+        {
+            var writeToXLru = new WriteRuToXL(_db);
+            writeToXLru.WriteRuColumnsToXL();
+
+            var rAtr = new ReadAttrFromXmlTo3ColumnsRU();
+            rAtr.ReadAttrto3ru();
+        }        
+        
+        
+        
+        //var myDb = serviceProvider.GetService<MyDBContext>();       
 
         return View("Unloading");
     }

@@ -67,6 +67,7 @@ namespace xmlParserASP.Services
 
                 XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 
+                
                 int row = 2;
                 int startIdFrom = 2255;
 
@@ -82,9 +83,10 @@ namespace xmlParserASP.Services
 
                     productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameUA;
                     productsWorksheet.Cell(row, descriptionUAColumnIndex).Value = descriptionUA;
+                    productsWorksheet.Row(row).Height = 15;
                     row++;
                 }
-               
+                
 
                 var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
                     productsWorksheet.FirstCellUsed().Address.ColumnNumber,

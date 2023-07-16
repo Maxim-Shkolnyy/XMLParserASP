@@ -79,67 +79,68 @@ public class WriteToXL
             int row = 2;
             int startIdFrom = PathModel.StartGammaIDFrom;
 
-            if (PathModel.Language == Language.Ua)
+            
+            #region Получение значений из XML и вставка в соответствующие колонки листа Products
+            // Получение значений из XML и вставка в соответствующие колонки листа Products
+
+            foreach (XmlNode item in itemsList)
             {
-                #region Получение значений из XML и вставка в соответствующие колонки листа Products
-                // Получение значений из XML и вставка в соответствующие колонки листа Products
+                startIdFrom++;
+                string product_id = startIdFrom.ToString();
+                string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
+                //string model = item.Attributes["id"]?.Value;
 
-                foreach (XmlNode item in itemsList)
-                {
-                    startIdFrom++;
-                    string product_id = startIdFrom.ToString();
-                    string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
-                    //string model = item.Attributes["id"]?.Value;
+                string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
+                string price = item.SelectSingleNode("price")?.InnerText ?? "";
+                string quantity = item.SelectSingleNode("quantity")?.InnerText ?? "";
+                string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
+                string description = item.SelectSingleNode("description")?.InnerText ?? "";
+                string image = item.SelectSingleNode(PathModel.XMLPictureNode)?.InnerText ?? "";
+                string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
+                Translitter trn = new();
+                string seoKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
+                    .Replace("--", "-").Replace("---", "-").Replace("\'", "");
+                string dateAdded = "2023-07-06 00:00:00";
+                DateTime dateModified = DateTime.Now;
+                string dateAvailable = "2023-07-06 00:00:00";
+                string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
+                string supplier_id = "1";
 
-                    string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
-                    string price = item.SelectSingleNode("price")?.InnerText ?? "";
-                    string quantity = item.SelectSingleNode("quantity")?.InnerText ?? "";
-                    string nameRU = item.SelectSingleNode("name")?.InnerText ?? "";
-                    string description = item.SelectSingleNode("description")?.InnerText ?? "";
-                    string image = item.SelectSingleNode(PathModel.XMLPictureNode)?.InnerText ?? "";
-                    string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
-                    Translitter trn = new();
-                    string seoKeyword = trn.Translit(nameRU, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
-                        .Replace("--", "-").Replace("---", "-").Replace("\'", "");
-                    string dateAdded = "2023-07-06 00:00:00";
-                    DateTime dateModified = DateTime.Now;
-                    string dateAvailable = "2023-07-06 00:00:00";
-                    string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
-                    string supplier_id = "1";
+                productsWorksheet.Cell(row, product_idColumnIndex).Value = model;
+                productsWorksheet.Cell(row, nameRUColumnIndex).Value = "-";
+                productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameUA;
 
-                    productsWorksheet.Cell(row, product_idColumnIndex).Value = model;
-                    productsWorksheet.Cell(row, nameRUColumnIndex).Value = nameRU;
-                    productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
-                    productsWorksheet.Cell(row, modelColumnIndex).Value = model;
-                    productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
-                    productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
-                    productsWorksheet.Cell(row, priceColumnIndex).Value = price;
-                    productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
-                    //productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
-                    productsWorksheet.Cell(row, date_addedColumnIndex).Value = dateAdded;
-                    productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
-                    productsWorksheet.Cell(row, date_availableColumnIndex).Value = dateAvailable;
+                productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
+                productsWorksheet.Cell(row, modelColumnIndex).Value = model;
+                productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
+                productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
+                productsWorksheet.Cell(row, priceColumnIndex).Value = price;
+                productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
+                //productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
+                productsWorksheet.Cell(row, date_addedColumnIndex).Value = dateAdded;
+                productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
+                productsWorksheet.Cell(row, date_availableColumnIndex).Value = dateAvailable;
 
-                    //productsWorksheet.Cell(row, descriptionRUColumnIndex).Value = description;
-                    productsWorksheet.Cell(row, descriptionUAColumnIndex).Value = description;
-                    productsWorksheet.Cell(row, seo_keywordColumnIndex).Value = seoKeyword;
+                productsWorksheet.Cell(row, descriptionRUColumnIndex).Value = "-";
+                productsWorksheet.Cell(row, descriptionUAColumnIndex).Value = description;
+                productsWorksheet.Cell(row, seo_keywordColumnIndex).Value = seoKeyword;
 
-                    productsWorksheet.Row(row).Height = 15;
-                    row++;
+                productsWorksheet.Row(row).Height = 15;
+                row++;
                    
-                    //        Product product = new Product
-                    //        {ProductId = int.Parse(product_id), SupplierId = int.Parse(supplier_id), ProductName = nameRU, MyCatId = int.Parse(categoryId), model = int.Parse(model), quantity = int.Parse(quantity), Price =  float.Parse(price), image_name = image, description = description, manufacturer = vendor, date_added = dateAdded, date_modified = dateModifiedStr, date_available = dateAvailable, seo_keyword = seoKeyword, status = null};
-                    //    _db.Products.Add(product);
-                }
-                //_db.SaveChanges();
+                //        Product product = new Product
+                //        {ProductId = int.Parse(product_id), SupplierId = int.Parse(supplier_id), ProductName = nameRU, MyCatId = int.Parse(categoryId), model = int.Parse(model), quantity = int.Parse(quantity), Price =  float.Parse(price), image_name = image, description = description, manufacturer = vendor, date_added = dateAdded, date_modified = dateModifiedStr, date_available = dateAvailable, seo_keyword = seoKeyword, status = null};
+                //    _db.Products.Add(product);
+            }
+            //_db.SaveChanges();
                 
 
-                var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
-                    productsWorksheet.FirstCellUsed().Address.ColumnNumber,
-                    productsWorksheet.LastCellUsed().Address.RowNumber,
-                    productsWorksheet.LastCellUsed().Address.ColumnNumber);
-                rangeProd.Sort();
-                #endregion
+            var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
+                productsWorksheet.FirstCellUsed().Address.ColumnNumber,
+                productsWorksheet.LastCellUsed().Address.RowNumber,
+                productsWorksheet.LastCellUsed().Address.ColumnNumber);
+            rangeProd.Sort();
+            #endregion
 
                 #region ProductAttributes
                 // write attributes to sheet
@@ -315,14 +316,7 @@ public class WriteToXL
                 }
                 #endregion
 
-                workbook.SaveAs(@"D:\Downloads\output_NO_RU.xlsx");
-
-            }
-            else // if Language = Ru
-            {
-                WriteRuToXL writeRuToXL = new(_db);
-                writeRuToXL.WriteRuColumnsToXL();
-            }
+                workbook.SaveAs(@"D:\Downloads\output_NO_RU.xlsx");            
         }
     }
 

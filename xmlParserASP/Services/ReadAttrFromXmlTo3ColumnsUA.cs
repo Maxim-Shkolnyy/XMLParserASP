@@ -3,9 +3,9 @@ using xmlParserASP.Models;
 
 namespace xmlParserASP.Services;
 
-public class ReadAttributesTo3Columns
+public class ReadAttrFromXmlTo3ColumnsUA
 {
-    public void ReadAttrXMLTo3Columns()
+    public void ReadAttrTo3()
     {
         XmlDocument doc = new XmlDocument();
         doc.Load(PathModel.Path);
@@ -26,41 +26,41 @@ public class ReadAttributesTo3Columns
 
 
         int itemIndex = 0;
-        if (PathModel.Language == Language.Ru)
-        {
-            foreach (XmlNode item in itemsList)
-            {
-                string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
-                //string modelID = item.Attributes["id"]?.Value; //Khoroz
+        //if (PathModel.Language == Language.Ru)
+        //{
+        //    foreach (XmlNode item in itemsList)
+        //    {
+        //        string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
+        //        //string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
-                XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
+        //        XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
 
-                foreach (XmlNode param in paramList)
-                {
-                    string paramGroup = "Характеристики";
-                    string paramName = param.Attributes["name"]?.Value;
-                    string paramValue = param.InnerText;
-                    string paramId = "ru-attr";
+        //        foreach (XmlNode param in paramList)
+        //        {
+        //            string paramGroup = "Характеристики";
+        //            string paramName = param.Attributes["name"]?.Value;
+        //            string paramValue = param.InnerText;
+        //            string paramId = "ru-attr";
 
 
-                    array[paramIndex, 0] = modelID;
-                    array[paramIndex, 1] = paramGroup;
-                    array[paramIndex, 2] = paramName;
-                    array[paramIndex, 3] = paramValue;
-                    array[paramIndex, 4] = "";
-                    array[paramIndex, 5] = modelID;
+        //            array[paramIndex, 0] = modelID;
+        //            array[paramIndex, 1] = paramGroup;
+        //            array[paramIndex, 2] = paramName;
+        //            array[paramIndex, 3] = paramValue;
+        //            array[paramIndex, 4] = "";
+        //            array[paramIndex, 5] = modelID;
 
-                    paramIndex++;
-                }
+        //            paramIndex++;
+        //        }
 
-                itemIndex++;
-            }
+        //        itemIndex++;
+        //    }
 
-            PathModel.SheetAtributes = array;
-        }
-        else
-        {
+        //    PathModel.SheetAtributes = array;
+        //}
+        //else
+        //{
             foreach (XmlNode item in itemsList)
             {
                 string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
@@ -91,6 +91,6 @@ public class ReadAttributesTo3Columns
             }
 
             PathModel.SheetAtributes = array;
-        }
+        //}
     }
 }
