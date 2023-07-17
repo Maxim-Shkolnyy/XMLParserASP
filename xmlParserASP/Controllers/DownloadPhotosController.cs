@@ -36,16 +36,53 @@ namespace xmlParserASP.Controllers
                 using (var client = new HttpClient())
                 {
                     // Iterate through each photo URL
+                    // Iterate through each photo URL
+                    // Create a dictionary to keep track of the count of each model
+                    var modelCount = new Dictionary<string, int>();
+
+                    // Iterate through each photo URL
                     foreach (XmlNode photoNode in photoNodes)
                     {
                         var photoUrl = photoNode.InnerText;
 
-                        // Download the photo and save it to the specified folder
+                        // Get the model value from the parent node
+                        var modelNode = photoNode.ParentNode.SelectSingleNode("code");
+                        var modelValue = modelNode?.InnerText;
+
+                        // Extract the original file name from the URL
+                        var originalFileName = Path.GetFileName(photoUrl);
+
+                        // Check if the model exists in the dictionary
+                        if (!modelCount.ContainsKey(modelValue))
+                        {
+                            // Add the model to the dictionary with an initial count of 0
+                            modelCount[modelValue] = 0;
+                        }
+
+                        // Increment the count for the model
+                        modelCount[modelValue]++;
+
+                        // Get the count value for the model
+                        var count = modelCount[modelValue];
+
+                        // Get the alphabetic character based on the count (A, B, C, ...)
+                        var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+
+                        // Combine modelValue, alphabeticCharacter, "Feron", and originalFileName to form the new file name
+                        var fileName = $"{modelValue}-{alphabeticCharacter}-Feron_{originalFileName}";
+
+                        // Check if the file already exists in the destination folder
+                        var filePath = Path.Combine(PathModel.PhotoFolder, fileName);
+                        //if (File.Exists(filePath))
+                        //{
+                        //    continue; // Skip downloading if the file already exists
+                        //}
+
+                        // Download the photo and save it to the selected folder
                         using (var response = await client.GetAsync(photoUrl))
                         {
                             if (response.IsSuccessStatusCode)
                             {
-                                var fileName = Path.GetFileName(photoUrl);
                                 var photoFilePath = Path.Combine(PathModel.PhotoFolder, fileName);
 
                                 using (var photoStream = await response.Content.ReadAsStreamAsync())
@@ -58,6 +95,8 @@ namespace xmlParserASP.Controllers
                             }
                         }
                     }
+
+
                 }
 
                 ViewBag.Message = "Photos downloaded successfully.";
