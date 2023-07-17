@@ -24,7 +24,7 @@ namespace xmlParserASP.Controllers
                 xmlDoc.Load(PathModel.Path);
 
                 // Get the photo URLs from the XML
-                var photoNodes = xmlDoc.SelectNodes("//picture");
+                var photoNodes = xmlDoc.SelectNodes($"//{PathModel.XMLPictureNode}");
                 if (photoNodes == null)
                 {
                     // Handle the case when no photo nodes are found in the XML
@@ -46,7 +46,7 @@ namespace xmlParserASP.Controllers
                         var photoUrl = photoNode.InnerText;
 
                         // Get the model value from the parent node
-                        var modelNode = photoNode.ParentNode.SelectSingleNode("code");
+                        var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode);
                         var modelValue = modelNode?.InnerText;
 
                         // Extract the original file name from the URL
@@ -69,7 +69,7 @@ namespace xmlParserASP.Controllers
                         var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
 
                         // Combine modelValue, alphabeticCharacter, "Feron", and originalFileName to form the new file name
-                        var fileName = $"{modelValue}-{alphabeticCharacter}-Feron_{originalFileName}";
+                        var fileName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
 
                         // Check if the file already exists in the destination folder
                         var filePath = Path.Combine(PathModel.PhotoFolder, fileName);
