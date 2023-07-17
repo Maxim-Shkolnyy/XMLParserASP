@@ -1,4 +1,6 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
 using xmlParserASP.Presistant;
 
 //using MySQL.Data.EntityFrameworkCore.Extensions;
@@ -23,10 +25,13 @@ public class Program
             options.UseMySQL(connectionString));
 
         builder.Services.AddDbContext<TestGammaDBContext>(options =>
-            options.UseMySQL(connectionStringTestGamma));
+        options.UseMySQL(connectionStringTestGamma));
 
 
         builder.Services.AddControllersWithViews();
+
+        //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

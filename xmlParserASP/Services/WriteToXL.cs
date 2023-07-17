@@ -93,14 +93,14 @@ public class WriteToXL
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
-                string quantity = item.SelectSingleNode("quantity")?.InnerText ?? "";
+                string quantity = item.SelectSingleNode(PathModel.XMLQuantityNode)?.InnerText ?? "";
                 string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
                 string description = item.SelectSingleNode("description")?.InnerText ?? "";
                 string image = item.SelectSingleNode(PathModel.XMLPictureNode)?.InnerText ?? "";
                 string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
                 Translitter trn = new();
                 string seoKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
-                    .Replace("--", "-").Replace("---", "-").Replace("\'", "");
+                    .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "");
                 string dateAdded = "2023-07-06 00:00:00";
                 DateTime dateModified = DateTime.Now;
                 string dateAvailable = "2023-07-06 00:00:00";
