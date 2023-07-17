@@ -20,7 +20,7 @@ public class Program
 
 
         builder.Services.AddDbContext<MyDBContext>(options =>
-            options.UseMySQL(connectionString));        
+            options.UseMySQL(connectionString));
 
         builder.Services.AddDbContext<TestGammaDBContext>(options =>
             options.UseMySQL(connectionStringTestGamma));
@@ -46,7 +46,8 @@ public class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+//pattern: "{controller=Train}/{action=Index}/{id?}");
 
 
 

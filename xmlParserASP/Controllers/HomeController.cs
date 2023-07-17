@@ -12,7 +12,7 @@ public class HomeController : Controller
     private readonly MyDBContext _db;
 
     public HomeController(ILogger<HomeController> logger, MyDBContext db)
-    { 
+    {
         _db = db;
         _logger = logger;
     }
@@ -20,7 +20,8 @@ public class HomeController : Controller
     public IActionResult Index()
     {
             
-        return View(_db.MyAttributes);
+        //return View(_db.MyAttributes);
+        return View();
     }
 
     public IActionResult Privacy()

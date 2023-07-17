@@ -58,6 +58,7 @@ public class WriteToXL
             int manufacturerColumnIndex = GetColumnIndex(productsWorksheet, "manufacturer");
             int image_nameColumnIndex = GetColumnIndex(productsWorksheet, "image_name");
             int priceColumnIndex = GetColumnIndex(productsWorksheet, "price");
+            int statusColumnIndex = GetColumnIndex(productsWorksheet, "status");
             int date_addedColumnIndex = GetColumnIndex(productsWorksheet, "date_added");
             int date_modifiedColumnIndex = GetColumnIndex(productsWorksheet, "date_modified");
             int date_availableColumnIndex = GetColumnIndex(productsWorksheet, "date_available");
@@ -116,6 +117,7 @@ public class WriteToXL
                 productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
                 productsWorksheet.Cell(row, priceColumnIndex).Value = price;
                 productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
+                productsWorksheet.Cell(row, statusColumnIndex).Value = "true";
                 //productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
                 productsWorksheet.Cell(row, date_addedColumnIndex).Value = dateAdded;
                 productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
