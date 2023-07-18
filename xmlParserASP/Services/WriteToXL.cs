@@ -88,8 +88,8 @@ public class WriteToXL
             {
                 startIdFrom++;
                 string product_id = startIdFrom.ToString();
-                string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
-                //string model = item.Attributes["id"]?.Value;
+                //string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
+                string model = item.Attributes["id"]?.Value;
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
@@ -97,10 +97,11 @@ public class WriteToXL
                 string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
                 string description = item.SelectSingleNode("description")?.InnerText ?? "";
                 string image = item.SelectSingleNode(PathModel.XMLPictureNode)?.InnerText ?? "";
-                string vendor = item.SelectSingleNode("vendor")?.InnerText ?? "";
+                string vendor = item.SelectSingleNode(PathModel.XMLSupplierNode)?.InnerText ?? "";
                 Translitter trn = new();
-                string seoKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
+                string firstKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
                     .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "");
+                string seoKeyword = firstKeyword.Replace("--", "-");
                 string dateAdded = "2023-07-06 00:00:00";
                 DateTime dateModified = DateTime.Now;
                 string dateAvailable = "2023-07-06 00:00:00";
