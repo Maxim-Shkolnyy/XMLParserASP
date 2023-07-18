@@ -36,7 +36,6 @@ namespace xmlParserASP.Controllers
                 using (var client = new HttpClient())
                 {
                     // Iterate through each photo URL
-                    // Iterate through each photo URL
                     // Create a dictionary to keep track of the count of each model
                     var modelCount = new Dictionary<string, int>();
 
@@ -69,21 +68,21 @@ namespace xmlParserASP.Controllers
                         var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
 
                         // Combine modelValue, alphabeticCharacter, "Feron", and originalFileName to form the new file name
-                        var fileName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
+                        var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
 
                         // Check if the file already exists in the destination folder
-                        var filePath = Path.Combine(PathModel.PhotoFolder, fileName);
-                        //if (File.Exists(filePath))
-                        //{
-                        //    continue; // Skip downloading if the file already exists
-                        //}
+                        var filePath = Path.Combine(PathModel.PhotoFolder, imageName);
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            continue; // Skip downloading if the file already exists
+                        }
 
                         // Download the photo and save it to the selected folder
                         using (var response = await client.GetAsync(photoUrl))
                         {
                             if (response.IsSuccessStatusCode)
                             {
-                                var photoFilePath = Path.Combine(PathModel.PhotoFolder, fileName);
+                                var photoFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
 
                                 using (var photoStream = await response.Content.ReadAsStreamAsync())
                                 {

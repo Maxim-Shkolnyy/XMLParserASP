@@ -29,8 +29,8 @@ public class ReadAttrFromXmlTo3ColumnsUA
      
             foreach (XmlNode item in itemsList)
             {
-            //string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
-            string modelID = item.Attributes["id"]?.Value; //Khoroz
+            string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
+            //string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
                 XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);

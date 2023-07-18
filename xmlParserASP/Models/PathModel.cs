@@ -21,21 +21,22 @@ public static class PathModel
     public const int StartGammaIDFrom = 2255;
 
 
-    //public static string XMLProductNode = "item";      // Feron
-    public static string XMLProductNode = "offer";  // Horoz
+    public static string XMLProductNode = "item";      // Feron
+    //public static string XMLProductNode = "offer";  // Horoz
 
     public static string XMLModelNode = "model";
 
 
-    //public static string XMLPictureNode = "image";
     public static string XMLPictureNode = "image";
+    public static string imageNameInCatImg = "";
+    
 
     public static string PhotoFolder = @"D:\Downloads\Photo\";
     public static string Supplier = "Feron";
 
 
-    //public static string XMLQuantityNode = "quantity";
-    public static string XMLQuantityNode = "stock_quantity";
+    public static string XMLQuantityNode = "quantity";
+    //public static string XMLQuantityNode = "stock_quantity";
 
 
     public static string XMLParamNode = "param";

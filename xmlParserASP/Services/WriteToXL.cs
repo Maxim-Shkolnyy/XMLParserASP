@@ -12,6 +12,7 @@ namespace xmlParserASP.Services;
 public class WriteToXL
 {
     private readonly MyDBContext _db;
+    
     public WriteToXL(MyDBContext db)
     {
         _db = db;
@@ -82,14 +83,13 @@ public class WriteToXL
 
             
             #region Получение значений из XML и вставка в соответствующие колонки листа Products
-            // Получение значений из XML и вставка в соответствующие колонки листа Products
 
             foreach (XmlNode item in itemsList)
             {
                 startIdFrom++;
                 string product_id = startIdFrom.ToString();
-                //string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
-                string model = item.Attributes["id"]?.Value;
+                string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
+                //string model = item.Attributes["id"]?.Value;
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
@@ -107,14 +107,64 @@ public class WriteToXL
                 string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
                 string supplier_id = "1";
 
+
+                // ------------------------------------
+
+                var modelCount = new Dictionary<string, int>();
+
+                var photoNodes = xmlDoc.SelectNodes($"//{PathModel.XMLPictureNode}");
+
+
+                foreach (XmlNode photoNode in photoNodes)
+                {
+                    var photoUrl = photoNode.InnerText;
+
+                    // Get the model value from the parent node
+                    var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode);
+                    var modelValue = modelNode?.InnerText;
+
+                    // Extract the original file name from the URL
+                    var originalFileName = Path.GetFileName(photoUrl);
+
+                    // Check if the model exists in the dictionary
+                    if (!modelCount.ContainsKey(modelValue))
+                    {
+                        // Add the model to the dictionary with an initial count of 0
+                        modelCount[modelValue] = 0;
+                    }
+
+                    // Increment the count for the model
+                    modelCount[modelValue]++;
+
+                    // Get the count value for the model
+                    var count = modelCount[modelValue];
+
+                    // If the count is already greater than 0, skip downloading the photo
+                    if (count > 0)
+                    {
+                        continue;
+                    }
+
+                    // Increment the count for the model
+                    modelCount[modelValue]++;
+
+                    // Get the alphabetic character based on the count (A, B, C, ...)
+                    var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+
+                    var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
+                    PathModel.imageNameInCatImg = $"catalog/image/{imageName}";
+                }
+                // ---------------------
+
                 productsWorksheet.Cell(row, product_idColumnIndex).Value = model;
                 productsWorksheet.Cell(row, nameRUColumnIndex).Value = "-";
                 productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameUA;
-
                 productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
                 productsWorksheet.Cell(row, modelColumnIndex).Value = model;
                 productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
-                productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
+                //productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
+                productsWorksheet.Cell(row, image_nameColumnIndex).Value = PathModel.imageNameInCatImg;
+
                 productsWorksheet.Cell(row, priceColumnIndex).Value = price;
                 productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
                 productsWorksheet.Cell(row, statusColumnIndex).Value = "true";
