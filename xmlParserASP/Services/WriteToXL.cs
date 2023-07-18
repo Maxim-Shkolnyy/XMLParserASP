@@ -110,50 +110,51 @@ public class WriteToXL
 
                 // ------------------------------------
 
-                var modelCount = new Dictionary<string, int>();
+                //var modelCount = new Dictionary<string, int>();
 
-                var photoNodes = xmlDoc.SelectNodes($"//{PathModel.XMLPictureNode}");
+                //var photoNodes = xmlDoc.SelectNodes($"//{PathModel.XMLPictureNode}");
 
 
-                foreach (XmlNode photoNode in photoNodes)
-                {
-                    var photoUrl = photoNode.InnerText;
+                //foreach (XmlNode photoNode in photoNodes)
+                //{
+                //    var photoUrl = photoNode.InnerText;
 
-                    // Get the model value from the parent node
-                    var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode);
-                    var modelValue = modelNode?.InnerText;
+                //    // Get the model value from the parent node
+                //    var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode);
+                //    var modelValue = modelNode?.InnerText;
 
-                    // Extract the original file name from the URL
-                    var originalFileName = Path.GetFileName(photoUrl);
+                //    // Extract the original file name from the URL
+                //    var originalFileName = Path.GetFileName(photoUrl);
 
-                    // Check if the model exists in the dictionary
-                    if (!modelCount.ContainsKey(modelValue))
-                    {
-                        // Add the model to the dictionary with an initial count of 0
-                        modelCount[modelValue] = 0;
-                    }
+                //    // Check if the model exists in the dictionary
+                //    if (!modelCount.ContainsKey(modelValue))
+                //    {
+                //        // Add the model to the dictionary with an initial count of 0
+                //        modelCount[modelValue] = 0;
+                //    }
 
-                    // Increment the count for the model
-                    modelCount[modelValue]++;
+                //    // Increment the count for the model
+                //    modelCount[modelValue]++;
 
-                    // Get the count value for the model
-                    var count = modelCount[modelValue];
+                //    // Get the count value for the model
+                //    var count = modelCount[modelValue];
 
-                    // If the count is already greater than 0, skip downloading the photo
-                    if (count > 0)
-                    {
-                        continue;
-                    }
+                //    // If the count is already greater than 0, skip downloading the photo
+                //    if (count > 0)
+                //    {
+                //        continue;
+                //    }
 
-                    // Increment the count for the model
-                    modelCount[modelValue]++;
+                //    // Increment the count for the model
+                //    modelCount[modelValue]++;
 
-                    // Get the alphabetic character based on the count (A, B, C, ...)
-                    var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
-
-                    var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
-                    PathModel.imageNameInCatImg = $"catalog/image/{imageName}";
-                }
+                // Get the alphabetic character based on the count (A, B, C, ...)
+                //var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+                var imageAdress = image.Split("/").Last();
+                var imageName = $"catalog/image/{model}-A-{PathModel.Supplier}_{imageAdress}";
+               // var imageName = imageAdress.Split("/").Last();
+                    //PathModel.imageNameInCatImg = $"catalog/image/{imageName}";
+                //}
                 // ---------------------
 
                 productsWorksheet.Cell(row, product_idColumnIndex).Value = model;
@@ -163,7 +164,7 @@ public class WriteToXL
                 productsWorksheet.Cell(row, modelColumnIndex).Value = model;
                 productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
                 //productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
-                productsWorksheet.Cell(row, image_nameColumnIndex).Value = PathModel.imageNameInCatImg;
+                productsWorksheet.Cell(row, image_nameColumnIndex).Value = imageName;
 
                 productsWorksheet.Cell(row, priceColumnIndex).Value = price;
                 productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
