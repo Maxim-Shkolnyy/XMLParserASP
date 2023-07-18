@@ -15,7 +15,10 @@ public static class PathModel
 
     //public static string? Path { get; } = @"D:\Downloads\Videx.xml"; //Videx
     //public static string? Path { get;} = @"https://b2b.allegro-opt.com.ua/allegro-807a960d080cdbaeea3aec7f5cd8dede.xml"; // Videx, Allegro
-    public static string? Path { get; } = @"https://amperok.com.ua/index.php?route=extension/feed/unixml/violux_full"; // Violux, Amperok 
+    //public static string? Path { get; } = @"https://amperok.com.ua/index.php?route=extension/feed/unixml/violux_full"; // Violux, Amperok 
+    public static string? Path { get; } = @"https://b2b.vestum.ua/data/yml_catalog_rozetka.xml"; // Vestum
+
+
 
     public static Language Language { get; } = Language.Ua;    // Ua  Ru
 
@@ -33,7 +36,7 @@ public static class PathModel
     
 
     public static string PhotoFolder = @"D:\Downloads\Photo\";
-    public static string Supplier = "Violux";
+    public static string Supplier = "Vestum";
 
 
     //public static string XMLQuantityNode = "quantity";
