@@ -106,7 +106,7 @@ public class WriteToXL
                 DateTime dateModified = DateTime.Now;
                 string dateAvailable = "2023-07-06 00:00:00";
                 string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
-                string supplier_id = "1";
+                string supplier_id = "1"; 
 
 
                 // ------------------------------------
