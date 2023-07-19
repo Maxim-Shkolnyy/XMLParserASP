@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.14" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>

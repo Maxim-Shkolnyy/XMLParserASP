@@ -4,8 +4,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 using xmlParserASP.Models;
-using System.Drawing;
-using System.Drawing.Imaging;
+//using System.Drawing;
+//using System.Drawing.Imaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace xmlParserASP.Controllers
 {
@@ -83,8 +86,8 @@ namespace xmlParserASP.Controllers
                                         // Reset the position of the stream to the beginning
                                         photoStream.Seek(0, SeekOrigin.Begin);
 
-                                        // Load the image from the stream
-                                        using (var image = Image.FromStream(photoStream))
+                                        // Load the image from the stream using ImageSharp
+                                        using (var image = Image.Load(photoStream))
                                         {
                                             // Check if the image exceeds the maximum size
                                             if (image.Width > 1000 || image.Height > 1000)
@@ -102,16 +105,15 @@ namespace xmlParserASP.Controllers
                                                     newWidth = (int)((float)image.Width / image.Height * newHeight);
                                                 }
 
-                                                // Create a new bitmap with the resized dimensions
-                                                using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+                                                // Resize the image using ImageSharp
+                                                image.Mutate(x => x.Resize(newWidth, newHeight));
+
+                                                // Save the resized image to the file
+                                                using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
                                                 {
-                                                    // Save the resized image to the file
-                                                    using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
-                                                    {
-                                                        resizedImage.Save(fileStream, ImageFormat.Jpeg);
-                                                    }
-                                                    totalPhotosResized++;
+                                                    image.Save(fileStream, new JpegEncoder { Quality = 49 });
                                                 }
+                                                totalPhotosResized++;
                                             }
                                             else
                                             {
@@ -124,6 +126,7 @@ namespace xmlParserASP.Controllers
                                             }
                                             totalPhotosDownloaded++;
                                         }
+
                                     }
                                 }
                             }
