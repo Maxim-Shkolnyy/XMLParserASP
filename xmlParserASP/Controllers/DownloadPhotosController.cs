@@ -11,40 +11,28 @@ namespace xmlParserASP.Controllers
 {
     public class DownloadPhotosController : Controller
     {
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
-        // [HttpPost]
         public async Task<ActionResult> Index()
         {
             try
-            {
-                // Load the XML file
+            {               
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(PathModel.Path);
 
-                // Get the photo URLs from the XML
                 var photoNodes = xmlDoc.SelectNodes($"//{PathModel.XMLPictureNode}");
                 if (photoNodes == null)
                 {
-                    // Handle the case when no photo nodes are found in the XML
                     ViewBag.Message = "No photo URLs found in the XML.";
                     return View("Index");
                 }
 
-                // Create a HttpClient to download the photos
                 using (var client = new HttpClient())
                 {
-                    // Iterate through each photo URL
                     // Create a dictionary to keep track of the count of each model
                     var modelCount = new Dictionary<string, int>();
                     int totalPhotosDownloaded = 0;
                     int totalPhotosResized = 0;
                     int totalPhotoPassedExists = 0;
 
-                    // Iterate through each photo URL
                     foreach (XmlNode photoNode in photoNodes)
                     {
                         var photoUrl = photoNode.InnerText;
@@ -52,10 +40,8 @@ namespace xmlParserASP.Controllers
                         var modelValue = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode).InnerText;
                         //var modelValue = photoNode.ParentNode.Attributes["id"]?.Value;                       
 
-                        // Extract the original file name from the URL
                         var originalFileName = Path.GetFileName(photoUrl);
 
-                        // Check if the model exists in the dictionary
                         if (!modelCount.ContainsKey(modelValue))
                         {
                             // Add the model to the dictionary with an initial count of 0
@@ -92,46 +78,58 @@ namespace xmlParserASP.Controllers
 
                                 using (var photoStream = await response.Content.ReadAsStreamAsync())
                                 {
-                                    // Load the image from the stream
-                                    using (var image = Image.FromStream(photoStream))
+                                    if (photoStream != null && photoStream.Length > 0)
                                     {
-                                        // Check if the image exceeds the maximum size
-                                        if (image.Width > 1000 || image.Height > 1000)
+                                        // Reset the position of the stream to the beginning
+                                        photoStream.Seek(0, SeekOrigin.Begin);
+
+                                        // Load the image from the stream
+                                        using (var image = Image.FromStream(photoStream))
                                         {
-                                            // Calculate the new dimensions while maintaining the aspect ratio
-                                            int newWidth, newHeight;
-                                            if (image.Width > image.Height)
+                                            // Check if the image exceeds the maximum size
+                                            if (image.Width > 1000 || image.Height > 1000)
                                             {
-                                                newWidth = 1000;
-                                                newHeight = (int)((float)image.Height / image.Width * newWidth);
+                                                // Calculate the new dimensions while maintaining the aspect ratio
+                                                int newWidth, newHeight;
+                                                if (image.Width > image.Height)
+                                                {
+                                                    newWidth = 1000;
+                                                    newHeight = (int)((float)image.Height / image.Width * newWidth);
+                                                }
+                                                else
+                                                {
+                                                    newHeight = 1000;
+                                                    newWidth = (int)((float)image.Width / image.Height * newHeight);
+                                                }
+
+                                                // Create a new bitmap with the resized dimensions
+                                                using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+                                                {
+                                                    // Save the resized image to the file
+                                                    using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                                    {
+                                                        resizedImage.Save(fileStream, ImageFormat.Jpeg);
+                                                    }
+                                                    totalPhotosResized++;
+                                                }
                                             }
                                             else
                                             {
-                                                newHeight = 1000;
-                                                newWidth = (int)((float)image.Width / image.Height * newHeight);
+                                                // Save the original image to the file
+                                                using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                                {
+                                                    photoStream.Seek(0, SeekOrigin.Begin);
+                                                    await photoStream.CopyToAsync(fileStream);
+                                                }
                                             }
-
-                                            // Create a new bitmap with the resized dimensions
-                                            using (var resizedImage = new Bitmap(image, newWidth, newHeight))
-                                            {
-                                                // Save the resized image to the file
-                                                resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
-                                                totalPhotosResized++;
-                                            }
+                                            totalPhotosDownloaded++;
                                         }
-                                        else
-                                        {
-                                            // Save the original image to the file
-                                            using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
-                                            {
-                                                await photoStream.CopyToAsync(fileStream);
-                                            }
-                                        }
-                                        totalPhotosDownloaded++;
                                     }
                                 }
                             }
                         }
+
+
                     }
                     ViewBag.Message = $"Photos downloaded successfully. Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}";
 
