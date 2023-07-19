@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 using xmlParserASP.Models;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace xmlParserASP.Controllers
 {
@@ -43,10 +45,9 @@ namespace xmlParserASP.Controllers
                     foreach (XmlNode photoNode in photoNodes)
                     {
                         var photoUrl = photoNode.InnerText;
-
-                        // Get the model value from the parent node
-                        var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode);
-                        var modelValue = modelNode?.InnerText;
+                        
+                        var modelValue = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode).InnerText;
+                        //var modelValue = photoNode.ParentNode.Attributes["id"]?.Value;                       
 
                         // Extract the original file name from the URL
                         var originalFileName = Path.GetFileName(photoUrl);
