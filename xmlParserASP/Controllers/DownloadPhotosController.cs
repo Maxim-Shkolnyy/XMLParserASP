@@ -9,6 +9,7 @@ using xmlParserASP.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats;
 
 namespace xmlParserASP.Controllers
 {
@@ -86,47 +87,73 @@ namespace xmlParserASP.Controllers
                                         // Reset the position of the stream to the beginning
                                         photoStream.Seek(0, SeekOrigin.Begin);
 
-                                        // Load the image from the stream using ImageSharp
-                                        using (var image = Image.Load(photoStream))
+                                        // Get the original file name from the photo URL
+                                        
+
+                                        // Check if the original file name ends with ".jpg" or ".jpeg" (case-insensitive)
+                                        if (!originalFileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) &&
+                                            !originalFileName.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
                                         {
-                                            // Check if the image exceeds the maximum size
-                                            if (image.Width > 1000 || image.Height > 1000)
+                                            using (var image = Image.Load(photoStream))
+                                            {
+                                                // Convert the image to JPEG format with specified quality
+                                                image.Mutate(x => x.BackgroundColor(Color.White));
+                                                using (var convertedImageStream = new MemoryStream())
+                                                {
+                                                    image.Save(convertedImageStream, new JpegEncoder { Quality = 49 });
+
+                                                    // Reset the position of the converted image stream to the beginning
+                                                    convertedImageStream.Seek(0, SeekOrigin.Begin);
+
+                                                    // Save the converted image stream to the file
+                                                    using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                                    {
+                                                        await convertedImageStream.CopyToAsync(fileStream);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (GetImageDimension(photoStream, out var width, out var height) && (width > 1000 || height > 1000))
+                                        {
+                                            // Reset the position of the stream to the beginning
+                                            photoStream.Seek(0, SeekOrigin.Begin);
+
+                                            using (var image = Image.Load(photoStream))
                                             {
                                                 // Calculate the new dimensions while maintaining the aspect ratio
                                                 int newWidth, newHeight;
-                                                if (image.Width > image.Height)
+                                                if (width > height)
                                                 {
                                                     newWidth = 1000;
-                                                    newHeight = (int)((float)image.Height / image.Width * newWidth);
+                                                    newHeight = (int)((float)height / width * newWidth);
                                                 }
                                                 else
                                                 {
                                                     newHeight = 1000;
-                                                    newWidth = (int)((float)image.Width / image.Height * newHeight);
+                                                    newWidth = (int)((float)width / height * newHeight);
                                                 }
 
                                                 // Resize the image using ImageSharp
                                                 image.Mutate(x => x.Resize(newWidth, newHeight));
 
-                                                // Save the resized image to the file
+                                                // Save the resized image to the file as JPEG with specified quality
                                                 using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
                                                 {
                                                     image.Save(fileStream, new JpegEncoder { Quality = 49 });
                                                 }
                                                 totalPhotosResized++;
                                             }
-                                            else
-                                            {
-                                                // Save the original image to the file
-                                                using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
-                                                {
-                                                    photoStream.Seek(0, SeekOrigin.Begin);
-                                                    await photoStream.CopyToAsync(fileStream);
-                                                }
-                                            }
-                                            totalPhotosDownloaded++;
                                         }
-
+                                        else
+                                        {
+                                            // Save the original image to the file
+                                            using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                            {
+                                                photoStream.Seek(0, SeekOrigin.Begin);
+                                                await photoStream.CopyToAsync(fileStream);
+                                            }
+                                        }
+                                        totalPhotosDownloaded++;
                                     }
                                 }
                             }
@@ -147,5 +174,21 @@ namespace xmlParserASP.Controllers
             return View("Ok");
         }
 
-    }
+
+        private bool GetImageDimension(Stream imageStream, out int width, out int height)
+        {
+            width = 0;
+            height = 0;
+
+            using (var image = Image.Load(imageStream))
+            {
+                width = image.Width;
+                height = image.Height;
+            }
+
+            return width > 0 && height > 0;
+        }
+    }    
+    
+
 }
