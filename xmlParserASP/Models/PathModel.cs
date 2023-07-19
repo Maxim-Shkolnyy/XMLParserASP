@@ -38,8 +38,8 @@ public static class PathModel
     public static string Supplier = "Feron";
 
 
-    //public static string XMLQuantityNode = "quantity";
-    public static string XMLQuantityNode = "stock_quantity";
+    public static string XMLQuantityNode = "quantity";
+    //public static string XMLQuantityNode = "stock_quantity";
 
     public static string XMLSupplierNode = "vendor";
 

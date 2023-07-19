@@ -40,6 +40,9 @@ namespace xmlParserASP.Controllers
                     // Iterate through each photo URL
                     // Create a dictionary to keep track of the count of each model
                     var modelCount = new Dictionary<string, int>();
+                    int totalPhotosDownloaded = 0;
+                    int totalPhotosResized = 0;
+                    int totalPhotoPassedExists = 0;
 
                     // Iterate through each photo URL
                     foreach (XmlNode photoNode in photoNodes)
@@ -57,6 +60,7 @@ namespace xmlParserASP.Controllers
                         {
                             // Add the model to the dictionary with an initial count of 0
                             modelCount[modelValue] = 0;
+                            totalPhotoPassedExists++;
                         }
 
                         // Increment the count for the model
@@ -75,6 +79,7 @@ namespace xmlParserASP.Controllers
                         var filePath = Path.Combine(PathModel.PhotoFolder, imageName);
                         if (System.IO.File.Exists(filePath))
                         {
+                            totalPhotoPassedExists++;
                             continue; // Skip downloading if the file already exists
                         }
 
@@ -87,19 +92,50 @@ namespace xmlParserASP.Controllers
 
                                 using (var photoStream = await response.Content.ReadAsStreamAsync())
                                 {
-                                    using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                    // Load the image from the stream
+                                    using (var image = Image.FromStream(photoStream))
                                     {
-                                        await photoStream.CopyToAsync(fileStream);
+                                        // Check if the image exceeds the maximum size
+                                        if (image.Width > 1000 || image.Height > 1000)
+                                        {
+                                            // Calculate the new dimensions while maintaining the aspect ratio
+                                            int newWidth, newHeight;
+                                            if (image.Width > image.Height)
+                                            {
+                                                newWidth = 1000;
+                                                newHeight = (int)((float)image.Height / image.Width * newWidth);
+                                            }
+                                            else
+                                            {
+                                                newHeight = 1000;
+                                                newWidth = (int)((float)image.Width / image.Height * newHeight);
+                                            }
+
+                                            // Create a new bitmap with the resized dimensions
+                                            using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+                                            {
+                                                // Save the resized image to the file
+                                                resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
+                                                totalPhotosResized++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Save the original image to the file
+                                            using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                            {
+                                                await photoStream.CopyToAsync(fileStream);
+                                            }
+                                        }
+                                        totalPhotosDownloaded++;
                                     }
                                 }
                             }
                         }
                     }
-
+                    ViewBag.Message = $"Photos downloaded successfully. Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}";
 
                 }
-
-                ViewBag.Message = "Photos downloaded successfully.";
             }
             catch (Exception ex)
             {

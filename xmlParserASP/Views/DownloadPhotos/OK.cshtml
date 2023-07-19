@@ -1,1 +1,43 @@
-﻿<h1>Ok</h1>
+﻿@{
+    ViewBag.Title = "Download Photos";
+}
+
+<h2>Download Photos</h2>
+
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <div class="alert alert-success">
+        @ViewBag.Message
+    </div>
+}
+
+@using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+        <label for="xmlFile">XML File:</label>
+        <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="folderPath">Destination Folder:</label>
+        <input type="text" id="folderPath" name="folderPath" class="form-control" readonly="readonly" />
+    </div>
+
+    <div class="form-group">
+        <button type="button" id="btnBrowseXml" class="btn btn-primary">Select XML File</button>
+    </div>
+
+    <div class="form-group">
+        <button type="button" id="btnBrowseFolder" class="btn btn-primary">Select Destination Folder</button>
+    </div>
+
+    <button type="submit" class="btn btn-success">Download Photos</button>
+}
+
+@section scripts {
+    <script>
+        $(function () {
+            // ...
+        });
+    </script>
+}
