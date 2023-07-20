@@ -1,4 +1,7 @@
-﻿@using (Html.BeginForm("DownloadPhotos", "Index", FormMethod.Post, new { enctype = "multipart/form-data" }));
+﻿@using (Html.BeginForm("Download", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <button type="submit">Start download</button>
+}
 
 <h2>Download Photos</h2>
 
@@ -22,4 +25,3 @@
     <label for="btnBrowseFolder" class="btn btn-primary">Select Destination Folder</label>
     <input type="text" id="btnBrowseFolder" style="display:none" />
 </div>*@
-

@@ -11,7 +11,11 @@ namespace xmlParserASP.Controllers
 {
     public class DownloadPhotosController : Controller
     {
-        public async Task<ActionResult> Index()
+        public IActionResult Index() 
+        {
+            return View(); 
+        }
+        public async Task<ActionResult> Download()
         {
             try
             {               

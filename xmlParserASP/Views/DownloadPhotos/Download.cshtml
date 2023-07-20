@@ -2,7 +2,7 @@
     ViewBag.Title = "Download Photos";
 }
 
-<h2>Download Photos</h2>
+<h2>Photos downloaded succsefully </h2>
 
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
@@ -11,7 +11,7 @@
     </div>
 }
 
-@using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@*@using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
         <label for="xmlFile">XML File:</label>
@@ -39,5 +39,5 @@
         $(function () {
             // ...
         });
-    </script>
+    </script>*@
 }
