@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using xmlParserASP.Models;
 
 namespace xmlParserASP.Services;

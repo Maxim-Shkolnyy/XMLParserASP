@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Xml;
 using xmlParserASP.Models;
 using System.Drawing;
@@ -127,7 +124,7 @@ namespace xmlParserASP.Controllers
 
 
                     }
-                    ViewBag.Message = $"Photos downloaded successfully. Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}";
+                    ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}";
 
                 }
             }
@@ -137,7 +134,7 @@ namespace xmlParserASP.Controllers
                 ViewBag.Message = "An error occurred: " + ex.Message;
             }
 
-            return View("Ok");
+            return View("Download");
         }       
     }
 }

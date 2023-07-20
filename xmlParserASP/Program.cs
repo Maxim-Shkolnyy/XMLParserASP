@@ -1,6 +1,4 @@
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting.Internal;
 using xmlParserASP.Presistant;
 
 //using MySQL.Data.EntityFrameworkCore.Extensions;

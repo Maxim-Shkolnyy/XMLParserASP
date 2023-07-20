@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
-using xmlParserASP.Entities.GammaTables.MyTempToGamma;
 
 namespace xmlParserASP.Presistant;
 

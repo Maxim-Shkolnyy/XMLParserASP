@@ -1,8 +1,5 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using xmlParserASP.Entities;
-using xmlParserASP.Entities.GammaTables.MyTempToGamma;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using static xmlParserASP.Services.TranslitMethods;
