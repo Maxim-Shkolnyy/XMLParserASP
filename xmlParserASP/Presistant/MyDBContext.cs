@@ -16,6 +16,7 @@ public class MyDBContext : DbContext
 
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<SupplierXmlSetting> SupplierXmlSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,6 +31,10 @@ public class MyDBContext : DbContext
             .HasMany(n => n.SupplierCategories)
             .WithMany(j => j.MyCategories)
             .UsingEntity(k => k.ToTable("my_categories_supplier_categories"));
+
+        //modelBuilder.Entity<Supplier>()
+        //    .HasMany(n => n.Products)
+        //    .WithMany()
 
     }
 
