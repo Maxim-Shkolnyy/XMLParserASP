@@ -339,7 +339,7 @@ public class WriteToXL
                 //}
 
 
-                //foreach (var attr in PathModel.UniqXMLAttr)
+                //foreach (var attr in PathModel.UniqueXMLNodes)
                 //{
                 //    uniqAttrSheet.Cell(rowAttrib + 1, 2).Value = attr;
                 //    rowAttrib++;
@@ -360,7 +360,7 @@ public class WriteToXL
 
                 uniqueAttrSheet.Cell(1, 2).Value = "Unique nodes";
 
-                foreach (var attr in PathModel.UniqXMLAttr)
+                foreach (var attr in PathModel.UniqueXMLNodes)
                 {
                     uniqueAttrSheet.Cell(rowAttr + 1, 2).Value = attr;
                     rowAttr++;

@@ -55,7 +55,7 @@ public static class PathModel
     public static string[,]? CategList { get; set; }
     public static List<List<string>>? SheetProducts { get; set; }
     public static string[,]? SheetAtributes { get; set; }
-    public static List<string>? UniqXMLAttr { get; set; }
+    public static List<string>? UniqueXMLNodes { get; set; }
     public static List<string>? UniqXMLCategorys { get; set; }
 
     

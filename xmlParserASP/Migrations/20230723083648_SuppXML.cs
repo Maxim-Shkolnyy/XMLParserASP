@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class CatAttrTables2 : Migration
+    public partial class SuppXML : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,36 +43,6 @@ namespace xmlParserASP.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_my_categories", x => x.my_cat_id);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "products",
-                columns: table => new
-                {
-                    product_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    supplier_id = table.Column<int>(type: "int", nullable: false),
-                    product_name_ru = table.Column<string>(type: "longtext", nullable: false),
-                    product_name_ua = table.Column<string>(type: "longtext", nullable: true),
-                    my_cat_id = table.Column<int>(type: "int", nullable: false),
-                    sku = table.Column<int>(type: "int", nullable: true),
-                    model = table.Column<string>(type: "longtext", nullable: false),
-                    quantity = table.Column<int>(type: "int", nullable: true),
-                    price = table.Column<float>(type: "float", nullable: false),
-                    image_name = table.Column<string>(type: "longtext", nullable: true),
-                    description_ru = table.Column<string>(type: "longtext", nullable: true),
-                    description_ua = table.Column<string>(type: "longtext", nullable: true),
-                    manufacturer = table.Column<string>(type: "longtext", nullable: true),
-                    date_added = table.Column<string>(type: "longtext", nullable: true),
-                    date_modified = table.Column<string>(type: "longtext", nullable: true),
-                    date_available = table.Column<string>(type: "longtext", nullable: true),
-                    seo_keyword = table.Column<string>(type: "longtext", nullable: true),
-                    status = table.Column<bool>(type: "tinyint(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_products", x => x.product_id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -173,6 +143,63 @@ namespace xmlParserASP.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "products",
+                columns: table => new
+                {
+                    product_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    supplier_id = table.Column<int>(type: "int", nullable: false),
+                    product_name_ru = table.Column<string>(type: "longtext", nullable: true),
+                    product_name_ua = table.Column<string>(type: "longtext", nullable: true),
+                    my_cat_id = table.Column<int>(type: "int", nullable: true),
+                    sku = table.Column<int>(type: "int", nullable: true),
+                    model = table.Column<string>(type: "longtext", nullable: true),
+                    quantity = table.Column<float>(type: "float", nullable: true),
+                    price = table.Column<float>(type: "float", nullable: false),
+                    image_name = table.Column<string>(type: "longtext", nullable: true),
+                    description_ru = table.Column<string>(type: "longtext", nullable: true),
+                    description_ua = table.Column<string>(type: "longtext", nullable: true),
+                    manufacturer = table.Column<string>(type: "longtext", nullable: true),
+                    date_added = table.Column<string>(type: "longtext", nullable: true),
+                    date_modified = table.Column<string>(type: "longtext", nullable: true),
+                    date_available = table.Column<string>(type: "longtext", nullable: true),
+                    seo_keyword = table.Column<string>(type: "longtext", nullable: true),
+                    status = table.Column<bool>(type: "tinyint(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_products", x => x.product_id);
+                    table.ForeignKey(
+                        name: "fk_products_suppliers_supplier_id",
+                        column: x => x.supplier_id,
+                        principalTable: "suppliers",
+                        principalColumn: "supplier_id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "supplier_xml_settings",
+                columns: table => new
+                {
+                    supplier_xml_setting_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    supplier_xml_setting_name = table.Column<string>(type: "longtext", nullable: false),
+                    supplier_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_supplier_xml_settings", x => x.supplier_xml_setting_id);
+                    table.ForeignKey(
+                        name: "fk_supplier_xml_settings_suppliers_supplier_id",
+                        column: x => x.supplier_id,
+                        principalTable: "suppliers",
+                        principalColumn: "supplier_id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "ix_my_attributes_supplier_attributes_supplier_attributes_sup_at",
                 table: "my_attributes_supplier_attributes",
@@ -182,6 +209,16 @@ namespace xmlParserASP.Migrations
                 name: "ix_my_categories_supplier_categories_supplier_categories_suppli",
                 table: "my_categories_supplier_categories",
                 column: "supplier_categories_supplier_cat_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_products_supplier_id",
+                table: "products",
+                column: "supplier_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_supplier_xml_settings_supplier_id",
+                table: "supplier_xml_settings",
+                column: "supplier_id");
         }
 
         /// <inheritdoc />
@@ -197,7 +234,7 @@ namespace xmlParserASP.Migrations
                 name: "products");
 
             migrationBuilder.DropTable(
-                name: "suppliers");
+                name: "supplier_xml_settings");
 
             migrationBuilder.DropTable(
                 name: "my_attributes");
@@ -210,6 +247,9 @@ namespace xmlParserASP.Migrations
 
             migrationBuilder.DropTable(
                 name: "supplier_categories");
+
+            migrationBuilder.DropTable(
+                name: "suppliers");
         }
     }
 }

@@ -30,7 +30,7 @@ internal class ReadUniqueCategorys
 
         //var paramNames = doc.Descendants("param").Attributes("name").Select(attr => attr.Value);
 
-        PathModel.UniqXMLAttr = paramNames.ToList();
+        PathModel.UniqueXMLNodes = paramNames.ToList();
 
         //int count = 0;
         

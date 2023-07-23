@@ -50,7 +50,7 @@ public static class UniqNodesInXML
                 }
             }
         }
-        PathModel.UniqXMLAttr = nodeNames;
+        PathModel.UniqueXMLNodes = nodeNames;
 
         //Console.WriteLine("Variables: \n");
         //foreach (var nodeName in nodeNames)

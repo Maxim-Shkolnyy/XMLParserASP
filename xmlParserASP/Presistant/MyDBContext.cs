@@ -32,9 +32,11 @@ public class MyDBContext : DbContext
             .WithMany(j => j.MyCategories)
             .UsingEntity(k => k.ToTable("my_categories_supplier_categories"));
 
-        //modelBuilder.Entity<Supplier>()
-        //    .HasMany(n => n.Products)
-        //    .WithMany()
+        //modelBuilder.Entity<SupplierXmlSetting>()
+        //    .HasMany(supplier => supplier.)
+        //    .WithOne(pathModel => pathModel.Supplier)
+        //    .HasForeignKey(pathModel => pathModel.SupplierId);
+
 
     }
 

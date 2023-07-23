@@ -1,0 +1,87 @@
+﻿@model xmlParserASP.Entities.SupplierXmlSetting
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>SupplierXmlSetting</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SupplierXmlSettingName" class="control-label"></label>
+                <input asp-for="SupplierXmlSettingName" class="form-control" />
+                <span asp-validation-for="SupplierXmlSettingName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierId" class="control-label"></label>
+                <select asp-for="SupplierId" class ="form-control" asp-items="ViewBag.SupplierId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartGammaIDFrom" class="control-label"></label>
+                <input asp-for="StartGammaIDFrom" class="form-control" />
+                <span asp-validation-for="StartGammaIDFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="XMLProductNode" class="control-label"></label>
+                <input asp-for="XMLProductNode" class="form-control" />
+                <span asp-validation-for="XMLProductNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="XMLModelNode" class="control-label"></label>
+                <input asp-for="XMLModelNode" class="form-control" />
+                <span asp-validation-for="XMLModelNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="XMLPictureNode" class="control-label"></label>
+                <input asp-for="XMLPictureNode" class="form-control" />
+                <span asp-validation-for="XMLPictureNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="imageNameInCatImg" class="control-label"></label>
+                <input asp-for="imageNameInCatImg" class="form-control" />
+                <span asp-validation-for="imageNameInCatImg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhotoFolder" class="control-label"></label>
+                <input asp-for="PhotoFolder" class="form-control" />
+                <span asp-validation-for="PhotoFolder" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="XMLQuantityNode" class="control-label"></label>
+                <input asp-for="XMLQuantityNode" class="form-control" />
+                <span asp-validation-for="XMLQuantityNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="XMLSupplierNode" class="control-label"></label>
+                <input asp-for="XMLSupplierNode" class="form-control" />
+                <span asp-validation-for="XMLSupplierNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="XMLParamNode" class="control-label"></label>
+                <input asp-for="XMLParamNode" class="form-control" />
+                <span asp-validation-for="XMLParamNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="XMLParamAttrNode" class="control-label"></label>
+                <input asp-for="XMLParamAttrNode" class="form-control" />
+                <span asp-validation-for="XMLParamAttrNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

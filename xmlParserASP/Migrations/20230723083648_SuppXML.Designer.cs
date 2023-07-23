@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230710154455_CatAttrTables2")]
-    partial class CatAttrTables2
+    [Migration("20230723083648_SuppXML")]
+    partial class SuppXML
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,11 +150,10 @@ namespace xmlParserASP.Migrations
                         .HasColumnName("manufacturer");
 
                     b.Property<string>("Model")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("model");
 
-                    b.Property<int>("MyCatId")
+                    b.Property<int?>("MyCatId")
                         .HasColumnType("int")
                         .HasColumnName("my_cat_id");
 
@@ -163,7 +162,6 @@ namespace xmlParserASP.Migrations
                         .HasColumnName("price");
 
                     b.Property<string>("ProductNameRU")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("product_name_ru");
 
@@ -171,8 +169,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("product_name_ua");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int")
+                    b.Property<float?>("Quantity")
+                        .HasColumnType("float")
                         .HasColumnName("quantity");
 
                     b.Property<string>("SeoKeyword")
@@ -193,6 +191,9 @@ namespace xmlParserASP.Migrations
 
                     b.HasKey("ProductId")
                         .HasName("pk_products");
+
+                    b.HasIndex("SupplierId")
+                        .HasDatabaseName("ix_products_supplier_id");
 
                     b.ToTable("products", (string)null);
                 });
@@ -273,6 +274,31 @@ namespace xmlParserASP.Migrations
                     b.ToTable("supplier_categories", (string)null);
                 });
 
+            modelBuilder.Entity("xmlParserASP.Entities.SupplierXmlSetting", b =>
+                {
+                    b.Property<int>("SupplierXmlSettingID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("supplier_xml_setting_id");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int")
+                        .HasColumnName("supplier_id");
+
+                    b.Property<string>("SupplierXmlSettingName")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("supplier_xml_setting_name");
+
+                    b.HasKey("SupplierXmlSettingID")
+                        .HasName("pk_supplier_xml_settings");
+
+                    b.HasIndex("SupplierId")
+                        .HasDatabaseName("ix_supplier_xml_settings_supplier_id");
+
+                    b.ToTable("supplier_xml_settings", (string)null);
+                });
+
             modelBuilder.Entity("MyAttributeSupplierAttribute", b =>
                 {
                     b.HasOne("xmlParserASP.Entities.MyAttribute", null)
@@ -305,6 +331,33 @@ namespace xmlParserASP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_my_categories_supplier_categories_supplier_categories_suppli");
+                });
+
+            modelBuilder.Entity("xmlParserASP.Entities.Product", b =>
+                {
+                    b.HasOne("xmlParserASP.Entities.Supplier", null)
+                        .WithMany("Products")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_products_suppliers_supplier_id");
+                });
+
+            modelBuilder.Entity("xmlParserASP.Entities.SupplierXmlSetting", b =>
+                {
+                    b.HasOne("xmlParserASP.Entities.Supplier", null)
+                        .WithMany("SupplierXmlSettings")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_supplier_xml_settings_suppliers_supplier_id");
+                });
+
+            modelBuilder.Entity("xmlParserASP.Entities.Supplier", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("SupplierXmlSettings");
                 });
 #pragma warning restore 612, 618
         }

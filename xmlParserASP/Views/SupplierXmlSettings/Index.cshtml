@@ -1,0 +1,95 @@
+﻿@model IEnumerable<xmlParserASP.Entities.SupplierXmlSetting>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierXmlSettingName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartGammaIDFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XMLProductNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XMLModelNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XMLPictureNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.imageNameInCatImg)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhotoFolder)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XMLQuantityNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XMLSupplierNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XMLParamNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XMLParamAttrNode)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SupplierXmlSettingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartGammaIDFrom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XMLProductNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XMLModelNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XMLPictureNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.imageNameInCatImg)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhotoFolder)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XMLQuantityNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XMLSupplierNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XMLParamNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XMLParamAttrNode)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.SupplierXmlSettingID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.SupplierXmlSettingID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.SupplierXmlSettingID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

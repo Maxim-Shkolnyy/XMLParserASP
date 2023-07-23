@@ -9,7 +9,7 @@ public class Product
     [Required]
     public int ProductId { get; set; }
     public int SupplierId { get; set; }    
-    ICollection<Supplier?> Supplier { get; set; }
+    ICollection<Supplier> Supplier { get; set; }
     public string? ProductNameRU { get; set; }
     public string? ProductNameUA { get; set; }
 

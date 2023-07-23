@@ -1,0 +1,84 @@
+﻿@model xmlParserASP.Entities.SupplierXmlSetting
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>SupplierXmlSetting</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SupplierXmlSettingName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SupplierXmlSettingName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartGammaIDFrom)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartGammaIDFrom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XMLProductNode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XMLProductNode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XMLModelNode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XMLModelNode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XMLPictureNode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XMLPictureNode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.imageNameInCatImg)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.imageNameInCatImg)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PhotoFolder)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PhotoFolder)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XMLQuantityNode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XMLQuantityNode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XMLSupplierNode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XMLSupplierNode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XMLParamNode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XMLParamNode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XMLParamAttrNode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XMLParamAttrNode)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.SupplierXmlSettingID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
