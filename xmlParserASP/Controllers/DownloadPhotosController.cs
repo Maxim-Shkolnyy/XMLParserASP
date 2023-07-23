@@ -19,7 +19,7 @@ namespace xmlParserASP.Controllers
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(PathModel.Path);
 
-                var photoNodes = xmlDoc.SelectNodes($"//{PathModel.XMLPictureNode}");
+                var photoNodes = xmlDoc.SelectNodes($"//{PathModel.PictureNode}");
                 if (photoNodes == null)
                 {
                     ViewBag.Message = "No photo URLs found in the XML.";
@@ -38,7 +38,7 @@ namespace xmlParserASP.Controllers
                     {
                         var photoUrl = photoNode.InnerText;
                         
-                        var modelValue = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode).InnerText;
+                        var modelValue = photoNode.ParentNode.SelectSingleNode(PathModel.ModelNode).InnerText;
                         //var modelValue = photoNode.ParentNode.Attributes["id"]?.Value;                       
 
                         var originalFileName = Path.GetFileName(photoUrl);

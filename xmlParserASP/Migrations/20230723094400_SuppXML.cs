@@ -186,7 +186,17 @@ namespace xmlParserASP.Migrations
                     supplier_xml_setting_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     supplier_xml_setting_name = table.Column<string>(type: "longtext", nullable: false),
-                    supplier_id = table.Column<int>(type: "int", nullable: false)
+                    supplier_id = table.Column<int>(type: "int", nullable: false),
+                    start_gamma_id_from = table.Column<int>(type: "int", nullable: false),
+                    product_node = table.Column<string>(type: "longtext", nullable: false),
+                    model_node = table.Column<string>(type: "longtext", nullable: false),
+                    picture_node = table.Column<string>(type: "longtext", nullable: false),
+                    image_name_in_cat_img = table.Column<string>(type: "longtext", nullable: false),
+                    photo_folder = table.Column<string>(type: "longtext", nullable: false),
+                    quantity_node = table.Column<string>(type: "longtext", nullable: false),
+                    supplier_node = table.Column<string>(type: "longtext", nullable: false),
+                    param_node = table.Column<string>(type: "longtext", nullable: false),
+                    param_attr_node = table.Column<string>(type: "longtext", nullable: false)
                 },
                 constraints: table =>
                 {

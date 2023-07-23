@@ -23,7 +23,7 @@ internal class ReadUniqueCategorys
 
         //XElement? rootelement = doc.Element("params");
 
-        var paramNames = doc.Descendants(PathModel.XMLParamNode).Attributes(PathModel.XMLParamAttrNode).Select(attr => attr.Value).Distinct();
+        var paramNames = doc.Descendants(PathModel.ParamNode).Attributes(PathModel.ParamAttrNode).Select(attr => attr.Value).Distinct();
 
         //var categoryNames = doc.Descendants("category").Attributes("id").Select(attr => attr.Value).Distinct();
 

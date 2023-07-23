@@ -62,7 +62,7 @@ namespace xmlParserASP.Services
 
                 // Настройки выгрузки поставщика
 
-                XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.XMLProductNode);
+                XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.ProductNode);
 
                 XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 

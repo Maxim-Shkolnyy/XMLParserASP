@@ -24,13 +24,13 @@ public static class PathModel
     public const int StartGammaIDFrom = 2255;
 
 
-    public static string XMLProductNode = "item";      // Feron
-    //public static string XMLProductNode = "offer";  // Horoz
+    public static string ProductNode = "item";      // Feron
+    //public static string ProductNode = "offer";  // Horoz
 
-    public static string XMLModelNode = "model";
+    public static string ModelNode = "model";
 
 
-    public static string XMLPictureNode = "image";
+    public static string PictureNode = "image";
     public static string imageNameInCatImg = "";
     
 
@@ -38,16 +38,16 @@ public static class PathModel
     public static string Supplier = "Feron";
 
 
-    public static string XMLQuantityNode = "quantity";
-    //public static string XMLQuantityNode = "stock_quantity";
+    public static string QuantityNode = "quantity";
+    //public static string QuantityNode = "stock_quantity";
 
-    public static string XMLSupplierNode = "vendor";
+    public static string SupplierNode = "vendor";
 
 
 
-    public static string XMLParamNode = "param";
+    public static string ParamNode = "param";
 
-    public static string XMLParamAttrNode = "name";
+    public static string ParamAttrNode = "name";
 
     // !!!  In ReadAttrXMLTo3Columns and WriteToXL set model parsing
 

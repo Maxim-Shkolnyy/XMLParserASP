@@ -56,7 +56,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierXmlSettingID,SupplierXmlSettingName,SupplierId,StartGammaIDFrom,XMLProductNode,XMLModelNode,XMLPictureNode,imageNameInCatImg,PhotoFolder,XMLQuantityNode,XMLSupplierNode,XMLParamNode,XMLParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+        public async Task<IActionResult> Create([Bind("SupplierXmlSettingID,SupplierXmlSettingName,SupplierId,StartGammaIDFrom,ProductNode,ModelNode,PictureNode,imageNameInCatImg,PhotoFolder,QuantityNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +88,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingID,SupplierXmlSettingName,SupplierId,StartGammaIDFrom,XMLProductNode,XMLModelNode,XMLPictureNode,imageNameInCatImg,PhotoFolder,XMLQuantityNode,XMLSupplierNode,XMLParamNode,XMLParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingID,SupplierXmlSettingName,SupplierId,StartGammaIDFrom,ProductNode,ModelNode,PictureNode,imageNameInCatImg,PhotoFolder,QuantityNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
         {
             if (id != supplierXmlSetting.SupplierXmlSettingID)
             {

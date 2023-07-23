@@ -11,22 +11,22 @@ namespace xmlParserASP.Entities
         ICollection<Supplier> Supplier { get; set; }        
         public int StartGammaIDFrom { get; set; }
 
-        public  string XMLProductNode { get; set; } = "item";      // Feron
-        //public  string XMLProductNode = "offer";           // Horoz
-        public string XMLModelNode { get; set; } = "model";
+        public  string ProductNode { get; set; } = "item";      // Feron
+        //public  string ProductNode = "offer";           // Horoz
+        public string ModelNode { get; set; } = "model";
 
-        public string XMLPictureNode { get; set; } = "image";
+        public string PictureNode { get; set; } = "image";
         public string imageNameInCatImg { get; set; } = "";
 
         public string PhotoFolder { get; set; } = @"D:\Downloads\Photo\";       
 
-        public string XMLQuantityNode { get; set; } = "quantity";
-        //public  string XMLQuantityNode = "stock_quantity";
-        public string XMLSupplierNode { get; set; } = "vendor";
+        public string QuantityNode { get; set; } = "quantity";
+        //public  string QuantityNode = "stock_quantity";
+        public string SupplierNode { get; set; } = "vendor";
 
-        public string XMLParamNode { get; set; } = "param";
+        public string ParamNode { get; set; } = "param";
 
-        public string XMLParamAttrNode { get; set; } = "name";
+        public string ParamAttrNode { get; set; } = "name";
 
         //public  string? Path { get; } = @"D:\Downloads\promua_2405ru.xml"; //work
         //public  string? Path { get; } = @"https://horoz-electric.com.ua/products_feed.xml?hash_tag=143483e1e045e0b718c4c5f63cc41ea5&sales_notes=&product_ids=&label_ids=&exclude_fields=&html_description=0&yandex_cpa=&process_presence_sure=&languages=ru&group_ids=";

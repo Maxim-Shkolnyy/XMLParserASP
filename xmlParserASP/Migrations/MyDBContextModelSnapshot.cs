@@ -278,10 +278,40 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("supplier_xml_setting_id");
 
+                    b.Property<string>("ModelNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("model_node");
+
+                    b.Property<string>("ParamAttrNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("param_attr_node");
+
+                    b.Property<string>("ParamNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("param_node");
+
                     b.Property<string>("PhotoFolder")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("photo_folder");
+
+                    b.Property<string>("PictureNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("picture_node");
+
+                    b.Property<string>("ProductNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("product_node");
+
+                    b.Property<string>("QuantityNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("quantity_node");
 
                     b.Property<int>("StartGammaIDFrom")
                         .HasColumnType("int")
@@ -291,45 +321,15 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("supplier_id");
 
+                    b.Property<string>("SupplierNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("supplier_node");
+
                     b.Property<string>("SupplierXmlSettingName")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("supplier_xml_setting_name");
-
-                    b.Property<string>("XMLModelNode")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml_model_node");
-
-                    b.Property<string>("XMLParamAttrNode")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml_param_attr_node");
-
-                    b.Property<string>("XMLParamNode")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml_param_node");
-
-                    b.Property<string>("XMLPictureNode")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml_picture_node");
-
-                    b.Property<string>("XMLProductNode")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml_product_node");
-
-                    b.Property<string>("XMLQuantityNode")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml_quantity_node");
-
-                    b.Property<string>("XMLSupplierNode")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml_supplier_node");
 
                     b.Property<string>("imageNameInCatImg")
                         .IsRequired()

@@ -11,7 +11,7 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230723083648_SuppXML")]
+    [Migration("20230723094400_SuppXML")]
     partial class SuppXML
     {
         /// <inheritdoc />
@@ -281,14 +281,63 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("supplier_xml_setting_id");
 
+                    b.Property<string>("ModelNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("model_node");
+
+                    b.Property<string>("ParamAttrNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("param_attr_node");
+
+                    b.Property<string>("ParamNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("param_node");
+
+                    b.Property<string>("PhotoFolder")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("photo_folder");
+
+                    b.Property<string>("PictureNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("picture_node");
+
+                    b.Property<string>("ProductNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("product_node");
+
+                    b.Property<string>("QuantityNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("quantity_node");
+
+                    b.Property<int>("StartGammaIDFrom")
+                        .HasColumnType("int")
+                        .HasColumnName("start_gamma_id_from");
+
                     b.Property<int>("SupplierId")
                         .HasColumnType("int")
                         .HasColumnName("supplier_id");
+
+                    b.Property<string>("SupplierNode")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("supplier_node");
 
                     b.Property<string>("SupplierXmlSettingName")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("supplier_xml_setting_name");
+
+                    b.Property<string>("imageNameInCatImg")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("image_name_in_cat_img");
 
                     b.HasKey("SupplierXmlSettingID")
                         .HasName("pk_supplier_xml_settings");

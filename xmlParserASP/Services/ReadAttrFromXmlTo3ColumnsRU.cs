@@ -10,7 +10,7 @@ public class ReadAttrFromXmlTo3ColumnsRU
         XmlDocument doc = new XmlDocument();
         doc.Load(PathModel.Path);
 
-        XmlNodeList itemsList = doc.GetElementsByTagName(PathModel.XMLProductNode);
+        XmlNodeList itemsList = doc.GetElementsByTagName(PathModel.ProductNode);
 
         XmlNodeList paramListForCount = doc.GetElementsByTagName("param");
 
@@ -30,11 +30,11 @@ public class ReadAttrFromXmlTo3ColumnsRU
         {
             foreach (XmlNode item in itemsList)
             {
-                string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
+                string modelID = item.SelectSingleNode(PathModel.ModelNode)?.InnerText; //feron
                 //string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
-                XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
+                XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
 
                 foreach (XmlNode param in paramList)
                 {
@@ -63,11 +63,11 @@ public class ReadAttrFromXmlTo3ColumnsRU
         {
             foreach (XmlNode item in itemsList)
             {
-                string modelID = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText; //feron
+                string modelID = item.SelectSingleNode(PathModel.ModelNode)?.InnerText; //feron
                 //string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
-                XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
+                XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
 
                 foreach (XmlNode param in paramList)
                 {

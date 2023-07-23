@@ -71,9 +71,9 @@ public class WriteToXL
 
             // Настройки выгрузки поставщика
 
-            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.XMLProductNode);
+            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.ProductNode);
             
-            //XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName(PathModel.XMLParamNode);
+            //XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName(PathModel.ParamNode);
 
             int row = 2;
             int startIdFrom = PathModel.StartGammaIDFrom;
@@ -85,16 +85,16 @@ public class WriteToXL
             {
                 startIdFrom++;
                 string product_id = startIdFrom.ToString();
-                string model = item.SelectSingleNode(PathModel.XMLModelNode)?.InnerText ?? "";
+                string model = item.SelectSingleNode(PathModel.ModelNode)?.InnerText ?? "";
                 //string model = item.Attributes["id"]?.Value;
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
-                string quantity = item.SelectSingleNode(PathModel.XMLQuantityNode)?.InnerText ?? "";
+                string quantity = item.SelectSingleNode(PathModel.QuantityNode)?.InnerText ?? "";
                 string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
                 string description = item.SelectSingleNode("description")?.InnerText ?? "";
-                string image = item.SelectSingleNode(PathModel.XMLPictureNode)?.InnerText ?? "";
-                string vendor = item.SelectSingleNode(PathModel.XMLSupplierNode)?.InnerText ?? "";
+                string image = item.SelectSingleNode(PathModel.PictureNode)?.InnerText ?? "";
+                string vendor = item.SelectSingleNode(PathModel.SupplierNode)?.InnerText ?? "";
                 Translitter trn = new();
                 string firstKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
                     .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "");
@@ -110,7 +110,7 @@ public class WriteToXL
 
                 //var modelCount = new Dictionary<string, int>();
 
-                //var photoNodes = xmlDoc.SelectNodes($"//{PathModel.XMLPictureNode}");
+                //var photoNodes = xmlDoc.SelectNodes($"//{PathModel.PictureNode}");
 
 
                 //foreach (XmlNode photoNode in photoNodes)
@@ -118,7 +118,7 @@ public class WriteToXL
                 //    var photoUrl = photoNode.InnerText;
 
                 //    // Get the model value from the parent node
-                //    var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.XMLModelNode);
+                //    var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.ModelNode);
                 //    var modelValue = modelNode?.InnerText;
 
                 //    // Extract the original file name from the URL
@@ -290,7 +290,7 @@ public class WriteToXL
 
                 foreach (XmlNode item in itemsList)
                 {
-                    XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
+                    XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
 
                     foreach (XmlNode param in paramList)
                     {
@@ -318,7 +318,7 @@ public class WriteToXL
                 //var paramIndex = 1;
                 //foreach (XmlNode item in itemsList)
                 //{
-                //    XmlNodeList paramList = item.SelectNodes(PathModel.XMLParamNode);
+                //    XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
 
                 //    foreach (XmlNode param in paramList)
                 //    {
