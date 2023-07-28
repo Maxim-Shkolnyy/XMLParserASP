@@ -7,7 +7,12 @@
 <br />
 @using (Html.BeginForm("DownloadFromXml", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <button type="submit" class="btn btn-success">Start download</button>
+    <button type="submit" class="btn btn-success">Download from Xml</button>
+}
+<br />
+@using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <button type="submit" class="btn btn-success">Download from Xl</button>
 }
 
 @*<div class="form-group">
