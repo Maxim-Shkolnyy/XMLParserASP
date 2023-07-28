@@ -12,7 +12,7 @@ namespace xmlParserASP.Controllers
         {
             return View(); 
         }
-        public async Task<ActionResult> Download()
+        public async Task<ActionResult> DownloadFromXml()
         {
             try
             {               
@@ -70,7 +70,7 @@ namespace xmlParserASP.Controllers
                             continue; // Skip downloading if the file already exists
                         }
 
-                        // Download the photo and save it to the selected folder
+                        // DownloadFromXml the photo and save it to the selected folder
                         using (var response = await client.GetAsync(photoUrl))
                         {
                             if (response.IsSuccessStatusCode)
@@ -134,7 +134,7 @@ namespace xmlParserASP.Controllers
                 ViewBag.Message = "An error occurred: " + ex.Message;
             }
 
-            return View("Download");
+            return View("DownloadFromXml");
         }       
     }
 }
