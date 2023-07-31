@@ -31,7 +31,7 @@ public static class PathModel
     public static string ModelNode = "model";
     public static string ModelXlColumn = "Артикул";
 
-    public static int XlSheetNumber = 2;
+    public static int XlSheetNumber = 3;
 
 
 

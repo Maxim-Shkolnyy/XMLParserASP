@@ -12,10 +12,13 @@
 }
 
 @{
-    List<string> wrongUrl = ViewBag.WrongUrl;
-    foreach (var wromgUrl in wrongUrl)
+    int count = 1;
+    List<string> wrongUrls = ViewBag.WrongUrl;
+    foreach (var wrongUrl in wrongUrls)
     {
-        @wromgUrl
+        <br />
+        @Html.Raw(count + "  " + wrongUrl)       ;
+        count++;
     }
 }
 
