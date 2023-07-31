@@ -11,6 +11,14 @@
     </div>
 }
 
+@{
+    List<string> wrongUrl = ViewBag.WrongUrl;
+    foreach (var wromgUrl in wrongUrl)
+    {
+        @wromgUrl
+    }
+}
+
 @*@using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
