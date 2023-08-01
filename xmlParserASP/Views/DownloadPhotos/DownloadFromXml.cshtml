@@ -11,16 +11,21 @@
     </div>
 }
 
-@{
+@if (ViewBag.WrongUrl != null)
+{
+    <text>Wrong links:</text>
+
     int count = 1;
-    List<string> wrongUrls = ViewBag.WrongUrl;
-    foreach (var wrongUrl in wrongUrls)
-    {
-        <br />
-        @Html.Raw(count + "  " + wrongUrl)       ;
-        count++;
-    }
+        List<string> wrongUrls = ViewBag.WrongUrl;
+        foreach (var wrongUrl in wrongUrls)
+        {
+            <br />
+            @wrongUrl
+            /*@Html.Raw(count + "  " + wrongUrl)*/       ;
+            count++;
+        }
 }
+
 
 @*@using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {

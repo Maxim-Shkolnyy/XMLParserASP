@@ -66,7 +66,7 @@ namespace xmlParserASP.Controllers
                         var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
 
                         // Combine modelValue, alphabeticCharacter, "Feron", and originalFileName to form the new file name
-                        var imageName = $"{modelValue}-{alphabeticCharacter}-Feron_{originalFileName}";
+                        var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
 
                         // Check if the file already exists in the destination folder
                         var filePath = Path.Combine(PathModel.PhotoFolder, imageName);
@@ -150,13 +150,12 @@ namespace xmlParserASP.Controllers
                     }
                     else
                     {
-                        ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}";
+                        ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can`t download. Wrong URL: {cannotDownload}";
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that occur during the process
                 ViewBag.Message = "An error occurred: " + ex.Message;
             }
 
@@ -169,20 +168,18 @@ namespace xmlParserASP.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    // Create a dictionary to keep track of the count of each model
                     var modelCount = new Dictionary<string, int>();
-                    // Create a dictionary to keep track of downloaded photo URLs for each model
                     var modelPhotoUrls = new Dictionary<string, HashSet<string>>();
                     int totalPhotosDownloaded = 0;
                     int totalPhotosResized = 0;
                     int totalPhotoPassedExists = 0;
                     List<string> wrongUrl = new();
                     int cannotDownload = 0;
-                    int newPhotosAdded = 0; // Variable to track the count of new photos added
+                    int newPhotosAdded = 0; 
 
                     string excelFilePath = PathModel.Path;
-                    string modelColumnName = PathModel.ModelXlColumn; // Replace with the name of the column containing model names
-                    string photoUrlColumnName = PathModel.PictureXlColumn; // Replace with the name of the column containing photo URLs
+                    string modelColumnName = PathModel.ModelXlColumn; 
+                    string photoUrlColumnName = PathModel.PictureXlColumn;
 
                     using (var workbook = new XLWorkbook(excelFilePath))
                     {
@@ -191,9 +188,9 @@ namespace xmlParserASP.Controllers
                         var modelColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == modelColumnName)?.WorksheetColumn();
                         var photoUrlColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == photoUrlColumnName)?.WorksheetColumn();
 
-                        if (modelColumn == null || photoUrlColumn == null)
+                        if (modelColumn == null || photoUrlColumn == null || worksheet == null)
                         {
-                            ViewBag.Message = "Model and/or Photo URL column not found in the Excel file.";
+                            ViewBag.Message = "Model, sheet and/or Photo URL column not found in the Excel file.";
                             return View("Index");
                         }
 
@@ -208,28 +205,22 @@ namespace xmlParserASP.Controllers
 
                             if (!modelCount.ContainsKey(modelValue))
                             {
-                                // Add the model to the dictionary with an initial count of 0
                                 modelCount[modelValue] = 0;
                                 modelPhotoUrls[modelValue] = new HashSet<string>(); // Initialize the HashSet for photo URLs
                                 totalPhotoPassedExists++;
                             }
 
-                            // Increment the count for the model
                             modelCount[modelValue]++;
 
                             // Get the count value for the model
                             var count = modelCount[modelValue];
 
-                            // Get the alphabetic character based on the count (A, B, C, ...)
                             var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
 
-                            // Combine modelValue, alphabeticCharacter, "Feron", and originalFileName to form the new file name
-                            var imageName = $"{modelValue}-{alphabeticCharacter}-Feron_{originalFileName}";
+                            var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
 
-                            // Check if the file already exists in the destination folder
                             var filePath = Path.Combine(PathModel.PhotoFolder, imageName);
 
-                            // Check if the photo URL has been downloaded for this model before
                             if (modelPhotoUrls[modelValue].Contains(photoUrl))
                             {
                                 totalPhotoPassedExists++;
@@ -246,14 +237,12 @@ namespace xmlParserASP.Controllers
 
                                     using (var photoStream = await response.Content.ReadAsStreamAsync())
                                     {
-                                        // Load the image from the stream
                                         using (var image = Image.FromStream(photoStream))
                                         {
                                             photoStream.Seek(0, SeekOrigin.Begin);
                                             // Check if the image exceeds the maximum size
                                             if (image.Width > 1000 || image.Height > 1000)
                                             {
-                                                // Calculate the new dimensions while maintaining the aspect ratio
                                                 int newWidth, newHeight;
                                                 if (image.Width > image.Height)
                                                 {
@@ -266,17 +255,14 @@ namespace xmlParserASP.Controllers
                                                     newWidth = (int)((float)image.Width / image.Height * newHeight);
                                                 }
 
-                                                // Create a new bitmap with the resized dimensions
                                                 using (var resizedImage = new Bitmap(image, newWidth, newHeight))
                                                 {
-                                                    // Save the resized image to the file
                                                     resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
                                                     totalPhotosResized++;
                                                 }
                                             }
                                             else
                                             {
-                                                // Save the original image to the file
                                                 using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
                                                 {
                                                     photoStream.Seek(0, SeekOrigin.Begin);
@@ -287,7 +273,7 @@ namespace xmlParserASP.Controllers
                                             // Add the photo URL to the HashSet for this model
                                             modelPhotoUrls[modelValue].Add(photoUrl);
                                             totalPhotosDownloaded++;
-                                            newPhotosAdded++; // Increment the new photos count
+                                            newPhotosAdded++; 
                                         }
                                     }
                                 }
@@ -309,7 +295,7 @@ namespace xmlParserASP.Controllers
                     }
                     else
                     {
-                        ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can`t download. Wrong URL: {cannotDownload}";
+                        ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Wrong URL, image was not downloaded: {cannotDownload}";
                         ViewBag.WrongUrl = wrongUrl;
                     }
                 }
