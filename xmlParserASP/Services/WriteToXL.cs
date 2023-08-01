@@ -72,7 +72,7 @@ public class WriteToXL
             // Настройки выгрузки поставщика
 
             XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.ProductNode);
-            
+
             //XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName(PathModel.ParamNode);
 
             int row = 2;

@@ -16,7 +16,7 @@ public static class PathModel
     //public static string? Path { get;} = @"https://b2b.allegro-opt.com.ua/allegro-807a960d080cdbaeea3aec7f5cd8dede.xml"; // Videx, Allegro
     //public static string? Path { get; } = @"https://amperok.com.ua/index.php?route=extension/feed/unixml/violux_full"; // Violux, Amperok 
     //public static string? Path { get; } = @"https://b2b.vestum.ua/data/yml_catalog_rozetka.xml"; // Vestum
-    public static string? Path { get; } = @"D:\Downloads\Horoz_img.xlsx";
+    public static string? Path { get; } = @"D:\Downloads\Novodvor.xlsx";
 
 
 
@@ -29,20 +29,20 @@ public static class PathModel
     //public static string ProductNode = "offer";  // Horoz
 
     public static string ModelNode = "model";
-    public static string ModelXlColumn = "model";
+    public static string ModelXlColumn = "Артикул";
 
     public static int XlSheetNumber = 1;
 
 
 
     public static string PictureNode = "image";
-    public static string PictureXlColumn = "image_name";
+    public static string PictureXlColumn = "URL";
 
     public static string imageNameInCatImg = "";
     
 
     public static string PhotoFolder = @"D:\Downloads\Photo\";
-    public static string Supplier = "Horoz";
+    public static string Supplier = "Novodvorsky";
 
 
     public static string QuantityNode = "quantity";
