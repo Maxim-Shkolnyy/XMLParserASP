@@ -14,6 +14,6 @@ public class Supplier
     public string SupplierName { get; set; }
 
     public ICollection<Product>? Products { get; set; }
-    public SupplierXmlSetting? SupplierXmlSetting { get; set; }
+    public ICollection<SupplierXmlSetting>? SupplierXmlSetting { get; set; }
 
 }

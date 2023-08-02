@@ -8,12 +8,18 @@ namespace xmlParserASP.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SupplierXmlSettingId { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Enter name")]
         public string SettingName { get; set; }
+
+        // Внешний ключ для связи с Supplier
+        [Required(ErrorMessage = "Select a supplier")]
         public int SupplierId { get; set; }
+
+        // Навигационное свойство для связи с Supplier
         public Supplier Supplier { get; set; }
 
-               
+
         public int? StartGammaIDFrom { get; set; }
 
         public  string? ProductNode { get; set; }
