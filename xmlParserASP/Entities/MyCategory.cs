@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xmlParserASP.Entities;
 
@@ -6,7 +7,6 @@ namespace xmlParserASP.Entities;
 public class MyCategory
 {
     [Key]
-    [Required]
     public int MyCatId { get; set; }
     public int MyParentCatId { get; set; }
    

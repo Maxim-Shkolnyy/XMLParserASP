@@ -22,9 +22,8 @@ namespace xmlParserASP.Controllers
         // GET: SupplierXmlSettings
         public async Task<IActionResult> Index()
         {
-              return _context.SupplierXmlSettings != null ? 
-                          View(await _context.SupplierXmlSettings.ToListAsync()) :
-                          Problem("Entity set 'MyDBContext.SupplierXmlSettings'  is null.");
+            var myDBContext = _context.SupplierXmlSettings.Include(s => s.Supplier);
+            return View(await myDBContext.ToListAsync());
         }
 
         // GET: SupplierXmlSettings/Details/5
@@ -36,7 +35,8 @@ namespace xmlParserASP.Controllers
             }
 
             var supplierXmlSetting = await _context.SupplierXmlSettings
-                .FirstOrDefaultAsync(m => m.SupplierXmlSettingID == id);
+                .Include(s => s.Supplier)
+                .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
             if (supplierXmlSetting == null)
             {
                 return NotFound();
@@ -48,6 +48,7 @@ namespace xmlParserASP.Controllers
         // GET: SupplierXmlSettings/Create
         public IActionResult Create()
         {
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName");
             return View();
         }
 
@@ -56,7 +57,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierXmlSettingID,SupplierXmlSettingName,SupplierId,StartGammaIDFrom,ProductNode,ModelNode,PictureNode,imageNameInCatImg,PhotoFolder,QuantityNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+        public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,StartGammaIDFrom,ProductNode,ModelNode,ModelXlColumn,PictureNode,PictureXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
         {
             if (ModelState.IsValid)
             {
@@ -64,6 +65,7 @@ namespace xmlParserASP.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
             return View(supplierXmlSetting);
         }
 
@@ -80,6 +82,7 @@ namespace xmlParserASP.Controllers
             {
                 return NotFound();
             }
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
             return View(supplierXmlSetting);
         }
 
@@ -88,9 +91,9 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingID,SupplierXmlSettingName,SupplierId,StartGammaIDFrom,ProductNode,ModelNode,PictureNode,imageNameInCatImg,PhotoFolder,QuantityNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,StartGammaIDFrom,ProductNode,ModelNode,ModelXlColumn,PictureNode,PictureXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
         {
-            if (id != supplierXmlSetting.SupplierXmlSettingID)
+            if (id != supplierXmlSetting.SupplierXmlSettingId)
             {
                 return NotFound();
             }
@@ -104,7 +107,7 @@ namespace xmlParserASP.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SupplierXmlSettingExists(supplierXmlSetting.SupplierXmlSettingID))
+                    if (!SupplierXmlSettingExists(supplierXmlSetting.SupplierXmlSettingId))
                     {
                         return NotFound();
                     }
@@ -115,6 +118,7 @@ namespace xmlParserASP.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
             return View(supplierXmlSetting);
         }
 
@@ -127,7 +131,8 @@ namespace xmlParserASP.Controllers
             }
 
             var supplierXmlSetting = await _context.SupplierXmlSettings
-                .FirstOrDefaultAsync(m => m.SupplierXmlSettingID == id);
+                .Include(s => s.Supplier)
+                .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
             if (supplierXmlSetting == null)
             {
                 return NotFound();
@@ -157,7 +162,7 @@ namespace xmlParserASP.Controllers
 
         private bool SupplierXmlSettingExists(int id)
         {
-          return (_context.SupplierXmlSettings?.Any(e => e.SupplierXmlSettingID == id)).GetValueOrDefault();
+          return (_context.SupplierXmlSettings?.Any(e => e.SupplierXmlSettingId == id)).GetValueOrDefault();
         }
     }
 }

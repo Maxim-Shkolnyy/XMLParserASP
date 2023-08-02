@@ -12,10 +12,16 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SupplierXmlSettingName)
+            @Html.DisplayNameFor(model => model.SettingName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SupplierXmlSettingName)
+            @Html.DisplayFor(model => model.SettingName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Supplier.SupplierName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.StartGammaIDFrom)
@@ -36,10 +42,22 @@
             @Html.DisplayFor(model => model.ModelNode)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ModelXlColumn)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ModelXlColumn)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PictureNode)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.PictureNode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PictureXlColumn)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PictureXlColumn)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.imageNameInCatImg)
@@ -80,7 +98,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="SupplierXmlSettingID" />
+        <input type="hidden" asp-for="SupplierXmlSettingId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

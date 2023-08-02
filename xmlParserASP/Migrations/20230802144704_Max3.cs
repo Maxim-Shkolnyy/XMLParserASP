@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class SuppXML : Migration
+    public partial class Max3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -85,7 +85,7 @@ namespace xmlParserASP.Migrations
                 {
                     supplier_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    supplier_name = table.Column<string>(type: "longtext", nullable: false)
+                    supplier_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,18 +185,20 @@ namespace xmlParserASP.Migrations
                 {
                     supplier_xml_setting_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    supplier_xml_setting_name = table.Column<string>(type: "longtext", nullable: false),
+                    setting_name = table.Column<string>(type: "longtext", nullable: false),
                     supplier_id = table.Column<int>(type: "int", nullable: false),
-                    start_gamma_id_from = table.Column<int>(type: "int", nullable: false),
-                    product_node = table.Column<string>(type: "longtext", nullable: false),
-                    model_node = table.Column<string>(type: "longtext", nullable: false),
-                    picture_node = table.Column<string>(type: "longtext", nullable: false),
-                    image_name_in_cat_img = table.Column<string>(type: "longtext", nullable: false),
-                    photo_folder = table.Column<string>(type: "longtext", nullable: false),
-                    quantity_node = table.Column<string>(type: "longtext", nullable: false),
-                    supplier_node = table.Column<string>(type: "longtext", nullable: false),
-                    param_node = table.Column<string>(type: "longtext", nullable: false),
-                    param_attr_node = table.Column<string>(type: "longtext", nullable: false)
+                    start_gamma_id_from = table.Column<int>(type: "int", nullable: true),
+                    product_node = table.Column<string>(type: "longtext", nullable: true),
+                    model_node = table.Column<string>(type: "longtext", nullable: true),
+                    model_xl_column = table.Column<string>(type: "longtext", nullable: true),
+                    picture_node = table.Column<string>(type: "longtext", nullable: true),
+                    picture_xl_column = table.Column<string>(type: "longtext", nullable: true),
+                    image_name_in_cat_img = table.Column<string>(type: "longtext", nullable: true),
+                    photo_folder = table.Column<string>(type: "longtext", nullable: true),
+                    quantity_node = table.Column<string>(type: "longtext", nullable: true),
+                    supplier_node = table.Column<string>(type: "longtext", nullable: true),
+                    param_node = table.Column<string>(type: "longtext", nullable: true),
+                    param_attr_node = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -228,7 +230,8 @@ namespace xmlParserASP.Migrations
             migrationBuilder.CreateIndex(
                 name: "ix_supplier_xml_settings_supplier_id",
                 table: "supplier_xml_settings",
-                column: "supplier_id");
+                column: "supplier_id",
+                unique: true);
         }
 
         /// <inheritdoc />

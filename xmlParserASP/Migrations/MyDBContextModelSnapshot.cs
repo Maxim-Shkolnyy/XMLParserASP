@@ -204,7 +204,8 @@ namespace xmlParserASP.Migrations
 
                     b.Property<string>("SupplierName")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("supplier_name");
 
                     b.HasKey("SupplierId")
@@ -273,47 +274,53 @@ namespace xmlParserASP.Migrations
 
             modelBuilder.Entity("xmlParserASP.Entities.SupplierXmlSetting", b =>
                 {
-                    b.Property<int>("SupplierXmlSettingID")
+                    b.Property<int>("SupplierXmlSettingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("supplier_xml_setting_id");
 
                     b.Property<string>("ModelNode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("model_node");
 
+                    b.Property<string>("ModelXlColumn")
+                        .HasColumnType("longtext")
+                        .HasColumnName("model_xl_column");
+
                     b.Property<string>("ParamAttrNode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("param_attr_node");
 
                     b.Property<string>("ParamNode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("param_node");
 
                     b.Property<string>("PhotoFolder")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("photo_folder");
 
                     b.Property<string>("PictureNode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("picture_node");
 
+                    b.Property<string>("PictureXlColumn")
+                        .HasColumnType("longtext")
+                        .HasColumnName("picture_xl_column");
+
                     b.Property<string>("ProductNode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("product_node");
 
                     b.Property<string>("QuantityNode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("quantity_node");
 
-                    b.Property<int>("StartGammaIDFrom")
+                    b.Property<string>("SettingName")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("setting_name");
+
+                    b.Property<int?>("StartGammaIDFrom")
                         .HasColumnType("int")
                         .HasColumnName("start_gamma_id_from");
 
@@ -322,24 +329,18 @@ namespace xmlParserASP.Migrations
                         .HasColumnName("supplier_id");
 
                     b.Property<string>("SupplierNode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("supplier_node");
 
-                    b.Property<string>("SupplierXmlSettingName")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("supplier_xml_setting_name");
-
                     b.Property<string>("imageNameInCatImg")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("image_name_in_cat_img");
 
-                    b.HasKey("SupplierXmlSettingID")
+                    b.HasKey("SupplierXmlSettingId")
                         .HasName("pk_supplier_xml_settings");
 
                     b.HasIndex("SupplierId")
+                        .IsUnique()
                         .HasDatabaseName("ix_supplier_xml_settings_supplier_id");
 
                     b.ToTable("supplier_xml_settings", (string)null);
@@ -391,19 +392,21 @@ namespace xmlParserASP.Migrations
 
             modelBuilder.Entity("xmlParserASP.Entities.SupplierXmlSetting", b =>
                 {
-                    b.HasOne("xmlParserASP.Entities.Supplier", null)
-                        .WithMany("SupplierXmlSettings")
-                        .HasForeignKey("SupplierId")
+                    b.HasOne("xmlParserASP.Entities.Supplier", "Supplier")
+                        .WithOne("SupplierXmlSetting")
+                        .HasForeignKey("xmlParserASP.Entities.SupplierXmlSetting", "SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_supplier_xml_settings_suppliers_supplier_id");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.Supplier", b =>
                 {
                     b.Navigation("Products");
 
-                    b.Navigation("SupplierXmlSettings");
+                    b.Navigation("SupplierXmlSetting");
                 });
 #pragma warning restore 612, 618
         }

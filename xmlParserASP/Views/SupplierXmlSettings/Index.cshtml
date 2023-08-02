@@ -13,7 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SupplierXmlSettingName)
+                @Html.DisplayNameFor(model => model.SettingName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supplier)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.StartGammaIDFrom)
@@ -25,7 +28,13 @@
                 @Html.DisplayNameFor(model => model.ModelNode)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.ModelXlColumn)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.PictureNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PictureXlColumn)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.imageNameInCatImg)
@@ -52,7 +61,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.SupplierXmlSettingName)
+                @Html.DisplayFor(modelItem => item.SettingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartGammaIDFrom)
@@ -64,7 +76,13 @@
                 @Html.DisplayFor(modelItem => item.ModelNode)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.ModelXlColumn)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.PictureNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PictureXlColumn)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.imageNameInCatImg)
@@ -85,9 +103,9 @@
                 @Html.DisplayFor(modelItem => item.ParamAttrNode)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.SupplierXmlSettingID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SupplierXmlSettingID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SupplierXmlSettingID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.SupplierXmlSettingId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.SupplierXmlSettingId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.SupplierXmlSettingId">Delete</a>
             </td>
         </tr>
 }

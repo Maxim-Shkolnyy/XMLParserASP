@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xmlParserASP.Entities;
 
@@ -6,7 +7,7 @@ namespace xmlParserASP.Entities;
 public class SupplierAttribute
 {
     [Key]
-    [Required]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int SupAttrId { get; set; }
     public int SupplierId { get; set; }
     public string SupAttrNameRU { get; set; }

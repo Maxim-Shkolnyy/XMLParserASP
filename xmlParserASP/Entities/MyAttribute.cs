@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xmlParserASP.Entities;
 
@@ -6,7 +7,7 @@ namespace xmlParserASP.Entities;
 public class MyAttribute
 {
     [Key]
-    [Required]
+    
     public int MyAttrId { get; set; }
 
     [Required]

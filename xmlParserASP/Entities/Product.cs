@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xmlParserASP.Entities;
 
@@ -6,7 +7,7 @@ namespace xmlParserASP.Entities;
 public class Product
 {
     [Key]
-    [Required]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ProductId { get; set; }
     public int SupplierId { get; set; }    
     ICollection<Supplier> Supplier { get; set; }
