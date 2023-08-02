@@ -85,8 +85,8 @@ public class WriteToXL
             {
                 startIdFrom++;
                 string product_id = startIdFrom.ToString();
-                string model = item.SelectSingleNode(PathModel.ModelNode)?.InnerText ?? "";
-                //string model = item.Attributes["id"]?.Value;
+                //string model = item.SelectSingleNode(PathModel.ModelNode)?.InnerText ?? "";
+                string model = item.Attributes["id"]?.Value;
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
