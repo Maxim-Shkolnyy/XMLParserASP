@@ -11,6 +11,21 @@
     </div>
 }
 
+@if (ViewBag.CorrectUrl != null)
+{
+    <text>Wrong links:</text>
+
+    int count = 1;
+    List<string> correctUrls = ViewBag.CorrectUrl;
+    foreach (var correctUrl in correctUrls)
+    {
+        <br />
+        @correctUrl
+        /*@Html.Raw(count + "  " + correctUrl)*/       ;
+        count++;
+    }
+}
+
 @if (ViewBag.WrongUrl != null)
 {
     <text>Wrong links:</text>

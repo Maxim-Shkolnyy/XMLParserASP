@@ -73,8 +73,6 @@ public class WriteToXL
 
             XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.ProductNode);
 
-            //XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName(PathModel.ParamNode);
-
             int row = 2;
             int startIdFrom = PathModel.StartGammaIDFrom;
 

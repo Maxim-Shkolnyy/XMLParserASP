@@ -14,7 +14,7 @@ namespace xmlParserASP.Controllers
             return View();
         }
 
-        public async Task<ActionResult> DownloadFromXml()
+        public async Task<ActionResult> DownloadFromXml(string? idAttribute)
         {
             try
             {
@@ -37,14 +37,16 @@ namespace xmlParserASP.Controllers
                     int totalPhotosDownloaded = 0;
                     int totalPhotosResized = 0;
                     int totalPhotoPassedExists = 0;
-                    int cannotDownload = 0;
-                    int newPhotosAdded = 0; // Variable to track the count of new photos added
+                    int imgNameDownload = 0;
+                    int imgNameCannotDownload = 0;
+                    int newPhotosAdded = 0;
 
                     foreach (XmlNode photoNode in photoNodes)
                     {
                         var photoUrl = photoNode.InnerText;
 
                         var modelValue = photoNode.ParentNode.SelectSingleNode(PathModel.ModelNode).InnerText;
+                        //var modelValue = photoNode.ParentNode.Attributes["id"]?.Value;
 
                         var originalFileName = Path.GetFileName(photoUrl);
 
@@ -139,7 +141,7 @@ namespace xmlParserASP.Controllers
                             }
                             else
                             {
-                                ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can`t download. Wrong URL: {cannotDownload}";
+                                ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can`t download. Wrong URL: {imgNameCannotDownload}";
                             }
                         }
                     }
@@ -150,7 +152,7 @@ namespace xmlParserASP.Controllers
                     }
                     else
                     {
-                        ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can`t download. Wrong URL: {cannotDownload}";
+                        ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can`t download. Wrong URL: {imgNameCannotDownload}";
                     }
                 }
             }
