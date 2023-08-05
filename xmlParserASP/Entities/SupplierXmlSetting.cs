@@ -17,7 +17,7 @@ namespace xmlParserASP.Entities
         public int SupplierId { get; set; }
 
         // Навигационное свойство для связи с Supplier
-        public Supplier Supplier { get; set; }
+        public Supplier? Supplier { get; set; }
 
 
         public int? StartGammaIDFrom { get; set; }

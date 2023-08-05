@@ -11,7 +11,7 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230802152013_Max")]
+    [Migration("20230805125545_Max")]
     partial class Max
     {
         /// <inheritdoc />
@@ -327,7 +327,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("start_gamma_id_from");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("supplier_id");
 
