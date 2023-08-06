@@ -19,12 +19,14 @@ namespace xmlParserASP.Entities
         // Навигационное свойство для связи с Supplier
         public Supplier? Supplier { get; set; }
 
+        public string? Path { get; set; }
+
 
         public int? StartGammaIDFrom { get; set; }
 
         public  string? ProductNode { get; set; }
 
-
+        public string? paramAttribute { get; set; }
        
         public string? ModelNode { get; set; }
         public string? ModelXlColumn { get; set; }
@@ -43,7 +45,7 @@ namespace xmlParserASP.Entities
 
         public string? ParamAttrNode { get; set; }
 
-        public string? Path { get; } = @"D:\Downloads\Telegram Desktop\promua_2405ua.xml"; //home
+        //public string? Path { get; } = @"D:\Downloads\Telegram Desktop\promua_2405ua.xml"; //home
 
         //public  string? Path { get; } = @"https://b2b.vestum.ua/data/yml_catalog_rozetka.xml";
 
