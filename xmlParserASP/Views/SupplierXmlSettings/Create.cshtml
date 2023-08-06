@@ -14,15 +14,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="SettingName" class="control-label"></label>
-                <input asp-for="SettingName" class="form-control" placeholder="Наприклад: Feron XML"/>
+                <input asp-for="SettingName" class="form-control" />
                 <span asp-validation-for="SettingName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SupplierId" class="control-label"></label>
-                <select asp-for="SupplierId" class ="form-control" asp-items="ViewBag.SupplierId">
-                    <option value="" selected>Select supplier</option>
-                </select>
-                <span asp-validation-for="SupplierId" class="text-danger"></span>
+                <select asp-for="SupplierId" class ="form-control" asp-items="ViewBag.SupplierId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Path" class="control-label"></label>
+                <input asp-for="Path" class="form-control" />
+                <span asp-validation-for="Path" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StartGammaIDFrom" class="control-label"></label>
@@ -33,6 +35,11 @@
                 <label asp-for="ProductNode" class="control-label"></label>
                 <input asp-for="ProductNode" class="form-control" />
                 <span asp-validation-for="ProductNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="paramAttribute" class="control-label"></label>
+                <input asp-for="paramAttribute" class="form-control" />
+                <span asp-validation-for="paramAttribute" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ModelNode" class="control-label"></label>
