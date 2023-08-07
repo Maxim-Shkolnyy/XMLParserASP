@@ -4,6 +4,7 @@ using xmlParserASP.Models;
 using System.Drawing;
 using System.Drawing.Imaging;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace xmlParserASP.Controllers
 {
@@ -11,6 +12,14 @@ namespace xmlParserASP.Controllers
     {
         public IActionResult Index()
         {
+            var stringPath = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Select file folder", Value = "" },
+                new SelectListItem { Text = "D:\\Downloads\\", Value = "D:\\Downloads\\" },
+                new SelectListItem { Text = "C:\\Downloads\\", Value = "C:\\Downloads\\" },
+                new SelectListItem { Text = "D:\\Downloads\\Telegram Desktop\\", Value = "D:\\Downloads\\Telegram Desktop\\" }
+            };
+            ViewBag.stringPath = stringPath;
             return View();
         }
 
