@@ -175,7 +175,7 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DownloadFromXL(IFormFile? fileName, string? filePath)
+        public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, string? filePath)
         {
             try
             {
@@ -191,7 +191,7 @@ namespace xmlParserASP.Controllers
                     int newPhotosAdded = 0;
 
                     //string excelFilePath = PathModel.Path;
-                    string excelFilePath = Path.Combine(fileName.FileName, filePath);
+                    string excelFilePath = Path.Combine(filePath, xmlFile.FileName);
                     
                     string modelColumnName = PathModel.ModelXlColumn;
                     string photoUrlColumnName = PathModel.PictureXlColumn;

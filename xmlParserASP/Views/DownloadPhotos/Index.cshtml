@@ -1,6 +1,6 @@
 ﻿<h2>DownloadFromXml Photos</h2>
 
-<h2>Choose folder</h2>
+<h3>Choose folder</h3>
 
 @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -9,19 +9,22 @@
         <select name="filePath" class="form-control" asp-items="@ViewBag.stringPath">
         </select>
     </div>
+    <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
 
+    <input type="hidden" asp-action="DownloadFromXL" />
+    <button type="submit" class="btn btn-success">Download from Xl</button>
 }
 
-<div class="form-group">
+@*<div class="form-group">
 <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
-</div>
+</div>*@
 <br />
 @using (Html.BeginForm("DownloadFromXml", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <button type="submit" class="btn btn-success">Download from Xml</button>
 }
 <br />
-@using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@*@using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <button type="submit" class="btn btn-success">Download from Xl</button>
-}
+}*@
