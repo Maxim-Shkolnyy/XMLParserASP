@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,9 +11,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230805125545_Max")]
+    partial class Max
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,10 +298,6 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("param_node");
 
-                    b.Property<string>("Path")
-                        .HasColumnType("longtext")
-                        .HasColumnName("path");
-
                     b.Property<string>("PhotoFolder")
                         .HasColumnType("longtext")
                         .HasColumnName("photo_folder");
@@ -328,7 +327,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("int")
                         .HasColumnName("start_gamma_id_from");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("supplier_id");
 
@@ -339,10 +339,6 @@ namespace xmlParserASP.Migrations
                     b.Property<string>("imageNameInCatImg")
                         .HasColumnType("longtext")
                         .HasColumnName("image_name_in_cat_img");
-
-                    b.Property<string>("paramAttribute")
-                        .HasColumnType("longtext")
-                        .HasColumnName("param_attribute");
 
                     b.HasKey("SupplierXmlSettingId")
                         .HasName("pk_supplier_xml_settings");

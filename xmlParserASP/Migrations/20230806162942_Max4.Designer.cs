@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230802152013_Max")]
-    partial class Max
+    [Migration("20230806162942_Max4")]
+    partial class Max4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -298,6 +298,10 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("param_node");
 
+                    b.Property<string>("Path")
+                        .HasColumnType("longtext")
+                        .HasColumnName("path");
+
                     b.Property<string>("PhotoFolder")
                         .HasColumnType("longtext")
                         .HasColumnName("photo_folder");
@@ -338,6 +342,10 @@ namespace xmlParserASP.Migrations
                     b.Property<string>("imageNameInCatImg")
                         .HasColumnType("longtext")
                         .HasColumnName("image_name_in_cat_img");
+
+                    b.Property<string>("paramAttribute")
+                        .HasColumnType("longtext")
+                        .HasColumnName("param_attribute");
 
                     b.HasKey("SupplierXmlSettingId")
                         .HasName("pk_supplier_xml_settings");

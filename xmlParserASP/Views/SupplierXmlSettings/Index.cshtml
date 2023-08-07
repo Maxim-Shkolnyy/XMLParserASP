@@ -19,10 +19,16 @@
                 @Html.DisplayNameFor(model => model.Supplier)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Path)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.StartGammaIDFrom)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ProductNode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.paramAttribute)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ModelNode)
@@ -67,10 +73,16 @@
                 @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Path)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.StartGammaIDFrom)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ProductNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.paramAttribute)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ModelNode)
