@@ -1,5 +1,26 @@
 ﻿<h2>DownloadFromXml Photos</h2>
 
+@{
+    var stringPath = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Select file folder", Value = "" },
+        new SelectListItem { Text = "D:\\Downloads", Value = "D:\\Downloads" },
+        new SelectListItem { Text = "C:\\Downloads", Value = "C:\\Downloads" },
+        new SelectListItem { Text = "D:\\Downloads\\Telegram Desktop", Value = "D:\\Downloads\\Telegram Desktop" }
+    };
+}
+
+<h2>Choose folder</h2>
+
+@using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+        <label for="filePath" class="control-label">Choose folder:</label>
+        <select name="filePath" class="form-control" asp-items="@stringPath">
+        </select>
+    </div>
+
+}
 
 <div class="form-group">
 <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
@@ -14,17 +35,3 @@
 {
     <button type="submit" class="btn btn-success">Download from Xl</button>
 }
-
-@*<div class="form-group">
-    <label for="folderPath">Destination Folder:</label>
-    <input type="text" id="folderPath" name="folderPath" class="form-control" readonly="readonly" />
-</div
-
-<div class="form-group">
-    <label for="btnBrowseXml" class="btn btn-primary">Select XML File</label>
-    <input type="file" id="btnBrowseXml" style="display:none" />
-</div>
-<div class="form-group">
-    <label for="btnBrowseFolder" class="btn btn-primary">Select Destination Folder</label>
-    <input type="text" id="btnBrowseFolder" style="display:none" />
-</div>*@

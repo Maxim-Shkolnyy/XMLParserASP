@@ -14,6 +14,7 @@ namespace xmlParserASP.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<ActionResult> DownloadFromXml(string? idAttribute)
         {
             try
@@ -164,7 +165,8 @@ namespace xmlParserASP.Controllers
             return View("DownloadFromXml");
         }
 
-        public async Task<ActionResult> DownloadFromXL()
+        [HttpPost]
+        public async Task<ActionResult> DownloadFromXL(IFormFile? fileName, string? filePath)
         {
             try
             {
@@ -177,10 +179,12 @@ namespace xmlParserASP.Controllers
                     int totalPhotoPassedExists = 0;
                     List<string> wrongUrl = new();
                     int cannotDownload = 0;
-                    int newPhotosAdded = 0; 
+                    int newPhotosAdded = 0;
 
-                    string excelFilePath = PathModel.Path;
-                    string modelColumnName = PathModel.ModelXlColumn; 
+                    //string excelFilePath = PathModel.Path;
+                    string excelFilePath = Path.Combine(fileName.FileName, filePath);
+                    
+                    string modelColumnName = PathModel.ModelXlColumn;
                     string photoUrlColumnName = PathModel.PictureXlColumn;
 
                     using (var workbook = new XLWorkbook(excelFilePath))
@@ -221,16 +225,15 @@ namespace xmlParserASP.Controllers
 
                             var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
 
-                            var filePath = Path.Combine(PathModel.PhotoFolder, imageName);
+                            var fullFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
 
                             if (modelPhotoUrls[modelValue].Contains(photoUrl))
                             {
                                 totalPhotoPassedExists++;
                                 currentRow = currentRow.RowBelow();
-                                continue; // Skip downloading if the photo URL has been downloaded before
+                                continue;
                             }
 
-                            // Download the photo and save it to the selected folder
                             using (var response = await client.GetAsync(photoUrl))
                             {
                                 if (response.IsSuccessStatusCode)
@@ -242,7 +245,7 @@ namespace xmlParserASP.Controllers
                                         using (var image = Image.FromStream(photoStream))
                                         {
                                             photoStream.Seek(0, SeekOrigin.Begin);
-                                            // Check if the image exceeds the maximum size
+
                                             if (image.Width > 1000 || image.Height > 1000)
                                             {
                                                 int newWidth, newHeight;
@@ -275,7 +278,7 @@ namespace xmlParserASP.Controllers
                                             // Add the photo URL to the HashSet for this model
                                             modelPhotoUrls[modelValue].Add(photoUrl);
                                             totalPhotosDownloaded++;
-                                            newPhotosAdded++; 
+                                            newPhotosAdded++;
                                         }
                                     }
                                 }
@@ -304,7 +307,6 @@ namespace xmlParserASP.Controllers
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that occur during the process
                 ViewBag.Message = "An error occurred: " + ex.Message;
             }
 
@@ -312,6 +314,6 @@ namespace xmlParserASP.Controllers
         }
 
 
-       
+
     }
 }
