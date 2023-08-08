@@ -56,10 +56,10 @@ public class HomeController : Controller
         return View("Unloading");
     }
 
-    public IActionResult Suppliers()
-    {
-        return View(_db.Suppliers);
-    }
+    //public IActionResult Suppliers()
+    //{
+    //    return View(_db.Suppliers);
+    //}
 
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -5,11 +5,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using xmlParserASP.Entities;
 
 namespace xmlParserASP.Controllers
 {
     public class DownloadPhotosController : Controller
     {
+        private SupplierXmlSetting _supplierXmlSetting;
         public IActionResult Index()
         {
             var stringPath = new List<SelectListItem>
@@ -186,7 +188,7 @@ namespace xmlParserASP.Controllers
                     int totalPhotosDownloaded = 0;
                     int totalPhotosResized = 0;
                     int totalPhotoPassedExists = 0;
-                    List<string> wrongUrl = new();
+                    List<KeyValuePair<string, string>> wrongUrl = new ();
                     int cannotDownload = 0;
                     int newPhotosAdded = 0;
 
@@ -293,7 +295,7 @@ namespace xmlParserASP.Controllers
                                 }
                                 else
                                 {
-                                    wrongUrl.Add(photoUrl);
+                                    wrongUrl.Add(new KeyValuePair<string, string> (modelValue, photoUrl));
                                     cannotDownload++;
                                 }
                             }
