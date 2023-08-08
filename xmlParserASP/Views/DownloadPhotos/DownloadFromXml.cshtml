@@ -32,14 +32,33 @@
 
     int count = 1;
     List<KeyValuePair<string, string>> wrongUrls = ViewBag.WrongUrl;
+
+    <table>
+        <tr>
+            <th>Model</th>
+            <th>URL</th>
+        </tr>
+
+        @foreach (var kvp in wrongUrls)
+        {
+            <tr>
+                <td>@kvp.Key</td>
+                <td>@kvp.Value</td>
+            </tr>
+        }
+    </table>
+
+
+    @*int count = 1;
+    List<KeyValuePair<string, string>> wrongUrls = ViewBag.WrongUrl;
     foreach (var kvp in wrongUrls)
     {
         <br />
         @($"{kvp.Key}, {kvp.Value}")
-        /*@Html.Raw(count + "  " + wrongUrl)*/
+        @Html.Raw(count + "  " + wrongUrl)
         ;
         count++;
-    }
+    } *@
 }
 
 
