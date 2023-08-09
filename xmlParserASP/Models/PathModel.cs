@@ -29,7 +29,7 @@ public static class PathModel
     //public static string ProductNode = "item";      // Feron
     public static string ProductNode = "offer";  // Horoz
 
-    public static string ModelNode = "model";
+    public static string ModelNode = "code";
     public static string ModelXlColumn = "Артикул";
 
     public static int XlSheetNumber = 1;
@@ -46,8 +46,8 @@ public static class PathModel
     public static string Supplier = "Novodvorsky";
 
 
-    public static string QuantityNode = "quantity";
-    //public static string QuantityNode = "stock_quantity";
+    // public static string QuantityNode = "quantity";
+    public static string QuantityNode = "stock_quantity";
 
     public static string SupplierNode = "vendor";
 
