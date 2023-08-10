@@ -12,8 +12,8 @@ namespace xmlParserASP.Controllers
 {
     public class DownloadPhotosController : Controller
     {
-        //private SupplierXmlSetting _supplierXmlSetting;
         private readonly MyDBContext _dbContext;
+        
 
         public DownloadPhotosController(MyDBContext dbContext)
         {
@@ -43,132 +43,279 @@ namespace xmlParserASP.Controllers
 
         public async Task<ActionResult> DownloadFromXml(int? selectedSupplierXmlSetting)
         {
-            try
+            if (selectedSupplierXmlSetting != null)
             {
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(PathModel.Path);
+                var setting = _dbContext.SupplierXmlSettings.Where(s=>s.Equals(selectedSupplierXmlSetting)).FirstOrDefault();
 
-                var photoNodes = xmlDoc.SelectNodes($"//{PathModel.PictureNode}");
-                if (photoNodes == null)
+                try
                 {
-                    ViewBag.Message = "No photo URLs found in the XML.";
-                    return View("Index");
-                }
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(setting.Path);
 
-                using (var client = new HttpClient())
-                {
-                    var modelCount = new Dictionary<string, int>();
-                    var modelPhotoUrls = new Dictionary<string, HashSet<string>>();
-                    int totalPhotosDownloaded = 0;
-                    int totalPhotosResized = 0;
-                    int totalPhotoPassedExists = 0;
-                    int imgNameDownload = 0;
-                    int imgNameCannotDownload = 0;
-                    int newPhotosAdded = 0;
-
-                    var wrongUrl = new List<KeyValuePair<string, string>>();
-
-                    foreach (XmlNode photoNode in photoNodes)
+                    var photoNodes = xmlDoc.SelectNodes($"//{setting.PictureNode}");
+                    if (photoNodes == null)
                     {
-                        var photoUrl = photoNode.InnerText;
-                        var modelValue = photoNode.ParentNode.Attributes["id"]?.Value;
-                        var originalFileName = Path.GetFileName(photoUrl);
+                        ViewBag.Message = "No photo URLs found in the XML.";
+                        return View("Index");
+                    }
 
-                        if (!modelCount.ContainsKey(modelValue))
+                    using (var client = new HttpClient())
+                    {
+                        var modelCount = new Dictionary<string, int>();
+                        var modelPhotoUrls = new Dictionary<string, HashSet<string>>();
+                        int totalPhotosDownloaded = 0;
+                        int totalPhotosResized = 0;
+                        int totalPhotoPassedExists = 0;
+                        int imgNameDownload = 0;
+                        int imgNameCannotDownload = 0;
+                        int newPhotosAdded = 0;
+
+                        var wrongUrl = new List<KeyValuePair<string, string>>();
+
+                        foreach (XmlNode photoNode in photoNodes)
                         {
-                            modelCount[modelValue] = 0;
-                            modelPhotoUrls[modelValue] = new HashSet<string>();
-                            totalPhotoPassedExists++;
-                        }
+                            var photoUrl = photoNode.InnerText;
 
-                        modelCount[modelValue]++;
-                        var count = modelCount[modelValue];
-                        var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
-                        var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
-                        var filePath = Path.Combine(PathModel.PhotoFolder, imageName);
+                            string modelValue = null;
 
-                        if (System.IO.File.Exists(filePath))
-                        {
-                            totalPhotoPassedExists++;
-                            continue;
-                        }
-
-                        if (modelPhotoUrls[modelValue].Contains(photoUrl))
-                        {
-                            totalPhotoPassedExists++;
-                            continue;
-                        }
-
-                        using (var response = await client.GetAsync(photoUrl))
-                        {
-                            if (response.IsSuccessStatusCode)
+                            if (setting.paramAttribute == null)
                             {
-                                var photoFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
-
-                                using (var photoStream = await response.Content.ReadAsStreamAsync())
-                                {
-                                    using (var image = Image.FromStream(photoStream))
-                                    {
-                                        photoStream.Seek(0, SeekOrigin.Begin);
-
-                                        if (image.Width > 1000 || image.Height > 1000)
-                                        {
-                                            int newWidth, newHeight;
-                                            if (image.Width > image.Height)
-                                            {
-                                                newWidth = 1000;
-                                                newHeight = (int)((float)image.Height / image.Width * newWidth);
-                                            }
-                                            else
-                                            {
-                                                newHeight = 1000;
-                                                newWidth = (int)((float)image.Width / image.Height * newHeight);
-                                            }
-
-                                            using (var resizedImage = new Bitmap(image, newWidth, newHeight))
-                                            {
-                                                resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
-                                                totalPhotosResized++;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
-                                            {
-                                                photoStream.Seek(0, SeekOrigin.Begin);
-                                                await photoStream.CopyToAsync(fileStream);
-                                            }
-                                        }
-
-                                        modelPhotoUrls[modelValue].Add(photoUrl);
-                                        totalPhotosDownloaded++;
-                                        newPhotosAdded++;
-                                    }
-                                }
+                                modelValue = photoNode.SelectSingleNode(setting.ModelNode)?.InnerText ?? "";
                             }
                             else
                             {
-                                wrongUrl.Add(new KeyValuePair<string, string>(modelValue, photoUrl));
-                                imgNameCannotDownload++;
+                                modelValue = photoNode.ParentNode.Attributes[setting.paramAttribute]?.Value;
+                            }
+                            
+
+                            var originalFileName = Path.GetFileName(photoUrl);
+
+                            if (!modelCount.ContainsKey(modelValue))
+                            {
+                                modelCount[modelValue] = 0;
+                                modelPhotoUrls[modelValue] = new HashSet<string>();
+                                totalPhotoPassedExists++;
+                            }
+
+                            modelCount[modelValue]++;
+                            var count = modelCount[modelValue];
+                            var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+                            var imageName = $"{modelValue}-{alphabeticCharacter}-{setting.Supplier}_{originalFileName}";
+                            var filePath = Path.Combine(setting.PhotoFolder, imageName);
+
+                            if (System.IO.File.Exists(filePath))
+                            {
+                                totalPhotoPassedExists++;
+                                continue;
+                            }
+
+                            if (modelPhotoUrls[modelValue].Contains(photoUrl))
+                            {
+                                totalPhotoPassedExists++;
+                                continue;
+                            }
+
+                            using (var response = await client.GetAsync(photoUrl))
+                            {
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    var photoFilePath = Path.Combine(setting.PhotoFolder, imageName);
+
+                                    using (var photoStream = await response.Content.ReadAsStreamAsync())
+                                    {
+                                        using (var image = Image.FromStream(photoStream))
+                                        {
+                                            photoStream.Seek(0, SeekOrigin.Begin);
+
+                                            if (image.Width > 1000 || image.Height > 1000)
+                                            {
+                                                int newWidth, newHeight;
+                                                if (image.Width > image.Height)
+                                                {
+                                                    newWidth = 1000;
+                                                    newHeight = (int)((float)image.Height / image.Width * newWidth);
+                                                }
+                                                else
+                                                {
+                                                    newHeight = 1000;
+                                                    newWidth = (int)((float)image.Width / image.Height * newHeight);
+                                                }
+
+                                                using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+                                                {
+                                                    resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
+                                                    totalPhotosResized++;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                                {
+                                                    photoStream.Seek(0, SeekOrigin.Begin);
+                                                    await photoStream.CopyToAsync(fileStream);
+                                                }
+                                            }
+
+                                            modelPhotoUrls[modelValue].Add(photoUrl);
+                                            totalPhotosDownloaded++;
+                                            newPhotosAdded++;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    wrongUrl.Add(new KeyValuePair<string, string>(modelValue, photoUrl));
+                                    imgNameCannotDownload++;
+                                }
                             }
                         }
-                    }
 
-                    if (newPhotosAdded == 0)
-                    {
-                        ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
-                    }
-                    else
-                    {
-                        ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can't download. Wrong URL: {imgNameCannotDownload}";
-                        ViewBag.WrongUrl = wrongUrl;
+                        if (newPhotosAdded == 0)
+                        {
+                            ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
+                        }
+                        else
+                        {
+                            ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can't download. Wrong URL: {imgNameCannotDownload}";
+                            ViewBag.WrongUrl = wrongUrl;
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "An error occurred: " + ex.Message;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                ViewBag.Message = "An error occurred: " + ex.Message;
+                try
+                {
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(PathModel.Path);
+
+                    var photoNodes = xmlDoc.SelectNodes($"//{PathModel.PictureNode}");
+                    if (photoNodes == null)
+                    {
+                        ViewBag.Message = "No photo URLs found in the XML.";
+                        return View("Index");
+                    }
+
+                    using (var client = new HttpClient())
+                    {
+                        var modelCount = new Dictionary<string, int>();
+                        var modelPhotoUrls = new Dictionary<string, HashSet<string>>();
+                        int totalPhotosDownloaded = 0;
+                        int totalPhotosResized = 0;
+                        int totalPhotoPassedExists = 0;
+                        int imgNameDownload = 0;
+                        int imgNameCannotDownload = 0;
+                        int newPhotosAdded = 0;
+
+                        var wrongUrl = new List<KeyValuePair<string, string>>();
+
+                        foreach (XmlNode photoNode in photoNodes)
+                        {
+                            var photoUrl = photoNode.InnerText;
+                            var modelValue = photoNode.ParentNode.Attributes["id"]?.Value;
+                            var originalFileName = Path.GetFileName(photoUrl);
+
+                            if (!modelCount.ContainsKey(modelValue))
+                            {
+                                modelCount[modelValue] = 0;
+                                modelPhotoUrls[modelValue] = new HashSet<string>();
+                                totalPhotoPassedExists++;
+                            }
+
+                            modelCount[modelValue]++;
+                            var count = modelCount[modelValue];
+                            var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+                            var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
+                            var filePath = Path.Combine(PathModel.PhotoFolder, imageName);
+
+                            if (System.IO.File.Exists(filePath))
+                            {
+                                totalPhotoPassedExists++;
+                                continue;
+                            }
+
+                            if (modelPhotoUrls[modelValue].Contains(photoUrl))
+                            {
+                                totalPhotoPassedExists++;
+                                continue;
+                            }
+
+                            using (var response = await client.GetAsync(photoUrl))
+                            {
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    var photoFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
+
+                                    using (var photoStream = await response.Content.ReadAsStreamAsync())
+                                    {
+                                        using (var image = Image.FromStream(photoStream))
+                                        {
+                                            photoStream.Seek(0, SeekOrigin.Begin);
+
+                                            if (image.Width > 1000 || image.Height > 1000)
+                                            {
+                                                int newWidth, newHeight;
+                                                if (image.Width > image.Height)
+                                                {
+                                                    newWidth = 1000;
+                                                    newHeight = (int)((float)image.Height / image.Width * newWidth);
+                                                }
+                                                else
+                                                {
+                                                    newHeight = 1000;
+                                                    newWidth = (int)((float)image.Width / image.Height * newHeight);
+                                                }
+
+                                                using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+                                                {
+                                                    resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
+                                                    totalPhotosResized++;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                                {
+                                                    photoStream.Seek(0, SeekOrigin.Begin);
+                                                    await photoStream.CopyToAsync(fileStream);
+                                                }
+                                            }
+
+                                            modelPhotoUrls[modelValue].Add(photoUrl);
+                                            totalPhotosDownloaded++;
+                                            newPhotosAdded++;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    wrongUrl.Add(new KeyValuePair<string, string>(modelValue, photoUrl));
+                                    imgNameCannotDownload++;
+                                }
+                            }
+                        }
+
+                        if (newPhotosAdded == 0)
+                        {
+                            ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
+                        }
+                        else
+                        {
+                            ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can't download. Wrong URL: {imgNameCannotDownload}";
+                            ViewBag.WrongUrl = wrongUrl;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "An error occurred: " + ex.Message;
+                }
             }
+            
 
             return View("DownloadFromXml");
         }
