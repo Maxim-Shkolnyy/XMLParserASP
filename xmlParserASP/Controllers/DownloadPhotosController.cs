@@ -45,7 +45,7 @@ namespace xmlParserASP.Controllers
         {
             if (selectedSupplierXmlSetting != null)
             {
-                var setting = _dbContext.SupplierXmlSettings.Where(s=>s.Equals(selectedSupplierXmlSetting)).FirstOrDefault();
+                var setting = _dbContext.SupplierXmlSettings.FirstOrDefault(s=>s.SupplierXmlSettingId == selectedSupplierXmlSetting);
 
                 try
                 {
