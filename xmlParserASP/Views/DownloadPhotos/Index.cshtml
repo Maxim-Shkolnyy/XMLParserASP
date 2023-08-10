@@ -1,4 +1,20 @@
-﻿<h2>DownloadFromXml Photos</h2>
+﻿@model DownloadPhotosViewModel
+
+<h2>DownloadFromXml Photos</h2>
+
+<h3>Choose supplier settings</h3>
+
+<form asp-action="DownloadFromXml" method="post">
+    <label for="selectedSupplierXmlSetting">Select Supplier XML Setting:</label>
+    <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting">
+        <option value="">-- Select --</option>
+        @foreach (var setting in Model.SupplierXmlSettings)
+        {
+            <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
+        }
+    </select>
+    <button type="submit">Download</button>
+</form>
 
 <h3>Choose folder</h3>
 
