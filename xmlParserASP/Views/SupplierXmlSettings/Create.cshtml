@@ -23,7 +23,18 @@
                     <option disabled selected value="">Select supplier</option>
                 </select>
                 <span asp-validation-for="SupplierId" class="text-danger"></span>
+                
+                @*<input type="hidden" asp-for="Supplier" />
+                <script>
+                    // Скрипт для обновления скрытого поля при выборе поставщика
+                    $(document).ready(function () {
+                        $('#SupplierId').change(function () {
+                            $('#SelectedSupplier').val($(this).val());
+                        });
+                    });
+                </script>*@
             </div>
+
             <div class="form-group">
                 <label asp-for="Path" class="control-label"></label>
                 <input asp-for="Path" class="form-control" />

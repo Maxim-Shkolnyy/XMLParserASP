@@ -46,11 +46,21 @@ namespace xmlParserASP.Controllers
             if (selectedSupplierXmlSetting != null)
             {
                 var setting = _dbContext.SupplierXmlSettings.FirstOrDefault(s=>s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+                if (setting != null)
+                {
+                    var suppName = _dbContext.Suppliers
+                        .Where(s => s.SupplierId == setting.SupplierId)
+                        .Select(s => s.SupplierName)
+                        .FirstOrDefault();
+
+                    // Теперь переменная suppName содержит имя поставщика с заданным SupplierId
+                }
 
                 try
                 {
                     var xmlDoc = new XmlDocument();
                     xmlDoc.Load(setting.Path);
+
 
                     var photoNodes = xmlDoc.SelectNodes($"//{setting.PictureNode}");
                     if (photoNodes == null)
