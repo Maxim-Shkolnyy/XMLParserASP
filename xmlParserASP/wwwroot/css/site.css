@@ -21,3 +21,7 @@ body {
 .column input {
     width: 270px;
 }
+
+.wrong {
+    color: red;
+}
