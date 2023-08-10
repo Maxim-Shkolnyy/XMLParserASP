@@ -13,7 +13,9 @@ namespace xmlParserASP.Controllers
     public class DownloadPhotosController : Controller
     {
         private readonly MyDBContext _dbContext;
-        
+        private string suppName = null;
+
+
 
         public DownloadPhotosController(MyDBContext dbContext)
         {
@@ -48,7 +50,7 @@ namespace xmlParserASP.Controllers
                 var setting = _dbContext.SupplierXmlSettings.FirstOrDefault(s=>s.SupplierXmlSettingId == selectedSupplierXmlSetting);
                 if (setting != null)
                 {
-                    var suppName = _dbContext.Suppliers
+                    suppName = _dbContext.Suppliers
                         .Where(s => s.SupplierId == setting.SupplierId)
                         .Select(s => s.SupplierName)
                         .FirstOrDefault();
@@ -110,7 +112,7 @@ namespace xmlParserASP.Controllers
                             modelCount[modelValue]++;
                             var count = modelCount[modelValue];
                             var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
-                            var imageName = $"{modelValue}-{alphabeticCharacter}-{setting.Supplier}_{originalFileName}";
+                            var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{originalFileName}";
                             var filePath = Path.Combine(setting.PhotoFolder, imageName);
 
                             if (System.IO.File.Exists(filePath))
