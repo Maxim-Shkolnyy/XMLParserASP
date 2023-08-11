@@ -31,6 +31,12 @@ namespace xmlParserASP.Entities
         public string? ModelNode { get; set; }
         public string? ModelXlColumn { get; set; }
 
+        public string? PriceNode { get; set; }
+        public string? DescriptionNode { get; set; }
+        public string? NameNode { get; set; }
+        public string? CurrencyNode { get; set; }
+
+
         public string? PictureNode { get; set; }
         public string? PictureXlColumn { get; set; }
         public string? imageNameInCatImg { get; set; }

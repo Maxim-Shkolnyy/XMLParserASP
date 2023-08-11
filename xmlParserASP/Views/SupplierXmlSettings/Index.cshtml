@@ -10,61 +10,63 @@
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
+
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SettingName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Supplier)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Path)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartGammaIDFrom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductNode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.paramAttribute)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModelNode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModelXlColumn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PictureNode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PictureXlColumn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.imageNameInCatImg)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhotoFolder)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.QuantityNode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierNode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ParamNode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ParamAttrNode)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SettingName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Supplier)
+        </th>
+            <th >
+            @Html.DisplayNameFor(model => model.Path)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartGammaIDFrom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductNode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.paramAttribute)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModelNode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModelXlColumn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PictureNode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PictureXlColumn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.imageNameInCatImg)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PhotoFolder)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QuantityNode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SupplierNode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ParamNode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ParamAttrNode)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.SettingName)
@@ -72,8 +74,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Path)
+        <td style="width: 50px;">
+                @* @Html.DisplayFor(modelItem => item.Path) *@
+                Edit to show path
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartGammaIDFrom)
@@ -120,6 +123,6 @@
                 <a asp-action="Delete" asp-route-id="@item.SupplierXmlSettingId">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

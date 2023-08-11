@@ -25,3 +25,8 @@ body {
 .wrong {
     color: red;
 }
+
+.mytable {
+    overflow: auto;
+    width: 50px;
+}
