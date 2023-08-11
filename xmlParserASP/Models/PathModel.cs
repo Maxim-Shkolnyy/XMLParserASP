@@ -33,14 +33,14 @@ public static class PathModel
     public static string ProductNode = "offer";  // Horoz
 
     public static string ModelNode = "code";
-    public static string ModelXlColumn = "product_id";
+    public static string ModelXlColumn = "Артикул";
 
     public static int XlSheetNumber = 1;
 
 
 
     public static string PictureNode = "picture";
-    public static string PictureXlColumn = "image_name";
+    public static string PictureXlColumn = "URL";
 
     public static string imageNameInCatImg = "";
     
