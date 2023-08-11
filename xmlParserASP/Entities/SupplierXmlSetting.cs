@@ -32,6 +32,8 @@ namespace xmlParserASP.Entities
         public string? ModelXlColumn { get; set; }
 
         public string? PriceNode { get; set; }
+
+        [Column(TypeName = "LONGTEXT")]
         public string? DescriptionNode { get; set; }
         public string? NameNode { get; set; }
         public string? CurrencyNode { get; set; }
