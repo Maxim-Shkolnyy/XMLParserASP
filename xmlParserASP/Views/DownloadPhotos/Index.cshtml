@@ -1,5 +1,9 @@
 ﻿@model DownloadPhotosViewModel
 
+@{
+    ViewData["Title"] = "Index";
+}
+
 <h2>DownloadFromXml Photos</h2>
 
 <h3>Choose supplier settings</h3>
@@ -13,11 +17,45 @@
             <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
         }
     </select>
-    <button type="submit">Download xml</button> 
+    <button type="submit">Download xml</button>
 </form>
 
-<h3>Choose folder</h3>
+@using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post))
+{
+    <div class="form-group">
+        <label>Choose Rename Option:</label>
+        <div>
+            <label>
+                <input type="radio" name="renamePhotos" value="true" checked /> Yes
+            </label>
+            <label>
+                <input type="radio" name="renamePhotos" value="false" /> No
+            </label>
+        </div>
+    </div>
 
+    <div id="renameBlock" style="display: none;">
+        <table width="70%">
+            <thead>
+                <tr>
+                    <th>Prefix:</th>
+                    <th>Main Part:</th>
+                    <th>Suffix:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" id="prefix" name="prefix" class="form-control" /></td>
+                    <td><input type="text" id="mainPart" name="mainPart" class="form-control" /></td>
+                    <td><input type="text" id="suffix" name="suffix" class="form-control" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+}
+
+<h3>Choose folder</h3>
 @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
@@ -26,21 +64,21 @@
         </select>
     </div>
     <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
-
     <input type="hidden" asp-action="DownloadFromXL" />
     <button type="submit" class="btn btn-success">Download from Xl</button>
 }
 
-@*<div class="form-group">
-<input type="file" id="xmlFile" name="xmlFile" class="form-control" />
-</div>*@
-<br />
-@using (Html.BeginForm("DownloadFromXml", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <button type="submit" class="btn btn-success">Download from Xml</button>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('input[name="renamePhotos"]').on('change', function () {
+                var selectedValue = $(this).val();
+                if (selectedValue === "true") {
+                    $('#renameBlock').show();
+                } else {
+                    $('#renameBlock').hide();
+                }
+            });
+        });
+    </script>
 }
-<br />
-@*@using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <button type="submit" class="btn btn-success">Download from Xl</button>
-}*@

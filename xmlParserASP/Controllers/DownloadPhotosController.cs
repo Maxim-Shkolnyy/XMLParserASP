@@ -15,8 +15,6 @@ namespace xmlParserASP.Controllers
         private readonly MyDBContext _dbContext;
         private string? suppName = null;
 
-
-
         public DownloadPhotosController(MyDBContext dbContext)
         {
             _dbContext = dbContext;
@@ -43,7 +41,7 @@ namespace xmlParserASP.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult> DownloadFromXml(int? selectedSupplierXmlSetting)
+        public async Task<ActionResult> DownloadFromXml(int? selectedSupplierXmlSetting, bool renamePhotos, string prefix, string mainPart, string suffix)
         {
             if (selectedSupplierXmlSetting != null)
             {
@@ -182,15 +180,15 @@ namespace xmlParserASP.Controllers
                             }
                         }
 
-                        if (newPhotosAdded == 0)
-                        {
-                            ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
-                        }
-                        else
-                        {
+                        //if (newPhotosAdded == 0)
+                        //{
+                        //    ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
+                        //}
+                        //else
+                        //{
                             ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can't download. Wrong URL: {imgNameCannotDownload}";
                             ViewBag.WrongUrl = wrongUrl;
-                        }
+                        //}
                     }
                 }
                 catch (Exception ex)
