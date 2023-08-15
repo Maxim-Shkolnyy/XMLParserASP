@@ -9,8 +9,11 @@ public class Product
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ProductId { get; set; }
-    public int SupplierId { get; set; }    
-    ICollection<Supplier> Supplier { get; set; }
+    [Required(ErrorMessage = "Select a supplier")]
+    public int SupplierId { get; set; }
+
+    // Навигационное свойство для связи с Supplier
+    public Supplier? Supplier { get; set; }
     public string? ProductNameRU { get; set; }
     public string? ProductNameUA { get; set; }
 
@@ -20,7 +23,7 @@ public class Product
     public float? Quantity { get; set; }
 
     [Range(0, float.MaxValue)]
-    public float Price { get; set; }
+    public float? Price { get; set; }
     public string? ImageName { get; set; }
     public string? DescriptionRU { get; set; }
     public string? DescriptionUA { get; set; }
