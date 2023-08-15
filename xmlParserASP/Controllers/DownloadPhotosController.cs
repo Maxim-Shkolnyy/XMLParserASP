@@ -108,8 +108,16 @@ namespace xmlParserASP.Controllers
                             modelCount[modelValue]++;
                             var count = modelCount[modelValue];
                             var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
-                            //var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{originalFileName}";
-                            var imageName = $"{originalFileName}";
+                            string imageName = null;
+                            if (renamePhotos)
+                            {
+                                imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{originalFileName}";
+                            }
+                            else
+                            {
+                                imageName = $"{originalFileName}";
+                            }
+                            
 
                             var filePath = Path.Combine(setting.PhotoFolder, imageName);
 
