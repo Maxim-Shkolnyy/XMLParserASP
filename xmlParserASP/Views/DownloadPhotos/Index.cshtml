@@ -10,7 +10,7 @@
 
 <br />
 <form asp-action="DownloadFromXml" method="post">
-    <label for="selectedSupplierXmlSetting">Select Supplier XML Setting:</label>
+    <label for="selectedSupplierXmlSetting">Select supplier:</label>
     <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting">
         <option value="">-- Select --</option>
         @foreach (var setting in Model.SupplierXmlSettings)
@@ -35,7 +35,7 @@
         </div>
 
         <div id="renameBlock" style="display: none;">
-            Rename if fields is empty will set like: Model-A-SupplierName_OriginalFileName.jpg
+            Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
             <table width="70%">
                 <thead>
                 <tr>
@@ -62,18 +62,20 @@
 <br />
 
 <h2>Download from excel</h2>
-
+<p>
 @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <div class="form-group">
+    @* <div class="form-group">
         <label for="filePath" class="control-label">Choose folder:</label>
         <select name="filePath" class="form-control" asp-items="@ViewBag.stringPath">
         </select>
-    </div>
+    </div> *@
     <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
     <input type="hidden" asp-action="DownloadFromXL" />
+    <br /><br />
     <button type="submit" class="btn btn-success">Download from Xl</button>
 }
+</p>
 
 @section scripts {
     <script>

@@ -1,4 +1,6 @@
-﻿using System.Xml;
+﻿using System.Configuration;
+using System.Xml;
+using System.Xml.Schema;
 using xmlParserASP.Models;
 
 namespace xmlParserASP.Services;
@@ -13,49 +15,94 @@ public static class UniqNodesInXML
         var parameterLists = new List<List<string>>();
 
         XmlReaderSettings settings = new XmlReaderSettings();
-        settings.DtdProcessing = DtdProcessing.Parse;
-        settings.ProhibitDtd = false;
+        settings.DtdProcessing = DtdProcessing.Ignore; // Игнорировать DTD
+        settings.ValidationType = ValidationType.None; // Отключить валидацию
+        settings.IgnoreProcessingInstructions = true; // Игнорировать инструкции обработки
+
+        //XmlReaderSettings settings = new XmlReaderSettings();
+        //settings.DtdProcessing = DtdProcessing.Parse;
+        //settings.ProhibitDtd = false;
         //settings.MaxCharactersFromEntities = 1024;
         //settings.ValidationType = ValidationType.DTD;
-        //settings.ValidationEventHandler += new ValidationEventHandler(ValidationCallBack);
+        //settings.ValidationEventHandler += new ValidationEventHandler(ValidatorCallback);
 
-        using (XmlReader reader = XmlReader.Create(xmlFilePath, settings))
+        try
         {
-            
-            while (reader.Read())
+            using (XmlReader reader = XmlReader.Create(xmlFilePath, settings))
             {
-                if (reader.NodeType == XmlNodeType.Element)
+
+                while (reader.Read())
                 {
-                    string elementName = reader.Name;
-
-                    if (!nodeNames.Contains(elementName))
+                    if (reader.NodeType == XmlNodeType.Element)
                     {
-                        nodeNames.Add(elementName);
-                    }
+                        string elementName = reader.Name;
 
-                    if (reader.HasAttributes)
-                    {
-                        while (reader.MoveToNextAttribute())
+                        if (!nodeNames.Contains(elementName))
                         {
-                            string attributeName = reader.Name;
-
-                            if (!parameterLists.Exists(list => list.Contains(attributeName)))
-                            {
-                                parameterLists.Add(new List<string> { attributeName });
-                            }
+                            nodeNames.Add(elementName);
                         }
 
-                        reader.MoveToElement();
+                        if (reader.HasAttributes)
+                        {
+                            while (reader.MoveToNextAttribute())
+                            {
+                                string attributeName = reader.Name;
+
+                                if (!parameterLists.Exists(list => list.Contains(attributeName)))
+                                {
+                                    parameterLists.Add(new List<string> { attributeName });
+                                }
+                            }
+
+                            reader.MoveToElement();
+                        }
                     }
                 }
             }
-        }
-        PathModel.UniqueXMLNodes = nodeNames;
 
-        //Console.WriteLine("Variables: \n");
-        //foreach (var nodeName in nodeNames)
-        //{
-        //    Console.WriteLine(nodeName);
-        //}
+            PathModel.UniqueXMLNodes = nodeNames;
+
+            //Console.WriteLine("Variables: \n");
+            //foreach (var nodeName in nodeNames)
+            //{
+            //    Console.WriteLine(nodeName);
+            //}
+        }
+        catch (Exception ex)
+        {
+            using (XmlReader reader = XmlReader.Create(xmlFilePath))
+            {
+
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        string elementName = reader.Name;
+
+                        if (!nodeNames.Contains(elementName))
+                        {
+                            nodeNames.Add(elementName);
+                        }
+
+                        if (reader.HasAttributes)
+                        {
+                            while (reader.MoveToNextAttribute())
+                            {
+                                string attributeName = reader.Name;
+
+                                if (!parameterLists.Exists(list => list.Contains(attributeName)))
+                                {
+                                    parameterLists.Add(new List<string> { attributeName });
+                                }
+                            }
+
+                            reader.MoveToElement();
+                        }
+                    }
+                }
+            }
+
+            PathModel.UniqueXMLNodes = nodeNames;
+        }
     }
 }
