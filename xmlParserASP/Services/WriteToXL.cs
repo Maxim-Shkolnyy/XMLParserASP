@@ -14,7 +14,7 @@ public class WriteToXL
     {
         _db = db;
     }
-    public void WriteSheet()
+    public void WriteSheet(string? attributeId)
     {
         using (XLWorkbook workbook = new XLWorkbook())
         {
