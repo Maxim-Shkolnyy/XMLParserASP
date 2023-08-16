@@ -87,6 +87,7 @@ public class WriteToXL
                 string model = item.Attributes["id"]?.Value;
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
+                string sku = item.SelectSingleNode(PathModel.ModelNode)?.InnerText ?? "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
                 string quantity = item.SelectSingleNode(PathModel.QuantityNode)?.InnerText ?? "";
                 string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
@@ -153,10 +154,11 @@ public class WriteToXL
                 //}
                 // ---------------------
 
-                productsWorksheet.Cell(row, product_idColumnIndex).Value = model;
+                productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
                 productsWorksheet.Cell(row, nameRUColumnIndex).Value = "-";
                 productsWorksheet.Cell(row, nameUAColumnIndex).Value = nameUA;
                 productsWorksheet.Cell(row, categoriesColumnIndex).Value = categoryId;
+                productsWorksheet.Cell(row, skuColumnIndex).Value = sku;
                 productsWorksheet.Cell(row, modelColumnIndex).Value = model;
                 productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
                 //productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
