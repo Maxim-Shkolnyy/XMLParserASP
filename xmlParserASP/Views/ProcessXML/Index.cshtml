@@ -1,0 +1,24 @@
+﻿@model DownloadPhotosViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Process supplier unload</h1>
+
+<p>Select supplier</p>
+<p>
+    <form asp-controller="ProcessXml" asp-action="ProcessUnload" method="post">
+        <label for="selectedSupplierXmlSetting">Select supplier:</label>
+        <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting">
+            <option value="">-- Select --</option>
+            @foreach (var setting in Model.SupplierXmlSettings)
+            {
+                <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
+            }
+        </select>
+        <br /><br />
+        <button type="submit" class="as">Process file</button>
+
+    </form>
+</p>
+

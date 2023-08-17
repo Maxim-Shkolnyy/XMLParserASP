@@ -28,9 +28,15 @@ public class HomeController : Controller
     {
         return View();
     }
-    public IActionResult ProcessExcel()
+    public IActionResult ProcessExcel(string? paramAttr)
     {
         UniqNodesInXML.Read();
+
+        var param = _db.SupplierXmlSettings.FirstOrDefault(s => s.paramAttribute == paramAttr);
+        if (param != null)
+        {
+
+        }
 
         if (PathModel.Language == Language.Ua)
         {
