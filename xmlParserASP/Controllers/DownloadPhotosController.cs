@@ -21,7 +21,7 @@ namespace xmlParserASP.Controllers
         }
         public IActionResult Index()
         {
-            var myContext = _dbContext.SupplierXmlSettings;
+            //var myContext = _dbContext.SupplierXmlSettings;
 
             var model = new DownloadPhotosViewModel
             {
@@ -45,11 +45,11 @@ namespace xmlParserASP.Controllers
         {
             if (selectedSupplierXmlSetting != null)
             {
-                var setting = _dbContext.SupplierXmlSettings.FirstOrDefault(s=>s.SupplierXmlSettingId == selectedSupplierXmlSetting);
-                if (setting != null)
+                var suppSetting = _dbContext.SupplierXmlSettings.FirstOrDefault(s=>s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+                if (suppSetting != null)
                 {
                     suppName = _dbContext.Suppliers
-                        .Where(s => s.SupplierId == setting.SupplierId)
+                        .Where(s => s.SupplierId == suppSetting.SupplierId)
                         .Select(s => s.SupplierName)
                         .FirstOrDefault();
                 }
@@ -57,10 +57,10 @@ namespace xmlParserASP.Controllers
                 try
                 {
                     var xmlDoc = new XmlDocument();
-                    xmlDoc.Load(setting.Path);
+                    xmlDoc.Load(suppSetting.Path);
 
 
-                    var photoNodes = xmlDoc.SelectNodes($"//{setting.PictureNode}");
+                    var photoNodes = xmlDoc.SelectNodes($"//{suppSetting.PictureNode}");
                     if (photoNodes == null)
                     {
                         ViewBag.Message = "No photo URLs found in the XML.";
@@ -86,13 +86,13 @@ namespace xmlParserASP.Controllers
 
                             string modelValue = null;
 
-                            if (setting.paramAttribute == null)
+                            if (suppSetting.paramAttribute == null)
                             {
-                                modelValue = photoNode.SelectSingleNode(setting.ModelNode)?.InnerText ?? "";
+                                modelValue = photoNode.SelectSingleNode(suppSetting.ModelNode)?.InnerText ?? "";
                             }
                             else
                             {
-                                modelValue = photoNode.ParentNode.Attributes[setting.paramAttribute]?.Value;
+                                modelValue = photoNode.ParentNode.Attributes[suppSetting.paramAttribute]?.Value;
                             }
                             
 
@@ -119,7 +119,7 @@ namespace xmlParserASP.Controllers
                             }
                             
 
-                            var filePath = Path.Combine(setting.PhotoFolder, imageName);
+                            var filePath = Path.Combine(suppSetting.PhotoFolder, imageName);
 
                             if (System.IO.File.Exists(filePath))
                             {
@@ -137,7 +137,7 @@ namespace xmlParserASP.Controllers
                             {
                                 if (response.IsSuccessStatusCode)
                                 {
-                                    var photoFilePath = Path.Combine(setting.PhotoFolder, imageName);
+                                    var photoFilePath = Path.Combine(suppSetting.PhotoFolder, imageName);
 
                                     using (var photoStream = await response.Content.ReadAsStreamAsync())
                                     {

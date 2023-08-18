@@ -17,7 +17,7 @@ public class UniqNodesInXML
     {
         var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
-        string xmlFilePath = PathModel.Path; // work
+        string xmlFilePath = suppSetting.Path; // work
 
         var nodeNames = new List<string>();
         var parameterLists = new List<List<string>>();

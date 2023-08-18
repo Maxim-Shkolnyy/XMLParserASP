@@ -69,14 +69,14 @@ public class WriteToXL
 
 
             XmlDocument xmlDoc = new();
-            xmlDoc.Load(PathModel.Path);
+            xmlDoc.Load(suppSetting.Path);
 
             // Настройки выгрузки поставщика
 
-            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.ProductNode);
+            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSetting.ProductNode);
 
             int row = 2;
-            int startIdFrom = PathModel.StartGammaIDFrom;
+            int? startIdFrom = suppSetting.StartGammaIDFrom;
 
             
             #region Получение значений из XML и вставка в соответствующие колонки листа Products
@@ -85,17 +85,26 @@ public class WriteToXL
             {
                 startIdFrom++;
                 string product_id = startIdFrom.ToString();
-                //string model = item.SelectSingleNode(PathModel.ModelNode)?.InnerText ?? "";
-                string model = item.Attributes["id"]?.Value;
+
+                string? model;
+
+                if (suppSetting.paramAttribute == null)
+                {
+                    model = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText;
+                }
+                else
+                {
+                    model = item.Attributes["id"]?.Value;
+                }
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
-                string sku = item.SelectSingleNode(PathModel.ModelNode)?.InnerText ?? "";
+                string sku = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText ?? "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
-                string quantity = item.SelectSingleNode(PathModel.QuantityNode)?.InnerText ?? "";
+                string quantity = item.SelectSingleNode(suppSetting.QuantityNode)?.InnerText ?? "";
                 string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
                 string description = item.SelectSingleNode("description")?.InnerText ?? "";
-                string image = item.SelectSingleNode(PathModel.PictureNode)?.InnerText ?? "";
-                string vendor = item.SelectSingleNode(PathModel.SupplierNode)?.InnerText ?? "";
+                string image = item.SelectSingleNode(suppSetting.PictureNode)?.InnerText ?? "";
+                string vendor = item.SelectSingleNode(suppSetting.SupplierNode)?.InnerText ?? "";
                 Translitter trn = new();
                 string firstKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
                     .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "");
@@ -111,7 +120,7 @@ public class WriteToXL
 
                 //var modelCount = new Dictionary<string, int>();
 
-                //var photoNodes = xmlDoc.SelectNodes($"//{PathModel.PictureNode}");
+                //var photoNodes = xmlDoc.SelectNodes($"//{suppSetting.PictureNode}");
 
 
                 //foreach (XmlNode photoNode in photoNodes)
@@ -119,7 +128,7 @@ public class WriteToXL
                 //    var photoUrl = photoNode.InnerText;
 
                 //    // Get the model value from the parent node
-                //    var modelNode = photoNode.ParentNode.SelectSingleNode(PathModel.ModelNode);
+                //    var modelNode = photoNode.ParentNode.SelectSingleNode(suppSetting.ModelNode);
                 //    var modelValue = modelNode?.InnerText;
 
                 //    // Extract the original file name from the URL
@@ -150,9 +159,9 @@ public class WriteToXL
                 // Get the alphabetic character based on the count (A, B, C, ...)
                 //var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
                 var imageAdress = image.Split("/").Last();
-                var imageName = $"catalog/image/{model}-A-{PathModel.Supplier}_{imageAdress}";
+                var imageName = $"catalog/image/{model}-A-{suppSetting.Supplier}_{imageAdress}";
                // var imageName = imageAdress.Split("/").Last();
-                    //PathModel.imageNameInCatImg = $"catalog/image/{imageName}";
+                    //suppSetting.imageNameInCatImg = $"catalog/image/{imageName}";
                 //}
                 // ---------------------
 
@@ -292,7 +301,7 @@ public class WriteToXL
 
                 foreach (XmlNode item in itemsList)
                 {
-                    XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
+                    XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
 
                     foreach (XmlNode param in paramList)
                     {
@@ -320,7 +329,7 @@ public class WriteToXL
                 //var paramIndex = 1;
                 //foreach (XmlNode item in itemsList)
                 //{
-                //    XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
+                //    XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
 
                 //    foreach (XmlNode param in paramList)
                 //    {
@@ -341,7 +350,7 @@ public class WriteToXL
                 //}
 
 
-                //foreach (var attr in PathModel.UniqueXMLNodes)
+                //foreach (var attr in suppSetting.UniqueXMLNodes)
                 //{
                 //    uniqAttrSheet.Cell(rowAttrib + 1, 2).Value = attr;
                 //    rowAttrib++;

@@ -61,8 +61,7 @@ public static class PathModel
 
     public static string ParamAttrNode = "name";
 
-    // !!!  In ReadAttrXMLTo3Columns and WriteToXL set model parsing
-
+    
 
     public static string[,]? CategList { get; set; }
     public static List<List<string>>? SheetProducts { get; set; }

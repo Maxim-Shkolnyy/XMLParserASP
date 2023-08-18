@@ -15,9 +15,9 @@ public class ReadAttrFromXmlTo3ColumnsRU
     {
         var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
         XmlDocument doc = new XmlDocument();
-        doc.Load(PathModel.Path);
+        doc.Load(suppSetting.Path);
 
-        XmlNodeList itemsList = doc.GetElementsByTagName(PathModel.ProductNode);
+        XmlNodeList itemsList = doc.GetElementsByTagName(suppSetting.ProductNode);
 
         XmlNodeList paramListForCount = doc.GetElementsByTagName("param");
 
@@ -37,11 +37,11 @@ public class ReadAttrFromXmlTo3ColumnsRU
         {
             foreach (XmlNode item in itemsList)
             {
-                string modelID = item.SelectSingleNode(PathModel.ModelNode)?.InnerText; //feron
+                string modelID = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText; //feron
                 //string modelID = item.Attributes["id"]?.Value; //Khoroz
 
 
-                XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
+                XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
 
                 foreach (XmlNode param in paramList)
                 {
@@ -70,11 +70,18 @@ public class ReadAttrFromXmlTo3ColumnsRU
         {
             foreach (XmlNode item in itemsList)
             {
-                string modelID = item.SelectSingleNode(PathModel.ModelNode)?.InnerText; //feron
-                //string modelID = item.Attributes["id"]?.Value; //Khoroz
+                string? modelID;
 
+                if (suppSetting.paramAttribute == null)
+                {
+                    modelID = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText;
+                }
+                else
+                {
+                    modelID = item.Attributes["id"]?.Value;
+                }
 
-                XmlNodeList paramList = item.SelectNodes(PathModel.ParamNode);
+                XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
 
                 foreach (XmlNode param in paramList)
                 {

@@ -60,11 +60,11 @@ namespace xmlParserASP.Services
 
 
                 XmlDocument xmlDoc = new();
-                xmlDoc.Load(PathModel.Path);
+                xmlDoc.Load(suppSetting.Path);
 
                 // Настройки выгрузки поставщика
 
-                XmlNodeList itemsList = xmlDoc.GetElementsByTagName(PathModel.ProductNode);
+                XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSetting.ProductNode);
 
                 XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 
