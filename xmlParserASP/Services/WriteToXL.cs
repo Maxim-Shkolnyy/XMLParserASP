@@ -14,8 +14,10 @@ public class WriteToXL
     {
         _db = db;
     }
-    public void WriteSheet() //string? attributeId
+    public void WriteSheet(int selectedSupplierXmlSetting)
     {
+        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+
         using (XLWorkbook workbook = new XLWorkbook())
         {
             IXLWorksheet productsWorksheet = workbook.Worksheets.Add("Products");

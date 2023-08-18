@@ -5,7 +5,7 @@ namespace xmlParserASP.Services;
 
 internal class ReadUniqueCategorys
 {
-    public void ReadXMLUniqueCategorys()
+    public void ReadXMLUniqueCategorys(int selectedSupplierXmlSetting)
     {
         XDocument doc = XDocument.Load(PathModel.Path); //work
 

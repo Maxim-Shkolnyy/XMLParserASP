@@ -2,13 +2,21 @@
 using System.Xml;
 using System.Xml.Schema;
 using xmlParserASP.Models;
+using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Services;
 
-public static class UniqNodesInXML
+public class UniqNodesInXML
 {
-    public static void Read()
+    private readonly MyDBContext _db;
+    public UniqNodesInXML(MyDBContext db)
     {
+        _db = db;
+    }
+    public void Read(int selectedSupplierXmlSetting)
+    {
+        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+
         string xmlFilePath = PathModel.Path; // work
 
         var nodeNames = new List<string>();

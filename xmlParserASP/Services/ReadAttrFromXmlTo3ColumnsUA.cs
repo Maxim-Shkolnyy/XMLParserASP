@@ -1,12 +1,20 @@
 ﻿using System.Xml;
 using xmlParserASP.Models;
+using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Services;
 
 public class ReadAttrFromXmlTo3ColumnsUA
 {
-    public void ReadAttrTo3()
+    private readonly MyDBContext _db;
+    public ReadAttrFromXmlTo3ColumnsUA(MyDBContext db)
     {
+        _db = db;
+    }
+    public void ReadAttrTo3(int selectedSupplierXmlSetting)
+    {
+        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+
         XmlDocument doc = new XmlDocument();
         doc.Load(PathModel.Path);
 

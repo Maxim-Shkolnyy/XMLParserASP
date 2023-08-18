@@ -13,8 +13,10 @@ namespace xmlParserASP.Services
             _db = db;
         }
 
-        public void WriteRuColumnsToXL()
+        public void WriteRuColumnsToXL(int selectedSupplierXmlSetting)
         {
+            var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+
             using (XLWorkbook workbook = new XLWorkbook())
             {
                 IXLWorksheet productsWorksheet = workbook.Worksheets.Add("Products");

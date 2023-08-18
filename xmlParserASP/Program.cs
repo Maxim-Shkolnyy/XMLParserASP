@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
+using xmlParserASP.Services;
 
 //using MySQL.Data.EntityFrameworkCore.Extensions;
 
@@ -25,7 +27,13 @@ public class Program
         builder.Services.AddDbContext<TestGammaDBContext>(options =>
         options.UseMySQL(connectionStringTestGamma));
 
-
+        builder.Services.AddScoped<SupplierXmlSetting>();
+        builder.Services.AddScoped<WriteToXL>();
+        builder.Services.AddScoped<WriteRuToXL>();
+        builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsRU>();
+        builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsUA>();
+        builder.Services.AddScoped<UniqNodesInXML>();
+        builder.Services.AddScoped<ReadUniqueCategorys>();
         builder.Services.AddControllersWithViews();
 
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);

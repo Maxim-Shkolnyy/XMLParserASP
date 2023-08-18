@@ -30,30 +30,24 @@ public class HomeController : Controller
     }
     public IActionResult ProcessExcel(string? paramAttr)
     {
-        UniqNodesInXML.Read();
+        //UniqNodesInXML.Read();
 
-        var param = _db.SupplierXmlSettings.FirstOrDefault(s => s.paramAttribute == paramAttr);
-        if (param != null)
-        {
+        //if (PathModel.Language == Language.Ua)
+        //{
+        //    var rAtr = new ReadAttrFromXmlTo3ColumnsUA();
+        //    rAtr.ReadAttrTo3();
 
-        }
+        //    var writeToXL = new WriteToXL(_db);
+        //    writeToXL.WriteSheet();            
+        //}
+        //else
+        //{
+        //    var writeToXLru = new WriteRuToXL(_db);
+        //    writeToXLru.WriteRuColumnsToXL();
 
-        if (PathModel.Language == Language.Ua)
-        {
-            var rAtr = new ReadAttrFromXmlTo3ColumnsUA();
-            rAtr.ReadAttrTo3();
-
-            var writeToXL = new WriteToXL(_db);
-            writeToXL.WriteSheet();            
-        }
-        else
-        {
-            var writeToXLru = new WriteRuToXL(_db);
-            writeToXLru.WriteRuColumnsToXL();
-
-            var rAtr = new ReadAttrFromXmlTo3ColumnsRU();
-            rAtr.ReadAttrto3ru();
-        }        
+        //    var rAtr = new ReadAttrFromXmlTo3ColumnsRU();
+        //    rAtr.ReadAttrto3ru();
+        //}        
         
         
         
