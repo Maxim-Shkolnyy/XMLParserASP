@@ -14,9 +14,15 @@ namespace xmlParserASP.Controllers
         private readonly WriteToXL _writeToXL;
         private readonly WriteRuToXL _writeToRuToXL;
         private readonly UniqNodesInXML _uniqNodesInXML;
-        public ProcessXMLController(MyDBContext db)
+        public ProcessXMLController(MyDBContext db, ReadAttrFromXmlTo3ColumnsRU readAttrFromXmlTo3ColumnsRU, ReadAttrFromXmlTo3ColumnsUA readAttrFromXmlTo3ColumnsUA, WriteRuToXL writeRuToXL, WriteToXL writeToXL, UniqNodesInXML uniqNodesInXML)
         {
-            _db=db;  
+            _db=db;
+            _readAttrFromXmlTo3ColumnsRU=readAttrFromXmlTo3ColumnsRU;
+            _readAttrFromXmlTo3ColumnsUA=readAttrFromXmlTo3ColumnsUA;
+            _writeToRuToXL=writeRuToXL;
+            _writeToXL=writeToXL;
+            _uniqNodesInXML=uniqNodesInXML;
+
         }
         public IActionResult Index()
         {
@@ -31,7 +37,7 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProcessUnload(int selectedSupplierXmlSetting, string? paramAttr)
+        public IActionResult ProcessUnload(int selectedSupplierXmlSetting)
         {
             _uniqNodesInXML.Read(selectedSupplierXmlSetting);
 
