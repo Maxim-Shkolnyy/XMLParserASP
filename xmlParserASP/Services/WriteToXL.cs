@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
+using xmlParserASP.Entities;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using static xmlParserASP.Services.TranslitMethods;
@@ -115,57 +116,10 @@ public class WriteToXL
                 DateTime dateModified = DateTime.Now;
                 string dateAvailable = "2023-07-06 00:00:00";
                 string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
-                string supplier_id = "1"; 
-
-
-                // ------------------------------------
-
-                //var modelCount = new Dictionary<string, int>();
-
-                //var photoNodes = xmlDoc.SelectNodes($"//{suppSetting.PictureNode}");
-
-
-                //foreach (XmlNode photoNode in photoNodes)
-                //{
-                //    var photoUrl = photoNode.InnerText;
-
-                //    // Get the model value from the parent node
-                //    var modelNode = photoNode.ParentNode.SelectSingleNode(suppSetting.ModelNode);
-                //    var modelValue = modelNode?.InnerText;
-
-                //    // Extract the original file name from the URL
-                //    var originalFileName = Path.GetFileName(photoUrl);
-
-                //    // Check if the model exists in the dictionary
-                //    if (!modelCount.ContainsKey(modelValue))
-                //    {
-                //        // Add the model to the dictionary with an initial count of 0
-                //        modelCount[modelValue] = 0;
-                //    }
-
-                //    // Increment the count for the model
-                //    modelCount[modelValue]++;
-
-                //    // Get the count value for the model
-                //    var count = modelCount[modelValue];
-
-                //    // If the count is already greater than 0, skip downloading the photo
-                //    if (count > 0)
-                //    {
-                //        continue;
-                //    }
-
-                //    // Increment the count for the model
-                //    modelCount[modelValue]++;
-
-                // Get the alphabetic character based on the count (A, B, C, ...)
-                //var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+                string supplier_id = "1";
                 var imageAdress = image.Split("/").Last();
                 var imageName = $"catalog/image/{model}-A-{suppSetting.Supplier}_{imageAdress}";
-               // var imageName = imageAdress.Split("/").Last();
-                    //suppSetting.imageNameInCatImg = $"catalog/image/{imageName}";
-                //}
-                // ---------------------
+               
 
                 productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
                 productsWorksheet.Cell(row, nameRUColumnIndex).Value = "-";
@@ -174,9 +128,7 @@ public class WriteToXL
                 productsWorksheet.Cell(row, skuColumnIndex).Value = sku;
                 productsWorksheet.Cell(row, modelColumnIndex).Value = model;
                 productsWorksheet.Cell(row, manufacturerColumnIndex).Value = vendor;
-                //productsWorksheet.Cell(row, image_nameColumnIndex).Value = image;
                 productsWorksheet.Cell(row, image_nameColumnIndex).Value = imageName;
-
                 productsWorksheet.Cell(row, priceColumnIndex).Value = price;
                 productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
                 productsWorksheet.Cell(row, statusColumnIndex).Value = "true";
@@ -184,20 +136,40 @@ public class WriteToXL
                 productsWorksheet.Cell(row, date_addedColumnIndex).Value = dateAdded;
                 productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
                 productsWorksheet.Cell(row, date_availableColumnIndex).Value = dateAvailable;
-
                 productsWorksheet.Cell(row, descriptionRUColumnIndex).Value = "-";
                 productsWorksheet.Cell(row, descriptionUAColumnIndex).Value = description;
                 productsWorksheet.Cell(row, seo_keywordColumnIndex).Value = seoKeyword;
 
                 productsWorksheet.Row(row).Height = 15;
                 row++;
-                   
-                //        Product product = new Product
-                //        {ProductId = int.Parse(product_id), SupplierId = int.Parse(supplier_id), ProductName = nameRU, MyCatId = int.Parse(categoryId), model = int.Parse(model), quantity = int.Parse(quantity), Price =  float.Parse(price), image_name = image, description = description, manufacturer = vendor, date_added = dateAdded, date_modified = dateModifiedStr, date_available = dateAvailable, seo_keyword = seoKeyword, status = null};
-                //    _db.Products.Add(product);
+
+                Product product = new Product
+                {
+                    //ProductId = int.Parse(product_id),
+                    SupplierId = int.Parse(supplier_id),
+                    ProductNameUA = nameUA,
+                    MyCatId = int.Parse(categoryId),
+                    Model = model,
+                    Quantity = string.IsNullOrEmpty(quantity) ? (int?)null : int.Parse(quantity),
+                    Price = string.IsNullOrEmpty(price) ? (float?)null : float.Parse(price),
+                    ImageName = imageName,
+                    DescriptionUA = description,
+                    Manufacturer = vendor,
+                    DateAdded = string.IsNullOrEmpty(dateAdded) ? null : DateTime.Parse(dateAdded).ToString(),
+                    DateModified = string.IsNullOrEmpty(dateModifiedStr) ? null : DateTime.Parse(dateModifiedStr).ToString(),
+                    DateAvailable = string.IsNullOrEmpty(dateAvailable) ? null : DateTime.Parse(dateAvailable).ToString(),
+                    SeoKeyword = seoKeyword,
+                    Status = true
+                };
+
+
+
+                _db.Products.Add(product);
+
+
             }
             //_db.SaveChanges();
-                
+
 
             var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
                 productsWorksheet.FirstCellUsed().Address.ColumnNumber,
@@ -380,7 +352,7 @@ public class WriteToXL
                 }
                 #endregion
 
-                string currentTime = DateTime.Now.ToShortDateString();
+                string currentTime = DateTime.Now.ToString();
                 string dateCleaned = currentTime.Replace(":", "-").Replace(" ", "_");
 
             workbook.SaveAs(@$"D:\Downloads\{suppSetting.SettingName}_{dateCleaned}.xlsx");            

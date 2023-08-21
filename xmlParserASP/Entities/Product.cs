@@ -20,7 +20,7 @@ public class Product
     public int? MyCatId { get; set; }
     public int? Sku { get; set; }
     public string? Model { get; set; }
-    public float? Quantity { get; set; }
+    public int? Quantity { get; set; }
 
     [Range(0, float.MaxValue)]
     public float? Price { get; set; }
