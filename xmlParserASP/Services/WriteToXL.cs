@@ -98,17 +98,19 @@ public class WriteToXL
                 }
 
                 string categoryId = item.SelectSingleNode("categoryId")?.InnerText ?? "";
-                string sku = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText ?? "";
+                string sku = suppSetting.ModelNode != null ? item.SelectSingleNode(suppSetting.ModelNode)?.InnerText ?? "" : "";
                 string price = item.SelectSingleNode("price")?.InnerText ?? "";
-                string quantity = item.SelectSingleNode(suppSetting.QuantityNode)?.InnerText ?? "";
+                string quantity = suppSetting.QuantityNode != null ? item.SelectSingleNode(suppSetting.QuantityNode)?.InnerText ?? "" : "";
                 string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
                 string description = item.SelectSingleNode("description")?.InnerText ?? "";
-                string image = item.SelectSingleNode(suppSetting.PictureNode)?.InnerText ?? "";
-                string vendor = item.SelectSingleNode(suppSetting.SupplierNode)?.InnerText ?? "";
+                string image = suppSetting.PictureNode != null ? item.SelectSingleNode(suppSetting.PictureNode)?.InnerText ?? "" : "";
+                string vendor = suppSetting.SupplierNode != null ? item.SelectSingleNode(suppSetting.SupplierNode)?.InnerText ?? "" : "";
+
                 Translitter trn = new();
                 string firstKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
                     .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "");
                 string seoKeyword = firstKeyword.Replace("--", "-");
+
                 string dateAdded = "2023-07-06 00:00:00";
                 DateTime dateModified = DateTime.Now;
                 string dateAvailable = "2023-07-06 00:00:00";
@@ -378,7 +380,10 @@ public class WriteToXL
                 }
                 #endregion
 
-                workbook.SaveAs(@"D:\Downloads\output_NO_RU.xlsx");            
+                string currentTime = DateTime.Now.ToShortDateString();
+                string dateCleaned = currentTime.Replace(":", "-").Replace(" ", "_");
+
+            workbook.SaveAs(@$"D:\Downloads\{suppSetting.SettingName}_{dateCleaned}.xlsx");            
         }
     }
 
