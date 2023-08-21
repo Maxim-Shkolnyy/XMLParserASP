@@ -143,30 +143,33 @@ public class WriteToXL
                 productsWorksheet.Row(row).Height = 15;
                 row++;
 
+                int? parsedQuantity = int.TryParse(quantity, out int parsedQuantityResult) ? parsedQuantityResult : (int?)null;
+                float? parsedPrice = float.TryParse(price, out float parsedPriceResult) ? parsedPriceResult : (float?)null;
+                int? myCatId = int.TryParse(categoryId, out int parsedMyCatID)? parsedMyCatID : (int?)null;
+                DateTime? parsedDateAdded = DateTime.TryParse(dateAdded, out DateTime parsedDateAddedResult) ? parsedDateAddedResult : (DateTime?)null;
+                DateTime? parsedDateModified = DateTime.TryParse(dateModifiedStr, out DateTime parsedDateModifiedResult) ? parsedDateModifiedResult : (DateTime?)null;
+                DateTime? parsedDateAvailable = DateTime.TryParse(dateAvailable, out DateTime parsedDateAvailableResult) ? parsedDateAvailableResult : (DateTime?)null;
+
                 Product product = new Product
                 {
                     //ProductId = int.Parse(product_id),
                     SupplierId = int.Parse(supplier_id),
                     ProductNameUA = nameUA,
-                    MyCatId = int.Parse(categoryId),
+                    MyCatId = parsedMyCatID,
                     Model = model,
-                    Quantity = string.IsNullOrEmpty(quantity) ? (int?)null : int.Parse(quantity),
-                    Price = string.IsNullOrEmpty(price) ? (float?)null : float.Parse(price),
+                    Quantity = parsedQuantity,
+                    Price = parsedPrice,
                     ImageName = imageName,
                     DescriptionUA = description,
                     Manufacturer = vendor,
-                    DateAdded = string.IsNullOrEmpty(dateAdded) ? null : DateTime.Parse(dateAdded).ToString(),
-                    DateModified = string.IsNullOrEmpty(dateModifiedStr) ? null : DateTime.Parse(dateModifiedStr).ToString(),
-                    DateAvailable = string.IsNullOrEmpty(dateAvailable) ? null : DateTime.Parse(dateAvailable).ToString(),
+                    DateAdded = parsedDateAdded?.ToString(),
+                    DateModified = parsedDateModified?.ToString(),
+                    DateAvailable = parsedDateAvailable?.ToString(),
                     SeoKeyword = seoKeyword,
                     Status = true
                 };
 
-
-
                 _db.Products.Add(product);
-
-
             }
             //_db.SaveChanges();
 
