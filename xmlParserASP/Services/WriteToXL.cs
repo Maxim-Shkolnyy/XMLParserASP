@@ -170,6 +170,7 @@ public class WriteToXL
                 };
 
                 _db.Products.Add(product);
+                _db.SaveChanges();
             }
             //_db.SaveChanges();
 
