@@ -170,9 +170,9 @@ public class WriteToXL
                 };
 
                 _db.Products.Add(product);
-                _db.SaveChanges();
+                //_db.SaveChanges();
             }
-            //_db.SaveChanges();
+           
 
 
             var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
