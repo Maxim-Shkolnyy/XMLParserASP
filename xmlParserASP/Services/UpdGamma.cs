@@ -1,10 +1,13 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System;
+using xmlParserASP.Models;
 
 namespace xmlParserASP.Services
 {
     public class UpdGamma
     {
-        public void CopyData()
+        public static void CopyData()
         {
             using (var vygruzkaAnny = new XLWorkbook(FModel.vygruzkaNalichiyeAllFileInfo.FullName))
             using (var f_laFile888 = new XLWorkbook(FModel.FLa888Path))
@@ -12,17 +15,26 @@ namespace xmlParserASP.Services
                 var sourceWorksheet = vygruzkaAnny.Worksheet(1);
                 var targetWorksheet = f_laFile888.Worksheet(1);
 
-                sourceWorksheet.Range("1:8").Delete(XLShiftDeletedCells.ShiftUp);
+                sourceWorksheet.Range("1:8").Delete(XLShiftDeletedCells.ShiftCellsUp);
 
                 int lastRow = sourceWorksheet.LastRowUsed().RowNumber();
-                var sourceRange = sourceWorksheet.Range($"A1:AD{lastRow}");
-                var data = sourceRange.RangeUsed().AsTable().DataRange.ToArray();
+                int lastColumn = sourceWorksheet.LastColumnUsed().ColumnNumber();
 
-                int targetLastRow = targetWorksheet.LastRowUsed().RowNumber();
-                var targetRange = targetWorksheet.Range($"B9:AE{targetLastRow}");
-                targetRange.Clear(XLClearOptions.Contents);
+                var sourceRange = sourceWorksheet.Range($"A1:{XLHelper.GetColumnLetterFromNumber(lastColumn)}{lastRow}");
+                var targetRange = targetWorksheet.Range("B9");
 
-                targetRange.Cell(1, 1).InsertData(data);
+                var data = sourceRange.CellsUsed().Select(s  => s.Value).ToArray();
+                //object[,] dataArray = ExcelRangeToArray.ReadRangeToArray(filePath, sheetName, range);
+
+                // Copy data cell by cell
+                for (int row = 1; row <= lastRow; row++)
+                {
+                    for (int col = 1; col <= lastColumn; col++)
+                    {
+                        var cellValue = sourceRange.Cell(row, col).Value;
+                        targetRange.Cell(row, col).Value = cellValue;
+                    }
+                }
 
                 f_laFile888.Save();
             }
