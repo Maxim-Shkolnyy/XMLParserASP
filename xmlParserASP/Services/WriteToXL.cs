@@ -33,7 +33,7 @@ public class WriteToXL
             productsColumns.Add(new List<string>
             {
                 "product_id", "name(ru-ru)", "name(uk-ua)", "categories", "sku", "upc", "ean", "jan", "isbn", "mpn",
-                "location", "quantity", "model", "manufacturer", "image_name", "shipping", "price", "points",
+                "location", "quantity", "model", "supplier_id", "manufacturer", "image_name", "shipping", "price", "points",
                 "date_added", "date_modified", "date_available", "unit_id", "weight", "weight_unit", "length", "width",
                 "height", "length_unit", "status", "tax_class_id", "seo_keyword", "description(ru-ru)",
                 "description(uk-ua)", "meta_title(ru-ru)", "meta_title(uk-ua)", "meta_description(ru-ru)",
@@ -55,7 +55,7 @@ public class WriteToXL
             int skuColumnIndex = GetColumnIndex(productsWorksheet, "sku");
             int quantityColumnIndex = GetColumnIndex(productsWorksheet, "quantity");
             int modelColumnIndex = GetColumnIndex(productsWorksheet, "model");
-            //int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
+            int supplier_idColumnIndex = GetColumnIndex(productsWorksheet, "supplier_id");
             int manufacturerColumnIndex = GetColumnIndex(productsWorksheet, "manufacturer");
             int image_nameColumnIndex = GetColumnIndex(productsWorksheet, "image_name");
             int priceColumnIndex = GetColumnIndex(productsWorksheet, "price");
@@ -132,7 +132,7 @@ public class WriteToXL
                 productsWorksheet.Cell(row, priceColumnIndex).Value = price;
                 productsWorksheet.Cell(row, quantityColumnIndex).Value = quantity;
                 productsWorksheet.Cell(row, statusColumnIndex).Value = "true";
-                //productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
+                productsWorksheet.Cell(row, supplier_idColumnIndex).Value = supplier_id;
                 productsWorksheet.Cell(row, date_addedColumnIndex).Value = dateAdded;
                 productsWorksheet.Cell(row, date_modifiedColumnIndex).Value = dateModifiedStr;
                 productsWorksheet.Cell(row, date_availableColumnIndex).Value = dateAvailable;
@@ -152,8 +152,7 @@ public class WriteToXL
 
                 Product product = new Product
                 {
-                    //ProductId = int.Parse(product_id),
-                    SupplierId = int.Parse(supplier_id),
+                    SupplierId = supplier_id.ToString(),
                     ProductNameUA = nameUA,
                     MyCatId = parsedMyCatID,
                     Model = model,
@@ -170,9 +169,9 @@ public class WriteToXL
                 };
 
                 _db.Products.Add(product);
-                //_db.SaveChanges();
+                
             }
-           
+            _db.SaveChanges();
 
 
             var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,

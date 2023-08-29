@@ -8,9 +8,9 @@ public class Product
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int ProductId { get; set; }
+    public int ProductId { get; }
     [Required(ErrorMessage = "Select a supplier")]
-    public int SupplierId { get; set; }
+    public string SupplierId { get; set; }
 
     // Навигационное свойство для связи с Supplier
     public Supplier? Supplier { get; set; }
