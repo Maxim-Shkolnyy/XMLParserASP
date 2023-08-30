@@ -8,7 +8,7 @@ public class Product
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int ProductId { get; }
+    public int ProductId { get; set; }
     [Required(ErrorMessage = "Select a supplier")]
     public string SupplierId { get; set; }
 

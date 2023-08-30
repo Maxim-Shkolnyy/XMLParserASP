@@ -31,8 +31,8 @@ public class TranslitMethods
         public Translitter()
         {
             this.TranslitSymbols = new List<TranslitSymbol>();
-            var gost = "а:a,б:b,в:v,г:g,д:d,е:e,є:ye,ё:jo,ж:zh,з:z,и:i,і:i,ї:ji,й:jj,к:k,л:l,м:m,н:n,о:o,п:p,р:r,с:s,т:t,у:u,ф:f,х:kh,ц:c,ч:ch,ш:sh,щ:shh,ъ:,ы:y,ь:,э:eh,ю:ju,я:ja, :-,/:-,|:-,?:-,\\:-,.:-,(:-,):-";
-            var iso = "а:a,б:b,в:v,г:g,д:d,е:e,є:ye,ё:yo,ж:zh,з:z,и:i,і:i,ї:yi,й:j,к:k,л:l,м:m,н:n,о:o,п:p,р:r,с:s,т:t,у:u,ф:f,х:h,ц:c,ч:ch,ш:sh,щ:shh,ъ:,ы:y,ь:,э:e,ю:yu,я:ya, :-,/:-,|:-,?:-,\\:-,.:-,(:-,):-";
+            var gost = "а:a,б:b,в:v,г:g,д:d,е:e,є:ye,ё:jo,ж:zh,з:z,и:i,і:i,ї:ji,й:jj,к:k,л:l,м:m,н:n,о:o,п:p,р:r,с:s,т:t,у:u,ф:f,х:kh,ц:c,ч:ch,ш:sh,щ:shh,ъ:,ы:y,ь:,э:eh,ю:ju,я:ja, :-,/:-,|:-,?:-,\\:-,.:-,(:-,):-,%:-";
+            var iso = "а:a,б:b,в:v,г:g,д:d,е:e,є:ye,ё:yo,ж:zh,з:z,и:i,і:i,ї:yi,й:j,к:k,л:l,м:m,н:n,о:o,п:p,р:r,с:s,т:t,у:u,ф:f,х:h,ц:c,ч:ch,ш:sh,щ:shh,ъ:,ы:y,ь:,э:e,ю:yu,я:ya, :-,/:-,|:-,?:-,\\:-,.:-,(:-,):-,%:-";
 
             // Заполняем сопоставления по ГОСТ
             foreach (string item in gost.Split(","))
