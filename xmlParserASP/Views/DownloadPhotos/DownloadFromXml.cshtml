@@ -4,7 +4,7 @@
 
 <h2>Photos downloaded succsefully </h2>
 
-@if (!string.IsNullOrEmpty(ViewBag.Message))
+@if (ViewBag.Message != null)
 {
     <div class="alert alert-success">
         @ViewBag.Message
