@@ -21,7 +21,7 @@ public static class PathModel
 
     public static string? Path { get; } = @"https://amperok.com.ua/index.php?route=extension/feed/unixml/violux_full"; // Violux, Amperok 
     //public static string? Path { get; } = @"https://b2b.vestum.ua/data/yml_catalog_rozetka.xml"; // Vestum
-    //public static string? Path { get; } = @"D:\Downloads\Novodvor.xlsx";
+    //public static string? Path { get; } = @"https://nowodvorski.ua/1c/client_export.xml";  // Новодворски: наличе и цены
 
 
 
