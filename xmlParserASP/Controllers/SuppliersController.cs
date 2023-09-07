@@ -36,7 +36,7 @@ namespace xmlParserASP.Controllers
             }
 
             var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
+                .FirstOrDefaultAsync(m => m.SupplierId.Equals(id));
             if (supplier == null)
             {
                 return NotFound();
@@ -90,7 +90,7 @@ namespace xmlParserASP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("SupplierId,SupplierName")] Supplier supplier)
         {
-            if (id != supplier.SupplierId)
+            if (!string.Equals(id, supplier.SupplierId))
             {
                 return NotFound();
             }
@@ -127,7 +127,7 @@ namespace xmlParserASP.Controllers
             }
 
             var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
+                .FirstOrDefaultAsync(m => m.SupplierId.Equals(id));
             if (supplier == null)
             {
                 return NotFound();
@@ -155,9 +155,9 @@ namespace xmlParserASP.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SupplierExists(int id)
+        private bool SupplierExists(string id)
         {
-          return (_context.Suppliers?.Any(e => e.SupplierId == id)).GetValueOrDefault();
+          return (_context.Suppliers?.Any(e => e.SupplierId.Equals(id))).GetValueOrDefault();
         }
     }
 }
