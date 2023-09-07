@@ -226,7 +226,7 @@ namespace xmlParserASP.Controllers
             }
 
             suppName = _dbContext.Suppliers
-                .Where(s => s.SupplierId.Equals(_suppSetting.SupplierId))
+                .Where(s => s.SupplierId == _suppSetting.SupplierId)
                 .Select(s => s.SupplierName)
                 .FirstOrDefault();
 

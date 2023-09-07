@@ -11,7 +11,7 @@ public class Product
     public int ProductId { get; set; }
     [Required(ErrorMessage = "Select a supplier")]
     [Column("supplier_id")]
-    public string? SupplierId { get; set; }
+    public int? SupplierId { get; set; }
 
     // Навигационное свойство для связи с Supplier
     public Supplier? Supplier { get; set; }
