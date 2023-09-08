@@ -45,7 +45,10 @@ namespace xmlParserASP.Entities
         public string? PhotoFolder { get; set; } = @"D:\Downloads\Photo\";       
 
         public string? QuantityNode { get; set; }
-     
+
+        public string? QuantityLongTermNode { get; set; }
+
+
         public string? SupplierNode { get; set; }
 
         public string? ParamNode { get; set; }
