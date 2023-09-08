@@ -24,10 +24,10 @@ namespace xmlParserASP.Entities
 
         public int? StartGammaIDFrom { get; set; }
 
-        public  string? ProductNode { get; set; }
+        public string? ProductNode { get; set; }
 
         public string? paramAttribute { get; set; }
-       
+
         public string? ModelNode { get; set; }
         public string? ModelXlColumn { get; set; }
 
@@ -39,10 +39,10 @@ namespace xmlParserASP.Entities
 
 
         public string? PictureNode { get; set; }
-        public string? PictureXlColumn { get; set; }
+        public string? PicturePriceQuantityXlColumn { get; set; }
         public string? imageNameInCatImg { get; set; }
 
-        public string? PhotoFolder { get; set; } = @"D:\Downloads\Photo\";       
+        public string? PhotoFolder { get; set; } = @"D:\Downloads\Photo\";
 
         public string? QuantityNode { get; set; }
 
@@ -62,3 +62,4 @@ namespace xmlParserASP.Entities
         // !!!  In ReadAttrXMLTo3Columns and WriteToXL set model parsing
     }
 }
+

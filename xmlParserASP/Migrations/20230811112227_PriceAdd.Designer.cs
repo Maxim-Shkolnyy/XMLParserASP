@@ -322,7 +322,7 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("picture_node");
 
-                    b.Property<string>("PictureXlColumn")
+                    b.Property<string>("PicturePriceQuantityXlColumn")
                         .HasColumnType("longtext")
                         .HasColumnName("picture_xl_column");
 

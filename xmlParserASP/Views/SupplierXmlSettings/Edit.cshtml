@@ -79,9 +79,9 @@
                 <span asp-validation-for="PictureNode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PictureXlColumn" class="control-label"></label>
-                <input asp-for="PictureXlColumn" class="form-control" />
-                <span asp-validation-for="PictureXlColumn" class="text-danger"></span>
+                <label asp-for="PicturePriceQuantityXlColumn" class="control-label"></label>
+                <input asp-for="PicturePriceQuantityXlColumn" class="form-control" />
+                <span asp-validation-for="PicturePriceQuantityXlColumn" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="imageNameInCatImg" class="control-label"></label>
@@ -97,6 +97,11 @@
                 <label asp-for="QuantityNode" class="control-label"></label>
                 <input asp-for="QuantityNode" class="form-control" />
                 <span asp-validation-for="QuantityNode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuantityLongTermNode" class="control-label"></label>
+                <input asp-for="QuantityLongTermNode" class="form-control" />
+                <span asp-validation-for="QuantityLongTermNode" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SupplierNode" class="control-label"></label>
@@ -124,6 +129,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

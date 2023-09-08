@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230821154951_quatity")]
-    partial class quatity
+    [Migration("20230908155406_PicturePriceQuantityXlColumn2")]
+    partial class PicturePriceQuantityXlColumn2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,7 +185,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("status");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("supplier_id");
 
@@ -324,7 +325,7 @@ namespace xmlParserASP.Migrations
 
                     b.Property<string>("PicturePriceQuantityXlColumn")
                         .HasColumnType("longtext")
-                        .HasColumnName("picture_xl_column");
+                        .HasColumnName("picture_price_quantity_xl_column");
 
                     b.Property<string>("PriceNode")
                         .HasColumnType("longtext")
@@ -333,6 +334,10 @@ namespace xmlParserASP.Migrations
                     b.Property<string>("ProductNode")
                         .HasColumnType("longtext")
                         .HasColumnName("product_node");
+
+                    b.Property<string>("QuantityLongTermNode")
+                        .HasColumnType("longtext")
+                        .HasColumnName("quantity_long_term_node");
 
                     b.Property<string>("QuantityNode")
                         .HasColumnType("longtext")
