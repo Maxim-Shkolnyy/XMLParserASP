@@ -1,0 +1,11 @@
+﻿@model xmlParserASP.Models.PriceQuantityViewModel
+
+<h1>Update price and quantity</h1>
+
+<form asp-controller="UpdatePriceQuantity" asp-method="post">
+
+    @foreach (var item in Model.SupplierXmlSettings)
+    {
+        <option value ="@item.SettingName"></option>
+    }
+</form>
