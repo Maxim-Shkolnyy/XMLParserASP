@@ -30,10 +30,7 @@ namespace xmlParserASP.Controllers
         [HttpPost]
         public IActionResult Result(int supplierXmlSettingId)
         {
-            int dfkjs = 10;
-            dfkjs++;
-            int dfs = supplierXmlSettingId + dfkjs;
-            Debug.WriteLine(dfkjs);
+            
 
             return View();
         }
