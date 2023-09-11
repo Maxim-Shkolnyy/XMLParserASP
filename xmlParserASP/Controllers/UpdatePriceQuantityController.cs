@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using xmlParserASP.Presistant;
 using xmlParserASP.Entities;
+using xmlParserASP.Models;
 
 namespace xmlParserASP.Controllers
 {
@@ -16,10 +17,13 @@ namespace xmlParserASP.Controllers
         public IActionResult Index()
         {
             //var currentProduct = _db.Products.Where(m=>m.ProductId == _supplier.SupplierId && )
-            var settingList = _db.SupplierXmlSettings.ToList();
-            ViewBag.settingViewBag = settingList;
+            var settingList = new PriceQuantityViewModel
+            {
+                SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
+            };
+            
 
-            return View();
+            return View(settingList);
         }
 
         [HttpPost]

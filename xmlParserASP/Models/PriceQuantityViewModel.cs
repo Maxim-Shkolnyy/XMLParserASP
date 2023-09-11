@@ -9,5 +9,6 @@ namespace xmlParserASP.Models
         public string? SupplierId { get; set; }
         public string? Model { get; set; }
         public List<SupplierXmlSetting> SupplierXmlSettings { get; set; }
+        public int SelectedSetting { get; set; }
     }
 }
