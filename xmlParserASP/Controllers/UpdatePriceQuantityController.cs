@@ -2,6 +2,7 @@
 using xmlParserASP.Presistant;
 using xmlParserASP.Entities;
 using xmlParserASP.Models;
+using System.Diagnostics;
 
 namespace xmlParserASP.Controllers
 {
@@ -27,9 +28,12 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdatePriceQuantity()
+        public IActionResult Result(int supplierXmlSettingId)
         {
-            
+            int dfkjs = 10;
+            dfkjs++;
+            int dfs = supplierXmlSettingId + dfkjs;
+            Debug.WriteLine(dfkjs);
 
             return View();
         }

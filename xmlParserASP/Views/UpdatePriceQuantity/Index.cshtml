@@ -2,17 +2,17 @@
 
 <h1>Update price and quantity</h1>
 
-<form asp-controller="UpdatePriceQuantity" asp-method="post">
-    <label for="SelectedSetting">Select supplier</label>
+<form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">
+   @*  <label for="SelectedSetting">Select supplier</label> *@
 
-    <select id="SelectedSetting" name="SelectedSetting">
+    <select id="SelectedSetting" name="supplierXmlSettingId">
 
         <option value="">-- Select supplier setting --</option>
 
         @foreach (var item in Model.SupplierXmlSettings)
         {
-            <option value="@item.SettingName">@item.SettingName</option>
+            <option value="@item.SupplierXmlSettingId">@item.SettingName</option>
         }
     </select>
-    <input type="submit" value="Update price and quantity"/>
+    <button type="submit" class="btn btn-primary">Update price and quantity</button> 
 </form>
