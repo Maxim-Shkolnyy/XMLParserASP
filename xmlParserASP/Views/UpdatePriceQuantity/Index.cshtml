@@ -2,6 +2,11 @@
 
 <h1>Update price and quantity</h1>
 
+@if (ViewBag.SelectSupSetting != null)
+{
+    <h2>@ViewBag.SelectSupSetting</h2>
+}
+
 <form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">
    @*  <label for="SelectedSetting">Select supplier</label> *@
 

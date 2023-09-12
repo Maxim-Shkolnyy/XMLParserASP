@@ -79,7 +79,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.OrderBy(s=>s.SettingName)) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.SettingName)

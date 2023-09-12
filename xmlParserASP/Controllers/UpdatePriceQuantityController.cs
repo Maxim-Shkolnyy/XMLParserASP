@@ -30,7 +30,17 @@ namespace xmlParserASP.Controllers
         [HttpPost]
         public IActionResult Result(int supplierXmlSettingId)
         {
-            
+            if (!ModelState.IsValid)
+            {
+                var settingList = new PriceQuantityViewModel
+                {
+                    SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
+                };
+
+                ViewBag.SelectSupSetting = "Choose supplier first";
+
+                return View("Index", settingList);
+            }
 
             return View();
         }

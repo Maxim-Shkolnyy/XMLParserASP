@@ -1,4 +1,5 @@
-﻿using xmlParserASP.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using xmlParserASP.Entities;
 
 namespace xmlParserASP.Models
 {
@@ -9,6 +10,7 @@ namespace xmlParserASP.Models
         public string? SupplierId { get; set; }
         public string? Model { get; set; }
         public List<SupplierXmlSetting>? SupplierXmlSettings { get; set; }
+        [Required(ErrorMessage = "Select a supplier")]
         public int SupplierXmlSettingId { get; set; }
     }
 }
