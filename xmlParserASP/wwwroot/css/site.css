@@ -30,3 +30,16 @@ body {
     overflow: auto;
     width: 50px;
 }
+
+.navbar {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navbar-nav .active a {
+    border-bottom: 2px solid #007bff; 
+    font-weight: bold;
+}
