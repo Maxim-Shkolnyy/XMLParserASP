@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class Max3 : Migration
+    public partial class proddd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -147,16 +147,15 @@ namespace xmlParserASP.Migrations
                 name: "products",
                 columns: table => new
                 {
-                    product_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    product_id = table.Column<int>(type: "int", nullable: false),
                     supplier_id = table.Column<int>(type: "int", nullable: false),
                     product_name_ru = table.Column<string>(type: "longtext", nullable: true),
                     product_name_ua = table.Column<string>(type: "longtext", nullable: true),
                     my_cat_id = table.Column<int>(type: "int", nullable: true),
                     sku = table.Column<int>(type: "int", nullable: true),
                     model = table.Column<string>(type: "longtext", nullable: true),
-                    quantity = table.Column<float>(type: "float", nullable: true),
-                    price = table.Column<float>(type: "float", nullable: false),
+                    quantity = table.Column<int>(type: "int", nullable: true),
+                    price = table.Column<float>(type: "float", nullable: true),
                     image_name = table.Column<string>(type: "longtext", nullable: true),
                     description_ru = table.Column<string>(type: "longtext", nullable: true),
                     description_ua = table.Column<string>(type: "longtext", nullable: true),
@@ -187,15 +186,22 @@ namespace xmlParserASP.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     setting_name = table.Column<string>(type: "longtext", nullable: false),
                     supplier_id = table.Column<int>(type: "int", nullable: false),
+                    path = table.Column<string>(type: "longtext", nullable: true),
                     start_gamma_id_from = table.Column<int>(type: "int", nullable: true),
                     product_node = table.Column<string>(type: "longtext", nullable: true),
+                    param_attribute = table.Column<string>(type: "longtext", nullable: true),
                     model_node = table.Column<string>(type: "longtext", nullable: true),
                     model_xl_column = table.Column<string>(type: "longtext", nullable: true),
+                    price_node = table.Column<string>(type: "longtext", nullable: true),
+                    description_node = table.Column<string>(type: "longtext", nullable: true),
+                    name_node = table.Column<string>(type: "longtext", nullable: true),
+                    currency_node = table.Column<string>(type: "longtext", nullable: true),
                     picture_node = table.Column<string>(type: "longtext", nullable: true),
-                    picture_xl_column = table.Column<string>(type: "longtext", nullable: true),
+                    picture_price_quantity_xl_column = table.Column<string>(type: "longtext", nullable: true),
                     image_name_in_cat_img = table.Column<string>(type: "longtext", nullable: true),
                     photo_folder = table.Column<string>(type: "longtext", nullable: true),
                     quantity_node = table.Column<string>(type: "longtext", nullable: true),
+                    quantity_long_term_node = table.Column<string>(type: "longtext", nullable: true),
                     supplier_node = table.Column<string>(type: "longtext", nullable: true),
                     param_node = table.Column<string>(type: "longtext", nullable: true),
                     param_attr_node = table.Column<string>(type: "longtext", nullable: true)
@@ -230,8 +236,7 @@ namespace xmlParserASP.Migrations
             migrationBuilder.CreateIndex(
                 name: "ix_supplier_xml_settings_supplier_id",
                 table: "supplier_xml_settings",
-                column: "supplier_id",
-                unique: true);
+                column: "supplier_id");
         }
 
         /// <inheritdoc />

@@ -2,7 +2,6 @@
 using xmlParserASP.Presistant;
 using xmlParserASP.Entities;
 using xmlParserASP.Models;
-using System.Diagnostics;
 
 namespace xmlParserASP.Controllers
 {

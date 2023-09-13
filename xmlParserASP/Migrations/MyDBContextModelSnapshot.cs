@@ -114,7 +114,6 @@ namespace xmlParserASP.Migrations
             modelBuilder.Entity("xmlParserASP.Entities.Product", b =>
                 {
                     b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("product_id");
 

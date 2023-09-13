@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230815153255_PriceNull")]
-    partial class PriceNull
+    [Migration("20230913140155_proddd")]
+    partial class proddd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,7 +117,6 @@ namespace xmlParserASP.Migrations
             modelBuilder.Entity("xmlParserASP.Entities.Product", b =>
                 {
                     b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("product_id");
 
@@ -169,8 +168,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("product_name_ua");
 
-                    b.Property<float?>("Quantity")
-                        .HasColumnType("float")
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int")
                         .HasColumnName("quantity");
 
                     b.Property<string>("SeoKeyword")
@@ -185,7 +184,8 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("status");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("supplier_id");
 
@@ -324,7 +324,7 @@ namespace xmlParserASP.Migrations
 
                     b.Property<string>("PicturePriceQuantityXlColumn")
                         .HasColumnType("longtext")
-                        .HasColumnName("picture_xl_column");
+                        .HasColumnName("picture_price_quantity_xl_column");
 
                     b.Property<string>("PriceNode")
                         .HasColumnType("longtext")
@@ -333,6 +333,10 @@ namespace xmlParserASP.Migrations
                     b.Property<string>("ProductNode")
                         .HasColumnType("longtext")
                         .HasColumnName("product_node");
+
+                    b.Property<string>("QuantityLongTermNode")
+                        .HasColumnType("longtext")
+                        .HasColumnName("quantity_long_term_node");
 
                     b.Property<string>("QuantityNode")
                         .HasColumnType("longtext")

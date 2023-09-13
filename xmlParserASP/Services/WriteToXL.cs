@@ -109,7 +109,7 @@ public class WriteToXL
 
                 Translitter trn = new();
                 string firstKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
-                    .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "");
+                    .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "").Replace("+", "plus").Replace("%", "-").Replace("°","");
                 string seoKeyword = firstKeyword.Replace("--", "-");
 
                 string dateAdded = "2023-07-06 00:00:00";

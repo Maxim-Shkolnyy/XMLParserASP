@@ -7,7 +7,7 @@ namespace xmlParserASP.Entities;
 public class Product
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int ProductId { get; set; }
     [Required(ErrorMessage = "Select a supplier")]
     [Column("supplier_id")]

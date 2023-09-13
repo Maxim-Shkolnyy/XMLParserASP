@@ -5,7 +5,7 @@
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class PicturePriceQuantityXlColumn : Migration
+    public partial class ddb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
