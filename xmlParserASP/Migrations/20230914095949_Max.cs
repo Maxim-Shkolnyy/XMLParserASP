@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace xmlParserASP.Migrations
 {
     /// <inheritdoc />
-    public partial class proddd : Migration
+    public partial class Max : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

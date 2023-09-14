@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230913154338_ddb")]
-    partial class ddb
+    [Migration("20230914095949_Max")]
+    partial class Max
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
