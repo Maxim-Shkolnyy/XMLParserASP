@@ -9,6 +9,7 @@ using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace xmlParserASP.Controllers
 {
@@ -26,9 +27,13 @@ namespace xmlParserASP.Controllers
         {
             //var myContext = _dbContext.SupplierXmlSettings;
 
+            var settingsWithSupplier = _dbContext.SupplierXmlSettings.Where(s => s.Supplier != null).Include(m => m.Supplier).ToList();
+
+            //return View(settingsWithSupplier);
+
             var model = new DownloadPhotosViewModel
             {
-                SupplierXmlSettings = _dbContext.SupplierXmlSettings.ToList()
+                SupplierXmlSettings = _dbContext.SupplierXmlSettings.Include(m => m.Supplier).ToList()
             };
 
             var stringPath = new List<SelectListItem>
@@ -86,127 +91,127 @@ namespace xmlParserASP.Controllers
                 {
                     //tasks.Add(Task.Run(async () =>
                     //{
-                        var photoUrl = photoNode.InnerText;
+                    var photoUrl = photoNode.InnerText;
 
-                        string modelValue = null;
+                    string modelValue = null;
 
-                        if (_suppSetting.paramAttribute == null)
+                    if (_suppSetting.paramAttribute == null)
+                    {
+                        modelValue = photoNode.SelectSingleNode(_suppSetting.ModelNode)?.InnerText ?? "";
+                    }
+                    else
+                    {
+                        modelValue = photoNode.ParentNode.Attributes[_suppSetting.paramAttribute]?.Value;
+                    }
+
+                    // Очистка и преобразование modelValue
+                    if (!string.IsNullOrEmpty(modelValue))
+                    {
+                        modelValue = SanitizeModelValue(modelValue);
+
+                        if (!modelCount.ContainsKey(modelValue))
                         {
-                            modelValue = photoNode.SelectSingleNode(_suppSetting.ModelNode)?.InnerText ?? "";
+                            modelCount[modelValue] = 0;
+                            modelPhotoUrls[modelValue] = new HashSet<string>();
+                            totalPhotoPassedExists++;
+                        }
+                        modelCount[modelValue]++;
+                    }
+
+                    var originalFileName = Path.GetFileName(photoUrl);
+
+                    if (!string.IsNullOrEmpty(modelValue))
+                    {
+                        var count = modelCount[modelValue];
+                        var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+                        string imageName = null;
+                        if (renamePhotos)
+                        {
+                            imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{originalFileName}";
                         }
                         else
                         {
-                            modelValue = photoNode.ParentNode.Attributes[_suppSetting.paramAttribute]?.Value;
+                            imageName = $"{originalFileName}";
                         }
 
-                        // Очистка и преобразование modelValue
-                        if (!string.IsNullOrEmpty(modelValue))
-                        {
-                            modelValue = SanitizeModelValue(modelValue);
+                        var filePath = Path.Combine(_suppSetting.PhotoFolder, imageName);
 
-                            if (!modelCount.ContainsKey(modelValue))
-                            {
-                                modelCount[modelValue] = 0;
-                                modelPhotoUrls[modelValue] = new HashSet<string>();
-                                totalPhotoPassedExists++;
-                            }
-                            modelCount[modelValue]++;
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            totalPhotoPassedExists++;
+                            //return;
                         }
 
-                        var originalFileName = Path.GetFileName(photoUrl);
-
-                        if (!string.IsNullOrEmpty(modelValue))
+                        if (modelPhotoUrls[modelValue].Contains(photoUrl))
                         {
-                            var count = modelCount[modelValue];
-                            var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
-                            string imageName = null;
-                            if (renamePhotos)
-                            {
-                                imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{originalFileName}";
-                            }
-                            else
-                            {
-                                imageName = $"{originalFileName}";
-                            }
+                            totalPhotoPassedExists++;
+                            //return;
+                        }
 
-                            var filePath = Path.Combine(_suppSetting.PhotoFolder, imageName);
-
-                            if (System.IO.File.Exists(filePath))
+                        using (var client = new HttpClient())
+                        {
+                            try
                             {
-                                totalPhotoPassedExists++;
-                                //return;
-                            }
-
-                            if (modelPhotoUrls[modelValue].Contains(photoUrl))
-                            {
-                                totalPhotoPassedExists++;
-                                //return;
-                            }
-
-                            using (var client = new HttpClient())
-                            {
-                                try
+                                using (var response = await client.GetAsync(photoUrl))
                                 {
-                                    using (var response = await client.GetAsync(photoUrl))
+                                    if (response.IsSuccessStatusCode)
                                     {
-                                        if (response.IsSuccessStatusCode)
+                                        var photoFilePath = Path.Combine(_suppSetting.PhotoFolder, imageName);
+
+                                        using (var photoStream = await response.Content.ReadAsStreamAsync())
                                         {
-                                            var photoFilePath = Path.Combine(_suppSetting.PhotoFolder, imageName);
-
-                                            using (var photoStream = await response.Content.ReadAsStreamAsync())
+                                            using (var image = Image.FromStream(photoStream))
                                             {
-                                                using (var image = Image.FromStream(photoStream))
+                                                photoStream.Seek(0, SeekOrigin.Begin);
+
+                                                if (image.Width > 1000 || image.Height > 1000)
                                                 {
-                                                    photoStream.Seek(0, SeekOrigin.Begin);
-
-                                                    if (image.Width > 1000 || image.Height > 1000)
+                                                    int newWidth, newHeight;
+                                                    if (image.Width > image.Height)
                                                     {
-                                                        int newWidth, newHeight;
-                                                        if (image.Width > image.Height)
-                                                        {
-                                                            newWidth = 1000;
-                                                            newHeight = (int)((float)image.Height / image.Width * newWidth);
-                                                        }
-                                                        else
-                                                        {
-                                                            newHeight = 1000;
-                                                            newWidth = (int)((float)image.Width / image.Height * newHeight);
-                                                        }
-
-                                                        using (var resizedImage = new Bitmap(image, newWidth, newHeight))
-                                                        {
-                                                            resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
-                                                            totalPhotosResized++;
-                                                        }
+                                                        newWidth = 1000;
+                                                        newHeight = (int)((float)image.Height / image.Width * newWidth);
                                                     }
                                                     else
                                                     {
-                                                        using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
-                                                        {
-                                                            photoStream.Seek(0, SeekOrigin.Begin);
-                                                            await photoStream.CopyToAsync(fileStream);
-                                                        }
+                                                        newHeight = 1000;
+                                                        newWidth = (int)((float)image.Width / image.Height * newHeight);
                                                     }
 
-                                                    modelPhotoUrls[modelValue].Add(photoUrl);
-                                                    totalPhotosDownloaded++;
-                                                    newPhotosAdded++;
+                                                    using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+                                                    {
+                                                        resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
+                                                        totalPhotosResized++;
+                                                    }
                                                 }
+                                                else
+                                                {
+                                                    using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                                    {
+                                                        photoStream.Seek(0, SeekOrigin.Begin);
+                                                        await photoStream.CopyToAsync(fileStream);
+                                                    }
+                                                }
+
+                                                modelPhotoUrls[modelValue].Add(photoUrl);
+                                                totalPhotosDownloaded++;
+                                                newPhotosAdded++;
                                             }
                                         }
-                                        else
-                                        {
-                                            wrongUrl.Add(new KeyValuePair<string, string>(modelValue, photoUrl));
-                                            imgNameCannotDownload++;
-                                        }
+                                    }
+                                    else
+                                    {
+                                        wrongUrl.Add(new KeyValuePair<string, string>(modelValue, photoUrl));
+                                        imgNameCannotDownload++;
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine($"Error downloading photo: {ex.Message}");
-                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Error downloading photo: {ex.Message}");
                             }
                         }
+                    }
                     //}));
                 }
 
@@ -222,7 +227,7 @@ namespace xmlParserASP.Controllers
 
             return View("DownloadFromXml");
         }
-        
+
         private string SanitizeModelValue(string modelValue)
         {
             string sanitizedValue = Regex.Replace(modelValue, @"[^a-zA-Z0-9-]", "-");
