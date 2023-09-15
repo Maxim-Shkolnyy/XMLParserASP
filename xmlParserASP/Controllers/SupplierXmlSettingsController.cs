@@ -22,8 +22,8 @@ namespace xmlParserASP.Controllers
         // GET: SupplierXmlSettings
         public async Task<IActionResult> Index()
         {
-            var myDBContext = _context.SupplierXmlSettings.Include(s => s.Supplier);
-            return View(await myDBContext.ToListAsync());
+            var myDBContext = _context.SupplierXmlSettings.Include(s => s.Supplier).ToListAsync();
+            return View(await myDBContext);
         }
 
         // GET: SupplierXmlSettings/Details/5

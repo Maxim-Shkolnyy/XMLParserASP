@@ -14,7 +14,7 @@ namespace xmlParserASP.Entities
 
         // Внешний ключ для связи с Supplier
         [Required(ErrorMessage = "Select a supplier")]
-        public int SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
         // Навигационное свойство для связи с Supplier
         public Supplier? Supplier { get; set; }
