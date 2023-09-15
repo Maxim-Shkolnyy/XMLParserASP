@@ -318,7 +318,7 @@ namespace xmlParserASP.Controllers
                             {
                                 if (response.IsSuccessStatusCode)
                                 {
-                                    var photoFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
+                                    string? photoFilePath = Path.Combine(PathModel.PhotoFolder, imageName) ?? @"D:\\Downloads\img\";
 
                                     using (var photoStream = await response.Content.ReadAsStreamAsync())
                                     {
