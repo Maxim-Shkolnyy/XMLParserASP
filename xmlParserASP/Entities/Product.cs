@@ -10,8 +10,7 @@ public class Product
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int ProductId { get; set; }
     [Required(ErrorMessage = "Select a supplier")]
-    [Column("supplier_id")]
-    public int? SupplierId { get; set; }
+    public int SupplierId { get; set; }
 
     // Навигационное свойство для связи с Supplier
     public Supplier? Supplier { get; set; }
@@ -21,7 +20,7 @@ public class Product
     public int? MyCatId { get; set; }
     public int? Sku { get; set; }
     public string? Model { get; set; }
-    public int? Quantity { get; set; }
+    public float? Quantity { get; set; }
 
     [Range(0, float.MaxValue)]
     public float? Price { get; set; }
