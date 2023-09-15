@@ -241,7 +241,7 @@ namespace xmlParserASP.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, string? filePath, int? ModelColumn, int? PictureColumn, int? SheetNumber)
+        public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile,  int? ModelColumn, int? PictureColumn, int? SheetNumber) //string? filePath,
         {
             try
             {
@@ -257,7 +257,15 @@ namespace xmlParserASP.Controllers
                     int newPhotosAdded = 0;
 
                     //string excelFilePath = PathModel.Path;
-                    string excelFilePath = Path.Combine(filePath, xmlFile.FileName);
+                    string fileFileName = xmlFile.FileName;
+                    string tempFolderPath = Path.GetTempPath();
+
+                    string tempFilePath = Path.Combine(tempFolderPath, fileFileName);
+
+                    using (var stream = new FileStream(tempFilePath, FileMode.Create))
+                    {
+                        await xmlFile.CopyToAsync(stream);
+                    }
 
                     string modelColumnName = ModelColumn.ToString();
 
@@ -266,7 +274,7 @@ namespace xmlParserASP.Controllers
                     int numberOfSheet = SheetNumber ?? 1;
                     
 
-                    using (var workbook = new XLWorkbook(excelFilePath))
+                    using (var workbook = new XLWorkbook(tempFilePath))
                     {
                         var worksheet = workbook.Worksheet(numberOfSheet); // Sheet Number
                         var firstRowUsed = worksheet.FirstRowUsed();
@@ -383,6 +391,7 @@ namespace xmlParserASP.Controllers
                         ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Wrong URL, image was not downloaded: {cannotDownload}";
                         ViewBag.WrongUrl = wrongUrl;
                     }
+                    System.IO.File.Delete(tempFilePath);
                 }
             }
             catch (Exception ex)
@@ -390,7 +399,7 @@ namespace xmlParserASP.Controllers
                 ViewBag.Message = "An error occurred: " + ex.Message;
             }
 
-            return View("DownloadFromXml");
+            return View("DownloadFromXl");
         }
 
 
