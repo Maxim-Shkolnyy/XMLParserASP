@@ -38,18 +38,18 @@
             Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
             <table width="70%">
                 <thead>
-                <tr>
-                    <th>Prefix:</th>
-                    <th>Main Part:</th>
-                    <th>Suffix:</th>
-                </tr>
+                    <tr>
+                        <th>Prefix:</th>
+                        <th>Main Part:</th>
+                        <th>Suffix:</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><input type="text" id="prefix" name="prefix" class="form-control"/></td>
-                    <td><input type="text" id="mainPart" name="mainPart" class="form-control"/></td>
-                    <td><input type="text" id="suffix" name="suffix" class="form-control"/></td>
-                </tr>
+                    <tr>
+                        <td><input type="text" id="prefix" name="prefix" class="form-control" /></td>
+                        <td><input type="text" id="mainPart" name="mainPart" class="form-control" /></td>
+                        <td><input type="text" id="suffix" name="suffix" class="form-control" /></td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -61,20 +61,33 @@
 <br />
 <br />
 
+
 <h2>Download from excel</h2>
+
+
 <p>
-@using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @* <div class="form-group">
-        <label for="filePath" class="control-label">Choose folder:</label>
-        <select name="filePath" class="form-control" asp-items="@ViewBag.stringPath">
-        </select>
+    @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @* <div class="form-group">
+    <label for="filePath" class="control-label">Choose folder:</label>
+    <select name="filePath" class="form-control" asp-items="@ViewBag.stringPath">
+    </select>
     </div> *@
-    <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
-    <input type="hidden" asp-action="DownloadFromXL" />
-    <br /><br />
-    <button type="submit" class="btn btn-success">Download from Xl</button>
-}
+        <label for="ModelColumn">Model column</label>
+        <input asp-for="ModelColumn" value="1">
+        <label for="PictureColumn">Picture column</label>
+        <input asp-for="PictureColumn" value="2">
+        <label for="SheetNumber">Sheet number</label>
+        <input asp-for="SheetNumber" value="1">
+        <br /><br />
+
+        <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
+        <input type="hidden" asp-action="DownloadFromXL" />
+        <br />
+
+        <br />
+        <button type="submit" class="btn btn-success">Download from Xl</button>
+    }
 </p>
 
 @section scripts {

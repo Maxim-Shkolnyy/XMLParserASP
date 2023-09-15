@@ -3,6 +3,7 @@ using ClosedXML.Excel;
 using xmlParserASP.Entities;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
+using xmlParserASP.Services;
 using static xmlParserASP.Services.TranslitMethods;
 
 namespace xmlParserASP.Services;
@@ -110,7 +111,8 @@ public class WriteToXL
                 Translitter trn = new();
                 string firstKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
                     .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "").Replace("+", "plus").Replace("%", "-").Replace("°","");
-                string seoKeyword = firstKeyword.Replace("--", "-");
+                string secondKeyword = firstKeyword.Replace("--", "-");
+                string seoKeyword = DelSpecialSymbols.ToLowerAndSpecialSymbolsToDashes(secondKeyword);
 
                 string dateAdded = "2023-07-06 00:00:00";
                 DateTime dateModified = DateTime.Now;

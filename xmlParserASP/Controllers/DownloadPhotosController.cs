@@ -7,6 +7,7 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
+using xmlParserASP.Services;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
@@ -240,7 +241,7 @@ namespace xmlParserASP.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, string? filePath)
+        public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, string? filePath, int? ModelColumn, int? PictureColumn, int? SheetNumber)
         {
             try
             {
@@ -258,12 +259,16 @@ namespace xmlParserASP.Controllers
                     //string excelFilePath = PathModel.Path;
                     string excelFilePath = Path.Combine(filePath, xmlFile.FileName);
 
-                    string modelColumnName = PathModel.ModelXlColumn;
-                    string photoUrlColumnName = PathModel.PictureXlColumn;
+                    string modelColumnName = ModelColumn.ToString();
+
+                    string photoUrlColumnName = PictureColumn.ToString();
+
+                    int numberOfSheet = SheetNumber ?? 1;
+                    
 
                     using (var workbook = new XLWorkbook(excelFilePath))
                     {
-                        var worksheet = workbook.Worksheet(PathModel.XlSheetNumber); // Sheet Number
+                        var worksheet = workbook.Worksheet(numberOfSheet); // Sheet Number
                         var firstRowUsed = worksheet.FirstRowUsed();
                         var modelColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == modelColumnName)?.WorksheetColumn();
                         var photoUrlColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == photoUrlColumnName)?.WorksheetColumn();
@@ -282,6 +287,7 @@ namespace xmlParserASP.Controllers
                             var photoUrl = currentRow.Cell(photoUrlColumn.ColumnNumber()).Value.ToString();
 
                             var originalFileName = Path.GetFileName(photoUrl);
+                            var cleanOriginalFileName = DelSpecialSymbols.ToLowerAndSpecialSymbolsToDashes(originalFileName);
 
                             if (!modelCount.ContainsKey(modelValue))
                             {
@@ -297,7 +303,7 @@ namespace xmlParserASP.Controllers
 
                             var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
 
-                            var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{originalFileName}";
+                            var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{cleanOriginalFileName}";
 
                             //var fullFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
 
