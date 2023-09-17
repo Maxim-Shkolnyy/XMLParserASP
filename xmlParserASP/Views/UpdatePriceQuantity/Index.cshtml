@@ -4,19 +4,21 @@
 
 @if (ViewBag.SelectSupSetting != null)
 {
-    <h2>@ViewBag.SelectSupSetting</h2>
+    <h3>@ViewBag.SelectSupSetting</h3>
 }
 
 <form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">
-   @*  <label for="SelectedSetting">Select supplier</label> *@
+   @*  <label for="SelectedSetting">Select supplier</label> 
 
     <select id="SelectedSetting" name="supplierXmlSettingId">
 
-        <option value="">-- Select supplier setting --</option>
+         <option value="">-- Select supplier setting --</option> *@
 
         @foreach (var item in Model.SupplierXmlSettings)
         {
-            <option value="@item.SupplierXmlSettingId">@item.SettingName</option>
+            @* <option typeof="bool" value="@item.SupplierXmlSettingId">@item.SettingName</option> *@
+            <input type="checkbox" asp-for="IsChecked" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
+            @item.SettingName <br />
         }
     </select>
     <button type="submit" class="btn btn-primary">Update price and quantity</button> 

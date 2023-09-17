@@ -27,7 +27,7 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public IActionResult Result(int supplierXmlSettingId)
+        public IActionResult Result(List<int> supplierXmlSettingId)
         {
             if (!ModelState.IsValid)
             {
