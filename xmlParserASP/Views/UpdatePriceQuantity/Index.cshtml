@@ -11,7 +11,7 @@
 
     @foreach (var item in Model.SupplierXmlSettings)
     {
-        <input type="checkbox" name="settingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
+        <input type="checkbox" name="SettingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
         @item.SettingName <br />
     }
     
@@ -23,18 +23,18 @@
 
 <script>
 
-    var checkboxes = document.getElementsByName('settingList');
+    var checkboxes = document.getElementsByName('SettingList');
 
     function selectAll() {
         
         checkboxes.forEach(function(checkbox) {
-            checkbox.setAttribute('checked', 'checked');
+            checkbox.checked = true;
         });
     }
 
     function deselectAll() {
         checkboxes.forEach(function(checkbox) {
-            checkbox.removeAttribute('checked');
+            checkbox.checked = false;
         });
     }
 </script>

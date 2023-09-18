@@ -27,9 +27,9 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public IActionResult Result(List<int> settingList)
+        public IActionResult Result(List<int>? settingList)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid && settingList == null)
             {
                 var mySettingList = new PriceQuantityViewModel
                 {
