@@ -16,18 +16,16 @@ namespace xmlParserASP.Controllers
         }
         public IActionResult Index()
         {
-            //var currentProduct = _db.Products.Where(m=>m.ProductId == _supplier.SupplierId && )
             var settingList = new PriceQuantityViewModel
             {
                 SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
             };
-            
 
             return View(settingList);
         }
 
         [HttpPost]
-        public IActionResult Result(List<int>? settingList)
+        public IActionResult Result(List<List<int>>? settingList)
         {
             if (!ModelState.IsValid && settingList == null)
             {
