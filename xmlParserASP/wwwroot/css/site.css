@@ -48,3 +48,20 @@ body {
     border-bottom: 2px solid #007bff; 
     font-weight: bold;
 }
+
+.priceQuantityTable {
+    text-align: center;
+    table-layout: auto;
+    border-collapse: collapse;
+    width: 700px;
+}
+
+.priceQuantityTable th:first-child,
+.priceQuantityTable td:first-child {
+    text-align: left;
+}
+
+.priceQuantityTable th,
+.priceQuantityTable td {
+    border: 1px solid blue;
+}

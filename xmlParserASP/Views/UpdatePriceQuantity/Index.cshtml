@@ -8,16 +8,46 @@
 }
 
 <form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">
+    <table class="priceQuantityTable">
+        <thead>
+            <tr>
+                <th>Supplier setting</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
 
-    @foreach (var item in Model.SupplierXmlSettings)
-    {
-        <input type="checkbox" name="SettingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
-        @item.SettingName <br />
-    }
-    
-    <button type="button" class="btn-light" onclick="selectAll()">Select all</button>
-    <button type="button" class="btn-light" onclick="deselectAll()">Deselect All</button>
-
+        @foreach (var item in Model.SupplierXmlSettings)
+        {
+            <tr>
+                <td>
+                    @item.SettingName
+                </td>
+                <td>
+                    <input type="checkbox" name="SettingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
+                </td>
+                    <td>
+                        <input type="checkbox" name="SettingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
+                    </td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td>
+                <button type="button" class="btn-light" onclick="selectAll()">Select all</button>
+                <button type="button" class="btn-light" onclick="deselectAll()">Deselect All</button>
+            </td>
+            <td>
+                <button type="button" class="btn-light" onclick="selectAll()">Select all</button>
+                <button type="button" class="btn-light" onclick="deselectAll()">Deselect All</button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+    <br /><br />
     <button type="submit" class="btn btn-primary">Update price and quantity</button>
 </form>
 
@@ -26,14 +56,14 @@
     var checkboxes = document.getElementsByName('SettingList');
 
     function selectAll() {
-        
-        checkboxes.forEach(function(checkbox) {
+
+        checkboxes.forEach(function (checkbox) {
             checkbox.checked = true;
         });
     }
 
     function deselectAll() {
-        checkboxes.forEach(function(checkbox) {
+        checkboxes.forEach(function (checkbox) {
             checkbox.checked = false;
         });
     }
