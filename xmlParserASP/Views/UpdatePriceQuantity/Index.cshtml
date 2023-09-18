@@ -17,9 +17,9 @@
         @foreach (var item in Model.SupplierXmlSettings)
         {
             @* <option typeof="bool" value="@item.SupplierXmlSettingId">@item.SettingName</option> *@
-            <input type="checkbox" asp-for="IsChecked" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
+            <input type="checkbox" name="settingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
             @item.SettingName <br />
         }
-    </select>
+    @* </select> *@
     <button type="submit" class="btn btn-primary">Update price and quantity</button> 
 </form>

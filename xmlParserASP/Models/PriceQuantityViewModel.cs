@@ -12,6 +12,7 @@ namespace xmlParserASP.Models
         public List<SupplierXmlSetting>? SupplierXmlSettings { get; set; }
         [Required(ErrorMessage = "Select a supplier")]
         public int SupplierXmlSettingId { get; set; }
+        public List<int> settingList { get; set; }
         public bool IsChecked { get; set; }
     } 
 }

@@ -27,11 +27,11 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public IActionResult Result(List<int> supplierXmlSettingId)
+        public IActionResult Result(List<int> settingList)
         {
             if (!ModelState.IsValid)
             {
-                var settingList = new PriceQuantityViewModel
+                var mySettingList = new PriceQuantityViewModel
                 {
                     SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
                 };
