@@ -17,34 +17,33 @@
             </tr>
         </thead>
         <tbody>
-
-        @foreach (var item in Model.SupplierXmlSettings)
-        {
-            <tr>
-                <td>
-                    @item.SettingName
-                </td>
-                <td>
-                    <input type="checkbox" name="SettingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
-                </td>
+            @for (int i = 0; i < Model.SupplierXmlSettings.Count; i++)
+            {
+                <tr>
                     <td>
-                        <input type="checkbox" name="SettingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
+                        @Model.SupplierXmlSettings[i].SettingName
                     </td>
-            </tr>
-        }
+                    <td>
+                        <input type="checkbox" name="PriceList" value="@Model.SupplierXmlSettings[i].SupplierXmlSettingId">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="QuantityList" value="@Model.SupplierXmlSettings[i].SupplierXmlSettingId">
+                    </td>
+                </tr>
+            }
         </tbody>
         <tfoot>
-        <tr>
-            <td></td>
-            <td>
-                <button type="button" class="btn-light" onclick="selectAll()">Select all</button>
-                <button type="button" class="btn-light" onclick="deselectAll()">Deselect All</button>
-            </td>
-            <td>
-                <button type="button" class="btn-light" onclick="selectAll()">Select all</button>
-                <button type="button" class="btn-light" onclick="deselectAll()">Deselect All</button>
-            </td>
-        </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="button" class="btn-light" onclick="selectAll('PriceList')">Select all</button>
+                    <button type="button" class="btn-light" onclick="deselectAll('PriceList')">Deselect All</button>
+                </td>
+                <td>
+                    <button type="button" class="btn-light" onclick="selectAll('QuantityList')">Select all</button>
+                    <button type="button" class="btn-light" onclick="deselectAll('QuantityList')">Deselect All</button>
+                </td>
+            </tr>
         </tfoot>
     </table>
     <br /><br />
@@ -52,6 +51,23 @@
 </form>
 
 <script>
+    function selectAll(listName) {
+        var checkboxes = document.getElementsByName(listName);
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = true;
+        });
+    }
+
+    function deselectAll(listName) {
+        var checkboxes = document.getElementsByName(listName);
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+    }
+</script>
+
+
+@* <script>
 
     var checkboxes = document.getElementsByName('SettingList');
 
@@ -67,4 +83,4 @@
             checkbox.checked = false;
         });
     }
-</script>
+</script> *@

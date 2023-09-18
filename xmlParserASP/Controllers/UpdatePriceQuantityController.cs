@@ -25,18 +25,22 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public IActionResult Result(List<List<int>>? SettingList)
+        public IActionResult Result(List<int>? PriceList, List<int> QuantityList)
         {
-            if (SettingList == null || SettingList.Count == 0 || !ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var mySettingList = new PriceQuantityViewModel
+
+                if (PriceList.Count + QuantityList.Count == 0)
                 {
-                    SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
-                };
+                    var mySettingList = new PriceQuantityViewModel
+                    {
+                        SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
+                    };
 
-                ViewBag.SelectSupSetting = "Choose supplier first";
+                    ViewBag.SelectSupSetting = "Choose supplier first";
 
-                return View("Index", mySettingList);
+                    return View("Index", mySettingList);
+                }
             }
 
             return View();
