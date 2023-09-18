@@ -4,22 +4,37 @@
 
 @if (ViewBag.SelectSupSetting != null)
 {
-    <h3>@ViewBag.SelectSupSetting</h3>
+    <h3 class="alert-danger">@ViewBag.SelectSupSetting</h3>
 }
 
 <form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">
-   @*  <label for="SelectedSetting">Select supplier</label> 
 
-    <select id="SelectedSetting" name="supplierXmlSettingId">
+    @foreach (var item in Model.SupplierXmlSettings)
+    {
+        <input type="checkbox" name="settingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
+        @item.SettingName <br />
+    }
+    
+    <button type="button" class="btn-light" onclick="selectAll()">Choose all</button>
+    <button type="button" class="btn-light" onclick="deselectAll()">Deselect All</button>
 
-         <option value="">-- Select supplier setting --</option> *@
-
-        @foreach (var item in Model.SupplierXmlSettings)
-        {
-            @* <option typeof="bool" value="@item.SupplierXmlSettingId">@item.SettingName</option> *@
-            <input type="checkbox" name="settingList" value="@item.SupplierXmlSettingId" checked="@Model.IsChecked">
-            @item.SettingName <br />
-        }
-    @* </select> *@
-    <button type="submit" class="btn btn-primary">Update price and quantity</button> 
+    <button type="submit" class="btn btn-primary">Update price and quantity</button>
 </form>
+
+<script>
+
+    var checkboxes = document.getElementsByName('settingList');
+
+    function selectAll() {
+        
+        checkboxes.forEach(function(checkbox) {
+            checkbox.setAttribute('checked', 'checked');
+        });
+    }
+
+    function deselectAll() {
+        checkboxes.forEach(function(checkbox) {
+            checkbox.removeAttribute('checked');
+        });
+    }
+</script>
