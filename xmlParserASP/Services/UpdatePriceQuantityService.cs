@@ -1,4 +1,7 @@
-﻿namespace xmlParserASP.Services
+﻿using xmlParserASP.Controllers;
+using xmlParserASP.Entities;
+
+namespace xmlParserASP.Services
 {
     public class UpdatePriceQuantityService
     {
