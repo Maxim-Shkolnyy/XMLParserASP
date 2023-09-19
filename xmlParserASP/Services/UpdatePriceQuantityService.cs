@@ -2,14 +2,22 @@
 {
     public class UpdatePriceQuantityService
     {
-        public void UpdatePrice(int settingId)
+        public string UpdatePrice(List <int> settingsId)
         {
 
+
+            string uodateResult = string.Empty;
+
+            return uodateResult;
         }
 
-        public void UpdateQuantity(int settingId)
+        public string UpdateQuantity(List<int> settingsId)
         {
 
+
+            string uodateResult = string.Empty;
+
+            return uodateResult;
         }
     }
 }

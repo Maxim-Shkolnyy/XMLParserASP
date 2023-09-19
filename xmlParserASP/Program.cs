@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
@@ -17,15 +18,15 @@ public class Program
             // "Server=DESKTOP-5KP5B17\\SQLEXPRESS;Database=MAX;Trusted_Connection=True;TrustServerCertificate=True"; // work desktop
             "Database=zi391919_maxim;Data Source=zi391919.mysql.tools;User Id=zi391919_maxim;Password=y5E~v52!Cv;CharSet=utf8;"; // gamma max
 
-        string connectionStringTestGamma =
-            "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // gamma max
+        //string connectionStringTestGamma =
+        //    "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // gamma max
 
 
         builder.Services.AddDbContext<MyDBContext>(options =>
             options.UseMySQL(connectionString));
 
-        builder.Services.AddDbContext<TestGammaDBContext>(options =>
-        options.UseMySQL(connectionStringTestGamma));
+        //builder.Services.AddDbContext<TestGammaDBContext>(options =>
+        //options.UseMySQL(connectionStringTestGamma));
 
         builder.Services.AddScoped<SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
@@ -34,6 +35,9 @@ public class Program
         builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsUA>();
         builder.Services.AddScoped<UniqNodesInXML>();
         builder.Services.AddScoped<ReadUniqueCategorys>();
+        builder.Services.AddScoped<UpdatePriceQuantityService>();
+        builder.Services.AddScoped<UpdatePriceQuantityController>();
+        builder.Services.AddScoped<ProcessXMLController>();
         builder.Services.AddControllersWithViews();
 
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);
