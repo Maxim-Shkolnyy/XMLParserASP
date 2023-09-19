@@ -43,17 +43,30 @@ namespace xmlParserASP.Controllers
                 return View("Index", mySettingList);
             }
 
-            if (PriceList.Count != 0)
+            if (PriceList != null && PriceList.Any())
             {
-                var updateAllPrices = _updatePriceQuantityService.UpdatePrice(PriceList);
+                try
+                {
+                    var updateAllPrices = _updatePriceQuantityService.UpdatePrice(PriceList);
+
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
+                }
             }
 
-            if (QuantityList.Count != 0)
+            if (QuantityList != null && QuantityList.Any())
             {
-                var updateAllQuantity = _updatePriceQuantityService.UpdateQuantity(QuantityList);
+                try
+                {
+                    var updateAllQuantity = _updatePriceQuantityService.UpdateQuantity(QuantityList);
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError("", "Quantity was not updated!!!" + e.Message);
+                }
             }
-
-
 
             return View();
         }
