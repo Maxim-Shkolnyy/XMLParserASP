@@ -1,4 +1,5 @@
-﻿using xmlParserASP.Controllers;
+﻿using System.Xml.Linq;
+using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
 
@@ -23,14 +24,17 @@ namespace xmlParserASP.Services
 
             foreach (int id in settingsId)
             {
-                var currentPrice = _supplierXmlSetting.ModelNode.
+                var xmlPath = _supplierXmlSetting.Path;                
+                var suppXmlParsed = LoadAndParseXmlAsync(xmlPath);
+
+                var xmlModel = _supplierXmlSetting.ModelNode;
             }
 
             
 
-            string uodateResult = string.Empty;
+            string updateResult = string.Empty;
 
-            return uodateResult;
+            return updateResult;
         }
 
         public string UpdateQuantity(List<int> settingsId)
@@ -45,9 +49,19 @@ namespace xmlParserASP.Services
 
             }
 
-            string uodateResult = string.Empty;
+            string updateResult = string.Empty;
 
-            return uodateResult;
+            return updateResult;
         }
+
+        public async Task<XDocument> LoadAndParseXmlAsync(string url)
+        {
+            using (var client = new HttpClient())
+            {
+                var xmlString = await client.GetStringAsync(url);
+                return XDocument.Parse(xmlString);
+            }
+        }
+
     }
 }
