@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using xmlParserASP.Entities.GammaTables;
+using xmlParserASP.Entities.TestGamma;
 
 namespace xmlParserASP.Presistant;
 
@@ -9,8 +9,8 @@ public class TestGammaDBContext : DbContext
     : base(options) { }
 
 
-    public DbSet<OcAttributeDescription> GammaAttribute { get; set; }
-    public DbSet<OcLanguage> GammaLanguage { get; set; }
-    public DbSet<OcCategoryDescription> GammaCategory { get; set; }
+    //public DbSet<OcAttributeDescription> GammaAttribute { get; set; }
+    //public DbSet<OcLanguage> GammaLanguage { get; set; }
+    //public DbSet<OcCategoryDescription> GammaCategory { get; set; }
 }
 
