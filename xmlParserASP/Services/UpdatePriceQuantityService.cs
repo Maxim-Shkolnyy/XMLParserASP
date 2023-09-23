@@ -1,6 +1,8 @@
-﻿using System.Xml.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
+using xmlParserASP.Entities.TestGamma;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Services
@@ -9,25 +11,33 @@ namespace xmlParserASP.Services
     {
         private readonly SupplierXmlSetting _supplierXmlSetting;
         private readonly MyDBContext _dbContext;
+        private readonly TestGammaDBContext _dbContextGamma;
 
-        public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext)
+        public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
         {
             _supplierXmlSetting = supplierXmlSetting;
             _dbContext = myDBContext;
+            _dbContextGamma = dbContextGamma;
         }
         public string UpdatePrice(List<int> settingsId)
         {
             if (settingsId == null)
             {
                 return new string ("setting ID was not passed");
-            }
+            }            
 
             foreach (int id in settingsId)
             {
-                var xmlPath = _supplierXmlSetting.Path;                
-                var suppXmlParsed = LoadAndParseXmlAsync(xmlPath);
+                var suppSettings = _dbContext.SupplierXmlSettings.Where(m => m.SupplierXmlSettingId == id).FirstOrDefault();
 
-                var xmlModel = _supplierXmlSetting.ModelNode;
+                var xmlPath = suppSettings.Path;                
+                var suppXmlParsed = LoadAndParseXmlAsync(xmlPath);
+                var xmlModel = suppSettings.ModelNode;
+                var xmlPrice = suppSettings.PriceNode;
+
+                var df = _dbContextGamma.Set<OcProductToSupplier>(suppSettings.SupplierId);
+
+                var currentSuppliersId = _dbContextGamma.Set<OcProduct>().Where(c => c.ProductId == (suppSettings.SupplierId ==   ).ToListAsync();
             }
 
             
