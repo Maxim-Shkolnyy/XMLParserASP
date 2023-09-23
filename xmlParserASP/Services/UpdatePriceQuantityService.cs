@@ -11,7 +11,7 @@ namespace xmlParserASP.Services
     {
         private readonly SupplierXmlSetting _supplierXmlSetting;
         private readonly MyDBContext _dbContext;
-        private readonly TestGammaDBContext _dbContextGamma;
+        private readonly Presistant.TestGammaDBContext _dbContextGamma;
 
         public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
         {
@@ -35,7 +35,7 @@ namespace xmlParserASP.Services
                 var xmlModel = suppSettings.ModelNode;
                 var xmlPrice = suppSettings.PriceNode;
 
-                var getSuppName = _dbContextGamma.Set<Supplier>().FirstOrDefault(m => m.SupplierId == suppSettings.SupplierId);
+                var getSuppName = _dbContext.Set<Supplier>().FirstOrDefault(m => m.SupplierId == suppSettings.SupplierId);
 
                 //var df = _dbContextGamma.Set<OcProductToSupplier>(suppSettings.SupplierId);
 
