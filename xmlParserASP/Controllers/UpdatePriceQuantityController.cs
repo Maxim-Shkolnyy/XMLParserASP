@@ -29,7 +29,7 @@ namespace xmlParserASP.Controllers
         }
 
         [HttpPost]
-        public IActionResult Result(List<int>? PriceList, List<int>? QuantityList)
+        public async Task<IActionResult> Result(List<int>? PriceList, List<int>? QuantityList)
         {
             if (!ModelState.IsValid || PriceList.Count + QuantityList.Count == 0)
             {
@@ -47,7 +47,7 @@ namespace xmlParserASP.Controllers
             {
                 try
                 {
-                    var updateAllPrices = _updatePriceQuantityService.UpdatePrice(PriceList);
+                    var updateAllPrices = await _updatePriceQuantityService.UpdatePriceAsync(PriceList);
 
                 }
                 catch (Exception ex)
