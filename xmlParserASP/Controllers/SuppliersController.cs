@@ -23,7 +23,7 @@ namespace xmlParserASP.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Suppliers != null ? 
-                          View(await _context.Suppliers.ToListAsync()) :
+                          View(await _context.Suppliers.OrderBy(n => n.SupplierName).ToListAsync()) :
                           Problem("Entity set 'MyDBContext.Suppliers'  is null.");
         }
 

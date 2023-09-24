@@ -35,12 +35,13 @@ namespace xmlParserASP.Services
                 var xmlModel = suppSettings.ModelNode;
                 var xmlPrice = suppSettings.PriceNode;
 
-                //var getSuppName = _dbContext.Set<Supplier>().FirstOrDefault(m => m.SupplierId == suppSettings.SupplierId).SupplierName;
-                var getSuppName = _dbContext.Suppliers.FirstOrDefault(m => m.SupplierId == suppSettings.SupplierId)?.SupplierName;
+                var suppName = _dbContext.Suppliers.FirstOrDefault(m => m.SupplierId == suppSettings.SupplierId)?.SupplierName;
 
-                //var df = _dbContextGamma.Set<OcProductToSupplier>(suppSettings.SupplierId);
+                var currentSuppProductsList = _dbContextGamma.OcProductToSuppliers.Where(m => m.SupplierId == suppName).Select(m => m.ProductId).ToList();
 
-                //var currentSuppliersId = _dbContextGamma.Set<OcProduct>().Where(c => c.ProductId == (suppSettings.SupplierId ==   ).ToListAsync();
+                var codePriceList = _dbContextGamma.OcProducts.Where(p => currentSuppProductsList.Contains(p.ProductId)).Select( t => new {t.Sku, t.Price}).ToList();
+
+
             }
 
 
