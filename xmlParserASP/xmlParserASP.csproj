@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.5" />
   </ItemGroup>
 
   <ItemGroup>

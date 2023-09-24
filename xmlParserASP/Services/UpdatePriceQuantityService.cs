@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using System.Xml.Linq;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
@@ -54,12 +55,20 @@ namespace xmlParserASP.Services
                             .Select(m => m.ProductId)
                             .ToListAsync();
 
+                        PropertyInfo propertyInfo = typeof(OcProduct).GetProperty(tableColumnToUpdate);
+
+                        if (propertyInfo == null)
+                        {
+                            // Если такого свойства не существует, вернуть ошибку или обработать ситуацию
+                            throw new ArgumentException("Invalid property name");
+                        }
+
                         var codePriceList = await _dbContextGamma.OcProducts
                             .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                            .Select(t => new { t.Sku, t.Price })  // передати  у метод замість поля ціна ззовні
+                            .Select(p => new {p.Sku, FieldValue = propertyInfo.GetValue(p) })
                             .ToListAsync();
 
-                        
+
                     }
                 }
             }
