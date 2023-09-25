@@ -63,7 +63,7 @@ namespace xmlParserASP.Services
 
                         // Get xml values
 
-                        Dictionary<(string, string)> xmlModelPriceList = new();
+                        Dictionary<string, string> xmlModelPriceList = new();
 
                         XmlDocument xmlDoc = new();
                         xmlDoc.Load(suppSettings.Path);
