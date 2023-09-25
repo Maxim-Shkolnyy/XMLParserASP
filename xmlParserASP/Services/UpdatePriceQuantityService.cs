@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Xml;
 using System.Xml.Linq;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
@@ -36,15 +38,6 @@ namespace xmlParserASP.Services
 
                 if (suppSettings != null)
                 {
-                    var xmlPath = suppSettings.Path;
-                    if (xmlPath != null)
-                    {
-                        var suppXmlParsed = await LoadAndParseXmlAsync(xmlPath);
-
-                    }
-                    var xmlModel = suppSettings.ModelNode;
-                    var xmlPrice = suppSettings.PriceNode;
-
                     var suppName = (await _dbContext.Suppliers
                         .FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
 
@@ -65,11 +58,58 @@ namespace xmlParserASP.Services
 
                         var codePriceList = await _dbContextGamma.OcProducts
                             .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                            .Select(p => new {p.Sku, FieldValue = propertyInfo.GetValue(p) })
+                            .Select(p => new {p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
                             .ToListAsync();
 
+                        // Get xml values
 
+                        Dictionary<(string, string)> xmlModelPriceList = new();
+
+                        XmlDocument xmlDoc = new();
+                        xmlDoc.Load(suppSettings.Path);
+
+                        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
+
+                        #region Получение значений из XML и вставка в соответствующие колонки листа Products
+
+                        string sku = "";
+                        string price = "";
+
+                        foreach (XmlNode item in itemsList)
+                        {
+                            string? model;
+
+                            if (suppSettings.paramAttribute == null)
+                            {
+                                model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+                            }
+                            else
+                            {
+                                model = item.Attributes["id"]?.Value;
+                            }
+
+                            //string sku =  item.SelectSingleNode(suppSettings.ProductNode)?.InnerText ?? "";
+                            sku = model;
+
+                            XmlNode parentItemNode = item.ParentNode;
+
+                            if (parentItemNode != null)
+                            {
+                                price = parentItemNode.SelectSingleNode(tableColumnToUpdate)?.InnerText ?? "";
+
+                            }
+
+                            xmlModelPriceList.Add(sku, price);
+
+                            #endregion
+
+                        }
                     }
+                }
+                else
+                {
+                    string updateResult2 = "Not updated!";
+                    return updateResult2;
                 }
             }
 

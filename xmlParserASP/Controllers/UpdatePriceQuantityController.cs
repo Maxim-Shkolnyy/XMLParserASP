@@ -48,6 +48,7 @@ namespace xmlParserASP.Controllers
                 try
                 {
                     var updateAllPrices = await _updatePriceQuantityService.UpdatePriceAsync(PriceList, "Price");
+                    ViewBag.UpdatePriceResult = updateAllPrices;
 
                 }
                 catch (Exception ex)
@@ -60,11 +61,13 @@ namespace xmlParserASP.Controllers
             {
                 try
                 {
-                    var updateAllQuantity = _updatePriceQuantityService.UpdateQuantity(QuantityList);
+                    var updateQuantity = await _updatePriceQuantityService.UpdatePriceAsync(QuantityList, "Quantity");
+                    ViewBag.UpdateQuantityResult = updateQuantity;
+
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Quantity was not updated!!!" + e.Message);
+                    ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
                 }
             }
 
