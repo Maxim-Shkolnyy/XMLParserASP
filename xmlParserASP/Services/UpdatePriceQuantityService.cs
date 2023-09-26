@@ -53,7 +53,7 @@ namespace xmlParserASP.Services
                         if (propertyInfo == null)
                         {
                             // Если такого свойства не существует, вернуть ошибку или обработать ситуацию
-                            throw new ArgumentException("Invalid property name");
+                            throw new ArgumentException("Null was passed instead of table column name");
                         }
 
                         var codePriceList = await _dbContextGamma.OcProducts
@@ -70,7 +70,7 @@ namespace xmlParserASP.Services
 
                         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
 
-                        #region Получение значений из XML и вставка в соответствующие колонки листа Products
+                        #region Получение значений из XML
 
                         string sku = "";
                         string price = "";
@@ -98,15 +98,12 @@ namespace xmlParserASP.Services
                             //string sku =  item.SelectSingleNode(suppSettings.ProductNode)?.InnerText ?? "";
                            
 
-                            XmlNode parentItemNode = item.ParentNode;
+                            //XmlNode parentItemNode = item.ParentNode;
 
-                            if (parentItemNode != null)
-                            {
-                                price = parentItemNode.SelectSingleNode(tableColumnToUpdate)?.InnerText ?? "";
+                            
+                                price = item.SelectSingleNode(tableColumnToUpdate)?.InnerText ?? "";
 
-                            }
-
-                            xmlModelPriceList.Add(model, price);
+                                xmlModelPriceList.Add(model, price);
 
                             #endregion
 

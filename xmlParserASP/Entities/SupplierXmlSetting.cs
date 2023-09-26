@@ -45,6 +45,11 @@ namespace xmlParserASP.Entities
         public string? PhotoFolder { get; set; } = @"D:\Downloads\Photo\";
 
         public string? QuantityNode { get; set; }
+        public string? QuantityDBStock1 { get; set; }
+        public string? QuantityDBStock2 { get; set; }
+        public string? QuantityDBStock3 { get; set; }
+        public string? QuantityDBStock4 { get; set; }
+        public string? QuantityDBStock5 { get; set; }
 
         public string? QuantityLongTermNode { get; set; }
 
@@ -55,11 +60,7 @@ namespace xmlParserASP.Entities
 
         public string? ParamAttrNode { get; set; }
 
-        //public string? Path { get; } = @"D:\Downloads\Telegram Desktop\promua_2405ua.xml"; //home
-
-        //public  string? Path { get; } = @"https://b2b.vestum.ua/data/yml_catalog_rozetka.xml";
-
-        // !!!  In ReadAttrXMLTo3Columns and WriteToXL set model parsing
+       
     }
 }
 
