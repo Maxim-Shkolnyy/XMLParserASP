@@ -64,6 +64,21 @@
                 @Html.DisplayNameFor(model => model.QuantityNode)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.QuantityDBStock1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityDBStock2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityDBStock3)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityDBStock4)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityDBStock5)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.QuantityLongTermNode)
             </th>
             <th>
@@ -79,7 +94,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.OrderBy(s=>s.SettingName)) {
+@foreach (var item in Model.OrderBy(s => s.SettingName)) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.SettingName)
@@ -131,6 +146,21 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.QuantityNode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityDBStock1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityDBStock2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityDBStock3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityDBStock4)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityDBStock5)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.QuantityLongTermNode)
