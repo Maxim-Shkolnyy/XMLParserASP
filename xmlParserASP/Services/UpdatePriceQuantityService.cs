@@ -23,7 +23,7 @@ namespace xmlParserASP.Services
             _dbContextGamma = dbContextGamma;
         }
 
-        public async Task<string> UpdatePriceAsync(List<int> settingsId, string tableColumnToUpdate)
+        public async Task<string> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
         {
             if (settingsId == null)
             {
@@ -48,7 +48,7 @@ namespace xmlParserASP.Services
                             .Select(m => m.ProductId)
                             .ToListAsync();
 
-                        PropertyInfo propertyInfo = typeof(OcProduct).GetProperty(tableColumnToUpdate);
+                        PropertyInfo propertyInfo = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
 
                         if (propertyInfo == null)
                         {
@@ -72,7 +72,7 @@ namespace xmlParserASP.Services
 
                         #region Получение значений из XML
 
-                        string sku = "";
+                        //string sku = "";
                         string price = "";
 
                         foreach (XmlNode item in itemsList)
@@ -101,13 +101,16 @@ namespace xmlParserASP.Services
                             //XmlNode parentItemNode = item.ParentNode;
 
                             
-                                price = item.SelectSingleNode(tableColumnToUpdate)?.InnerText ?? "";
+                                price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
 
                                 xmlModelPriceList.Add(model, price);
 
-                            #endregion
+                                
+
+                                #endregion
 
                         }
+                        string kjjhjk = "";
                     }
                 }
                 else

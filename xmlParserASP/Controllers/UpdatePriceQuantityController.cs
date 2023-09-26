@@ -47,7 +47,7 @@ namespace xmlParserASP.Controllers
             {
                 try
                 {
-                    var updateAllPrices = await _updatePriceQuantityService.UpdatePriceAsync(PriceList, "price");
+                    var updateAllPrices = await _updatePriceQuantityService.UpdatePriceAsync(PriceList, "Price");
                     ViewBag.UpdatePriceResult = updateAllPrices;
 
                 }
