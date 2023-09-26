@@ -85,11 +85,18 @@ namespace xmlParserASP.Services
                             }
                             else
                             {
-                                model = item.Attributes["id"]?.Value;
+                                if(item.Attributes["id"] != null)
+                                {
+                                    model = item.Attributes["id"]?.Value;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
                             }
 
                             //string sku =  item.SelectSingleNode(suppSettings.ProductNode)?.InnerText ?? "";
-                            sku = model;
+                           
 
                             XmlNode parentItemNode = item.ParentNode;
 
@@ -99,7 +106,7 @@ namespace xmlParserASP.Services
 
                             }
 
-                            xmlModelPriceList.Add(sku, price);
+                            xmlModelPriceList.Add(model, price);
 
                             #endregion
 
