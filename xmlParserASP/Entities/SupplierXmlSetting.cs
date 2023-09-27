@@ -24,6 +24,8 @@ namespace xmlParserASP.Entities
 
         public int? StartGammaIDFrom { get; set; }
 
+        public string? MainProductNode { get; set; }
+
         public string? ProductNode { get; set; }
 
         public string? paramAttribute { get; set; }

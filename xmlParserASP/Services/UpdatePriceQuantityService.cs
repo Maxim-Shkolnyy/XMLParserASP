@@ -61,56 +61,95 @@ namespace xmlParserASP.Services
                             .Select(p => new {p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
                             .ToListAsync();
 
-                        // Get xml values
+                        
+                        #region Получение значений из XML
+                        
 
                         Dictionary<string, string> xmlModelPriceList = new();
 
-                        XmlDocument xmlDoc = new();
-                        xmlDoc.Load(suppSettings.Path);
+                        XmlDocument xmlDoc = new XmlDocument();
+
+                        string fileExtension = Path.GetExtension(suppSettings.Path);
+                        string price = "";
+                        string model = "";
+
+                        if (fileExtension == ".xml")
+                        {
+                            xmlDoc.Load(suppSettings.Path);
+                        }
+                        else
+                        {
+                            xmlDoc.LoadXml(suppSettings.Path);
+                        }
 
                         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
 
-                        #region Получение значений из XML
 
-                        //string sku = "";
-                        string price = "";
 
-                        foreach (XmlNode item in itemsList)
+                        if (suppSettings.MainProductNode == null)
                         {
-                            string? model;
+                            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName (suppSettings.MainProductNode);
 
-                            if (suppSettings.paramAttribute == null)
+                            foreach (XmlNode items in parentItemsList)
                             {
-                                model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
-                            }
-                            else
-                            {
-                                if(item.Attributes["id"] != null)
+                                foreach(XmlNode item in itemsList)
                                 {
-                                    model = item.Attributes["id"]?.Value;
+                                    if (suppSettings.paramAttribute == null)
+                                    {
+                                        model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+                                    }
+                                    else
+                                    {
+                                        if (item.Attributes["id"] != null)
+                                        {
+                                            model = item.Attributes["id"]?.Value;
+                                        }
+                                        else
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+
+                                    xmlModelPriceList.Add(model, price);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode item in itemsList)
+                            {
+                                if (suppSettings.paramAttribute == null)
+                                {
+                                    model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
                                 }
                                 else
                                 {
-                                    continue;
+                                    if (item.Attributes["id"] != null)
+                                    {
+                                        model = item.Attributes["id"]?.Value;
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
                                 }
-                            }
 
-                            //string sku =  item.SelectSingleNode(suppSettings.ProductNode)?.InnerText ?? "";
-                           
-
-                            //XmlNode parentItemNode = item.ParentNode;
-
-                            
                                 price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
 
                                 xmlModelPriceList.Add(model, price);
 
-                                
+
 
                                 #endregion
 
+                            }
+                            string kjjhjk = "";
                         }
-                        string kjjhjk = "";
+                        
+
+                        
                     }
                 }
                 else

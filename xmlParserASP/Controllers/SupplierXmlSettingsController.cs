@@ -57,7 +57,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+        public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
         {
             if (id != supplierXmlSetting.SupplierXmlSettingId)
             {
