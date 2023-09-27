@@ -58,7 +58,7 @@ namespace xmlParserASP.Services
 
                         var codePriceList = await _dbContextGamma.OcProducts
                             .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                            .Select(p => new {p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
+                            .Select(p => new {p.Sku, p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
                             .ToListAsync();
 
                         
@@ -85,8 +85,7 @@ namespace xmlParserASP.Services
                         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
 
 
-
-                        if (suppSettings.MainProductNode == null)
+                        if (suppSettings.MainProductNode != null)
                         {
                             XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName (suppSettings.MainProductNode);
 
@@ -145,7 +144,7 @@ namespace xmlParserASP.Services
                                 #endregion
 
                             }
-                            string kjjhjk = "";
+                            
                         }
                         
 
