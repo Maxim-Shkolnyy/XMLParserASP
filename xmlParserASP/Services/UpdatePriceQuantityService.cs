@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
@@ -56,14 +57,33 @@ namespace xmlParserASP.Services
                             throw new ArgumentException("Null was passed instead of table column name");
                         }
 
-                        var codePriceList = await _dbContextGamma.OcProducts
+                        var products = await _dbContextGamma.OcProducts
                             .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                            .Select(p => new {p.Sku, p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
                             .ToListAsync();
 
-                        
+                        var codePriceList = products.Select(p => {
+                            string fieldValue = "";
+
+                            try
+                            {
+                                fieldValue = propertyInfo.GetValue(p)?.ToString();
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Error processing field {propertyInfo.Name}, {propertyInfo.GetValue(p)}: {ex.Message}");
+                            }
+
+                            return new { p.Sku, p.Model, FieldValue = fieldValue };
+                        }).ToList();
+
+                        //var codePriceList = await _dbContextGamma.OcProducts
+                        //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
+                        //    .Select(p => new { p.Sku, p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
+                        //    .ToListAsync();
+
+
                         #region Получение значений из XML
-                        
+
 
                         Dictionary<string, string> xmlModelPriceList = new();
 
@@ -73,14 +93,16 @@ namespace xmlParserASP.Services
                         string price = "";
                         string model = "";
 
-                        if (fileExtension == ".xml")
-                        {
-                            xmlDoc.Load(suppSettings.Path);
-                        }
-                        else
-                        {
-                            xmlDoc.LoadXml(suppSettings.Path);
-                        }
+
+                        xmlDoc.Load(suppSettings.Path);
+                        //if (fileExtension == ".xml")
+                        //{
+                        //    xmlDoc.Load(suppSettings.Path);
+                        //}
+                        //else
+                        //{
+                        //    xmlDoc.LoadXml(suppSettings.Path);
+                        //}
 
                         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
 
