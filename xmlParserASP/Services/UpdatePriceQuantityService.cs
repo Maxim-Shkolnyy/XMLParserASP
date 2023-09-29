@@ -33,6 +33,7 @@ namespace xmlParserASP.Services
 
             foreach (int id in settingsId)
             {
+                #region Получение текущих значений из БД
                 var suppSettings = await _dbContext.SupplierXmlSettings
                     .Where(m => m.SupplierXmlSettingId == id)
                     .FirstOrDefaultAsync();
@@ -61,7 +62,7 @@ namespace xmlParserASP.Services
                             .Where(p => currentSuppProductsList.Contains(p.ProductId))
                             .ToListAsync();
 
-                        var codePriceList = products.Select(p => {
+                        var dbCodeModelPriceList = products.Select(p => {
                             string fieldValue = "";
 
                             try
@@ -73,21 +74,22 @@ namespace xmlParserASP.Services
                                 Debug.WriteLine($"Error processing field {propertyInfo.Name}, {propertyInfo.GetValue(p)}: {ex.Message}");
                             }
 
-                            return new { p.Sku, p.Model, FieldValue = fieldValue };
+                            return (p.Sku, p.Model, fieldValue);
+                            //return new { p.Sku, p.Model, FieldValue = fieldValue };
                         }).ToList();
 
-                        //var codePriceList = await _dbContextGamma.OcProducts
+                        //var dbCodePriceList = await _dbContextGamma.OcProducts
                         //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
                         //    .Select(p => new { p.Sku, p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
                         //    .ToListAsync();
-
+                        #endregion
 
                         #region Получение значений из XML
 
 
                         Dictionary<string, string> xmlModelPriceList = new();
 
-                        XmlDocument xmlDoc = new XmlDocument();
+                        XmlDocument xmlDoc = new();
 
                         string fileExtension = Path.GetExtension(suppSettings.Path);
                         string price = "";
@@ -105,7 +107,6 @@ namespace xmlParserASP.Services
                         //}
 
                         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
-
 
                         if (suppSettings.MainProductNode != null)
                         {
@@ -161,16 +162,15 @@ namespace xmlParserASP.Services
 
                                 xmlModelPriceList.Add(model, price);
 
-
-
                                 #endregion
-
                             }
                             
                         }
-                        
 
-                        
+                        UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+
+
+
                     }
                 }
                 else
@@ -187,37 +187,19 @@ namespace xmlParserASP.Services
 
 
 
-        public string UpdatePrice(List<int> settingsId)
+        private void UpdatePrices(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string>xmlModelPriceList )
         {
-            if (settingsId == null)
+            foreach (var dbModel in dbCodeModelPriceList)
             {
-                return new string ("setting ID was not passed");
-            }            
-
-            foreach (int id in settingsId)
-            {
-                var suppSettings = _dbContext.SupplierXmlSettings.Where(m => m.SupplierXmlSettingId == id).FirstOrDefault();
-
-                var xmlPath = suppSettings.Path;                
-                var suppXmlParsed = LoadAndParseXmlAsync(xmlPath);
-                var xmlModel = suppSettings.ModelNode;
-                var xmlPrice = suppSettings.PriceNode;
-
-                var suppName = _dbContext.Suppliers.FirstOrDefault(m => m.SupplierId == suppSettings.SupplierId)?.SupplierName;
-
-                var currentSuppProductsList = _dbContextGamma.OcProductToSuppliers.Where(m => m.SupplierId == suppName).Select(m => m.ProductId).ToList();
-
-                var codePriceList = _dbContextGamma.OcProducts.Where(p => currentSuppProductsList.Contains(p.ProductId)).Select( t => new {t.Sku, t.Price}).ToList();
-
-
+                var hjlk = dbModel.Item1;
             }
 
-
-
-            string updateResult = string.Empty;
-
-            return updateResult;
+            foreach (var xmlModel in xmlModelPriceList)
+            {
+                var khl = xmlModel.Key;
+            }
         }
+
 
         public string UpdateQuantity(List<int> settingsId)
         {
@@ -236,6 +218,7 @@ namespace xmlParserASP.Services
             return updateResult;
         }
 
+
         public async Task<XDocument> LoadAndParseXmlAsync(string url)
         {
             using (var client = new HttpClient())
@@ -244,6 +227,5 @@ namespace xmlParserASP.Services
                 return XDocument.Parse(xmlString);
             }
         }
-
     }
 }
