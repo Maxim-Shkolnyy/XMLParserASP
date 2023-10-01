@@ -15,7 +15,7 @@ namespace xmlParserASP.Services
     {
         private readonly SupplierXmlSetting _supplierXmlSetting;
         private readonly MyDBContext _dbContext;
-        private readonly Presistant.TestGammaDBContext _dbContextGamma;
+        private readonly TestGammaDBContext _dbContextGamma;
 
         public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
         {
