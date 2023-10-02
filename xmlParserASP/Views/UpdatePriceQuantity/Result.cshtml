@@ -1,8 +1,23 @@
 ﻿<h1>Prices and quantity updated</h1>
 
 @{
-    var quantity = ViewBag.UpdatePriceResult;
-var price = ViewBag.UpdateQuantityResult;
+    var prices = ViewBag.UpdatePriceResult;
+    var quantity = ViewBag.UpdateQuantityResult;
+
+    if(prices != null)
+    {
+        foreach (var price in prices)
+        {
+            <div style="color: @price.Item2"> @price.Item1</div>
+        }
+    }
+
+    if(quantity != null)
+    {
+        foreach (var qty in quantity)
+        {
+            <div style="color: @qty.Item2">@qty.Item1</div>
+        }
+    }    
 }
-@quantity
-@price
+
