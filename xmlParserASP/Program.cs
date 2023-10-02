@@ -62,7 +62,7 @@ public class Program
 
         app.MapControllerRoute(
             name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=UpdatePriceQuantity}/{action=Index}/{id?}");
 //pattern: "{controller=Train}/{action=Index}/{id?}");
 
 
