@@ -54,7 +54,6 @@ namespace xmlParserASP.Services
 
                         if (propertyInfo == null)
                         {
-                            // Если такого свойства не существует, вернуть ошибку или обработать ситуацию
                             throw new ArgumentException("Null was passed instead of table column name");
                         }
 
@@ -62,7 +61,8 @@ namespace xmlParserASP.Services
                             .Where(p => currentSuppProductsList.Contains(p.ProductId))
                             .ToListAsync();
 
-                        var dbCodeModelPriceList = products.Select(p => {
+                        var dbCodeModelPriceList = products.Select(p =>
+                        {
                             string fieldValue = "";
 
                             try
@@ -110,11 +110,11 @@ namespace xmlParserASP.Services
 
                         if (suppSettings.MainProductNode != null)
                         {
-                            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName (suppSettings.MainProductNode);
+                            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
 
                             foreach (XmlNode items in parentItemsList)
                             {
-                                foreach(XmlNode item in itemsList)
+                                foreach (XmlNode item in itemsList)
                                 {
                                     if (suppSettings.paramAttribute == null)
                                     {
@@ -164,7 +164,7 @@ namespace xmlParserASP.Services
 
                                 #endregion
                             }
-                            
+
                         }
 
                         UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
@@ -187,7 +187,7 @@ namespace xmlParserASP.Services
 
 
 
-        private void UpdatePrices(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string>xmlModelPriceList )
+        private void UpdatePrices(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
         {
             foreach (var dbModel in dbCodeModelPriceList)
             {
