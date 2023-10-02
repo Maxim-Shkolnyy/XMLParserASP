@@ -433,7 +433,7 @@ public class UpdatePriceQuantityService
 
                 var wichIsLess = Math.Min(normalizedDbValue, normalizedXmlValue);
 
-                if (Math.Abs(normalizedDbValue - normalizedXmlValue) < 0.01 || (normalizedDbValue - normalizedXmlValue) > 0.01) // Порівнюємо з точністю 0.01 (дві цифри після коми)
+                if (normalizedDbValue != normalizedXmlValue)
                 {
                     var jkl = 1;
                 }
