@@ -391,7 +391,7 @@ public class UpdatePriceQuantityService
 
             UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
 
-            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));
+            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "darkgreen"));
         }
 
         return stateMessages;
