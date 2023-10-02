@@ -12,9 +12,9 @@
         <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting">
             <option value="">-- Select --</option>
             @foreach (var setting in Model.SupplierXmlSettings)
-            {
-                <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
-            }
+        {
+            <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
+        }
         </select>
         <br /><br />
         <button type="submit" class="as">Process file</button>

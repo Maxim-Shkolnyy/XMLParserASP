@@ -1,4 +1,4 @@
-﻿@model IEnumerable<xmlParserASP.Entities.Supplier>
+﻿@model xmlParserASP.Entities.Supplier
 
 @{
     ViewData["Title"] = "Index";
@@ -20,7 +20,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+    <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.SupplierName)
             </td>

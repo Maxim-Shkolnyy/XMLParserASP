@@ -8,161 +8,160 @@ using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
 using xmlParserASP.Presistant;
 
-namespace xmlParserASP.Controllers
+namespace xmlParserASP.Controllers;
+
+public class SupplierXmlSettingsController : Controller
 {
-    public class SupplierXmlSettingsController : Controller
+    private readonly MyDBContext _context;
+
+    public SupplierXmlSettingsController(MyDBContext context)
     {
-        private readonly MyDBContext _context;
+        _context = context;
+    }
 
-        public SupplierXmlSettingsController(MyDBContext context)
+    // GET: SupplierXmlSettings
+    public async Task<IActionResult> Index()
+    {
+        var myDBContext = _context.SupplierXmlSettings.Include(s => s.Supplier);
+        return View(await myDBContext.ToListAsync());
+    }
+
+    // GET: SupplierXmlSettings/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null || _context.SupplierXmlSettings == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        // GET: SupplierXmlSettings
-        public async Task<IActionResult> Index()
+        var supplierXmlSetting = await _context.SupplierXmlSettings
+            .Include(s => s.Supplier)
+            .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
+        if (supplierXmlSetting == null)
         {
-            var myDBContext = _context.SupplierXmlSettings.Include(s => s.Supplier);
-            return View(await myDBContext.ToListAsync());
+            return NotFound();
         }
 
-        // GET: SupplierXmlSettings/Details/5
-        public async Task<IActionResult> Details(int? id)
+        return View(supplierXmlSetting);
+    }
+
+    // GET: SupplierXmlSettings/Create
+    public IActionResult Create()
+    {
+        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName");
+        return View();
+    }
+
+    // POST: SupplierXmlSettings/Create
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+    {
+        if (ModelState.IsValid)
         {
-            if (id == null || _context.SupplierXmlSettings == null)
-            {
-                return NotFound();
-            }
-
-            var supplierXmlSetting = await _context.SupplierXmlSettings
-                .Include(s => s.Supplier)
-                .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
-            if (supplierXmlSetting == null)
-            {
-                return NotFound();
-            }
-
-            return View(supplierXmlSetting);
-        }
-
-        // GET: SupplierXmlSettings/Create
-        public IActionResult Create()
-        {
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName");
-            return View();
-        }
-
-        // POST: SupplierXmlSettings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(supplierXmlSetting);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
-            return View(supplierXmlSetting);
-        }
-
-        // GET: SupplierXmlSettings/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.SupplierXmlSettings == null)
-            {
-                return NotFound();
-            }
-
-            var supplierXmlSetting = await _context.SupplierXmlSettings.FindAsync(id);
-            if (supplierXmlSetting == null)
-            {
-                return NotFound();
-            }
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
-            return View(supplierXmlSetting);
-        }
-
-        // POST: SupplierXmlSettings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
-        {
-            if (id != supplierXmlSetting.SupplierXmlSettingId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(supplierXmlSetting);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SupplierXmlSettingExists(supplierXmlSetting.SupplierXmlSettingId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
-            return View(supplierXmlSetting);
-        }
-
-        // GET: SupplierXmlSettings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.SupplierXmlSettings == null)
-            {
-                return NotFound();
-            }
-
-            var supplierXmlSetting = await _context.SupplierXmlSettings
-                .Include(s => s.Supplier)
-                .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
-            if (supplierXmlSetting == null)
-            {
-                return NotFound();
-            }
-
-            return View(supplierXmlSetting);
-        }
-
-        // POST: SupplierXmlSettings/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.SupplierXmlSettings == null)
-            {
-                return Problem("Entity set 'MyDBContext.SupplierXmlSettings'  is null.");
-            }
-            var supplierXmlSetting = await _context.SupplierXmlSettings.FindAsync(id);
-            if (supplierXmlSetting != null)
-            {
-                _context.SupplierXmlSettings.Remove(supplierXmlSetting);
-            }
-            
+            _context.Add(supplierXmlSetting);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
+        return View(supplierXmlSetting);
+    }
 
-        private bool SupplierXmlSettingExists(int id)
+    // GET: SupplierXmlSettings/Edit/5
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null || _context.SupplierXmlSettings == null)
         {
-          return (_context.SupplierXmlSettings?.Any(e => e.SupplierXmlSettingId == id)).GetValueOrDefault();
+            return NotFound();
         }
+
+        var supplierXmlSetting = await _context.SupplierXmlSettings.FindAsync(id);
+        if (supplierXmlSetting == null)
+        {
+            return NotFound();
+        }
+        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
+        return View(supplierXmlSetting);
+    }
+
+    // POST: SupplierXmlSettings/Edit/5
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+    {
+        if (id != supplierXmlSetting.SupplierXmlSettingId)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(supplierXmlSetting);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SupplierXmlSettingExists(supplierXmlSetting.SupplierXmlSettingId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
+        return View(supplierXmlSetting);
+    }
+
+    // GET: SupplierXmlSettings/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null || _context.SupplierXmlSettings == null)
+        {
+            return NotFound();
+        }
+
+        var supplierXmlSetting = await _context.SupplierXmlSettings
+            .Include(s => s.Supplier)
+            .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
+        if (supplierXmlSetting == null)
+        {
+            return NotFound();
+        }
+
+        return View(supplierXmlSetting);
+    }
+
+    // POST: SupplierXmlSettings/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        if (_context.SupplierXmlSettings == null)
+        {
+            return Problem("Entity set 'MyDBContext.SupplierXmlSettings'  is null.");
+        }
+        var supplierXmlSetting = await _context.SupplierXmlSettings.FindAsync(id);
+        if (supplierXmlSetting != null)
+        {
+            _context.SupplierXmlSettings.Remove(supplierXmlSetting);
+        }
+        
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool SupplierXmlSettingExists(int id)
+    {
+      return (_context.SupplierXmlSettings?.Any(e => e.SupplierXmlSettingId == id)).GetValueOrDefault();
     }
 }

@@ -9,223 +9,239 @@ using xmlParserASP.Entities;
 using xmlParserASP.Entities.TestGamma;
 using xmlParserASP.Presistant;
 
-namespace xmlParserASP.Services
-{
-    public class UpdatePriceQuantityService
-    {
-        private readonly SupplierXmlSetting _supplierXmlSetting;
-        private readonly MyDBContext _dbContext;
-        private readonly TestGammaDBContext _dbContextGamma;
+namespace xmlParserASP.Services;
 
-        public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
+public class UpdatePriceQuantityService
+{
+    private readonly SupplierXmlSetting _supplierXmlSetting;
+    private readonly MyDBContext _dbContext;
+    private readonly TestGammaDBContext _dbContextGamma;
+
+    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
+    {
+        _supplierXmlSetting = supplierXmlSetting;
+        _dbContext = myDBContext;
+        _dbContextGamma = dbContextGamma;
+    }
+
+    public async Task <List<(string, string)>> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
+    {
+        List<(string, string)> stateMessages = new();
+
+        if (settingsId == null)
         {
-            _supplierXmlSetting = supplierXmlSetting;
-            _dbContext = myDBContext;
-            _dbContextGamma = dbContextGamma;
+            stateMessages.Add(("Setting ID was not passed", "red"));
+            return stateMessages;
         }
 
-        public async Task<string> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
+        PropertyInfo whatDbColumnWeNeedUpdate = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
+
+        if (whatDbColumnWeNeedUpdate == null)
         {
-            if (settingsId == null)
+            stateMessages.Add(("Null or absent model property was passed instead of table column name like 'Price' or 'Quantity'", "red"));
+        }
+
+        foreach (int id in settingsId)
+        {
+            #region Получение текущих значений из БД
+
+            var suppSettings = await _dbContext.SupplierXmlSettings
+                .Where(m => m.SupplierXmlSettingId == id)
+                .FirstOrDefaultAsync();
+            if (suppSettings == null)
             {
-                return "Setting ID was not passed";
+                stateMessages.Add(("Supplier setting was not found in DB", "red"));
+                continue;
             }
 
-            foreach (int id in settingsId)
+            var suppName = (await _dbContext.Suppliers.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
+
+            if (suppName == null)
             {
-                #region Получение текущих значений из БД
-                var suppSettings = await _dbContext.SupplierXmlSettings
-                    .Where(m => m.SupplierXmlSettingId == id)
-                    .FirstOrDefaultAsync();
+                stateMessages.Add(("Supplier name was not found in DB", "red"));
+                continue;
+            }
 
-                if (suppSettings != null)
+            var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
+                .Where(m => m.SupplierId == suppName)
+                .Select(m => m.ProductId)
+                .ToListAsync();
+
+            if (currentSuppProductsList == null)
+            {
+                stateMessages.Add(($"Supplier {suppName} has no one product in DB", "red"));
+                continue;
+            }
+
+            var products = await _dbContextGamma.OcProducts
+                .Where(p => currentSuppProductsList.Contains(p.ProductId))
+                .ToListAsync();
+
+            string fieldValue = "";
+
+            var dbCodeModelPriceList = products.Select(p =>
+            { 
+                try
                 {
-                    var suppName = (await _dbContext.Suppliers
-                        .FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
+                    fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error processing field {whatDbColumnWeNeedUpdate.Name}, {whatDbColumnWeNeedUpdate.GetValue(p)}: {ex.Message}");
+                }
 
-                    if (suppName != null)
+                return (p.Sku, p.Model, fieldValue);
+                //return new { p.Sku, p.Model, FieldValue = fieldValue };
+            }).ToList();
+
+            //var dbCodePriceList = await _dbContextGamma.OcProducts
+            //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
+            //    .Select(p => new { p.Sku, p.Model, FieldValue = whatDbColumnWeNeedUpdate.GetValue(p).ToString() })
+            //    .ToListAsync();
+            #endregion
+
+            #region Получение значений из XML
+
+
+            Dictionary<string, string> xmlModelPriceList = new();
+
+            XmlDocument xmlDoc = new();
+
+            string fileExtension = Path.GetExtension(suppSettings.Path);
+            string price = "";
+            string model = "";
+
+
+            xmlDoc.Load(suppSettings.Path);
+            //if (fileExtension == ".xml")
+            //{
+            //    xmlDoc.Load(suppSettings.Path);
+            //}
+            //else
+            //{
+            //    xmlDoc.LoadXml(suppSettings.Path);
+            //}
+
+            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
+
+            if (suppSettings.MainProductNode != null)
+            {
+                XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
+
+                foreach (XmlNode items in parentItemsList)
+                {
+                    foreach (XmlNode item in itemsList)
                     {
-                        var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
-                            .Where(m => m.SupplierId == suppName)
-                            .Select(m => m.ProductId)
-                            .ToListAsync();
-
-                        PropertyInfo propertyInfo = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
-
-                        if (propertyInfo == null)
+                        if (suppSettings.paramAttribute == null)
                         {
-                            throw new ArgumentException("Null was passed instead of table column name");
-                        }
-
-                        var products = await _dbContextGamma.OcProducts
-                            .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                            .ToListAsync();
-
-                        var dbCodeModelPriceList = products.Select(p =>
-                        {
-                            string fieldValue = "";
-
-                            try
-                            {
-                                fieldValue = propertyInfo.GetValue(p)?.ToString();
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine($"Error processing field {propertyInfo.Name}, {propertyInfo.GetValue(p)}: {ex.Message}");
-                            }
-
-                            return (p.Sku, p.Model, fieldValue);
-                            //return new { p.Sku, p.Model, FieldValue = fieldValue };
-                        }).ToList();
-
-                        //var dbCodePriceList = await _dbContextGamma.OcProducts
-                        //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                        //    .Select(p => new { p.Sku, p.Model, FieldValue = propertyInfo.GetValue(p).ToString() })
-                        //    .ToListAsync();
-                        #endregion
-
-                        #region Получение значений из XML
-
-
-                        Dictionary<string, string> xmlModelPriceList = new();
-
-                        XmlDocument xmlDoc = new();
-
-                        string fileExtension = Path.GetExtension(suppSettings.Path);
-                        string price = "";
-                        string model = "";
-
-
-                        xmlDoc.Load(suppSettings.Path);
-                        //if (fileExtension == ".xml")
-                        //{
-                        //    xmlDoc.Load(suppSettings.Path);
-                        //}
-                        //else
-                        //{
-                        //    xmlDoc.LoadXml(suppSettings.Path);
-                        //}
-
-                        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
-
-                        if (suppSettings.MainProductNode != null)
-                        {
-                            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
-
-                            foreach (XmlNode items in parentItemsList)
-                            {
-                                foreach (XmlNode item in itemsList)
-                                {
-                                    if (suppSettings.paramAttribute == null)
-                                    {
-                                        model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
-                                    }
-                                    else
-                                    {
-                                        if (item.Attributes["id"] != null)
-                                        {
-                                            model = item.Attributes["id"]?.Value;
-                                        }
-                                        else
-                                        {
-                                            continue;
-                                        }
-                                    }
-
-                                    price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
-                                    xmlModelPriceList.Add(model, price);
-                                }
-                            }
+                            model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
                         }
                         else
                         {
-                            foreach (XmlNode item in itemsList)
+                            if (item.Attributes["id"] != null)
                             {
-                                if (suppSettings.paramAttribute == null)
+                                if (item.SelectSingleNode(suppSettings.ModelNode) == null)
                                 {
-                                    model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+                                    continue;
                                 }
-                                else
-                                {
-                                    if (item.Attributes["id"] != null)
-                                    {
-                                        model = item.Attributes["id"]?.Value;
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                }
-
-                                price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
-                                xmlModelPriceList.Add(model, price);
-
-                                #endregion
+                                model = item.Attributes["id"]?.Value;
                             }
-
+                            else
+                            {
+                                continue;
+                            }
                         }
 
-                        UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+                        price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
 
-
-
+                        xmlModelPriceList.Add(model, price);
                     }
                 }
-                else
+            }
+            else
+            {
+                foreach (XmlNode item in itemsList)
                 {
-                    string updateResult2 = "Not updated!";
-                    return updateResult2;
+                    if (suppSettings.paramAttribute == null)
+                    {
+                        if (item.SelectSingleNode(suppSettings.ModelNode) == null)
+                        {
+                            continue;
+                        }
+                        model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+                    }
+                    else
+                    {
+                        if (item.Attributes["id"] != null)
+                        {
+                            model = item.Attributes["id"]?.Value;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (item.SelectSingleNode(suppSettings.PriceNode) == null)
+                    {
+
+                        continue;
+                    }
+                    price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+
+                    xmlModelPriceList.Add(model, price);
+
+                    #endregion
                 }
             }
 
-            string updateResult = string.Empty;
+            UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+           
+        }       
 
-            return updateResult;
+        return stateMessages;
+    }
+
+
+
+    private void UpdatePrices(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
+    {
+        foreach (var dbModel in dbCodeModelPriceList)
+        {
+            var hjlk = dbModel.Item1;
         }
 
-
-
-        private void UpdatePrices(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
+        foreach (var xmlModel in xmlModelPriceList)
         {
-            foreach (var dbModel in dbCodeModelPriceList)
-            {
-                var hjlk = dbModel.Item1;
-            }
+            var khl = xmlModel.Key;
+        }
+    }
 
-            foreach (var xmlModel in xmlModelPriceList)
-            {
-                var khl = xmlModel.Key;
-            }
+
+    public string UpdateQuantity(List<int> settingsId)
+    {
+        if (settingsId == null)
+        {
+            return new string("setting ID was not passed");
         }
 
-
-        public string UpdateQuantity(List<int> settingsId)
+        foreach (int id in settingsId)
         {
-            if (settingsId == null)
-            {
-                return new string("setting ID was not passed");
-            }
 
-            foreach (int id in settingsId)
-            {
-
-            }
-
-            string updateResult = string.Empty;
-
-            return updateResult;
         }
 
+        string updateResult = string.Empty;
 
-        public async Task<XDocument> LoadAndParseXmlAsync(string url)
+        return updateResult;
+    }
+
+
+    public async Task<XDocument> LoadAndParseXmlAsync(string url)
+    {
+        using (var client = new HttpClient())
         {
-            using (var client = new HttpClient())
-            {
-                var xmlString = await client.GetStringAsync(url);
-                return XDocument.Parse(xmlString);
-            }
+            var xmlString = await client.GetStringAsync(url);
+            return XDocument.Parse(xmlString);
         }
     }
 }

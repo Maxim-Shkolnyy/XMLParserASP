@@ -11,8 +11,8 @@
     <table>
         @{int i = 0;}
         @foreach (var m in Model)
-        {
-            <tr>
+    {
+        <tr>
                 <td>
                     <div class="column">
                         <input type="hidden" value="@m.MyAttributeId" name="saveattributes[@i].MyAttributeId"/>
@@ -23,18 +23,18 @@
                     <select name="saveattributes[@i].SupplierAttributeId">
                         <option value="" selected>Оберіть атрибут</option>
                         @foreach (var o in SupplierAttributes)
-                        {
-                            <option value="@o.SupplierAttributeId">@o.SupplierAttributeName</option>
-                        }
+                    {
+                        <option value="@o.SupplierAttributeId">@o.SupplierAttributeName</option>
+                    }
                     </select>
 
                 </td> 
 
             </tr>
 
-            i++;
+        i++;
 
-        }
+    }
 
 
     </table>

@@ -18,8 +18,8 @@
         </thead>
         <tbody>
             @for (int i = 0; i < Model.SupplierXmlSettings.Count; i++)
-            {
-                <tr>
+        {
+            <tr>
                     <td>
                         @Model.SupplierXmlSettings[i].SettingName
                     </td>
@@ -30,7 +30,7 @@
                         <input type="checkbox" name="QuantityList" value="@Model.SupplierXmlSettings[i].SupplierXmlSettingId">
                     </td>
                 </tr>
-            }
+        }
         </tbody>
         <tfoot>
             <tr>

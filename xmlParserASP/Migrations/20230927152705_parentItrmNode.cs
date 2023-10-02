@@ -2,27 +2,26 @@
 
 #nullable disable
 
-namespace xmlParserASP.Migrations
+namespace xmlParserASP.Migrations;
+
+/// <inheritdoc />
+public partial class parentItrmNode : Migration
 {
     /// <inheritdoc />
-    public partial class parentItrmNode : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "main_product_node",
-                table: "supplier_xml_settings",
-                type: "longtext",
-                nullable: true);
-        }
+        migrationBuilder.AddColumn<string>(
+            name: "main_product_node",
+            table: "supplier_xml_settings",
+            type: "longtext",
+            nullable: true);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "main_product_node",
-                table: "supplier_xml_settings");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "main_product_node",
+            table: "supplier_xml_settings");
     }
 }

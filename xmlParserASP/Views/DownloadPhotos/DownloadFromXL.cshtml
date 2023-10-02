@@ -15,23 +15,23 @@
 {
     <text>Wrong links:</text>
 
-    int count = 1;
-    List<string> correctUrls = ViewBag.CorrectUrl;
-    foreach (var correctUrl in correctUrls)
-    {
-        <br />
-        @correctUrl
-        /*@Html.Raw(count + "  " + correctUrl)*/       ;
-        count++;
-    }
+int count = 1;
+List<string> correctUrls = ViewBag.CorrectUrl;
+foreach (var correctUrl in correctUrls)
+{
+    <br />
+    @correctUrl
+    /*@Html.Raw(count + "  " + correctUrl)*/       ;
+    count++;
+}
 }
 
 @if (ViewBag.WrongUrl != null)
 {
     <text>Wrong links: model, url</text>
 
-    int count = 1;
-    List<KeyValuePair<string, string>> wrongUrls = ViewBag.WrongUrl;
+int count = 1;
+List<KeyValuePair<string, string>> wrongUrls = ViewBag.WrongUrl;
 
     <table class="wrong">
         <tr>
@@ -40,12 +40,12 @@
         </tr>
 
         @foreach (var kvp in wrongUrls)
-        {
-            <tr>
+    {
+        <tr>
                 <td>@kvp.Key</td>
                 <td>@kvp.Value</td>
             </tr>
-        }
+    }
     </table>
 
 

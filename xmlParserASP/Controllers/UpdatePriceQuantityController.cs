@@ -5,73 +5,72 @@ using xmlParserASP.Models;
 using xmlParserASP.Services;
 
 
-namespace xmlParserASP.Controllers
+namespace xmlParserASP.Controllers;
+
+public class UpdatePriceQuantityController : Controller
 {
-    public class UpdatePriceQuantityController : Controller
+    private readonly MyDBContext _db;
+    private readonly SupplierXmlSetting _setting;
+    private readonly UpdatePriceQuantityService _updatePriceQuantityService;
+    public UpdatePriceQuantityController(MyDBContext db, SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService)
     {
-        private readonly MyDBContext _db;
-        private readonly SupplierXmlSetting _setting;
-        private readonly UpdatePriceQuantityService _updatePriceQuantityService;
-        public UpdatePriceQuantityController(MyDBContext db, SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService)
+        _db = db;
+        _setting = setting;
+        _updatePriceQuantityService = updatePriceQuantityService;
+    }
+    public IActionResult Index()
+    {
+        var settingList = new PriceQuantityViewModel
         {
-            _db = db;
-            _setting = setting;
-            _updatePriceQuantityService = updatePriceQuantityService;
-        }
-        public IActionResult Index()
+            SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
+        };
+
+        return View(settingList);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Result(List<int>? PriceList, List<int>? QuantityList)
+    {
+        if (!ModelState.IsValid || PriceList.Count + QuantityList.Count == 0)
         {
-            var settingList = new PriceQuantityViewModel
+            var mySettingList = new PriceQuantityViewModel
             {
                 SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
             };
 
-            return View(settingList);
+            ViewBag.SelectSupSetting = "Choose supplier first";
+
+            return View("Index", mySettingList);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Result(List<int>? PriceList, List<int>? QuantityList)
+        if (PriceList != null && PriceList.Any())
         {
-            if (!ModelState.IsValid || PriceList.Count + QuantityList.Count == 0)
+            try
             {
-                var mySettingList = new PriceQuantityViewModel
-                {
-                    SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
-                };
+                var updateAllPrices = await _updatePriceQuantityService.UpdatePriceAsync(PriceList, "Price");
+                ViewBag.UpdatePriceResult = updateAllPrices;
 
-                ViewBag.SelectSupSetting = "Choose supplier first";
-
-                return View("Index", mySettingList);
             }
-
-            if (PriceList != null && PriceList.Any())
+            catch (Exception ex)
             {
-                try
-                {
-                    var updateAllPrices = await _updatePriceQuantityService.UpdatePriceAsync(PriceList, "Price");
-                    ViewBag.UpdatePriceResult = updateAllPrices;
-
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
-                }
+                ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
             }
-
-            if (QuantityList != null && QuantityList.Any())
-            {
-                try
-                {
-                    var updateQuantity = await _updatePriceQuantityService.UpdatePriceAsync(QuantityList, "Quantity");
-                    ViewBag.UpdateQuantityResult = updateQuantity;
-
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
-                }
-            }
-
-            return View();
         }
+
+        if (QuantityList != null && QuantityList.Any())
+        {
+            try
+            {
+                var updateQuantity = await _updatePriceQuantityService.UpdatePriceAsync(QuantityList, "Quantity");
+                ViewBag.UpdateQuantityResult = updateQuantity;
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
+            }
+        }
+
+        return View();
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace xmlParserASP.Models
+﻿namespace xmlParserASP.Models;
+
+public class SupplierAttributeViewModel
 {
-    public class SupplierAttributeViewModel
-    {
-        public int SupplierAttributeId { get; set; }
+    public int SupplierAttributeId { get; set; }
 
-        public string SupplierAttributeName { get; set; }
+    public string SupplierAttributeName { get; set; }
 
-    }
 }
