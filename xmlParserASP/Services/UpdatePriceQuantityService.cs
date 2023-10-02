@@ -403,7 +403,41 @@ public class UpdatePriceQuantityService
     {
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            var hjlk = dbModel.Item1;
+            
+
+            if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
+            {
+                double dbValue = 0;
+                double currentXmlValue = 0;
+
+                if (dbModel.Item3.Contains("."))
+                {
+                    dbValue = Convert.ToDouble(dbModel.Item3.Replace(".", ","));
+                }
+                else
+                {
+                    dbValue = Convert.ToDouble(dbModel.Item3);
+                }
+
+                if (xmlValue.Contains("."))
+                {
+                    currentXmlValue = Convert.ToDouble(xmlValue.Replace(".", ","));
+                }
+                else
+                {
+                    currentXmlValue = Convert.ToDouble(xmlValue);
+                }
+
+                var normalizedDbValue = Math.Round(dbValue, 2);
+                var normalizedXmlValue = Math.Round(currentXmlValue, 2);
+
+                var wichIsLess = Math.Min(normalizedDbValue, normalizedXmlValue);
+
+                if (Math.Abs(normalizedDbValue - normalizedXmlValue) < 0.01 || (normalizedDbValue - normalizedXmlValue) > 0.01) // Порівнюємо з точністю 0.01 (дві цифри після коми)
+                {
+                    var jkl = 1;
+                }
+            }
         }
 
         foreach (var xmlModel in xmlModelPriceList)
