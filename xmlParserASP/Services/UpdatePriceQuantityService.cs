@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Drawing.Text;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
@@ -104,7 +105,7 @@ public class UpdatePriceQuantityService
             #endregion
 
             #region Получение значений из XML
-
+            
 
             Dictionary<string, string> xmlModelPriceList = new();
 

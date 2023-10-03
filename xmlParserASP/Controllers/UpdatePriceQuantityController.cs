@@ -61,7 +61,7 @@ public class UpdatePriceQuantityController : Controller
         {
             try
             {
-                var updateQuantity = await _updatePriceQuantityService.UpdateQuantityAsync(QuantityList, "Quantity");
+                var updateQuantity = await _updatePriceQuantityService.UpdatePriceAsync(QuantityList, "Quantity");
                 ViewBag.UpdateQuantityResult = updateQuantity;
 
             }
