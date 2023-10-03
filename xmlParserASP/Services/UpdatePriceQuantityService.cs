@@ -21,14 +21,14 @@ public class UpdatePriceQuantityService
     private List<(string, string)> stateMessages = new();
     private string currentTableDbColumnToUpdate = "";
 
-public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
+    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
     {
         _supplierXmlSetting = supplierXmlSetting;
         _dbContext = myDBContext;
         _dbContextGamma = dbContextGamma;
     }
 
-    public async Task <List<(string, string)>> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
+    public async Task<List<(string, string)>> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
     {
         currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
@@ -84,7 +84,7 @@ public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBCon
             string fieldValue = "";
 
             var dbCodeModelPriceList = products.Select(p =>
-            { 
+            {
                 try
                 {
                     fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString();
@@ -94,7 +94,7 @@ public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBCon
                     Debug.WriteLine($"Error processing field {whatDbColumnWeNeedUpdate.Name}, {whatDbColumnWeNeedUpdate.GetValue(p)}: {ex.Message}");
                 }
 
-                return (p.Sku, p.Model, fieldValue);               
+                return (p.Sku, p.Model, fieldValue);
             }).ToList();
 
             //var dbCodePriceList = await _dbContextGamma.OcProducts
@@ -161,7 +161,7 @@ public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBCon
                         {
                             xmlModelPriceList.Add(model, price);
                         }
-                        
+
                     }
                 }
             }
@@ -205,9 +205,9 @@ public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBCon
                 }
             }
 
-            UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);            
+            UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
 
-            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));           
+            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));
         }
 
         return stateMessages;
@@ -407,49 +407,56 @@ public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBCon
     {
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            
 
             if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
             {
-                double dbValue = 0;
-                double currentXmlValue = 0;
+                decimal dbValue = 0;
+                decimal currentXmlValue = 0;
 
                 try
                 {
                     if (dbModel.Item3.Contains("."))
                     {
-                        dbValue = Convert.ToDouble(dbModel.Item3.Replace(".", ","));
+                        dbValue = Convert.ToDecimal(dbModel.Item3.Replace(".", ","));
                     }
                     else
                     {
-                        dbValue = Convert.ToDouble(dbModel.Item3);
+                        dbValue = Convert.ToDecimal(dbModel.Item3);
                     }
 
                     if (xmlValue.Contains("."))
                     {
-                        currentXmlValue = Convert.ToDouble(xmlValue.Replace(".", ","));
+                        currentXmlValue = Convert.ToDecimal(xmlValue.Replace(".", ","));
                     }
                     else
                     {
-                        currentXmlValue = Convert.ToDouble(xmlValue);
+                        currentXmlValue = Convert.ToDecimal(xmlValue);
                     }
 
                     var normalizedDbValue = Math.Round(dbValue, 2);
-                    var normalizedXmlValue = Math.Round(currentXmlValue, 2);                    
+                    var normalizedXmlValue = Math.Round(currentXmlValue, 2);
 
                     if (normalizedDbValue != normalizedXmlValue)
-                    {                       
-                        if(normalizedDbValue < normalizedXmlValue)
+                    {
+                        if (normalizedDbValue < normalizedXmlValue)
                         {
-                            _dbContextGamma.OcProducts.Where(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            if (productToUpdate != null)
+                            {
+                                productToUpdate.Price = normalizedXmlValue;
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} increased. Our - new:_{dbModel.Item3}_{xmlValue}", "purple"));
+                            }
 
-                            stateMessages.Add(($"{currentTableDbColumnToUpdate} of {suppName} was increased. Our price: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. New supplier price {xmlValue}", "purple"));
                         }
                         else
                         {
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            if (productToUpdate != null)
+                            {
+                                productToUpdate.Price = normalizedXmlValue;
 
-
-                            stateMessages.Add(($"{currentTableDbColumnToUpdate} of {suppName} was decreased. Our price: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. New supplier price {xmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} decreased. Our - new:_{dbModel.Item3}_{xmlValue}", "blue"));
+                            }
                         }
                     }
                 }
@@ -459,11 +466,12 @@ public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBCon
                     stateMessages.Add(($"Error occurred while {currentTableDbColumnToUpdate} of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
 
-                
 
-                
+
+
             }
         }
+        _dbContextGamma.SaveChanges();
 
         foreach (var xmlModel in xmlModelPriceList)
         {
