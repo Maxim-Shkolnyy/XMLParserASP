@@ -441,7 +441,7 @@ public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBCon
                     {                       
                         if(normalizedDbValue < normalizedXmlValue)
                         {
-
+                            _dbContextGamma.OcProducts.Where(p => p.Sku == dbModel.Item1);
 
                             stateMessages.Add(($"{currentTableDbColumnToUpdate} of {suppName} was increased. Our price: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. New supplier price {xmlValue}", "purple"));
                         }
