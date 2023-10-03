@@ -438,6 +438,12 @@ public class UpdatePriceQuantityService
                         currentXmlValue = Convert.ToDecimal(xmlValue);
                     }
 
+                    if (suppName == "Gamma" || suppName == "Gamma-K")
+                    {
+                        currentXmlValue = (currentXmlValue + (currentXmlValue * 0.4m)) * 50m;
+                    }
+
+
                     var normalizedDbValue = Math.Round(dbValue, 2);
                     var normalizedXmlValue = Math.Round(currentXmlValue, 2);
 
