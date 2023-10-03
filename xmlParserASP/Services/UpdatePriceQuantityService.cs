@@ -108,8 +108,14 @@ public class UpdatePriceQuantityService
 
             GetXmlValues();
 
-
-            UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+            if(currentTableDbColumnToUpdate == "Price")
+            {
+                UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+            }
+            else
+            {
+                UpdateQuantity(dbCodeModelPriceList, xmlModelPriceList);
+            }
 
             stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));
             
@@ -398,6 +404,8 @@ public class UpdatePriceQuantityService
                 }
             }
 
+            
+
             UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
 
             stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "darkgreen"));
@@ -455,7 +463,7 @@ public class UpdatePriceQuantityService
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} increased. Our - new:_{dbModel.Item3}_{xmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
 
                         }
@@ -466,7 +474,7 @@ public class UpdatePriceQuantityService
                             {
                                 productToUpdate.Price = normalizedXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} decreased. Our - new:_{dbModel.Item3}_{xmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -491,7 +499,10 @@ public class UpdatePriceQuantityService
     }
 
 
+    private void UpdateQuantity(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
+    {
 
+    }
 
 
     public async Task<XDocument> LoadAndParseXmlAsync(string url)
