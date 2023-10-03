@@ -16,8 +16,12 @@ public class UpdatePriceQuantityService
     private readonly SupplierXmlSetting _supplierXmlSetting;
     private readonly MyDBContext _dbContext;
     private readonly TestGammaDBContext _dbContextGamma;
+    private SupplierXmlSetting? suppSettings;
+    private string? suppName;
+    private List<(string, string)> stateMessages = new();
+    private string currentTableDbColumnToUpdate = "";
 
-    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
+public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
     {
         _supplierXmlSetting = supplierXmlSetting;
         _dbContext = myDBContext;
@@ -26,7 +30,7 @@ public class UpdatePriceQuantityService
 
     public async Task <List<(string, string)>> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
     {
-        List<(string, string)> stateMessages = new();
+        currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
         if (settingsId == null)
         {
@@ -45,7 +49,7 @@ public class UpdatePriceQuantityService
         {
             #region Получение текущих значений из БД
 
-            var suppSettings = await _dbContext.SupplierXmlSettings
+            suppSettings = await _dbContext.SupplierXmlSettings
                 .Where(m => m.SupplierXmlSettingId == id)
                 .FirstOrDefaultAsync();
             if (suppSettings == null)
@@ -54,7 +58,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var suppName = (await _dbContext.Suppliers.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
+            suppName = (await _dbContext.Suppliers.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
 
             if (suppName == null)
             {
@@ -410,33 +414,54 @@ public class UpdatePriceQuantityService
                 double dbValue = 0;
                 double currentXmlValue = 0;
 
-                if (dbModel.Item3.Contains("."))
+                try
                 {
-                    dbValue = Convert.ToDouble(dbModel.Item3.Replace(".", ","));
+                    if (dbModel.Item3.Contains("."))
+                    {
+                        dbValue = Convert.ToDouble(dbModel.Item3.Replace(".", ","));
+                    }
+                    else
+                    {
+                        dbValue = Convert.ToDouble(dbModel.Item3);
+                    }
+
+                    if (xmlValue.Contains("."))
+                    {
+                        currentXmlValue = Convert.ToDouble(xmlValue.Replace(".", ","));
+                    }
+                    else
+                    {
+                        currentXmlValue = Convert.ToDouble(xmlValue);
+                    }
+
+                    var normalizedDbValue = Math.Round(dbValue, 2);
+                    var normalizedXmlValue = Math.Round(currentXmlValue, 2);                    
+
+                    if (normalizedDbValue != normalizedXmlValue)
+                    {                       
+                        if(normalizedDbValue < normalizedXmlValue)
+                        {
+
+
+                            stateMessages.Add(($"{currentTableDbColumnToUpdate} of {suppName} was increased. Our price: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. New supplier price {xmlValue}", "purple"));
+                        }
+                        else
+                        {
+
+
+                            stateMessages.Add(($"{currentTableDbColumnToUpdate} of {suppName} was decreased. Our price: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. New supplier price {xmlValue}", "blue"));
+                        }
+                    }
                 }
-                else
+                catch (Exception)
                 {
-                    dbValue = Convert.ToDouble(dbModel.Item3);
+
+                    stateMessages.Add(($"Error occurred while {currentTableDbColumnToUpdate} of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
 
-                if (xmlValue.Contains("."))
-                {
-                    currentXmlValue = Convert.ToDouble(xmlValue.Replace(".", ","));
-                }
-                else
-                {
-                    currentXmlValue = Convert.ToDouble(xmlValue);
-                }
+                
 
-                var normalizedDbValue = Math.Round(dbValue, 2);
-                var normalizedXmlValue = Math.Round(currentXmlValue, 2);
-
-                var wichIsLess = Math.Min(normalizedDbValue, normalizedXmlValue);
-
-                if (normalizedDbValue != normalizedXmlValue)
-                {
-                    var jkl = 1;
-                }
+                
             }
         }
 
