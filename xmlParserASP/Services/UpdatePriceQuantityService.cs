@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Reflection;
@@ -21,6 +22,7 @@ public class UpdatePriceQuantityService
     private string? suppName;
     private List<(string, string)> stateMessages = new();
     private string currentTableDbColumnToUpdate = "";
+    Dictionary<string, string> xmlModelPriceList = new();
 
     public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
     {
@@ -104,84 +106,59 @@ public class UpdatePriceQuantityService
             //    .ToListAsync();
             #endregion
 
-            #region Получение значений из XML
+            GetXmlValues();
+
+
+            UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+
+            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));
             
+        }
+        return stateMessages;
+    }
 
-            Dictionary<string, string> xmlModelPriceList = new();
+    private void GetXmlValues()
+    {       
 
-            XmlDocument xmlDoc = new();
+        XmlDocument xmlDoc = new();
 
-            string fileExtension = Path.GetExtension(suppSettings.Path);
-            string price = "";
-            string model = "";
+        string fileExtension = Path.GetExtension(suppSettings.Path);
+        string price = "";
+        string model = "";
 
 
-            xmlDoc.Load(suppSettings.Path);
-            //if (fileExtension == ".xml")
-            //{
-            //    xmlDoc.Load(suppSettings.Path);
-            //}
-            //else
-            //{
-            //    xmlDoc.LoadXml(suppSettings.Path);
-            //}
+        xmlDoc.Load(suppSettings.Path);
+        //if (fileExtension == ".xml")
+        //{
+        //    xmlDoc.Load(suppSettings.Path);
+        //}
+        //else
+        //{
+        //    xmlDoc.LoadXml(suppSettings.Path);
+        //}
 
-            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
+        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
 
-            if (suppSettings.MainProductNode != null)
-            {
-                XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
+        if (suppSettings.MainProductNode != null)
+        {
+            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
 
-                foreach (XmlNode items in parentItemsList)
-                {
-                    foreach (XmlNode item in itemsList)
-                    {
-                        if (suppSettings.paramAttribute == null)
-                        {
-                            model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
-                        }
-                        else
-                        {
-                            if (item.Attributes["id"] != null)
-                            {
-                                if (item.SelectSingleNode(suppSettings.ModelNode) == null)
-                                {
-                                    continue;
-                                }
-                                model = item.Attributes["id"]?.Value;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-
-                        price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
-                        if (!xmlModelPriceList.ContainsKey(model))
-                        {
-                            xmlModelPriceList.Add(model, price);
-                        }
-
-                    }
-                }
-            }
-            else
+            foreach (XmlNode items in parentItemsList)
             {
                 foreach (XmlNode item in itemsList)
                 {
                     if (suppSettings.paramAttribute == null)
                     {
-                        if (item.SelectSingleNode(suppSettings.ModelNode) == null)
-                        {
-                            continue;
-                        }
                         model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
                     }
                     else
                     {
                         if (item.Attributes["id"] != null)
                         {
+                            if (item.SelectSingleNode(suppSettings.ModelNode) == null)
+                            {
+                                continue;
+                            }
                             model = item.Attributes["id"]?.Value;
                         }
                         else
@@ -190,11 +167,6 @@ public class UpdatePriceQuantityService
                         }
                     }
 
-                    if (item.SelectSingleNode(suppSettings.PriceNode) == null)
-                    {
-
-                        continue;
-                    }
                     price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
 
                     if (!xmlModelPriceList.ContainsKey(model))
@@ -202,16 +174,48 @@ public class UpdatePriceQuantityService
                         xmlModelPriceList.Add(model, price);
                     }
 
-                    #endregion
                 }
             }
-
-            UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
-
-            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));
         }
+        else
+        {
+            foreach (XmlNode item in itemsList)
+            {
+                if (suppSettings.paramAttribute == null)
+                {
+                    if (item.SelectSingleNode(suppSettings.ModelNode) == null)
+                    {
+                        continue;
+                    }
+                    model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+                }
+                else
+                {
+                    if (item.Attributes["id"] != null)
+                    {
+                        model = item.Attributes["id"]?.Value;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
-        return stateMessages;
+                if (item.SelectSingleNode(suppSettings.PriceNode) == null)
+                {
+
+                    continue;
+                }
+                price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+
+                if (!xmlModelPriceList.ContainsKey(model))
+                {
+                    xmlModelPriceList.Add(model, price);
+                }
+
+
+            }
+        }
     }
 
 
