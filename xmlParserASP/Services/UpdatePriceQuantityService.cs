@@ -124,19 +124,17 @@ public class UpdatePriceQuantityService
     }
 
     private void GetXmlValues()
-    {       
-
+    {
         XmlDocument xmlDoc = new();
 
         string fileExtension = Path.GetExtension(suppSettings.Path);
         string priceOrQuantityNode = "";
         string model = "";
+        xmlModelPriceList.Clear();
 
-
-        xmlDoc.Load(suppSettings.Path);
         //if (fileExtension == ".xml")
         //{
-        //    xmlDoc.Load(suppSettings.Path);
+           xmlDoc.Load(suppSettings.Path);
         //}
         //else
         //{
@@ -176,19 +174,16 @@ public class UpdatePriceQuantityService
                     if(currentTableDbColumnToUpdate == "Price")
                     {
                         priceOrQuantityNode = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
                     }
                     else
                     {
                         priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityNode)?.InnerText ?? "";
                     }
 
-
                     if (!xmlModelPriceList.ContainsKey(model))
                     {
                         xmlModelPriceList.Add(model, priceOrQuantityNode);
                     }
-
                 }
             }
         }
@@ -242,9 +237,6 @@ public class UpdatePriceQuantityService
             }
         }
     }
-
-
-
 
     public async Task<List<(string, string)>> UpdateQuantityAsync(List<int> settingsId, string tableDbColumnToUpdate)
     {
@@ -503,31 +495,83 @@ public class UpdatePriceQuantityService
 
                     stateMessages.Add(($"Error occurred while {currentTableDbColumnToUpdate} of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
-
-
-
-
             }
         }
-        _dbContextGamma.SaveChanges();
-
-        foreach (var xmlModel in xmlModelPriceList)
-        {
-            var khl = xmlModel.Key;
-        }
+        _dbContextGamma.SaveChanges();     
     }
 
 
     private void UpdateQuantity(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
-        foreach (var item in dbCodeModelPriceList)
+        foreach (var dbModel in dbCodeModelPriceList)
         {
-            var hkjh = item;
+
+            if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
+            {
+                int dbValue = 0;
+                int currentXmlValue = 0;
+
+                try
+                {
+                    if (dbModel.Item3.Contains("."))
+                    {
+                        dbValue = Convert.ToInt32(dbModel.Item3.Replace(".", ","));
+                    }
+                    else
+                    {
+                        dbValue = Convert.ToInt32(dbModel.Item3);
+                    }
+
+                    if (xmlValue.Contains("."))
+                    {
+                        currentXmlValue = Convert.ToInt32(xmlValue.Replace(".", ","));
+                    }
+                    else
+                    {
+                        currentXmlValue = Convert.ToInt32(xmlValue);
+                    }
+
+                    if (suppName == "Gamma" || suppName == "Gamma-K")
+                    {
+                        currentXmlValue = (currentXmlValue + (currentXmlValue * 0.4m)) * 50m;
+                    }
+
+
+                    var normalizedDbValue = Math.Round(dbValue, 2);
+                    var normalizedXmlValue = Math.Round(currentXmlValue, 2);
+
+                    if (normalizedDbValue != normalizedXmlValue)
+                    {
+                        if (normalizedDbValue < normalizedXmlValue)
+                        {
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            if (productToUpdate != null)
+                            {
+                                productToUpdate.Price = normalizedXmlValue;
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                            }
+
+                        }
+                        else
+                        {
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            if (productToUpdate != null)
+                            {
+                                productToUpdate.Price = normalizedXmlValue;
+
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                    stateMessages.Add(($"Error occurred while {currentTableDbColumnToUpdate} of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                }
+            }
         }
-        foreach (var item in xmlModelPriceList)
-        {
-            var hkjh = item;
-        }
+        _dbContextGamma.SaveChanges();
     }
 
 
