@@ -533,21 +533,21 @@ public class UpdatePriceQuantityService
 
                     if (suppName == "Gamma" || suppName == "Gamma-K")
                     {
-                        currentXmlValue = (currentXmlValue + (currentXmlValue * 0.4m)) * 50m;
+                        
                     }
 
 
-                    var normalizedDbValue = Math.Round(dbValue, 2);
-                    var normalizedXmlValue = Math.Round(currentXmlValue, 2);
+                    //var normalizedDbValue = Math.Round(dbValue, 2);
+                    //var normalizedXmlValue = Math.Round(currentXmlValue, 2);
 
-                    if (normalizedDbValue != normalizedXmlValue)
+                    if (dbValue != currentXmlValue)
                     {
-                        if (normalizedDbValue < normalizedXmlValue)
+                        if (dbValue < currentXmlValue)
                         {
                             var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
-                                productToUpdate.Price = normalizedXmlValue;
+                                productToUpdate.Price = currentXmlValue;
                                 stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
 
@@ -557,7 +557,7 @@ public class UpdatePriceQuantityService
                             var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
-                                productToUpdate.Price = normalizedXmlValue;
+                                productToUpdate.Price = currentXmlValue;
 
                                 stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
