@@ -7,6 +7,10 @@
     <h3 class="alert-danger">@ViewBag.SelectSupSetting</h3>
 }
 
+@{
+    var sortedSetteings = Model.SupplierXmlSettings.OrderBy(s => s.SettingName).ToList(); 
+}
+
 <form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">
     <table class="priceQuantityTable">
         <thead>
@@ -17,17 +21,17 @@
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < Model.SupplierXmlSettings.Count; i++)
+            @for (int i = 0; i < sortedSetteings.Count; i++)
         {
             <tr>
                     <td>
-                        @Model.SupplierXmlSettings[i].SettingName
+                        @sortedSetteings[i].SettingName
                     </td>
                     <td>
-                        <input type="checkbox" name="PriceList" value="@Model.SupplierXmlSettings[i].SupplierXmlSettingId">
+                        <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId">
                     </td>
                     <td>
-                        <input type="checkbox" name="QuantityList" value="@Model.SupplierXmlSettings[i].SupplierXmlSettingId">
+                        <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId">
                     </td>
                 </tr>
         }
