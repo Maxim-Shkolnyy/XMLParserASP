@@ -15,4 +15,5 @@ public class PriceQuantityViewModel
     public List<int>? PriceList { get; set; }
     public List<int>? QuantityList { get; set; }
     public bool IsChecked { get; set; }
+    public string? ErrorMessage { get; set; }
 } 

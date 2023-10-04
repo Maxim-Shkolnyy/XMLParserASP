@@ -12,11 +12,14 @@ public class UpdatePriceQuantityController : Controller
     private readonly MyDBContext _db;
     private readonly SupplierXmlSetting _setting;
     private readonly UpdatePriceQuantityService _updatePriceQuantityService;
-    public UpdatePriceQuantityController(MyDBContext db, SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService)
+    private readonly PriceQuantityViewModel _priceQuantityViewModel;
+    public UpdatePriceQuantityController(MyDBContext db, SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
     {
         _db = db;
         _setting = setting;
         _updatePriceQuantityService = updatePriceQuantityService;
+        _priceQuantityViewModel = priceQuantityViewModel;
+
     }
     public IActionResult Index()
     {
@@ -53,7 +56,9 @@ public class UpdatePriceQuantityController : Controller
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
+                ModelState.AddModelError("", "Price was not updated!!! " + ex.Message);
+                //_priceQuantityViewModel.ErrorMessage = "Price was not updated!!!" + ex.Message;
+                ViewBag.Error = "Price was not updated!!!" + ex.Message;
             }
         }
 
@@ -63,11 +68,13 @@ public class UpdatePriceQuantityController : Controller
             {
                 var updateQuantity = await _updatePriceQuantityService.UpdatePriceAsync(QuantityList, "Quantity");
                 ViewBag.UpdateQuantityResult = updateQuantity;
+                
 
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
+                ViewBag.Error = "Quantity was not updated!!! " + ex.Message;
             }
         }
 

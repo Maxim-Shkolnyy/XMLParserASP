@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
+using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
 
@@ -40,6 +41,7 @@ public class Program
         builder.Services.AddScoped<UpdatePriceQuantityController>();
         builder.Services.AddScoped<ProcessXMLController>();
         builder.Services.AddControllersWithViews();
+        builder.Services.AddScoped<PriceQuantityViewModel>();
 
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);
 

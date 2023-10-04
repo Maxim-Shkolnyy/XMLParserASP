@@ -86,11 +86,11 @@ public class UpdatePriceQuantityService
 
             string fieldValue = "";
 
-            var dbCodeModelPriceList = products.Select(p =>
+            List<(string, string, string)>? dbCodeModelPriceList = products.Select(p =>
             {
                 try
                 {
-                    fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString();
+                    fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString() ?? "";
                 }
                 catch (Exception ex)
                 {
@@ -129,7 +129,7 @@ public class UpdatePriceQuantityService
         XmlDocument xmlDoc = new();
 
         string fileExtension = Path.GetExtension(suppSettings.Path);
-        string price = "";
+        string priceOrQuantityNode = "";
         string model = "";
 
 
@@ -173,11 +173,20 @@ public class UpdatePriceQuantityService
                         }
                     }
 
-                    price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+                    if(currentTableDbColumnToUpdate == "Price")
+                    {
+                        priceOrQuantityNode = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+
+                    }
+                    else
+                    {
+                        priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityNode)?.InnerText ?? "";
+                    }
+
 
                     if (!xmlModelPriceList.ContainsKey(model))
                     {
-                        xmlModelPriceList.Add(model, price);
+                        xmlModelPriceList.Add(model, priceOrQuantityNode);
                     }
 
                 }
@@ -207,19 +216,29 @@ public class UpdatePriceQuantityService
                     }
                 }
 
-                if (item.SelectSingleNode(suppSettings.PriceNode) == null)
+                if (currentTableDbColumnToUpdate == "Price")
                 {
+                    if (item.SelectSingleNode(suppSettings.PriceNode) == null)
+                    {
+                        continue;
+                    }
+                    priceOrQuantityNode = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
 
-                    continue;
                 }
-                price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+                else
+                {
+                    if (item.SelectSingleNode(suppSettings.QuantityNode) == null)
+                    {
+                        continue;
+                    }
+                    priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityNode)?.InnerText ?? "";
+                }
+
 
                 if (!xmlModelPriceList.ContainsKey(model))
                 {
-                    xmlModelPriceList.Add(model, price);
+                    xmlModelPriceList.Add(model, priceOrQuantityNode);
                 }
-
-
             }
         }
     }
@@ -501,7 +520,14 @@ public class UpdatePriceQuantityService
 
     private void UpdateQuantity(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
-
+        foreach (var item in dbCodeModelPriceList)
+        {
+            var hkjh = item;
+        }
+        foreach (var item in xmlModelPriceList)
+        {
+            var hkjh = item;
+        }
     }
 
 

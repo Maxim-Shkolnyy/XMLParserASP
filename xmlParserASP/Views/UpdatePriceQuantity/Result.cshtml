@@ -1,6 +1,14 @@
-﻿<h1>Prices and quantity updated</h1>
+﻿@model PriceQuantityViewModel
+
+<h1> Result of prices and quantity update</h1>
 
 @{
+    if(ViewBag.Error != null)
+    {
+        <div class="alert-danger">@ViewBag.Error</div>
+
+    }
+
     var prices = ViewBag.UpdatePriceResult;
     var quantity = ViewBag.UpdateQuantityResult;
 
