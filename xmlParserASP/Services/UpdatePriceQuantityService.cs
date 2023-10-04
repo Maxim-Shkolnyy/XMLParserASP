@@ -100,10 +100,6 @@ public class UpdatePriceQuantityService
                 return (p.Sku, p.Model, fieldValue);
             }).ToList();
 
-            //var dbCodePriceList = await _dbContextGamma.OcProducts
-            //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
-            //    .Select(p => new { p.Sku, p.Model, FieldValue = whatDbColumnWeNeedUpdate.GetValue(p).ToString() })
-            //    .ToListAsync();
             #endregion
 
             if ((suppName == "Gamma" || suppName == "Gamma-K") & currentTableDbColumnToUpdate == "Quantity")
@@ -281,29 +277,35 @@ public class UpdatePriceQuantityService
                 }
             }
 
-            if (item.SelectSingleNode(suppSettings.QuantityDBStock1) == null)
+            int stock1 = 0;
+            int stock2 = 0;
+            int stock3 = 0;
+
+            if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock1)?.InnerText, out stock1))
             {
-                continue;
+                stock1 = 0;
             }
-            priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityDBStock1)?.InnerText ?? "";
 
-            if (item.SelectSingleNode(suppSettings.QuantityDBStock2) == null)
+            if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock2)?.InnerText, out stock1))
             {
-                continue;
+                stock2 = 0;
             }
-            priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityDBStock2)?.InnerText ?? "";
 
-            if (item.SelectSingleNode(suppSettings.QuantityDBStock3) == null)
+            if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock3)?.InnerText, out stock1))
             {
-                continue;
+                stock3 = 0;
             }
-            priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityDBStock3)?.InnerText ?? "";
-        }
+
+            int aggregatedPrice = stock1 + stock2 + stock3;
+
+            priceOrQuantityNode = aggregatedPrice.ToString();
 
 
-        if (!xmlModelPriceList.ContainsKey(model))
-        {
-            xmlModelPriceList.Add(model, priceOrQuantityNode);
+
+            if (!xmlModelPriceList.ContainsKey(model))
+            {
+                xmlModelPriceList.Add(model, priceOrQuantityNode);
+            }
         }
     }
 

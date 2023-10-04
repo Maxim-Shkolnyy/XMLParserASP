@@ -1,9 +1,10 @@
 ﻿@model PriceQuantityViewModel
 
 <h1> Result of prices and quantity update</h1>
+<h2>Prices</h2>
 
 @{
-    if(ViewBag.Error != null)
+    if (ViewBag.Error != null)
     {
         <div class="alert-danger">@ViewBag.Error</div>
 
@@ -11,21 +12,28 @@
 
     var prices = ViewBag.UpdatePriceResult;
     var quantity = ViewBag.UpdateQuantityResult;
+    int count = 0;
 
-    if(prices != null)
+    if (prices != null)
     {
         foreach (var price in prices)
         {
-            <div style="color: @price.Item2"> @price.Item1</div>
+            count++;
+            <div style="color: @price.Item2">@count _ @price.Item1</div>
         }
     }
+}
+<h2>Quantity</h2>
 
-    if(quantity != null)
+@{
+    count = 0;
+
+    if (quantity != null)
     {
         foreach (var qty in quantity)
         {
-            <div style="color: @qty.Item2">@qty.Item1</div>
+            count++;
+            <div style="color: @qty.Item2">@count _@qty.Item1</div>
         }
-    }    
+    }
 }
-
