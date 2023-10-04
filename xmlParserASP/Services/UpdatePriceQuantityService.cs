@@ -106,9 +106,17 @@ public class UpdatePriceQuantityService
             //    .ToListAsync();
             #endregion
 
-            GetXmlValues();
+            if ((suppName == "Gamma" || suppName == "Gamma-K") & currentTableDbColumnToUpdate == "Quantity")
+            {
+                GetGammaQuantityXmlValues();
+            }
+            else
+            {
+                GetXmlValues();
+            }
 
-            if(currentTableDbColumnToUpdate == "Price")
+
+            if (currentTableDbColumnToUpdate == "Price")
             {
                 UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
             }
@@ -118,7 +126,7 @@ public class UpdatePriceQuantityService
             }
 
             stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));
-            
+
         }
         return stateMessages;
     }
@@ -134,7 +142,7 @@ public class UpdatePriceQuantityService
 
         //if (fileExtension == ".xml")
         //{
-           xmlDoc.Load(suppSettings.Path);
+        xmlDoc.Load(suppSettings.Path);
         //}
         //else
         //{
@@ -171,7 +179,7 @@ public class UpdatePriceQuantityService
                         }
                     }
 
-                    if(currentTableDbColumnToUpdate == "Price")
+                    if (currentTableDbColumnToUpdate == "Price")
                     {
                         priceOrQuantityNode = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
                     }
@@ -235,6 +243,67 @@ public class UpdatePriceQuantityService
                     xmlModelPriceList.Add(model, priceOrQuantityNode);
                 }
             }
+        }
+    }
+
+    private void GetGammaQuantityXmlValues()
+    {
+        XmlDocument xmlDoc = new();
+
+        string priceOrQuantityNode = "";
+        string model = "";
+        xmlModelPriceList.Clear();
+
+        xmlDoc.Load(suppSettings.Path);
+
+        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
+
+
+        foreach (XmlNode item in itemsList)
+        {
+            if (suppSettings.paramAttribute == null)
+            {
+                if (item.SelectSingleNode(suppSettings.ModelNode) == null)
+                {
+                    continue;
+                }
+                model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+            }
+            else
+            {
+                if (item.Attributes["id"] != null)
+                {
+                    model = item.Attributes["id"]?.Value;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            if (item.SelectSingleNode(suppSettings.QuantityDBStock1) == null)
+            {
+                continue;
+            }
+            priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityDBStock1)?.InnerText ?? "";
+
+            if (item.SelectSingleNode(suppSettings.QuantityDBStock2) == null)
+            {
+                continue;
+            }
+            priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityDBStock2)?.InnerText ?? "";
+
+            if (item.SelectSingleNode(suppSettings.QuantityDBStock3) == null)
+            {
+                continue;
+            }
+            priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityDBStock3)?.InnerText ?? "";
+        }
+
+
+        if (!xmlModelPriceList.ContainsKey(model))
+        {
+            xmlModelPriceList.Add(model, priceOrQuantityNode);
         }
     }
 
@@ -415,7 +484,7 @@ public class UpdatePriceQuantityService
                 }
             }
 
-            
+
 
             UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
 
@@ -497,7 +566,7 @@ public class UpdatePriceQuantityService
                 }
             }
         }
-        _dbContextGamma.SaveChanges();     
+        _dbContextGamma.SaveChanges();
     }
 
 
@@ -529,7 +598,7 @@ public class UpdatePriceQuantityService
                     else
                     {
                         currentXmlValue = Convert.ToInt32(xmlValue);
-                    }                
+                    }
 
                     if (dbValue != currentXmlValue)
                     {
