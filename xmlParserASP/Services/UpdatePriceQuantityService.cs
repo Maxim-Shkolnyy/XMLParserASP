@@ -87,9 +87,12 @@ public class UpdatePriceQuantityService
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
                 .ToListAsync();
 
-            List<(string, string, string)> dbCodeModelPriceList = new List<(string, string, string)>();
+            
 
-            string fieldValue = "";
+            List<(string, string, string, string)> dbCodeModelPriceList = new();
+
+            string priceQuantityValue = "";
+            string productName = "";
 
             foreach (var product in products)
             {
@@ -97,11 +100,13 @@ public class UpdatePriceQuantityService
                 {
                     if (tableDbColumnToUpdate == "Price")
                     {
-                        fieldValue = product.Price.ToString(CultureInfo.CurrentCulture);
+                        priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture); 
+                        productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m=>m.Name).FirstOrDefault();
                     }
                     else
                     {
-                        fieldValue = product.Quantity.ToString();
+                        priceQuantityValue = product.Quantity.ToString();
+                        productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
                     }
 
                 }
@@ -110,7 +115,7 @@ public class UpdatePriceQuantityService
                     Debug.WriteLine($"Error processing field {product.Sku} : {ex.Message}");
                 }
 
-                dbCodeModelPriceList.Add((product.Sku, product.Model, fieldValue));
+                dbCodeModelPriceList.Add((product.Sku, product.Model, priceQuantityValue, productName));
             }
 
 
@@ -511,7 +516,7 @@ public class UpdatePriceQuantityService
 
 
 
-    private void UpdatePrices(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
+    private void UpdatePrices(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
         foreach (var dbModel in dbCodeModelPriceList)
         {
@@ -558,7 +563,7 @@ public class UpdatePriceQuantityService
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ price increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ price increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
 
                         }
@@ -569,7 +574,7 @@ public class UpdatePriceQuantityService
                             {
                                 productToUpdate.Price = normalizedXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ price decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ price decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -577,7 +582,7 @@ public class UpdatePriceQuantityService
                 catch (Exception)
                 {
 
-                    stateMessages.Add(($"Error occurred while price of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    stateMessages.Add(($"Error occurred while price of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{dbModel.Item4} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
         }
@@ -585,7 +590,7 @@ public class UpdatePriceQuantityService
     }
 
 
-    private void UpdateQuantity(List<(string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
+    private void UpdateQuantity(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
         foreach (var dbModel in dbCodeModelPriceList)
         {
@@ -623,9 +628,8 @@ public class UpdatePriceQuantityService
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Quantity = currentXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
-
                         }
                         else
                         {
@@ -634,7 +638,7 @@ public class UpdatePriceQuantityService
                             {
                                 productToUpdate.Quantity = currentXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -642,7 +646,7 @@ public class UpdatePriceQuantityService
                 catch (Exception)
                 {
 
-                    stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item4} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
         }
