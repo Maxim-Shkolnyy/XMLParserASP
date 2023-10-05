@@ -5,8 +5,6 @@ using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
 
-//using MySQL.Data.EntityFrameworkCore.Extensions;
-
 namespace xmlParserASP;
 
 public class Program
@@ -15,24 +13,17 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        string connectionString =
-            // "Server=DESKTOP-5KP5B17\\SQLEXPRESS;Database=MAX;Trusted_Connection=True;TrustServerCertificate=True"; // work desktop
-            "Database=zi391919_maxim;Data Source=zi391919.mysql.tools;User Id=zi391919_maxim;Password=y5E~v52!Cv;CharSet=utf8;"; // gamma max program DB
+        string connectionString = "Database=zi391919_maxim;Data Source=zi391919.mysql.tools;User Id=zi391919_maxim;Password=y5E~v52!Cv;CharSet=utf8;"; // gamma max program DB
 
+        string connectionStringTestGamma = "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // test gamma 
 
-        string connectionStringTestGamma =
-            "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // test gamma 
+        string connectionStringGamma = "Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;"; //gamma
 
-            string connectionStringGamma =
-            "Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;"; //gamma
+        builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(connectionString));
 
-        builder.Services.AddDbContext<MyDBContext>(options =>
-            options.UseMySQL(connectionString));
+        builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(connectionStringTestGamma));
 
-        builder.Services.AddDbContext<TestGammaDBContext>(options =>
-        options.UseMySQL(connectionStringTestGamma));
-
-        //builder.Services.AddDbContext<>
+        builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma));
 
         builder.Services.AddScoped<SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
@@ -55,7 +46,6 @@ public class Program
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
@@ -69,27 +59,7 @@ public class Program
         app.MapControllerRoute(
             name: "default",
         pattern: "{controller=UpdatePriceQuantity}/{action=Index}/{id?}");
-//pattern: "{controller=Train}/{action=Index}/{id?}");
-
-
-
-
-        ////var rUniq = serviceProvider.GetService<ReadUniqueCategorys>();
-        ////rUniq.ReadXMLUniqueCategorys();
-
-        ////UniqNodesInXML.Read();
-
-        //// var model = serviceProvider.GetService<PathModel>();
-
-
-        ////SQLQuery.ConnectToDB();
-
-
-
 
         app.Run();
-
-
-            
     }
 }

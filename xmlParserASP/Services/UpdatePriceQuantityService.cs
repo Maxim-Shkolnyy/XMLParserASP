@@ -17,18 +17,18 @@ public class UpdatePriceQuantityService
 {
     private readonly SupplierXmlSetting _supplierXmlSetting;
     private readonly MyDBContext _dbContext;
-    private readonly TestGammaDBContext _dbContextGamma;
+    private readonly TestGammaDBContext _dbContextTestGamma;
     private SupplierXmlSetting? suppSettings;
     private string? suppName;
     private List<(string, string)> stateMessages = new();
     private string currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
 
-    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextGamma)
+    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextTestGamma)
     {
         _supplierXmlSetting = supplierXmlSetting;
         _dbContext = myDBContext;
-        _dbContextGamma = dbContextGamma;
+        _dbContextTestGamma = dbContextTestGamma;
     }
 
     public async Task<List<(string, string)>> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
@@ -69,7 +69,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
+            var currentSuppProductsList = await _dbContextTestGamma.OcProductToSuppliers
                 .Where(m => m.SupplierId == suppName)
                 .Select(m => m.ProductId)
                 .ToListAsync();
@@ -80,7 +80,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var products = await _dbContextGamma.OcProducts
+            var products = await _dbContextTestGamma.OcProducts
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
                 .ToListAsync();
 
@@ -286,19 +286,19 @@ public class UpdatePriceQuantityService
                 stock1 = 0;
             }
 
-            if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock2)?.InnerText, out stock1))
+            if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock2)?.InnerText, out stock2))
             {
                 stock2 = 0;
             }
 
-            if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock3)?.InnerText, out stock1))
+            if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock3)?.InnerText, out stock3))
             {
                 stock3 = 0;
             }
 
-            int aggregatedPrice = stock1 + stock2 + stock3;
+            int aggregatedQuantity = stock1 + stock2 + stock3;
 
-            priceOrQuantityNode = aggregatedPrice.ToString();
+            priceOrQuantityNode = aggregatedQuantity.ToString();
 
 
 
@@ -347,7 +347,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
+            var currentSuppProductsList = await _dbContextTestGamma.OcProductToSuppliers
                 .Where(m => m.SupplierId == suppName)
                 .Select(m => m.ProductId)
                 .ToListAsync();
@@ -358,7 +358,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var products = await _dbContextGamma.OcProducts
+            var products = await _dbContextTestGamma.OcProducts
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
                 .ToListAsync();
 
@@ -378,7 +378,7 @@ public class UpdatePriceQuantityService
                 return (p.Sku, p.Model, fieldValue);
             }).ToList();
 
-            //var dbCodePriceList = await _dbContextGamma.OcProducts
+            //var dbCodePriceList = await _dbContextTestGamma.OcProducts
             //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
             //    .Select(p => new { p.Sku, p.Model, FieldValue = whatDbColumnWeNeedUpdate.GetValue(p).ToString() })
             //    .ToListAsync();
@@ -541,7 +541,7 @@ public class UpdatePriceQuantityService
                     {
                         if (normalizedDbValue < normalizedXmlValue)
                         {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
@@ -551,7 +551,7 @@ public class UpdatePriceQuantityService
                         }
                         else
                         {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
@@ -568,7 +568,7 @@ public class UpdatePriceQuantityService
                 }
             }
         }
-        _dbContextGamma.SaveChanges();
+        _dbContextTestGamma.SaveChanges();
     }
 
 
@@ -606,7 +606,7 @@ public class UpdatePriceQuantityService
                     {
                         if (dbValue < currentXmlValue)
                         {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Quantity = currentXmlValue;
@@ -616,7 +616,7 @@ public class UpdatePriceQuantityService
                         }
                         else
                         {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Quantity = currentXmlValue;
@@ -633,7 +633,7 @@ public class UpdatePriceQuantityService
                 }
             }
         }
-        _dbContextGamma.SaveChanges();
+        _dbContextTestGamma.SaveChanges();
     }
 
 
