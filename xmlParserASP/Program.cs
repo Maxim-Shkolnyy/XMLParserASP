@@ -21,14 +21,18 @@ public class Program
 
 
         string connectionStringTestGamma =
-             "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // test gamma 
+            "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // test gamma 
 
+            string connectionStringGamma =
+            "Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;"; //gamma
 
         builder.Services.AddDbContext<MyDBContext>(options =>
             options.UseMySQL(connectionString));
 
         builder.Services.AddDbContext<TestGammaDBContext>(options =>
         options.UseMySQL(connectionStringTestGamma));
+
+        //builder.Services.AddDbContext<>
 
         builder.Services.AddScoped<SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
