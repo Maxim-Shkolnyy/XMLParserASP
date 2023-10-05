@@ -563,7 +563,7 @@ public class UpdatePriceQuantityService
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ price increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ price increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
 
                         }
@@ -574,7 +574,7 @@ public class UpdatePriceQuantityService
                             {
                                 productToUpdate.Price = normalizedXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ price decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ price decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -582,7 +582,7 @@ public class UpdatePriceQuantityService
                 catch (Exception)
                 {
 
-                    stateMessages.Add(($"Error occurred while price of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{dbModel.Item4} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    stateMessages.Add(($"Error occurred while price of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
         }
@@ -628,7 +628,7 @@ public class UpdatePriceQuantityService
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Quantity = currentXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
                         }
                         else
@@ -638,7 +638,7 @@ public class UpdatePriceQuantityService
                             {
                                 productToUpdate.Quantity = currentXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{dbModel.Item4}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -646,7 +646,7 @@ public class UpdatePriceQuantityService
                 catch (Exception)
                 {
 
-                    stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item4} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
         }
@@ -660,6 +660,20 @@ public class UpdatePriceQuantityService
         {
             var xmlString = await client.GetStringAsync(url);
             return XDocument.Parse(xmlString);
+        }
+    }
+
+    public string CutString(string input)
+    {
+        const int maxLength = 60;
+
+        if (input.Length > maxLength)
+        {
+            return input.Substring(0, maxLength - 3) + "...";
+        }
+        else
+        {
+            return input.PadRight(maxLength);
         }
     }
 }
