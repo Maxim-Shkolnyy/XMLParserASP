@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics;
 using System.Drawing.Text;
+using System.Globalization;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
@@ -18,17 +19,19 @@ public class UpdatePriceQuantityService
     private readonly SupplierXmlSetting _supplierXmlSetting;
     private readonly MyDBContext _dbContext;
     private readonly TestGammaDBContext _dbContextTestGamma;
+    private readonly GammaContext _dbContextGamma;
     private SupplierXmlSetting? suppSettings;
     private string? suppName;
     private List<(string, string)> stateMessages = new();
     private string currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
 
-    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextTestGamma)
+    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextTestGamma, GammaContext dbContextGamma)
     {
         _supplierXmlSetting = supplierXmlSetting;
         _dbContext = myDBContext;
         _dbContextTestGamma = dbContextTestGamma;
+        _dbContextGamma=dbContextGamma;
     }
 
     public async Task<List<(string, string)>> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
@@ -41,12 +44,12 @@ public class UpdatePriceQuantityService
             return stateMessages;
         }
 
-        PropertyInfo whatDbColumnWeNeedUpdate = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
+        //PropertyInfo whatDbColumnWeNeedUpdate = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
 
-        if (whatDbColumnWeNeedUpdate == null)
-        {
-            stateMessages.Add(("Null or absent model property was passed instead of table column name like 'Price' or 'Quantity'", "red"));
-        }
+        //if (whatDbColumnWeNeedUpdate == null)
+        //{
+        //    stateMessages.Add(("Null or absent model property was passed instead of table column name like 'Price' or 'Quantity'", "red"));
+        //}
 
         foreach (int id in settingsId)
         {
@@ -69,7 +72,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var currentSuppProductsList = await _dbContextTestGamma.OcProductToSuppliers
+            var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
                 .Where(m => m.SupplierId == suppName)
                 .Select(m => m.ProductId)
                 .ToListAsync();
@@ -80,25 +83,37 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var products = await _dbContextTestGamma.OcProducts
+            var products = await _dbContextGamma.OcProducts
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
                 .ToListAsync();
 
+            List<(string, string, string)> dbCodeModelPriceList = new List<(string, string, string)>();
+
             string fieldValue = "";
 
-            List<(string, string, string)>? dbCodeModelPriceList = products.Select(p =>
+            foreach (var product in products)
             {
                 try
                 {
-                    fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString() ?? "";
+                    if (tableDbColumnToUpdate == "Price")
+                    {
+                        fieldValue = product.Price.ToString(CultureInfo.CurrentCulture);
+                    }
+                    else
+                    {
+                        fieldValue = product.Quantity.ToString();
+                    }
+
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error processing field {whatDbColumnWeNeedUpdate.Name}, {whatDbColumnWeNeedUpdate.GetValue(p)}: {ex.Message}");
+                    Debug.WriteLine($"Error processing field {product.Sku} : {ex.Message}");
                 }
 
-                return (p.Sku, p.Model, fieldValue);
-            }).ToList();
+                dbCodeModelPriceList.Add((product.Sku, product.Model, fieldValue));
+            }
+
+
 
             #endregion
 
@@ -300,8 +315,6 @@ public class UpdatePriceQuantityService
 
             priceOrQuantityNode = aggregatedQuantity.ToString();
 
-
-
             if (!xmlModelPriceList.ContainsKey(model))
             {
                 xmlModelPriceList.Add(model, priceOrQuantityNode);
@@ -309,192 +322,192 @@ public class UpdatePriceQuantityService
         }
     }
 
-    public async Task<List<(string, string)>> UpdateQuantityAsync(List<int> settingsId, string tableDbColumnToUpdate)
-    {
-        List<(string, string)> stateMessages = new();
+    //public async Task<List<(string, string)>> UpdateQuantityAsync(List<int> settingsId, string tableDbColumnToUpdate)
+    //{
+    //    List<(string, string)> stateMessages = new();
 
-        if (settingsId == null)
-        {
-            stateMessages.Add(("Setting ID was not passed", "red"));
-            return stateMessages;
-        }
+    //    if (settingsId == null)
+    //    {
+    //        stateMessages.Add(("Setting ID was not passed", "red"));
+    //        return stateMessages;
+    //    }
 
-        PropertyInfo whatDbColumnWeNeedUpdate = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
+    //    PropertyInfo whatDbColumnWeNeedUpdate = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
 
-        if (whatDbColumnWeNeedUpdate == null)
-        {
-            stateMessages.Add(("Null or absent model property was passed instead of table column name like 'Price' or 'Quantity'", "red"));
-        }
+    //    if (whatDbColumnWeNeedUpdate == null)
+    //    {
+    //        stateMessages.Add(("Null or absent model property was passed instead of table column name like 'Price' or 'Quantity'", "red"));
+    //    }
 
-        foreach (int id in settingsId)
-        {
-            #region Получение текущих значений из БД
+    //    foreach (int id in settingsId)
+    //    {
+    //        #region Получение текущих значений из БД
 
-            var suppSettings = await _dbContext.SupplierXmlSettings
-                .Where(m => m.SupplierXmlSettingId == id)
-                .FirstOrDefaultAsync();
-            if (suppSettings == null)
-            {
-                stateMessages.Add(("Supplier setting was not found in DB", "red"));
-                continue;
-            }
+    //        var suppSettings = await _dbContext.SupplierXmlSettings
+    //            .Where(m => m.SupplierXmlSettingId == id)
+    //            .FirstOrDefaultAsync();
+    //        if (suppSettings == null)
+    //        {
+    //            stateMessages.Add(("Supplier setting was not found in DB", "red"));
+    //            continue;
+    //        }
 
-            var suppName = (await _dbContext.Suppliers.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
+    //        var suppName = (await _dbContext.Suppliers.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
 
-            if (suppName == null)
-            {
-                stateMessages.Add(("Supplier name was not found in DB", "red"));
-                continue;
-            }
+    //        if (suppName == null)
+    //        {
+    //            stateMessages.Add(("Supplier name was not found in DB", "red"));
+    //            continue;
+    //        }
 
-            var currentSuppProductsList = await _dbContextTestGamma.OcProductToSuppliers
-                .Where(m => m.SupplierId == suppName)
-                .Select(m => m.ProductId)
-                .ToListAsync();
+    //        var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
+    //            .Where(m => m.SupplierId == suppName)
+    //            .Select(m => m.ProductId)
+    //            .ToListAsync();
 
-            if (currentSuppProductsList == null)
-            {
-                stateMessages.Add(($"Supplier {suppName} has no one product in DB", "red"));
-                continue;
-            }
+    //        if (currentSuppProductsList == null)
+    //        {
+    //            stateMessages.Add(($"Supplier {suppName} has no one product in DB", "red"));
+    //            continue;
+    //        }
 
-            var products = await _dbContextTestGamma.OcProducts
-                .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                .ToListAsync();
+    //        var products = await _dbContextGamma.OcProducts
+    //            .Where(p => currentSuppProductsList.Contains(p.ProductId))
+    //            .ToListAsync();
 
-            string fieldValue = "";
+    //        string fieldValue = "";
 
-            var dbCodeModelPriceList = products.Select(p =>
-            {
-                try
-                {
-                    fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error processing field {whatDbColumnWeNeedUpdate.Name}, {whatDbColumnWeNeedUpdate.GetValue(p)}: {ex.Message}");
-                }
+    //        var dbCodeModelPriceList = products.Select(p =>
+    //        {
+    //            try
+    //            {
+    //                fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString();
+    //            }
+    //            catch (Exception ex)
+    //            {
+    //                Debug.WriteLine($"Error processing field {whatDbColumnWeNeedUpdate.Name}, {whatDbColumnWeNeedUpdate.GetValue(p)}: {ex.Message}");
+    //            }
 
-                return (p.Sku, p.Model, fieldValue);
-            }).ToList();
+    //            return (p.Sku, p.Model, fieldValue);
+    //        }).ToList();
 
-            //var dbCodePriceList = await _dbContextTestGamma.OcProducts
-            //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
-            //    .Select(p => new { p.Sku, p.Model, FieldValue = whatDbColumnWeNeedUpdate.GetValue(p).ToString() })
-            //    .ToListAsync();
-            #endregion
+    //        //var dbCodePriceList = await _dbContextGamma.OcProducts
+    //        //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
+    //        //    .Select(p => new { p.Sku, p.Model, FieldValue = whatDbColumnWeNeedUpdate.GetValue(p).ToString() })
+    //        //    .ToListAsync();
+    //        #endregion
 
-            #region Получение значений из XML
-
-
-            Dictionary<string, string> xmlModelPriceList = new();
-
-            XmlDocument xmlDoc = new();
-
-            string fileExtension = Path.GetExtension(suppSettings.Path);
-            string price = "";
-            string model = "";
+    //        #region Получение значений из XML
 
 
-            xmlDoc.Load(suppSettings.Path);
-            //if (fileExtension == ".xml")
-            //{
-            //    xmlDoc.Load(suppSettings.Path);
-            //}
-            //else
-            //{
-            //    xmlDoc.LoadXml(suppSettings.Path);
-            //}
+    //        Dictionary<string, string> xmlModelPriceList = new();
 
-            XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
+    //        XmlDocument xmlDoc = new();
 
-            if (suppSettings.MainProductNode != null)
-            {
-                XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
-
-                foreach (XmlNode items in parentItemsList)
-                {
-                    foreach (XmlNode item in itemsList)
-                    {
-                        if (suppSettings.paramAttribute == null)
-                        {
-                            model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
-                        }
-                        else
-                        {
-                            if (item.Attributes["id"] != null)
-                            {
-                                if (item.SelectSingleNode(suppSettings.ModelNode) == null)
-                                {
-                                    continue;
-                                }
-                                model = item.Attributes["id"]?.Value;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-
-                        price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
-                        if (!xmlModelPriceList.ContainsKey(model))
-                        {
-                            xmlModelPriceList.Add(model, price);
-                        }
-
-                    }
-                }
-            }
-            else
-            {
-                foreach (XmlNode item in itemsList)
-                {
-                    if (suppSettings.paramAttribute == null)
-                    {
-                        if (item.SelectSingleNode(suppSettings.ModelNode) == null)
-                        {
-                            continue;
-                        }
-                        model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
-                    }
-                    else
-                    {
-                        if (item.Attributes["id"] != null)
-                        {
-                            model = item.Attributes["id"]?.Value;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (item.SelectSingleNode(suppSettings.PriceNode) == null)
-                    {
-
-                        continue;
-                    }
-                    price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
-                    if (!xmlModelPriceList.ContainsKey(model))
-                    {
-                        xmlModelPriceList.Add(model, price);
-                    }
-
-                    #endregion
-                }
-            }
+    //        string fileExtension = Path.GetExtension(suppSettings.Path);
+    //        string price = "";
+    //        string model = "";
 
 
+    //        xmlDoc.Load(suppSettings.Path);
+    //        //if (fileExtension == ".xml")
+    //        //{
+    //        //    xmlDoc.Load(suppSettings.Path);
+    //        //}
+    //        //else
+    //        //{
+    //        //    xmlDoc.LoadXml(suppSettings.Path);
+    //        //}
 
-            UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+    //        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
 
-            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "darkgreen"));
-        }
+    //        if (suppSettings.MainProductNode != null)
+    //        {
+    //            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
 
-        return stateMessages;
-    }
+    //            foreach (XmlNode items in parentItemsList)
+    //            {
+    //                foreach (XmlNode item in itemsList)
+    //                {
+    //                    if (suppSettings.paramAttribute == null)
+    //                    {
+    //                        model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+    //                    }
+    //                    else
+    //                    {
+    //                        if (item.Attributes["id"] != null)
+    //                        {
+    //                            if (item.SelectSingleNode(suppSettings.ModelNode) == null)
+    //                            {
+    //                                continue;
+    //                            }
+    //                            model = item.Attributes["id"]?.Value;
+    //                        }
+    //                        else
+    //                        {
+    //                            continue;
+    //                        }
+    //                    }
+
+    //                    price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+
+    //                    if (!xmlModelPriceList.ContainsKey(model))
+    //                    {
+    //                        xmlModelPriceList.Add(model, price);
+    //                    }
+
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            foreach (XmlNode item in itemsList)
+    //            {
+    //                if (suppSettings.paramAttribute == null)
+    //                {
+    //                    if (item.SelectSingleNode(suppSettings.ModelNode) == null)
+    //                    {
+    //                        continue;
+    //                    }
+    //                    model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+    //                }
+    //                else
+    //                {
+    //                    if (item.Attributes["id"] != null)
+    //                    {
+    //                        model = item.Attributes["id"]?.Value;
+    //                    }
+    //                    else
+    //                    {
+    //                        continue;
+    //                    }
+    //                }
+
+    //                if (item.SelectSingleNode(suppSettings.PriceNode) == null)
+    //                {
+
+    //                    continue;
+    //                }
+    //                price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+
+    //                if (!xmlModelPriceList.ContainsKey(model))
+    //                {
+    //                    xmlModelPriceList.Add(model, price);
+    //                }
+
+    //                #endregion
+    //            }
+    //        }
+
+
+
+    //        UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+
+    //        stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "darkgreen"));
+    //    }
+
+    //    return stateMessages;
+    //}
 
 
 
@@ -541,22 +554,22 @@ public class UpdatePriceQuantityService
                     {
                         if (normalizedDbValue < normalizedXmlValue)
                         {
-                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ price increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
 
                         }
                         else
                         {
-                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ price decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -564,11 +577,11 @@ public class UpdatePriceQuantityService
                 catch (Exception)
                 {
 
-                    stateMessages.Add(($"Error occurred while {currentTableDbColumnToUpdate} of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    stateMessages.Add(($"Error occurred while price of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
         }
-        _dbContextTestGamma.SaveChanges();
+        _dbContextGamma.SaveChanges();
     }
 
 
@@ -606,22 +619,22 @@ public class UpdatePriceQuantityService
                     {
                         if (dbValue < currentXmlValue)
                         {
-                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Quantity = currentXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
 
                         }
                         else
                         {
-                            var productToUpdate = _dbContextTestGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Quantity = currentXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{currentTableDbColumnToUpdate} decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -629,11 +642,11 @@ public class UpdatePriceQuantityService
                 catch (Exception)
                 {
 
-                    stateMessages.Add(($"Error occurred while {currentTableDbColumnToUpdate} of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
         }
-        _dbContextTestGamma.SaveChanges();
+        _dbContextGamma.SaveChanges();
     }
 
 
