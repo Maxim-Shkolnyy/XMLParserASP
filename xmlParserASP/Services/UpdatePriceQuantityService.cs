@@ -126,6 +126,10 @@ public class UpdatePriceQuantityService
             {
                 GetGammaQuantityXmlValues();
             }
+            else if (suppName == "Kanlux")
+            {
+                GetXlValues();
+            }
             else
             {
                 GetXmlValues();
@@ -295,6 +299,32 @@ public class UpdatePriceQuantityService
                 }
             }
 
+        }
+    }
+
+    private void GetXlValues()
+    {
+        using (var vb = new XLWorkbook(_supplierXmlSetting.Path))
+        {
+            var vs = vb.Worksheet(1);
+
+            string model = null;
+            string priceOrQuantityColumn = null;
+            xmlModelPriceList.Clear();
+
+            foreach (var row in vs.RowsUsed())
+            {
+                model = row.Cell(1).Value.ToString() ;
+
+                if (!xmlModelPriceList.ContainsKey(model))
+                {
+                    xmlModelPriceList.Add(model, priceOrQuantityColumn);
+                }
+                else
+                {
+                    stateMessages.Add(($"Duplicate model in excel file {suppName} {model}", "red"));
+                }
+            }
         }
     }
 
@@ -601,7 +631,6 @@ public class UpdatePriceQuantityService
                                 productToUpdate.Price = normalizedXmlValue;
                                 stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ price increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
-
                         }
                         else
                         {
@@ -685,7 +714,6 @@ public class UpdatePriceQuantityService
                 }
                 catch (Exception)
                 {
-
                     stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
@@ -694,14 +722,14 @@ public class UpdatePriceQuantityService
     }
 
 
-    public async Task<XDocument> LoadAndParseXmlAsync(string url)
-    {
-        using (var client = new HttpClient())
-        {
-            var xmlString = await client.GetStringAsync(url);
-            return XDocument.Parse(xmlString);
-        }
-    }
+    //public async Task<XDocument> LoadAndParseXmlAsync(string url)
+    //{
+    //    using (var client = new HttpClient())
+    //    {
+    //        var xmlString = await client.GetStringAsync(url);
+    //        return XDocument.Parse(xmlString);
+    //    }
+    //}
 
     public string CutString(string input)
     {
