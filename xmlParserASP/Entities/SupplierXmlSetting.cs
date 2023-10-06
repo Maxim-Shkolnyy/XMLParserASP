@@ -20,16 +20,10 @@ public class SupplierXmlSetting
     public Supplier? Supplier { get; set; }
 
     public string? Path { get; set; }
-
-
     public int? StartGammaIDFrom { get; set; }
-
     public string? MainProductNode { get; set; }
-
     public string? ProductNode { get; set; }
-
     public string? paramAttribute { get; set; }
-
     public string? ModelNode { get; set; }
     public string? ModelXlColumn { get; set; }
 

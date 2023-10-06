@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Globalization;
+using System.Net;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
@@ -87,7 +88,7 @@ public class UpdatePriceQuantityService
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
                 .ToListAsync();
 
-            
+
 
             List<(string, string, string, string)> dbCodeModelPriceList = new();
 
@@ -100,8 +101,8 @@ public class UpdatePriceQuantityService
                 {
                     if (tableDbColumnToUpdate == "Price")
                     {
-                        priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture); 
-                        productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m=>m.Name).FirstOrDefault();
+                        priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture);
+                        productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
                     }
                     else
                     {
@@ -135,7 +136,6 @@ public class UpdatePriceQuantityService
                 GetXmlValues();
             }
 
-
             if (currentTableDbColumnToUpdate == "Price")
             {
                 UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
@@ -157,7 +157,7 @@ public class UpdatePriceQuantityService
 
         string fileExtension = Path.GetExtension(suppSettings.Path);
         string priceOrQuantityNode = "";
-        
+
         xmlModelPriceList.Clear();
 
         //if (fileExtension == ".xml")
@@ -302,31 +302,121 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private void GetXlValues()
+    //private void GetXlValues()
+    //{
+    //    DirectoryInfo directory = new DirectoryInfo(_supplierXmlSetting.Path);
+
+    //    FileInfo[] files = directory.GetFiles();
+
+    //    FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
+
+    //    if (newestfile != null)
+    //    {
+    //        using (var vb = new XLWorkbook(newestfile.FullName))
+    //        {
+    //            var vs = vb.Worksheet(1);
+
+    //            string? model = null;
+    //            string? priceOrQuantityColumn = null;
+    //            xmlModelPriceList.Clear();
+
+    //            foreach (var row in vs.RowsUsed())
+    //            {
+    //                model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+    //                if (string.IsNullOrEmpty(model))
+    //                {
+    //                    continue;
+    //                }
+
+    //                priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
+
+    //                if (!xmlModelPriceList.ContainsKey(model))
+    //                {
+    //                    xmlModelPriceList.Add(model, priceOrQuantityColumn);
+    //                }
+    //                else
+    //                {
+    //                    stateMessages.Add(($"Duplicate model in excel file {suppName} {model}", "red"));
+    //                }
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        stateMessages.Add(($"Excel file {suppName} not found", "red"));
+    //    }
+    //}
+
+    private void GetXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFolderPath)
     {
-        using (var vb = new XLWorkbook(_supplierXmlSetting.Path))
+        // З'єднання з FTP для отримання списку файлів
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{remoteFolderPath}"));
+        request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+        request.Method = WebRequestMethods.Ftp.ListDirectory;
+
+        FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+        Stream responseStream = response.GetResponseStream();
+        StreamReader reader = new StreamReader(responseStream);
+
+        string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+        if (files.Length > 0)
         {
-            var vs = vb.Worksheet(1);
+            string? newestFileName = files
+                .Where(f => f.EndsWith(".xls", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(f => f).FirstOrDefault();
 
-            string model = null;
-            string priceOrQuantityColumn = null;
-            xmlModelPriceList.Clear();
-
-            foreach (var row in vs.RowsUsed())
+            if (!string.IsNullOrEmpty(newestFileName))
             {
-                model = row.Cell(1).Value.ToString() ;
+                // Завантаження найновішого файлу
+                WebClient ftpClient = new WebClient();
+                ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+                ftpClient.DownloadFile($"ftp://{ftpHost}/{remoteFolderPath}/{newestFileName}", newestFileName);
 
-                if (!xmlModelPriceList.ContainsKey(model))
+                // Обробка файлу Excel
+                using (var vb = new XLWorkbook(newestFileName))
                 {
-                    xmlModelPriceList.Add(model, priceOrQuantityColumn);
+                    var vs = vb.Worksheet(1);
+
+                    string? model = null;
+                    string? priceOrQuantityColumn = null;
+                    xmlModelPriceList.Clear();
+
+                    foreach (var row in vs.RowsUsed())
+                    {
+                        model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+                        if (string.IsNullOrEmpty(model))
+                        {
+                            continue;
+                        }
+
+                        priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
+
+                        if (!xmlModelPriceList.ContainsKey(model))
+                        {
+                            xmlModelPriceList.Add(model, priceOrQuantityColumn);
+                        }
+                        else
+                        {
+                            stateMessages.Add(($"Duplicate model in excel file {suppName} {model}", "red"));
+                        }
+                    }
                 }
-                else
-                {
-                    stateMessages.Add(($"Duplicate model in excel file {suppName} {model}", "red"));
-                }
+
+                // Видаляємо завантажений файл
+                File.Delete(newestFileName);
+            }
+            else
+            {
+                stateMessages.Add(($"No Excel files found in {remoteFolderPath}", "red"));
             }
         }
+        else
+        {
+            stateMessages.Add(($"No files found in {remoteFolderPath}", "red"));
+        }
     }
+
 
     private void GetGammaQuantityXmlValues()
     {
