@@ -153,7 +153,7 @@ public class UpdatePriceQuantityService
 
         string fileExtension = Path.GetExtension(suppSettings.Path);
         string priceOrQuantityNode = "";
-        string model = "";
+        
         xmlModelPriceList.Clear();
 
         //if (fileExtension == ".xml")
@@ -175,9 +175,16 @@ public class UpdatePriceQuantityService
             {
                 foreach (XmlNode item in itemsList)
                 {
+                    string? model = null;
+
                     if (suppSettings.paramAttribute == null)
                     {
                         model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+
+                        if (String.IsNullOrEmpty(model))
+                        {
+                            stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.ModelNode)} NOT FOUND in xml", "red"));
+                        }
                     }
                     else
                     {
@@ -185,9 +192,16 @@ public class UpdatePriceQuantityService
                         {
                             if (item.SelectSingleNode(suppSettings.ModelNode) == null)
                             {
+                                stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.ModelNode)} NOT FOUND in xml", "red"));
                                 continue;
                             }
+
                             model = item.Attributes["id"]?.Value;
+
+                            if (String.IsNullOrEmpty(model))
+                            {
+                                stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.ModelNode)} NOT FOUND in xml", "red"));
+                            }
                         }
                         else
                         {
@@ -198,10 +212,18 @@ public class UpdatePriceQuantityService
                     if (currentTableDbColumnToUpdate == "Price")
                     {
                         priceOrQuantityNode = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
+                        if (priceOrQuantityNode == null)
+                        {
+                            stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.PriceNode)} NOT FOUND in xml", "red"));
+                        }
                     }
                     else
                     {
                         priceOrQuantityNode = item.SelectSingleNode(suppSettings.QuantityNode)?.InnerText ?? "";
+                        if (priceOrQuantityNode == null)
+                        {
+                            stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.QuantityNode)} NOT FOUND in xml", "red"));
+                        }
                     }
 
                     if (!xmlModelPriceList.ContainsKey(model))
@@ -215,19 +237,32 @@ public class UpdatePriceQuantityService
         {
             foreach (XmlNode item in itemsList)
             {
+                string? model = null;
+
                 if (suppSettings.paramAttribute == null)
                 {
                     if (item.SelectSingleNode(suppSettings.ModelNode) == null)
                     {
+                        stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.ModelNode)} NOT FOUND in xml", "red"));
                         continue;
                     }
-                    model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
+
+                    model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText ?? "";
+
+                    if (String.IsNullOrEmpty(model))
+                    {
+                        stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.ModelNode)} is Empty or Missing in xml", "red"));
+                    }
                 }
                 else
                 {
                     if (item.Attributes["id"] != null)
                     {
-                        model = item.Attributes["id"]?.Value;
+                        model = item.Attributes["id"]?.Value ?? "";
+                        if (String.IsNullOrEmpty(model))
+                        {
+                            stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.ModelNode)} is Empty or Missing in xml", "red"));
+                        }
                     }
                     else
                     {
@@ -259,6 +294,7 @@ public class UpdatePriceQuantityService
                     xmlModelPriceList.Add(model, priceOrQuantityNode);
                 }
             }
+
         }
     }
 
