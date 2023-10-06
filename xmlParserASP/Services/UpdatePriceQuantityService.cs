@@ -243,7 +243,7 @@ public class UpdatePriceQuantityService
                 {
                     if (item.SelectSingleNode(suppSettings.ModelNode) == null)
                     {
-                        stateMessages.Add(($"{suppName}_{item.SelectSingleNode(suppSettings.ModelNode)} NOT FOUND in xml", "red"));
+                        //stateMessages.Add(($"{suppName}_{suppSettings.ModelNode} NOT FOUND in xml1", "red"));
                         continue;
                     }
 
@@ -620,6 +620,10 @@ public class UpdatePriceQuantityService
 
                     stateMessages.Add(($"Error occurred while price of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
+            }
+            else
+            {
+                stateMessages.Add(($"{suppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item4}_ NOT FOUND in xml", "red"));
             }
         }
         _dbContextGamma.SaveChanges();
