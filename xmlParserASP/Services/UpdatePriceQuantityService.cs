@@ -35,7 +35,7 @@ public class UpdatePriceQuantityService
         _dbContextGamma=dbContextGamma;
     }
 
-    public async Task<List<(string, string)>> UpdatePriceAsync(List<int> settingsId, string tableDbColumnToUpdate)
+    public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId, string tableDbColumnToUpdate)
     {
         currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
@@ -88,8 +88,6 @@ public class UpdatePriceQuantityService
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
                 .ToListAsync();
 
-
-
             List<(string, string, string, string)> dbCodeModelPriceList = new();
 
             string priceQuantityValue = "";
@@ -129,7 +127,32 @@ public class UpdatePriceQuantityService
             }
             else if (suppName == "Kanlux")
             {
-                GetXlValues();
+                int modelColumnNumber;
+                if (!int.TryParse(suppSettings.ModelXlColumn, out modelColumnNumber))
+                {
+                    stateMessages.Add(($"{suppName} model column number in excel file was not converted succsefull, model column set to 1", "red"));
+                    modelColumnNumber = 1;
+                }
+
+                int priceColumnNumber;
+                if (!int.TryParse(suppSettings.PicturePriceQuantityXlColumn, out priceColumnNumber))
+                {
+                    stateMessages.Add(($"{suppName} price or quantity column number in excel file was not converted succsefull, price or quantity column set to 2", "red"));
+                    priceColumnNumber = 2;
+                }
+
+
+                if (currentTableDbColumnToUpdate == "Price" & suppSettings.SettingName == "Kanlux_price_XL")
+                {
+                    GetExcelValues("", "", "", suppSettings.Path, modelColumnNumber, priceColumnNumber);
+                }
+
+                if(currentTableDbColumnToUpdate == "Quantity" & suppSettings.SettingName == "Kanlux_qty_XL")
+                {
+                    GetExcelValues("", "", "", suppSettings.Path, modelColumnNumber, priceColumnNumber);
+                }
+
+
             }
             else
             {
@@ -302,95 +325,41 @@ public class UpdatePriceQuantityService
         }
     }
 
-    //private void GetXlValues()
-    //{
-    //    DirectoryInfo directory = new DirectoryInfo(_supplierXmlSetting.Path);
-
-    //    FileInfo[] files = directory.GetFiles();
-
-    //    FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
-
-    //    if (newestfile != null)
-    //    {
-    //        using (var vb = new XLWorkbook(newestfile.FullName))
-    //        {
-    //            var vs = vb.Worksheet(1);
-
-    //            string? model = null;
-    //            string? priceOrQuantityColumn = null;
-    //            xmlModelPriceList.Clear();
-
-    //            foreach (var row in vs.RowsUsed())
-    //            {
-    //                model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
-    //                if (string.IsNullOrEmpty(model))
-    //                {
-    //                    continue;
-    //                }
-
-    //                priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
-
-    //                if (!xmlModelPriceList.ContainsKey(model))
-    //                {
-    //                    xmlModelPriceList.Add(model, priceOrQuantityColumn);
-    //                }
-    //                else
-    //                {
-    //                    stateMessages.Add(($"Duplicate model in excel file {suppName} {model}", "red"));
-    //                }
-    //            }
-    //        }
-    //    }
-    //    else
-    //    {
-    //        stateMessages.Add(($"Excel file {suppName} not found", "red"));
-    //    }
-    //}
-
-    private void GetXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFolderPath)
+    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn)
     {
-        // З'єднання з FTP для отримання списку файлів
-        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{remoteFolderPath}"));
-        request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-        request.Method = WebRequestMethods.Ftp.ListDirectory;
-
-        FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-        Stream responseStream = response.GetResponseStream();
-        StreamReader reader = new StreamReader(responseStream);
-
-        string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-        if (files.Length > 0)
+        if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
-            string? newestFileName = files
-                .Where(f => f.EndsWith(".xls", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
-                .OrderByDescending(f => f).FirstOrDefault();
+            //DirectoryInfo directory = new DirectoryInfo(_supplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
 
-            if (!string.IsNullOrEmpty(newestFileName))
+            if (remoteFilePath != null)
             {
-                // Завантаження найновішого файлу
-                WebClient ftpClient = new WebClient();
-                ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-                ftpClient.DownloadFile($"ftp://{ftpHost}/{remoteFolderPath}/{newestFileName}", newestFileName);
+                // Завантаження файлу з URL
+                string localFilePath = Path.GetTempFileName();
+                localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
+                string filePath = Uri.EscapeUriString(remoteFilePath);
+                WebClient client = new();
+                client.DownloadFile(filePath, localFilePath);
 
-                // Обробка файлу Excel
-                using (var vb = new XLWorkbook(newestFileName))
+                using (var vb = new XLWorkbook(localFilePath))
                 {
-                    var vs = vb.Worksheet(1);
+                    var worksheet = vb.Worksheet(1);
+
+                    //int modelColumnNumber = GetColumnIndex(worksheet, 1, modelColumn);
+                    //int priceQtyColumnNumber = GetColumnIndex(worksheet, 1, priceQuantityColumn);
 
                     string? model = null;
                     string? priceOrQuantityColumn = null;
                     xmlModelPriceList.Clear();
 
-                    foreach (var row in vs.RowsUsed())
+                    foreach (var row in worksheet.RowsUsed())
                     {
-                        model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+                        model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
                         if (string.IsNullOrEmpty(model))
                         {
                             continue;
                         }
 
-                        priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
+                        priceOrQuantityColumn = row.Cell(priceQuantityColumn).Value.ToString();
 
                         if (!xmlModelPriceList.ContainsKey(model))
                         {
@@ -402,19 +371,83 @@ public class UpdatePriceQuantityService
                         }
                     }
                 }
-
-                // Видаляємо завантажений файл
-                File.Delete(newestFileName);
             }
             else
             {
-                stateMessages.Add(($"No Excel files found in {remoteFolderPath}", "red"));
+                stateMessages.Add(($"Excel file {suppName} not found", "red"));
             }
+
         }
         else
         {
-            stateMessages.Add(($"No files found in {remoteFolderPath}", "red"));
+            // З'єднання з FTP для отримання списку файлів
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{remoteFilePath}"));
+            request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+            request.Method = WebRequestMethods.Ftp.ListDirectory;
+
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(responseStream);
+
+            string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            if (files.Length > 0)
+            {
+                string? newestFileName = files
+                    .Where(f => f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(f => f).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(newestFileName))
+                {
+                    // Завантаження найновішого файлу
+                    WebClient ftpClient = new WebClient();
+                    ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+                    ftpClient.DownloadFile($"ftp://{ftpHost}/{remoteFilePath}/{newestFileName}", newestFileName);
+
+                    // Обробка файлу Excel
+                    using (var vb = new XLWorkbook(newestFileName))
+                    {
+                        var vs = vb.Worksheet(1);
+
+                        string? model = null;
+                        string? priceOrQuantityColumn = null;
+                        xmlModelPriceList.Clear();
+
+                        foreach (var row in vs.RowsUsed())
+                        {
+                            model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+                            if (string.IsNullOrEmpty(model))
+                            {
+                                continue;
+                            }
+
+                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
+
+                            if (!xmlModelPriceList.ContainsKey(model))
+                            {
+                                xmlModelPriceList.Add(model, priceOrQuantityColumn);
+                            }
+                            else
+                            {
+                                stateMessages.Add(($"Duplicate model in excel file {suppName} {model}", "red"));
+                            }
+                        }
+                    }
+
+                    // Видаляємо завантажений файл
+                    File.Delete(newestFileName);
+                }
+                else
+                {
+                    stateMessages.Add(($"No Excel files found in {remoteFilePath}", "red"));
+                }
+            }
+            else
+            {
+                stateMessages.Add(($"No files found in {remoteFilePath}", "red"));
+            }
         }
+        
     }
 
 
@@ -483,195 +516,7 @@ public class UpdatePriceQuantityService
         }
     }
 
-    //public async Task<List<(string, string)>> UpdateQuantityAsync(List<int> settingsId, string tableDbColumnToUpdate)
-    //{
-    //    List<(string, string)> stateMessages = new();
-
-    //    if (settingsId == null)
-    //    {
-    //        stateMessages.Add(("Setting ID was not passed", "red"));
-    //        return stateMessages;
-    //    }
-
-    //    PropertyInfo whatDbColumnWeNeedUpdate = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
-
-    //    if (whatDbColumnWeNeedUpdate == null)
-    //    {
-    //        stateMessages.Add(("Null or absent model property was passed instead of table column name like 'Price' or 'Quantity'", "red"));
-    //    }
-
-    //    foreach (int id in settingsId)
-    //    {
-    //        #region Получение текущих значений из БД
-
-    //        var suppSettings = await _dbContext.SupplierXmlSettings
-    //            .Where(m => m.SupplierXmlSettingId == id)
-    //            .FirstOrDefaultAsync();
-    //        if (suppSettings == null)
-    //        {
-    //            stateMessages.Add(("Supplier setting was not found in DB", "red"));
-    //            continue;
-    //        }
-
-    //        var suppName = (await _dbContext.Suppliers.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
-
-    //        if (suppName == null)
-    //        {
-    //            stateMessages.Add(("Supplier name was not found in DB", "red"));
-    //            continue;
-    //        }
-
-    //        var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
-    //            .Where(m => m.SupplierId == suppName)
-    //            .Select(m => m.ProductId)
-    //            .ToListAsync();
-
-    //        if (currentSuppProductsList == null)
-    //        {
-    //            stateMessages.Add(($"Supplier {suppName} has no one product in DB", "red"));
-    //            continue;
-    //        }
-
-    //        var products = await _dbContextGamma.OcProducts
-    //            .Where(p => currentSuppProductsList.Contains(p.ProductId))
-    //            .ToListAsync();
-
-    //        string fieldValue = "";
-
-    //        var dbCodeModelPriceList = products.Select(p =>
-    //        {
-    //            try
-    //            {
-    //                fieldValue = whatDbColumnWeNeedUpdate.GetValue(p)?.ToString();
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Debug.WriteLine($"Error processing field {whatDbColumnWeNeedUpdate.Name}, {whatDbColumnWeNeedUpdate.GetValue(p)}: {ex.Message}");
-    //            }
-
-    //            return (p.Sku, p.Model, fieldValue);
-    //        }).ToList();
-
-    //        //var dbCodePriceList = await _dbContextGamma.OcProducts
-    //        //    .Where(p => currentSuppProductsList.Contains(p.ProductId))
-    //        //    .Select(p => new { p.Sku, p.Model, FieldValue = whatDbColumnWeNeedUpdate.GetValue(p).ToString() })
-    //        //    .ToListAsync();
-    //        #endregion
-
-    //        #region Получение значений из XML
-
-
-    //        Dictionary<string, string> xmlModelPriceList = new();
-
-    //        XmlDocument xmlDoc = new();
-
-    //        string fileExtension = Path.GetExtension(suppSettings.Path);
-    //        string price = "";
-    //        string model = "";
-
-
-    //        xmlDoc.Load(suppSettings.Path);
-    //        //if (fileExtension == ".xml")
-    //        //{
-    //        //    xmlDoc.Load(suppSettings.Path);
-    //        //}
-    //        //else
-    //        //{
-    //        //    xmlDoc.LoadXml(suppSettings.Path);
-    //        //}
-
-    //        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSettings.ProductNode);
-
-    //        if (suppSettings.MainProductNode != null)
-    //        {
-    //            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(suppSettings.MainProductNode);
-
-    //            foreach (XmlNode items in parentItemsList)
-    //            {
-    //                foreach (XmlNode item in itemsList)
-    //                {
-    //                    if (suppSettings.paramAttribute == null)
-    //                    {
-    //                        model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
-    //                    }
-    //                    else
-    //                    {
-    //                        if (item.Attributes["id"] != null)
-    //                        {
-    //                            if (item.SelectSingleNode(suppSettings.ModelNode) == null)
-    //                            {
-    //                                continue;
-    //                            }
-    //                            model = item.Attributes["id"]?.Value;
-    //                        }
-    //                        else
-    //                        {
-    //                            continue;
-    //                        }
-    //                    }
-
-    //                    price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
-    //                    if (!xmlModelPriceList.ContainsKey(model))
-    //                    {
-    //                        xmlModelPriceList.Add(model, price);
-    //                    }
-
-    //                }
-    //            }
-    //        }
-    //        else
-    //        {
-    //            foreach (XmlNode item in itemsList)
-    //            {
-    //                if (suppSettings.paramAttribute == null)
-    //                {
-    //                    if (item.SelectSingleNode(suppSettings.ModelNode) == null)
-    //                    {
-    //                        continue;
-    //                    }
-    //                    model = item.SelectSingleNode(suppSettings.ModelNode)?.InnerText;
-    //                }
-    //                else
-    //                {
-    //                    if (item.Attributes["id"] != null)
-    //                    {
-    //                        model = item.Attributes["id"]?.Value;
-    //                    }
-    //                    else
-    //                    {
-    //                        continue;
-    //                    }
-    //                }
-
-    //                if (item.SelectSingleNode(suppSettings.PriceNode) == null)
-    //                {
-
-    //                    continue;
-    //                }
-    //                price = item.SelectSingleNode(suppSettings.PriceNode)?.InnerText ?? "";
-
-    //                if (!xmlModelPriceList.ContainsKey(model))
-    //                {
-    //                    xmlModelPriceList.Add(model, price);
-    //                }
-
-    //                #endregion
-    //            }
-    //        }
-
-
-
-    //        UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
-
-    //        stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "darkgreen"));
-    //    }
-
-    //    return stateMessages;
-    //}
-
-
-
+  
     private void UpdatePrices(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
         foreach (var dbModel in dbCodeModelPriceList)
@@ -812,15 +657,6 @@ public class UpdatePriceQuantityService
     }
 
 
-    //public async Task<XDocument> LoadAndParseXmlAsync(string url)
-    //{
-    //    using (var client = new HttpClient())
-    //    {
-    //        var xmlString = await client.GetStringAsync(url);
-    //        return XDocument.Parse(xmlString);
-    //    }
-    //}
-
     public string CutString(string input)
     {
         const int maxLength = 60;
@@ -833,5 +669,20 @@ public class UpdatePriceQuantityService
         {
             return input.PadRight(maxLength);
         }
+    }
+
+    private int GetColumnIndex(IXLWorksheet worksheet, int rowWithNames, string columnName)
+    {
+        if (rowWithNames == null)
+            rowWithNames = 1;
+
+        int columnIndex = 1;
+
+        while (worksheet.Cell(rowWithNames, columnIndex).Value.ToString() != columnName)
+        {
+            columnIndex++;
+        }
+
+        return columnIndex;
     }
 }

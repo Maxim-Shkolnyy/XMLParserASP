@@ -50,7 +50,7 @@ public class UpdatePriceQuantityController : Controller
         {
             try
             {
-                var updateAllPrices = await _updatePriceQuantityService.UpdatePriceAsync(PriceList, "Price");
+                var updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(PriceList, "Price");
                 ViewBag.UpdatePriceResult = updateAllPrices;
 
             }
@@ -66,7 +66,7 @@ public class UpdatePriceQuantityController : Controller
         {
             try
             {
-                var updateQuantity = await _updatePriceQuantityService.UpdatePriceAsync(QuantityList, "Quantity");
+                var updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(QuantityList, "Quantity");
                 ViewBag.UpdateQuantityResult = updateQuantity;
                 
 
