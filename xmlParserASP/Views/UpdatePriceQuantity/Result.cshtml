@@ -1,14 +1,19 @@
-﻿@model PriceQuantityViewModel
+﻿@* @model PriceQuantityViewModel *@
 
 <h1> Result of prices and quantity update</h1>
 <h2>Prices</h2>
 
 @{
-    if (ViewBag.Error != null)
-    {
-        <div class="alert-danger">@ViewBag.Error</div>
+   @if (ViewBag.PriceError != null)
+{
+    <div style="color: red">@ViewBag.PriceError</div>
+}
 
-    }
+@if (ViewBag.QuantityError != null)
+{
+    <div style="color: red">@ViewBag.QuantityError</div>
+}
+
 
     var prices = ViewBag.UpdatePriceResult;
     var quantity = ViewBag.UpdateQuantityResult;

@@ -46,19 +46,21 @@ public class UpdatePriceQuantityController : Controller
             return View("Index", mySettingList);
         }
 
+        List<(string, string)> updateAllPrices = new();
+        List<(string, string)> updateQuantity = new();
+
         if (PriceList != null && PriceList.Any())
         {
             try
             {
-                var updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(PriceList, "Price");
-                ViewBag.UpdatePriceResult = updateAllPrices;
+                updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(PriceList, "Price");
 
+                ViewBag.UpdatePriceResult = updateAllPrices;
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Price was not updated!!! " + ex.Message);
-                //_priceQuantityViewModel.ErrorMessage = "Price was not updated!!!" + ex.Message;
-                ViewBag.Error = "Price was not updated!!!" + ex.Message;
+                ViewBag.PriceError = "Price was not updated!!!" + ex.Message;
             }
         }
 
@@ -66,18 +68,17 @@ public class UpdatePriceQuantityController : Controller
         {
             try
             {
-                var updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(QuantityList, "Quantity");
+                updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(QuantityList, "Quantity");
                 ViewBag.UpdateQuantityResult = updateQuantity;
-                
-
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Price was not updated!!!" + ex.Message);
-                ViewBag.Error = "Quantity was not updated!!! " + ex.Message;
+                ModelState.AddModelError("", "Quantity was not updated!!! " + ex.Message);
+                ViewBag.QuantityError = "Quantity was not updated!!! " + ex.Message;
             }
         }
 
         return View();
+
     }
 }

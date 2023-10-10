@@ -39,18 +39,14 @@ public class UpdatePriceQuantityService
     {
         currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
+        stateMessages.Clear();
+
+
         if (settingsId == null)
         {
             stateMessages.Add(("Setting ID was not passed", "red"));
             return stateMessages;
         }
-
-        //PropertyInfo whatDbColumnWeNeedUpdate = typeof(OcProduct).GetProperty(tableDbColumnToUpdate);
-
-        //if (whatDbColumnWeNeedUpdate == null)
-        //{
-        //    stateMessages.Add(("Null or absent model property was passed instead of table column name like 'Price' or 'Quantity'", "red"));
-        //}
 
         foreach (int id in settingsId)
         {
@@ -97,7 +93,7 @@ public class UpdatePriceQuantityService
             {
                 try
                 {
-                    if (tableDbColumnToUpdate == "Price")
+                    if (currentTableDbColumnToUpdate == "Price")
                     {
                         priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture);
                         productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
@@ -107,7 +103,6 @@ public class UpdatePriceQuantityService
                         priceQuantityValue = product.Quantity.ToString();
                         productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -116,10 +111,10 @@ public class UpdatePriceQuantityService
 
                 dbCodeModelPriceList.Add((product.Sku, product.Model, priceQuantityValue, productName));
             }
-
-
-
             #endregion
+
+
+
 
             if ((suppName == "Gamma" || suppName == "Gamma-K") & currentTableDbColumnToUpdate == "Quantity")
             {
@@ -147,7 +142,7 @@ public class UpdatePriceQuantityService
                     GetExcelValues("", "", "", suppSettings.Path, modelColumnNumber, priceColumnNumber);
                 }
 
-                if(currentTableDbColumnToUpdate == "Quantity" & suppSettings.SettingName == "Kanlux_qty_XL")
+                if (currentTableDbColumnToUpdate == "Quantity" & suppSettings.SettingName == "Kanlux_qty_XL")
                 {
                     GetExcelValues("", "", "", suppSettings.Path, modelColumnNumber, priceColumnNumber);
                 }
@@ -166,7 +161,7 @@ public class UpdatePriceQuantityService
                 UpdateQuantity(dbCodeModelPriceList, xmlModelPriceList);
             }
 
-            stateMessages.Add(($"{suppName} {tableDbColumnToUpdate} updated successful", "green"));
+            stateMessages.Add(($"{suppName} {currentTableDbColumnToUpdate} updated successful", "green"));
 
         }
         return stateMessages;
@@ -445,7 +440,7 @@ public class UpdatePriceQuantityService
                 stateMessages.Add(($"No files found in {remoteFilePath}", "red"));
             }
         }
-        
+
     }
 
 
@@ -514,7 +509,7 @@ public class UpdatePriceQuantityService
         }
     }
 
-  
+
     private void UpdatePrices(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
         foreach (var dbModel in dbCodeModelPriceList)
