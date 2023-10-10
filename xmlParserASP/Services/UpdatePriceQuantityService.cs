@@ -151,8 +151,6 @@ public class UpdatePriceQuantityService
                 {
                     GetExcelValues("", "", "", suppSettings.Path, modelColumnNumber, priceColumnNumber);
                 }
-
-
             }
             else
             {

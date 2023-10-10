@@ -8,7 +8,7 @@
 }
 
 @{
-    var sortedSetteings = Model.SupplierXmlSettings.OrderBy(s => s.SettingName).ToList(); 
+    var sortedSetteings = Model.SupplierXmlSettings.OrderBy(s => s.SettingName).ToList();
 }
 
 <form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">
@@ -22,19 +22,33 @@
         </thead>
         <tbody>
             @for (int i = 0; i < sortedSetteings.Count; i++)
-        {
-            <tr>
+            {
+                <tr>
                     <td>
                         @sortedSetteings[i].SettingName
                     </td>
                     <td>
-                        <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId">
+                        @if (sortedSetteings[i].SettingName != "Kanlux_qty_XL")
+                        {
+                            <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId" checked>
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId" unchecked>
+                        }
                     </td>
                     <td>
-                        <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId">
+                        @if (sortedSetteings[i].SettingName != "Kanlux_price_XL")
+                        {
+                            <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId" checked>
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId" unchecked>
+                        }
                     </td>
                 </tr>
-        }
+            }
         </tbody>
         <tfoot>
             <tr>
