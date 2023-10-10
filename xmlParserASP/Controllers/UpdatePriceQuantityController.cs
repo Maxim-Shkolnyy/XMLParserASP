@@ -34,6 +34,10 @@ public class UpdatePriceQuantityController : Controller
     [HttpPost]
     public async Task<IActionResult> Result(List<int>? PriceList, List<int>? QuantityList)
     {
+        List<(string, string)> updateAllPrices = new();
+        List<(string, string)> updateQuantity = new();
+
+
         if (!ModelState.IsValid || PriceList.Count + QuantityList.Count == 0)
         {
             var mySettingList = new PriceQuantityViewModel
@@ -46,8 +50,7 @@ public class UpdatePriceQuantityController : Controller
             return View("Index", mySettingList);
         }
 
-        List<(string, string)> updateAllPrices = new();
-        List<(string, string)> updateQuantity = new();
+        
 
         if (PriceList != null && PriceList.Any())
         {

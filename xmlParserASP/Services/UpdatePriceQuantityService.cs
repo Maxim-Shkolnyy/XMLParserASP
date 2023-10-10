@@ -39,7 +39,7 @@ public class UpdatePriceQuantityService
     {
         currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
-        stateMessages.Clear();
+        //stateMessages.Clear();
 
 
         if (settingsId == null)
