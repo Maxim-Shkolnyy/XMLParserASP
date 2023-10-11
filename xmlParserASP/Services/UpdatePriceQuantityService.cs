@@ -23,7 +23,7 @@ public class UpdatePriceQuantityService
     private readonly GammaContext _dbContextGamma;
     private SupplierXmlSetting? suppSettings;
     private string? suppName;
-    private List<(string, string)> stateMessages = new();
+    private List<(string, string)>? stateMessages = null;
     private string currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
 
@@ -39,8 +39,8 @@ public class UpdatePriceQuantityService
     {
         currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
-        //stateMessages.Clear();
-
+        stateMessages = new List<(string, string)>();
+        
 
         if (settingsId == null)
         {
@@ -650,7 +650,7 @@ public class UpdatePriceQuantityService
     }
 
 
-    public string CutString(string input)
+    private string CutString(string input)
     {
         const int maxLength = 60;
 

@@ -13,6 +13,8 @@ public class UpdatePriceQuantityController : Controller
     private readonly SupplierXmlSetting _setting;
     private readonly UpdatePriceQuantityService _updatePriceQuantityService;
     private readonly PriceQuantityViewModel _priceQuantityViewModel;
+    private List<(string, string)>? updateAllPrices = new();
+    private List<(string, string)>? updateQuantity = new();
     public UpdatePriceQuantityController(MyDBContext db, SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
     {
         _db = db;
@@ -34,10 +36,6 @@ public class UpdatePriceQuantityController : Controller
     [HttpPost]
     public async Task<IActionResult> Result(List<int>? PriceList, List<int>? QuantityList)
     {
-        List<(string, string)> updateAllPrices = new();
-        List<(string, string)> updateQuantity = new();
-
-
         if (!ModelState.IsValid || PriceList.Count + QuantityList.Count == 0)
         {
             var mySettingList = new PriceQuantityViewModel
@@ -49,7 +47,6 @@ public class UpdatePriceQuantityController : Controller
 
             return View("Index", mySettingList);
         }
-
         
 
         if (PriceList != null && PriceList.Any())
@@ -72,6 +69,7 @@ public class UpdatePriceQuantityController : Controller
             try
             {
                 updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(QuantityList, "Quantity");
+
                 ViewBag.UpdateQuantityResult = updateQuantity;
             }
             catch (Exception ex)
