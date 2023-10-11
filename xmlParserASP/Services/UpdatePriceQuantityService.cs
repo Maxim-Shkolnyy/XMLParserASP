@@ -23,7 +23,7 @@ public class UpdatePriceQuantityService
     private readonly GammaContext _dbContextGamma;
     private SupplierXmlSetting? suppSettings;
     private string? suppName;
-    private List<(string, string)>? stateMessages = null;
+    private List<(string, string)>? stateMessages;
     private string currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
 
