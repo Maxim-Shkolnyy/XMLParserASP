@@ -125,14 +125,14 @@ public class UpdatePriceQuantityService
                 int modelColumnNumber;
                 if (!int.TryParse(suppSettings.ModelXlColumn, out modelColumnNumber))
                 {
-                    stateMessages.Add(($"{suppName} model column number in excel file was not converted succsefull, model column set to 1", "red"));
+                    stateMessages.Add(($"{suppName} model column number in excel file was not converted successful, model column set to 1", "red"));
                     modelColumnNumber = 1;
                 }
 
                 int priceColumnNumber;
                 if (!int.TryParse(suppSettings.PicturePriceQuantityXlColumn, out priceColumnNumber))
                 {
-                    stateMessages.Add(($"{suppName} price or quantity column number in excel file was not converted succsefull, price or quantity column set to 2", "red"));
+                    stateMessages.Add(($"{suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2", "red"));
                     priceColumnNumber = 2;
                 }
 

@@ -498,6 +498,9 @@ public partial class GammaContext : DbContext
 
     public virtual DbSet<ProductOrder> ProductOrders { get; set; }
 
+    public virtual DbSet<ProductLimitQuantity> ProductLimitQuantities { get; set; }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySQL("Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;");
@@ -548,6 +551,20 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.ZoneId)
                 .HasColumnType("int(11)")
                 .HasColumnName("zone_id");
+        });
+
+        modelBuilder.Entity<ProductLimitQuantity>(entity =>
+        {
+            entity.HasKey(e => e.ProductId).HasName("PRIMARY");
+
+            entity.ToTable("product_limit_quantity");
+
+            entity.Property(e => e.MinQuantity)
+                .HasColumnType("int(11)")
+                .HasColumnName("min_quantity");
+            entity.Property(e => e.MaxQuantity)
+                .HasColumnType("int(11)")
+                .HasColumnName("max_quantity");
         });
 
         modelBuilder.Entity<OcAddressSimpleField>(entity =>
