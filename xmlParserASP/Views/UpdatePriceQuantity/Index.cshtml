@@ -28,23 +28,32 @@
                         @sortedSetteings[i].SettingName
                     </td>
                     <td>
-                        @if (sortedSetteings[i].SettingName != "Kanlux_qty_XL")
-                        {
-                            <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId" checked>
-                        }
-                        else
+                        @if (sortedSetteings[i].SettingName == "Kanlux_qty_XL")
                         {
                             <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId" unchecked>
                         }
-                    </td>
-                    <td>
-                        @if (sortedSetteings[i].SettingName != "Kanlux_price_XL")
+                        else if (sortedSetteings[i].SettingName == "Y-test_xml")
                         {
-                            <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId" checked>
+                            <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId" unchecked>
                         }
                         else
                         {
+                            <input type="checkbox" name="PriceList" value="@sortedSetteings[i].SupplierXmlSettingId" checked>
+                        }
+                    </td>
+                    <td>
+                        @if (sortedSetteings[i].SettingName == "Kanlux_price_XL")
+                        {
+                           
                             <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId" unchecked>
+                        }
+                        else if (sortedSetteings[i].SettingName == "Y-test_xml")
+                        {
+                            <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId" unchecked>
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="QuantityList" value="@sortedSetteings[i].SupplierXmlSettingId" checked>
                         }
                     </td>
                 </tr>
