@@ -500,6 +500,8 @@ public partial class GammaContext : DbContext
 
     public virtual DbSet<ProductLimitQuantity> ProductLimitQuantities { get; set; }
 
+    public virtual DbSet<ProductSetDiscount> ProductSetDiscounts { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -556,6 +558,20 @@ public partial class GammaContext : DbContext
         modelBuilder.Entity<ProductLimitQuantity>(entity =>
         {
             entity.HasKey(e => e.ProductId).HasName("PRIMARY");
+
+            entity.ToTable("product_limit_quantity");
+
+            entity.Property(e => e.MinQuantity)
+                .HasColumnType("int(11)")
+                .HasColumnName("min_quantity");
+            entity.Property(e => e.MaxQuantity)
+                .HasColumnType("int(11)")
+                .HasColumnName("max_quantity");
+        });
+
+        modelBuilder.Entity<ProductSetDiscount>(entity =>
+        {
+            entity.HasKey(e => e.product_id).HasName("PRIMARY");
 
             entity.ToTable("product_limit_quantity");
 
