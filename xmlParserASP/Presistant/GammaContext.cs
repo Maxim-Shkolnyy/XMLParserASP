@@ -7620,6 +7620,9 @@ public partial class GammaContext : DbContext
         modelBuilder.Entity<ProductLimitQuantity>(entity =>
         {
             entity.HasKey(e => e.ProductId).HasName("PRIMARY");
+            entity.Property(e => e.ProductId)
+            .HasColumnType("int(11)")
+            .HasColumnName("product_id"); 
 
             entity.ToTable("product_limit_quantity");
 
@@ -7642,10 +7645,10 @@ public partial class GammaContext : DbContext
                 .HasColumnName("percent_discount");
             entity.Property(e => e.InGrnDiscount)
                 .HasColumnType("decimal(11)")
-                .HasColumnName("in_grn_discount");
-            entity.Property(e => e.TotalDiscount)
-                .HasColumnType("decimal(11)")
-                .HasColumnName("total_discount");
+               .HasColumnName("in_grn_discount");
+            //entity.Property(e => e.TotalDiscount)
+            //    .HasColumnType("decimal(11)")
+            //    .HasColumnName("total_discount");
         });
 
         OnModelCreatingPartial(modelBuilder);

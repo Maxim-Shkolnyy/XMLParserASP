@@ -5,6 +5,6 @@
         public int product_id { get; set; }
         public decimal? PercentDiscount { get; set; }
         public decimal? InGrnDiscount { get; set; }
-        public decimal? TotalDiscount { get; set; }
+        //public decimal? TotalDiscount { get; set; }
     }
 }
