@@ -553,35 +553,7 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.ZoneId)
                 .HasColumnType("int(11)")
                 .HasColumnName("zone_id");
-        });
-
-        modelBuilder.Entity<ProductLimitQuantity>(entity =>
-        {
-            entity.HasKey(e => e.ProductId).HasName("PRIMARY");
-
-            entity.ToTable("product_limit_quantity");
-
-            entity.Property(e => e.MinQuantity)
-                .HasColumnType("int(11)")
-                .HasColumnName("min_quantity");
-            entity.Property(e => e.MaxQuantity)
-                .HasColumnType("int(11)")
-                .HasColumnName("max_quantity");
-        });
-
-        modelBuilder.Entity<ProductSetDiscount>(entity =>
-        {
-            entity.HasKey(e => e.product_id).HasName("PRIMARY");
-
-            entity.ToTable("product_limit_quantity");
-
-            entity.Property(e => e.MinQuantity)
-                .HasColumnType("int(11)")
-                .HasColumnName("min_quantity");
-            entity.Property(e => e.MaxQuantity)
-                .HasColumnType("int(11)")
-                .HasColumnName("max_quantity");
-        });
+        });        
 
         modelBuilder.Entity<OcAddressSimpleField>(entity =>
         {
@@ -7643,6 +7615,37 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.ФИО)
                 .HasMaxLength(32)
                 .HasColumnName("Ф.И.О.");
+        });
+
+        modelBuilder.Entity<ProductLimitQuantity>(entity =>
+        {
+            entity.HasKey(e => e.ProductId).HasName("PRIMARY");
+
+            entity.ToTable("product_limit_quantity");
+
+            entity.Property(e => e.MinQuantity)
+                .HasColumnType("int(11)")
+                .HasColumnName("min_quantity");
+            entity.Property(e => e.MaxQuantity)
+                .HasColumnType("int(11)")
+                .HasColumnName("max_quantity");
+        });
+
+        modelBuilder.Entity<ProductSetDiscount>(entity =>
+        {
+            entity.HasKey(e => e.product_id).HasName("PRIMARY");
+
+            entity.ToTable("product_set_discount");
+
+            entity.Property(e => e.PercentDiscount)
+                .HasColumnType("decimal(11)")
+                .HasColumnName("percent_discount");
+            entity.Property(e => e.InGrnDiscount)
+                .HasColumnType("decimal(11)")
+                .HasColumnName("in_grn_discount");
+            entity.Property(e => e.TotalDiscount)
+                .HasColumnType("decimal(11)")
+                .HasColumnName("total_discount");
         });
 
         OnModelCreatingPartial(modelBuilder);
