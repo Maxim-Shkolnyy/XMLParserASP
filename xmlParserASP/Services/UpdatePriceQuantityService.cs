@@ -19,8 +19,8 @@ public class UpdatePriceQuantityService
 {
     private readonly SupplierXmlSetting _supplierXmlSetting;
     private readonly MyDBContext _dbContext;
-    private readonly TestGammaDBContext _dbContextTestGamma;
     private readonly GammaContext _dbContextGamma;
+    private readonly TestGammaDBContext _dbContextTestGamma;
     private SupplierXmlSetting? suppSettings;
     private string? suppName;
     private List<(string, string)>? stateMessages;
