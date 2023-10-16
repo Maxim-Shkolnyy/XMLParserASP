@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,9 +11,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.Gamma
 {
     [DbContext(typeof(GammaContext))]
-    partial class GammaContextModelSnapshot : ModelSnapshot
+    [Migration("20231016152022_Prduct112")]
+    partial class Prduct112
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,8 +91,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("AddressId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CustomerId" }, "customer_id")
-                        .HasDatabaseName("ix_oc_address_customer_id");
+                    b.HasIndex(new[] { "CustomerId" }, "customer_id");
 
                     b.ToTable("oc_address", (string)null);
                 });
@@ -365,11 +367,9 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("AffiliateLoginId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "Email" }, "email")
-                        .HasDatabaseName("ix_oc_affiliate_login_email");
+                    b.HasIndex(new[] { "Email" }, "email");
 
-                    b.HasIndex(new[] { "Ip" }, "ip")
-                        .HasDatabaseName("ix_oc_affiliate_login_ip");
+                    b.HasIndex(new[] { "Ip" }, "ip");
 
                     b.ToTable("oc_affiliate_login", (string)null);
                 });
@@ -435,17 +435,13 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnType("varchar(128)")
                         .HasColumnName("pointer");
 
-                    b.HasIndex(new[] { "CustomerId" }, "customer_id")
-                        .HasDatabaseName("ix_oc_agoo_signer_customer_id");
+                    b.HasIndex(new[] { "CustomerId" }, "customer_id");
 
-                    b.HasIndex(new[] { "Date" }, "date")
-                        .HasDatabaseName("ix_oc_agoo_signer_date");
+                    b.HasIndex(new[] { "Date" }, "date");
 
-                    b.HasIndex(new[] { "Id" }, "id")
-                        .HasDatabaseName("ix_oc_agoo_signer_id");
+                    b.HasIndex(new[] { "Id" }, "id");
 
-                    b.HasIndex(new[] { "Pointer" }, "pointer")
-                        .HasDatabaseName("ix_oc_agoo_signer_pointer");
+                    b.HasIndex(new[] { "Pointer" }, "pointer");
 
                     b.ToTable("oc_agoo_signer", (string)null);
                 });
@@ -690,8 +686,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("EnumerationId", "LanguageId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_attribute_enumeration_description_name");
+                    b.HasIndex(new[] { "Name" }, "name");
 
                     b.ToTable("oc_attribute_enumeration_description", (string)null);
                 });
@@ -804,7 +799,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_attribute_template_description_name");
+                        .HasDatabaseName("name1");
 
                     b.ToTable("oc_attribute_template_description", (string)null);
                 });
@@ -1000,8 +995,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("CartId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "ApiId", "CustomerId", "SessionId", "ProductId", "RecurringId" }, "cart_id")
-                        .HasDatabaseName("ix_oc_cart_api_id_customer_id_session_id_product_id_recurring_id");
+                    b.HasIndex(new[] { "ApiId", "CustomerId", "SessionId", "ProductId", "RecurringId" }, "cart_id");
 
                     b.ToTable("oc_cart", (string)null);
                 });
@@ -1057,11 +1051,9 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("CategoryId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "NixSupplierCategoryId" }, "nix_supplier_category_id")
-                        .HasDatabaseName("ix_oc_category_nix_supplier_category_id");
+                    b.HasIndex(new[] { "NixSupplierCategoryId" }, "nix_supplier_category_id");
 
-                    b.HasIndex(new[] { "ParentId" }, "parent_id")
-                        .HasDatabaseName("ix_oc_category_parent_id");
+                    b.HasIndex(new[] { "ParentId" }, "parent_id");
 
                     b.ToTable("oc_category", (string)null);
                 });
@@ -1114,7 +1106,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_category_description_name");
+                        .HasDatabaseName("name2");
 
                     b.ToTable("oc_category_description", (string)null);
                 });
@@ -1188,8 +1180,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("CategoryId", "PromCategoryId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "PromCategoryId" }, "prom_category_id")
-                        .HasDatabaseName("ix_oc_category_to_prom_category_prom_category_id");
+                    b.HasIndex(new[] { "PromCategoryId" }, "prom_category_id");
 
                     b.ToTable("oc_category_to_prom_category", (string)null);
                 });
@@ -1265,10 +1256,9 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Email" }, "email")
-                        .HasDatabaseName("ix_oc_contacts_cache_email_email");
+                        .HasDatabaseName("email1");
 
-                    b.HasIndex(new[] { "SendId" }, "send_id")
-                        .HasDatabaseName("ix_oc_contacts_cache_email_send_id");
+                    b.HasIndex(new[] { "SendId" }, "send_id");
 
                     b.ToTable("oc_contacts_cache_email", (string)null);
                 });
@@ -1321,11 +1311,10 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ProductCacheId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CronId" }, "cron_id")
-                        .HasDatabaseName("ix_oc_contacts_cache_product_cron_id");
+                    b.HasIndex(new[] { "CronId" }, "cron_id");
 
                     b.HasIndex(new[] { "SendId" }, "send_id")
-                        .HasDatabaseName("ix_oc_contacts_cache_product_send_id");
+                        .HasDatabaseName("send_id1");
 
                     b.ToTable("oc_contacts_cache_product", (string)null);
                 });
@@ -1506,7 +1495,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "SendId" }, "send_id")
-                        .HasDatabaseName("ix_oc_contacts_clicks_send_id");
+                        .HasDatabaseName("send_id2");
 
                     b.ToTable("oc_contacts_clicks", (string)null);
                 });
@@ -1537,8 +1526,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("CountId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "DateSend" }, "date_send")
-                        .HasDatabaseName("ix_oc_contacts_count_mails_date_send");
+                    b.HasIndex(new[] { "DateSend" }, "date_send");
 
                     b.ToTable("oc_contacts_count_mails", (string)null);
                 });
@@ -1763,7 +1751,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "CronId" }, "cron_id")
-                        .HasDatabaseName("ix_oc_contacts_cron_data_cron_id");
+                        .HasDatabaseName("cron_id1");
 
                     b.ToTable("oc_contacts_cron_data", (string)null);
                 });
@@ -1831,14 +1819,13 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("CemailId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CheckStatus" }, "check_status")
-                        .HasDatabaseName("ix_oc_contacts_cron_emails_check_status");
+                    b.HasIndex(new[] { "CheckStatus" }, "check_status");
 
                     b.HasIndex(new[] { "CronId" }, "cron_id")
-                        .HasDatabaseName("ix_oc_contacts_cron_emails_cron_id");
+                        .HasDatabaseName("cron_id2");
 
                     b.HasIndex(new[] { "Email" }, "email")
-                        .HasDatabaseName("ix_oc_contacts_cron_emails_email");
+                        .HasDatabaseName("email2");
 
                     b.ToTable("oc_contacts_cron_emails", (string)null);
                 });
@@ -1962,13 +1949,12 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "CustomerId" }, "customer_id")
-                        .HasDatabaseName("ix_oc_contacts_newsletter_customer_id");
+                        .HasDatabaseName("customer_id1");
 
                     b.HasIndex(new[] { "Email" }, "email")
-                        .HasDatabaseName("ix_oc_contacts_newsletter_email");
+                        .HasDatabaseName("email3");
 
-                    b.HasIndex(new[] { "GroupId" }, "group_id")
-                        .HasDatabaseName("ix_oc_contacts_newsletter_group_id");
+                    b.HasIndex(new[] { "GroupId" }, "group_id");
 
                     b.ToTable("oc_contacts_newsletter", (string)null);
                 });
@@ -1990,7 +1976,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Email" }, "email")
-                        .HasDatabaseName("ix_oc_contacts_reqreview_mails_email");
+                        .HasDatabaseName("email4");
 
                     b.ToTable("oc_contacts_reqreview_mails", (string)null);
                 });
@@ -2013,8 +1999,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ReqreviewProductId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "RevmailId" }, "revmail_id")
-                        .HasDatabaseName("ix_oc_contacts_reqreview_product_revmail_id");
+                    b.HasIndex(new[] { "RevmailId" }, "revmail_id");
 
                     b.ToTable("oc_contacts_reqreview_product", (string)null);
                 });
@@ -2079,10 +2064,10 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Email" }, "email")
-                        .HasDatabaseName("ix_oc_contacts_unsubscribe_email");
+                        .HasDatabaseName("email5");
 
                     b.HasIndex(new[] { "SendId" }, "send_id")
-                        .HasDatabaseName("ix_oc_contacts_unsubscribe_send_id");
+                        .HasDatabaseName("send_id3");
 
                     b.ToTable("oc_contacts_unsubscribe", (string)null);
                 });
@@ -2118,7 +2103,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "SendId" }, "send_id")
-                        .HasDatabaseName("ix_oc_contacts_views_send_id");
+                        .HasDatabaseName("send_id4");
 
                     b.ToTable("oc_contacts_views", (string)null);
                 });
@@ -2830,7 +2815,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Ip" }, "ip")
-                        .HasDatabaseName("ix_oc_customer_ip_ip");
+                        .HasDatabaseName("ip1");
 
                     b.ToTable("oc_customer_ip", (string)null);
                 });
@@ -2870,10 +2855,10 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Email" }, "email")
-                        .HasDatabaseName("ix_oc_customer_login_email");
+                        .HasDatabaseName("email6");
 
                     b.HasIndex(new[] { "Ip" }, "ip")
-                        .HasDatabaseName("ix_oc_customer_login_ip");
+                        .HasDatabaseName("ip2");
 
                     b.ToTable("oc_customer_login", (string)null);
                 });
@@ -3439,8 +3424,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ProductId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "KdCode" }, "kd_code")
-                        .HasDatabaseName("ix_oc_kd_warehouse_code_kd_code");
+                    b.HasIndex(new[] { "KdCode" }, "kd_code");
 
                     b.ToTable("oc_kd_warehouse_code", (string)null);
                 });
@@ -3520,7 +3504,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_language_name");
+                        .HasDatabaseName("name3");
 
                     b.ToTable("oc_language", (string)null);
                 });
@@ -3705,7 +3689,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_location_name");
+                        .HasDatabaseName("name4");
 
                     b.ToTable("oc_location", (string)null);
                 });
@@ -3796,8 +3780,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("LostedId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "SessionId" }, "session_id")
-                        .HasDatabaseName("ix_oc_losted_cart_session_id");
+                    b.HasIndex(new[] { "SessionId" }, "session_id");
 
                     b.ToTable("oc_losted_cart", (string)null);
                 });
@@ -3812,8 +3795,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnType("int(11)")
                         .HasColumnName("losted_id");
 
-                    b.HasIndex(new[] { "LostedId" }, "losted_id")
-                        .HasDatabaseName("ix_oc_losted_cart_log_losted_id");
+                    b.HasIndex(new[] { "LostedId" }, "losted_id");
 
                     b.ToTable("oc_losted_cart_log", (string)null);
                 });
@@ -4034,8 +4016,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("MenuModuleId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "MenuId" }, "menu_id")
-                        .HasDatabaseName("ix_oc_menu_module_menu_id");
+                    b.HasIndex(new[] { "MenuId" }, "menu_id");
 
                     b.ToTable("oc_menu_module", (string)null);
                 });
@@ -4227,14 +4208,12 @@ namespace xmlParserASP.Migrations.Gamma
                 {
                     b.Property<string>("Ref")
                         .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("ref");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("Area")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("area");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<int>("CityId")
                         .HasColumnType("int(11)")
@@ -4242,91 +4221,72 @@ namespace xmlParserASP.Migrations.Gamma
 
                     b.Property<string>("Conglomerates")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("conglomerates");
+                        .HasColumnType("text");
 
                     b.Property<bool>("Delivery1")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("delivery1");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Delivery2")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("delivery2");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Delivery3")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("delivery3");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Delivery4")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("delivery4");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Delivery5")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("delivery5");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Delivery6")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("delivery6");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Delivery7")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("delivery7");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("description");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("DescriptionRu")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("description_ru");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<bool>("IsBranch")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_branch");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("PreventEntryNewStreetsUser")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("prevent_entry_new_streets_user");
+                        .HasColumnType("text");
 
                     b.Property<string>("SettlementType")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("settlement_type");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("SettlementTypeDescription")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("settlement_type_description");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("SettlementTypeDescriptionRu")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("settlement_type_description_ru");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<bool>("SpecialCashCheck")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("special_cash_check");
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Ref")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "Area" }, "Area")
-                        .HasDatabaseName("ix_oc_novaposhta_cities_area");
+                    b.HasIndex(new[] { "Area" }, "Area");
 
-                    b.HasIndex(new[] { "CityId" }, "CityID")
-                        .HasDatabaseName("ix_oc_novaposhta_cities_city_id");
+                    b.HasIndex(new[] { "CityId" }, "CityID");
 
-                    b.HasIndex(new[] { "SettlementType" }, "SettlementType")
-                        .HasDatabaseName("ix_oc_novaposhta_cities_settlement_type");
+                    b.HasIndex(new[] { "SettlementType" }, "SettlementType");
 
                     b.ToTable("oc_novaposhta_cities", (string)null);
                 });
@@ -4345,8 +4305,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnName("value");
 
                     b.HasIndex(new[] { "Type" }, "type")
-                        .IsUnique()
-                        .HasDatabaseName("ix_oc_novaposhta_references_type");
+                        .IsUnique();
 
                     b.ToTable("oc_novaposhta_references", (string)null);
                 });
@@ -4355,93 +4314,75 @@ namespace xmlParserASP.Migrations.Gamma
                 {
                     b.Property<string>("Ref")
                         .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("ref");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<bool>("BicycleParking")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("bicycle_parking");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("CategoryOfWarehouse")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("category_of_warehouse");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("CityDescription")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("city_description");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("CityDescriptionRu")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("city_description_ru");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("CityRef")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("city_ref");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("Delivery")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("delivery");
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnName("description");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("DescriptionRu")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnName("description_ru");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("DistrictCode")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("district_code");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<bool>("InternationalShipping")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("international_shipping");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<double>("Latitude")
-                        .HasColumnType("double")
-                        .HasColumnName("latitude");
+                        .HasColumnType("double");
 
                     b.Property<double>("Longitude")
-                        .HasColumnType("double")
-                        .HasColumnName("longitude");
+                        .HasColumnType("double");
 
                     b.Property<int>("Number")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("number");
+                        .HasColumnType("int(11)");
 
                     b.Property<bool>("PaymentAccess")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("payment_access");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("phone");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("PlaceMaxWeightAllowed")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("place_max_weight_allowed");
+                        .HasColumnType("int(11)");
 
                     b.Property<bool>("PostFinance")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("post_finance");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Posterminal")
                         .HasColumnType("tinyint(1)")
@@ -4449,57 +4390,46 @@ namespace xmlParserASP.Migrations.Gamma
 
                     b.Property<string>("Reception")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("reception");
+                        .HasColumnType("text");
 
                     b.Property<string>("Schedule")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("schedule");
+                        .HasColumnType("text");
 
                     b.Property<string>("ShortAddress")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnName("short_address");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("ShortAddressRu")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnName("short_address_ru");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<int>("SiteKey")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("site_key");
+                        .HasColumnType("int(11)");
 
                     b.Property<int>("TotalMaxWeightAllowed")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("total_max_weight_allowed");
+                        .HasColumnType("int(11)");
 
                     b.Property<string>("TypeOfWarehouse")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("type_of_warehouse");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("WarehouseStatus")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("warehouse_status");
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Ref")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CityRef" }, "CityRef")
-                        .HasDatabaseName("ix_oc_novaposhta_warehouses_city_ref");
+                    b.HasIndex(new[] { "CityRef" }, "CityRef");
 
-                    b.HasIndex(new[] { "SiteKey" }, "SiteKey")
-                        .HasDatabaseName("ix_oc_novaposhta_warehouses_site_key");
+                    b.HasIndex(new[] { "SiteKey" }, "SiteKey");
 
-                    b.HasIndex(new[] { "TypeOfWarehouse" }, "TypeOfWarehouse")
-                        .HasDatabaseName("ix_oc_novaposhta_warehouses_type_of_warehouse");
+                    b.HasIndex(new[] { "TypeOfWarehouse" }, "TypeOfWarehouse");
 
                     b.ToTable("oc_novaposhta_warehouses", (string)null);
                 });
@@ -4586,11 +4516,9 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("OptionId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "Keyword" }, "keyword")
-                        .HasDatabaseName("ix_oc_ocfilter_option_keyword");
+                    b.HasIndex(new[] { "Keyword" }, "keyword");
 
-                    b.HasIndex(new[] { "SortOrder" }, "sort_order")
-                        .HasDatabaseName("ix_oc_ocfilter_option_sort_order");
+                    b.HasIndex(new[] { "SortOrder" }, "sort_order");
 
                     b.ToTable("oc_ocfilter_option", (string)null);
                 });
@@ -4648,8 +4576,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("CategoryId", "OptionId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CategoryId" }, "category_id")
-                        .HasDatabaseName("ix_oc_ocfilter_option_to_category_category_id");
+                    b.HasIndex(new[] { "CategoryId" }, "category_id");
 
                     b.ToTable("oc_ocfilter_option_to_category", (string)null);
                 });
@@ -4712,10 +4639,9 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Keyword" }, "keyword")
-                        .HasDatabaseName("ix_oc_ocfilter_option_value_keyword");
+                        .HasDatabaseName("keyword1");
 
-                    b.HasIndex(new[] { "OptionId" }, "option_id")
-                        .HasDatabaseName("ix_oc_ocfilter_option_value_option_id");
+                    b.HasIndex(new[] { "OptionId" }, "option_id");
 
                     b.ToTable("oc_ocfilter_option_value", (string)null);
                 });
@@ -4745,10 +4671,10 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_ocfilter_option_value_description_name");
+                        .HasDatabaseName("name5");
 
                     b.HasIndex(new[] { "OptionId" }, "option_id")
-                        .HasDatabaseName("ix_oc_ocfilter_option_value_description_option_id");
+                        .HasDatabaseName("option_id1");
 
                     b.ToTable("oc_ocfilter_option_value_description", (string)null);
                 });
@@ -4786,14 +4712,11 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "OptionId", "ValueId", "ProductId" }, "option_id_value_id_product_id")
-                        .IsUnique()
-                        .HasDatabaseName("ix_oc_ocfilter_option_value_to_product_option_id_value_id_produ");
+                        .IsUnique();
 
-                    b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_ocfilter_option_value_to_product_product_id");
+                    b.HasIndex(new[] { "ProductId" }, "product_id");
 
-                    b.HasIndex(new[] { "SlideValueMin", "SlideValueMax" }, "slide_value_min_slide_value_max")
-                        .HasDatabaseName("ix_oc_ocfilter_option_value_to_product_slide_value_min_slide_va");
+                    b.HasIndex(new[] { "SlideValueMin", "SlideValueMax" }, "slide_value_min_slide_value_max");
 
                     b.ToTable("oc_ocfilter_option_value_to_product", (string)null);
                 });
@@ -4868,11 +4791,10 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("OcfilterPageId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CategoryId", "Params" }, "category_id_params")
-                        .HasDatabaseName("ix_oc_ocfilter_page_category_id_params");
+                    b.HasIndex(new[] { "CategoryId", "Params" }, "category_id_params");
 
                     b.HasIndex(new[] { "Keyword" }, "keyword")
-                        .HasDatabaseName("ix_oc_ocfilter_page_keyword");
+                        .HasDatabaseName("keyword2");
 
                     b.ToTable("oc_ocfilter_page", (string)null);
                 });
@@ -4936,8 +4858,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ProductId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "OnOrderStatus" }, "on_order_status")
-                        .HasDatabaseName("ix_oc_on_order_on_order_status");
+                    b.HasIndex(new[] { "OnOrderStatus" }, "on_order_status");
 
                     b.ToTable("oc_on_order", (string)null);
                 });
@@ -5400,10 +5321,9 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "CustomerId" }, "customer_id")
-                        .HasDatabaseName("ix_oc_order_customer_id");
+                        .HasDatabaseName("customer_id2");
 
-                    b.HasIndex(new[] { "OrderStatusId" }, "order_status_id")
-                        .HasDatabaseName("ix_oc_order_order_status_id");
+                    b.HasIndex(new[] { "OrderStatusId" }, "order_status_id");
 
                     b.ToTable("oc_order", (string)null);
                 });
@@ -5487,8 +5407,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("OrderHistoryId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "OrderId" }, "order_id")
-                        .HasDatabaseName("ix_oc_order_history_order_id");
+                    b.HasIndex(new[] { "OrderId" }, "order_id");
 
                     b.ToTable("oc_order_history", (string)null);
                 });
@@ -5553,7 +5472,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "OrderId" }, "order_id")
-                        .HasDatabaseName("ix_oc_order_permissions_order_id");
+                        .HasDatabaseName("order_id1");
 
                     b.ToTable("oc_order_permissions", (string)null);
                 });
@@ -5670,10 +5589,10 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "OrderId" }, "order_id")
-                        .HasDatabaseName("ix_oc_order_product_order_id");
+                        .HasDatabaseName("order_id2");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_order_product_product_id");
+                        .HasDatabaseName("product_id1");
 
                     b.ToTable("oc_order_product", (string)null);
                 });
@@ -5895,7 +5814,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "OrderId" }, "order_id")
-                        .HasDatabaseName("ix_oc_order_total_order_id");
+                        .HasDatabaseName("order_id3");
 
                     b.ToTable("oc_order_total", (string)null);
                 });
@@ -6158,8 +6077,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ProductId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "NixSupplierProductId" }, "nix_supplier_product_id")
-                        .HasDatabaseName("ix_oc_product_nix_supplier_product_id");
+                    b.HasIndex(new[] { "NixSupplierProductId" }, "nix_supplier_product_id");
 
                     b.ToTable("oc_product", (string)null);
                 });
@@ -6242,7 +6160,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_product_description_name");
+                        .HasDatabaseName("name6");
 
                     b.ToTable("oc_product_description", (string)null);
                 });
@@ -6293,7 +6211,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_product_discount_product_id");
+                        .HasDatabaseName("product_id2");
 
                     b.ToTable("oc_product_discount", (string)null);
                 });
@@ -6338,10 +6256,10 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_product_image_product_id");
+                        .HasDatabaseName("product_id3");
 
                     b.HasIndex(new[] { "SortOrder" }, "sort_order")
-                        .HasDatabaseName("ix_oc_product_image_sort_order");
+                        .HasDatabaseName("sort_order1");
 
                     b.ToTable("oc_product_image", (string)null);
                 });
@@ -6374,10 +6292,10 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "OptionId" }, "option_id")
-                        .HasDatabaseName("ix_oc_product_option_option_id");
+                        .HasDatabaseName("option_id2");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_product_option_product_id");
+                        .HasDatabaseName("product_id4");
 
                     b.ToTable("oc_product_option", (string)null);
                 });
@@ -6455,22 +6373,18 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "OptionId" }, "option_id")
-                        .HasDatabaseName("ix_oc_product_option_value_option_id");
+                        .HasDatabaseName("option_id3");
 
-                    b.HasIndex(new[] { "OptionValueId" }, "option_value_id")
-                        .HasDatabaseName("ix_oc_product_option_value_option_value_id");
+                    b.HasIndex(new[] { "OptionValueId" }, "option_value_id");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_product_option_value_product_id");
+                        .HasDatabaseName("product_id5");
 
-                    b.HasIndex(new[] { "ProductOptionId" }, "product_option_id")
-                        .HasDatabaseName("ix_oc_product_option_value_product_option_id");
+                    b.HasIndex(new[] { "ProductOptionId" }, "product_option_id");
 
-                    b.HasIndex(new[] { "Quantity" }, "quantity")
-                        .HasDatabaseName("ix_oc_product_option_value_quantity");
+                    b.HasIndex(new[] { "Quantity" }, "quantity");
 
-                    b.HasIndex(new[] { "Subtract" }, "subtract")
-                        .HasDatabaseName("ix_oc_product_option_value_subtract");
+                    b.HasIndex(new[] { "Subtract" }, "subtract");
 
                     b.ToTable("oc_product_option_value", (string)null);
                 });
@@ -6552,11 +6466,10 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ProductRewardId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CustomerGroupId" }, "customer_group_id")
-                        .HasDatabaseName("ix_oc_product_reward_customer_group_id");
+                    b.HasIndex(new[] { "CustomerGroupId" }, "customer_group_id");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_product_reward_product_id");
+                        .HasDatabaseName("product_id6");
 
                     b.ToTable("oc_product_reward", (string)null);
                 });
@@ -6603,7 +6516,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_product_special_product_id");
+                        .HasDatabaseName("product_id7");
 
                     b.ToTable("oc_product_special", (string)null);
                 });
@@ -6670,7 +6583,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "CategoryId" }, "category_id")
-                        .HasDatabaseName("ix_oc_product_to_category_category_id");
+                        .HasDatabaseName("category_id1");
 
                     b.ToTable("oc_product_to_category", (string)null);
                 });
@@ -6724,8 +6637,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ProductId", "PromProductId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "PromProductId" }, "prom_product_id")
-                        .HasDatabaseName("ix_oc_product_to_prom_product_prom_product_id");
+                    b.HasIndex(new[] { "PromProductId" }, "prom_product_id");
 
                     b.ToTable("oc_product_to_prom_product", (string)null);
                 });
@@ -6760,8 +6672,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("ProductId", "SupplierId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "SupplierId" }, "supplier_id")
-                        .HasDatabaseName("ix_oc_product_to_supplier_supplier_id");
+                    b.HasIndex(new[] { "SupplierId" }, "supplier_id");
 
                     b.ToTable("oc_product_to_supplier", (string)null);
                 });
@@ -6806,7 +6717,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "ParentId" }, "parent_id")
-                        .HasDatabaseName("ix_oc_prom_category_parent_id");
+                        .HasDatabaseName("parent_id1");
 
                     b.ToTable("oc_prom_category", (string)null);
                 });
@@ -6830,7 +6741,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Name" }, "name")
-                        .HasDatabaseName("ix_oc_prom_category_description_name");
+                        .HasDatabaseName("name7");
 
                     b.ToTable("oc_prom_category_description", (string)null);
                 });
@@ -7656,7 +7567,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "ProductId" }, "product_id")
-                        .HasDatabaseName("ix_oc_review_product_id");
+                        .HasDatabaseName("product_id8");
 
                     b.ToTable("oc_review", (string)null);
                 });
@@ -7682,14 +7593,11 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnType("text")
                         .HasColumnName("value");
 
-                    b.HasIndex(new[] { "CategoryId" }, "category_id")
-                        .HasDatabaseName("ix_oc_seo_tags_generator_category_id");
+                    b.HasIndex(new[] { "CategoryId" }, "category_id");
 
-                    b.HasIndex(new[] { "Key" }, "key")
-                        .HasDatabaseName("ix_oc_seo_tags_generator_key");
+                    b.HasIndex(new[] { "Key" }, "key");
 
-                    b.HasIndex(new[] { "LanguageId" }, "language_id")
-                        .HasDatabaseName("ix_oc_seo_tags_generator_language_id");
+                    b.HasIndex(new[] { "LanguageId" }, "language_id");
 
                     b.ToTable("oc_seo_tags_generator", (string)null);
                 });
@@ -7707,8 +7615,7 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("CategoryId", "CopyCategoryId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "CopyCategoryId" }, "copy_category_id")
-                        .HasDatabaseName("ix_oc_seo_tags_generator_category_copy_copy_category_id");
+                    b.HasIndex(new[] { "CopyCategoryId" }, "copy_category_id");
 
                     b.ToTable("oc_seo_tags_generator_category_copy", (string)null);
                 });
@@ -7760,8 +7667,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnName("setting");
 
                     b.HasIndex(new[] { "CategoryId" }, "category_id")
-                        .IsUnique()
-                        .HasDatabaseName("ix_oc_seo_tags_generator_category_setting_category_id");
+                        .IsUnique();
 
                     b.ToTable("oc_seo_tags_generator_category_setting", (string)null);
                 });
@@ -7817,14 +7723,11 @@ namespace xmlParserASP.Migrations.Gamma
                     b.HasKey("SettingId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "Key" }, "key")
-                        .HasDatabaseName("ix_oc_setting_key");
+                    b.HasIndex(new[] { "Key" }, "key");
 
-                    b.HasIndex(new[] { "Serialized" }, "serialized")
-                        .HasDatabaseName("ix_oc_setting_serialized");
+                    b.HasIndex(new[] { "Serialized" }, "serialized");
 
-                    b.HasIndex(new[] { "StoreId" }, "store_id")
-                        .HasDatabaseName("ix_oc_setting_store_id");
+                    b.HasIndex(new[] { "StoreId" }, "store_id");
 
                     b.ToTable("oc_setting", (string)null);
                 });
@@ -9883,7 +9786,7 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "CategoryId" }, "category_id")
-                        .HasDatabaseName("ix_oc_uni_banner_in_category_to_category_category_id");
+                        .HasDatabaseName("category_id2");
 
                     b.ToTable("oc_uni_banner_in_category_to_category", (string)null);
                 });
@@ -10177,10 +10080,9 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Keyword" }, "keyword")
-                        .HasDatabaseName("ix_oc_url_alias_keyword");
+                        .HasDatabaseName("keyword3");
 
-                    b.HasIndex(new[] { "Query" }, "query")
-                        .HasDatabaseName("ix_oc_url_alias_query");
+                    b.HasIndex(new[] { "Query" }, "query");
 
                     b.ToTable("oc_url_alias", (string)null);
                 });
@@ -10212,13 +10114,12 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Keyword" }, "keyword")
-                        .HasDatabaseName("ix_oc_url_alias_blog_keyword");
+                        .HasDatabaseName("keyword4");
 
-                    b.HasIndex(new[] { "LanguageId" }, "language_id")
-                        .HasDatabaseName("ix_oc_url_alias_blog_language_id");
+                    b.HasIndex(new[] { "LanguageId" }, "language_id");
 
                     b.HasIndex(new[] { "Query" }, "query")
-                        .HasDatabaseName("ix_oc_url_alias_blog_query");
+                        .HasDatabaseName("query1");
 
                     b.ToTable("oc_url_alias_blog", (string)null);
                 });
@@ -10586,17 +10487,14 @@ namespace xmlParserASP.Migrations.Gamma
                 {
                     b.Property<string>("Email")
                         .HasMaxLength(96)
-                        .HasColumnType("varchar(96)")
-                        .HasColumnName("email");
+                        .HasColumnType("varchar(96)");
 
                     b.Property<string>("Артикул")
                         .HasMaxLength(64)
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("артикул");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<int>("Количество")
-                        .HasColumnType("int(4)")
-                        .HasColumnName("количество");
+                        .HasColumnType("int(4)");
 
                     b.Property<string>("НазваниеТовара")
                         .IsRequired()
@@ -10611,8 +10509,7 @@ namespace xmlParserASP.Migrations.Gamma
 
                     b.Property<string>("Статус")
                         .HasMaxLength(32)
-                        .HasColumnType("varchar(32)")
-                        .HasColumnName("статус");
+                        .HasColumnType("varchar(32)");
 
                     b.Property<decimal?>("СуммаUah")
                         .HasPrecision(20)
@@ -10621,8 +10518,7 @@ namespace xmlParserASP.Migrations.Gamma
 
                     b.Property<string>("Телефон")
                         .HasMaxLength(32)
-                        .HasColumnType("varchar(32)")
-                        .HasColumnName("телефон");
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("ФИО")
                         .HasMaxLength(32)
@@ -10663,8 +10559,7 @@ namespace xmlParserASP.Migrations.Gamma
 
                     b.Property<string>("Статус")
                         .HasMaxLength(32)
-                        .HasColumnType("varchar(32)")
-                        .HasColumnName("статус");
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("ФИО")
                         .IsRequired()

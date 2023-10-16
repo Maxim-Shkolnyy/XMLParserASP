@@ -7,14 +7,29 @@ namespace xmlParserASP.Presistant;
 
 public partial class GammaContext : DbContext
 {
+    private readonly ILogger<GammaContext>? _logger;
     public GammaContext()
     {
     }
 
-    public GammaContext(DbContextOptions<GammaContext> options)
+    public GammaContext(DbContextOptions<GammaContext> options, ILogger<GammaContext> logger)
         : base(options)
     {
+        _logger = logger;
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.UseMySQL("Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;");
+    }
+
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseMySQL("Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;");
+
+
 
     public virtual DbSet<OcAddress> OcAddresses { get; set; }
 
@@ -503,9 +518,7 @@ public partial class GammaContext : DbContext
     public virtual DbSet<ProductSetDiscount> ProductSetDiscounts { get; set; }
 
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;");
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -7619,8 +7632,8 @@ public partial class GammaContext : DbContext
 
         modelBuilder.Entity<ProductLimitQuantity>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PRIMARY");
-            entity.Property(e => e.ProductId)
+            entity.HasKey(e => e.product_id).HasName("PRIMARY");
+            entity.Property(e => e.product_id)
             .HasColumnType("int(11)")
             .HasColumnName("product_id"); 
 
@@ -7636,7 +7649,8 @@ public partial class GammaContext : DbContext
 
         modelBuilder.Entity<ProductSetDiscount>(entity =>
         {
-            entity.HasKey(e => e.product_id).HasName("PRIMARY");
+            entity.HasKey(e => e.ProductId).HasName("PRIMARY");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
 
             entity.ToTable("product_set_discount");
 

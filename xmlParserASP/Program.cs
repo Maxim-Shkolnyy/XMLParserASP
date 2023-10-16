@@ -23,7 +23,9 @@ public class Program
 
         builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(connectionStringTestGamma));
 
-        builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma));
+        builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma).LogTo(Console.WriteLine,
+            new[] { DbLoggerCategory.Database.Command.Name },
+            LogLevel.Information).EnableDetailedErrors());
 
         builder.Services.AddScoped<SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
@@ -37,6 +39,9 @@ public class Program
         builder.Services.AddScoped<ProcessXMLController>();
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<PriceQuantityViewModel>();
+
+        builder.Services.AddLogging(b => b.AddConsole());
+       
 
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);
 
