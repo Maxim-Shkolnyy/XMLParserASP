@@ -7,11 +7,6 @@ namespace xmlParserASP.Presistant;
 
 public partial class GammaContext : DbContext
 {
-    //private readonly GammaContext _gammaContext;
-    //public GammaContext()
-    //{
-    //}
-
     public GammaContext(DbContextOptions<GammaContext> options)
         : base(options)
     {
@@ -505,10 +500,6 @@ public partial class GammaContext : DbContext
     public virtual DbSet<ProductCustomerOrder> ProductCustomerOrders { get; set; }
 
     public virtual DbSet<ProductOrder> ProductOrders { get; set; }
-
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseMySQL("Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -25,10 +25,6 @@ public class Program
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma));
 
-        //var serviceProvider = new ServiceCollection()
-        //    .AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma).UseSnakeCaseNamingConvention())
-        //    .BuildServiceProvider();
-
         //builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma).LogTo(Console.WriteLine,
         //new[] { DbLoggerCategory.Database.Command.Name },
         //LogLevel.Information).EnableDetailedErrors());
@@ -64,6 +60,7 @@ public class Program
         app.UseRouting();
 
         app.UseAuthorization();
+        //app.UseAuthentication();
 
         app.MapControllerRoute(
             name: "default",
