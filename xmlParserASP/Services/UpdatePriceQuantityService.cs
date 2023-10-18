@@ -624,8 +624,19 @@ public class UpdatePriceQuantityService
                             var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                             if (productToUpdate != null)
                             {
-                                productToUpdate.Quantity = currentXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                if(currentXmlValue > 0)
+                                {
+                                    productToUpdate.Quantity = currentXmlValue;
+                                    productToUpdate.StockStatusId = 7;
+                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                }
+                                else
+                                {
+                                    productToUpdate.Quantity = currentXmlValue;
+                                    productToUpdate.StockStatusId = 5;
+                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                }
+                                
                             }
                         }
                         else
