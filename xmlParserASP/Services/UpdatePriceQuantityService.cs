@@ -641,8 +641,7 @@ public class UpdatePriceQuantityService
                         else
                         {
                             var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
-                            if (productToUpdate != null)
-                            {
+                            if (productToUpdate != null)                            {
                                 if (currentXmlValue > 0)
                                 {
                                     productToUpdate.Quantity = currentXmlValue;
