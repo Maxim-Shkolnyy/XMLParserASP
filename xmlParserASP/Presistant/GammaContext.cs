@@ -19,6 +19,8 @@ public partial class GammaContext : DbContext
         optionsBuilder.UseSnakeCaseNamingConvention();
     }
 
+    public virtual DbSet<ProductsManualSetQuanity> ProductsManualSetQuanitys { get; set; }
+
     public virtual DbSet<OcAddress> OcAddresses { get; set; }
 
     public virtual DbSet<OcAddressSimpleField> OcAddressSimpleFields { get; set; }

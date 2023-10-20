@@ -1,0 +1,163 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Presistant;
+
+namespace xmlParserASP.Controllers
+{
+    public class ProductsManualSetQuanitiesController : Controller
+    {
+        private readonly GammaContext _context;
+
+        public ProductsManualSetQuanitiesController(GammaContext context)
+        {
+            _context = context;
+        }
+
+        // GET: ProductsManualSetQuanities
+        public async Task<IActionResult> Index()
+        {
+              return _context.ProductsManualSetQuanitys != null ? 
+                          View(await _context.ProductsManualSetQuanitys.ToListAsync()) :
+                          Problem("Entity set 'GammaContext.ProductsManualSetQuanitys'  is null.");
+        }
+
+        // GET: ProductsManualSetQuanities/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.ProductsManualSetQuanitys == null)
+            {
+                return NotFound();
+            }
+
+            var productsManualSetQuanity = await _context.ProductsManualSetQuanitys
+                .FirstOrDefaultAsync(m => m.Sku == id);
+            if (productsManualSetQuanity == null)
+            {
+                return NotFound();
+            }
+
+            return View(productsManualSetQuanity);
+        }
+
+        // GET: ProductsManualSetQuanities/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: ProductsManualSetQuanities/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Sku,SetInStockQty,DateStart,DateEnd")] ProductsManualSetQuanity productsManualSetQuanity)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(productsManualSetQuanity);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(productsManualSetQuanity);
+        }
+
+        // GET: ProductsManualSetQuanities/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.ProductsManualSetQuanitys == null)
+            {
+                return NotFound();
+            }
+
+            var productsManualSetQuanity = await _context.ProductsManualSetQuanitys.FindAsync(id);
+            if (productsManualSetQuanity == null)
+            {
+                return NotFound();
+            }
+            return View(productsManualSetQuanity);
+        }
+
+        // POST: ProductsManualSetQuanities/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Sku,SetInStockQty,DateStart,DateEnd")] ProductsManualSetQuanity productsManualSetQuanity)
+        {
+            if (id != productsManualSetQuanity.Sku)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(productsManualSetQuanity);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductsManualSetQuanityExists(productsManualSetQuanity.Sku))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(productsManualSetQuanity);
+        }
+
+        // GET: ProductsManualSetQuanities/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.ProductsManualSetQuanitys == null)
+            {
+                return NotFound();
+            }
+
+            var productsManualSetQuanity = await _context.ProductsManualSetQuanitys
+                .FirstOrDefaultAsync(m => m.Sku == id);
+            if (productsManualSetQuanity == null)
+            {
+                return NotFound();
+            }
+
+            return View(productsManualSetQuanity);
+        }
+
+        // POST: ProductsManualSetQuanities/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.ProductsManualSetQuanitys == null)
+            {
+                return Problem("Entity set 'GammaContext.ProductsManualSetQuanitys'  is null.");
+            }
+            var productsManualSetQuanity = await _context.ProductsManualSetQuanitys.FindAsync(id);
+            if (productsManualSetQuanity != null)
+            {
+                _context.ProductsManualSetQuanitys.Remove(productsManualSetQuanity);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProductsManualSetQuanityExists(int id)
+        {
+          return (_context.ProductsManualSetQuanitys?.Any(e => e.Sku == id)).GetValueOrDefault();
+        }
+    }
+}
