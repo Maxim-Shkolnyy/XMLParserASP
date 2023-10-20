@@ -6,10 +6,8 @@ namespace xmlParserASP.Entities.Gamma
 {
     public partial class ProductsManualSetQuanity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Sku { get; set; }
-
+        [StringLength(16)]
+        public string Sku { get; set; }
         public int SetInStockQty { get; set; }
         public DateOnly? DateStart { get; set; } = null;
         public DateOnly? DateEnd { get; set; } = null;

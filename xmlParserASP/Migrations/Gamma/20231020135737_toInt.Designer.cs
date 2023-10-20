@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,9 +11,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.Gamma
 {
     [DbContext(typeof(GammaContext))]
-    partial class GammaContextModelSnapshot : ModelSnapshot
+    [Migration("20231020135737_toInt")]
+    partial class toInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10658,6 +10661,10 @@ namespace xmlParserASP.Migrations.Gamma
 
             modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsManualSetQuanity", b =>
                 {
+                    b.Property<string>("Sku")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("sku");
+
                     b.Property<DateOnly?>("DateEnd")
                         .HasColumnType("date")
                         .HasColumnName("date_end");
@@ -10670,11 +10677,8 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnType("int")
                         .HasColumnName("set_in_stock_qty");
 
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)")
-                        .HasColumnName("sku");
+                    b.HasKey("Sku")
+                        .HasName("pk_products_manual_set_quanitys");
 
                     b.ToTable("products_manual_set_quanitys", (string)null);
                 });
