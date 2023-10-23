@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,9 +11,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.Gamma
 {
     [DbContext(typeof(GammaContext))]
-    partial class GammaContextModelSnapshot : ModelSnapshot
+    [Migration("20231023151738_DEl")]
+    partial class DEl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10654,40 +10657,6 @@ namespace xmlParserASP.Migrations.Gamma
                     b.ToTable((string)null);
 
                     b.ToView("product_order", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsManualSetQuanity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateEnd")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_end");
-
-                    b.Property<DateTime?>("DateStart")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_start");
-
-                    b.Property<int>("SetInStockQty")
-                        .HasColumnType("int")
-                        .HasColumnName("set_in_stock_qty");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("sku");
-
-                    b.HasKey("Id")
-                        .HasName("pk_products_manual_set_quanitys");
-
-                    b.HasIndex("Sku")
-                        .IsUnique()
-                        .HasDatabaseName("ix_products_manual_set_quanitys_sku");
-
-                    b.ToTable("products_manual_set_quanitys", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -7613,7 +7613,7 @@ public partial class GammaContext : DbContext
                 .HasColumnName("Ф.И.О.");
         });
 
-        modelBuilder.Entity<ProductsManualSetQuanity>().HasNoKey();
+        modelBuilder.Entity<ProductsManualSetQuanity>().HasIndex(p => p.Sku).IsUnique();
 
         OnModelCreatingPartial(modelBuilder);
     }
