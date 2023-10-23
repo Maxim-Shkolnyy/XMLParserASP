@@ -11,8 +11,8 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.Gamma
 {
     [DbContext(typeof(GammaContext))]
-    [Migration("20231020160119_noKey4")]
-    partial class noKey4
+    [Migration("20231023075144_55")]
+    partial class _55
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -10657,29 +10657,6 @@ namespace xmlParserASP.Migrations.Gamma
                     b.ToTable((string)null);
 
                     b.ToView("product_order", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsManualSetQuanity", b =>
-                {
-                    b.Property<DateOnly?>("DateEnd")
-                        .HasColumnType("date")
-                        .HasColumnName("date_end");
-
-                    b.Property<DateOnly?>("DateStart")
-                        .HasColumnType("date")
-                        .HasColumnName("date_start");
-
-                    b.Property<int>("SetInStockQty")
-                        .HasColumnType("int")
-                        .HasColumnName("set_in_stock_qty");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)")
-                        .HasColumnName("sku");
-
-                    b.ToTable("products_manual_set_quanitys", (string)null);
                 });
 #pragma warning restore 612, 618
         }

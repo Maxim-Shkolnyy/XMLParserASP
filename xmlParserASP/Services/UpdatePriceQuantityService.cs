@@ -40,7 +40,7 @@ public class UpdatePriceQuantityService
         currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
         stateMessages = new List<(string, string)>();
-        
+
 
         if (settingsId == null)
         {
@@ -594,11 +594,11 @@ public class UpdatePriceQuantityService
 
             if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
             {
-                int dbValue = 0;
-                int currentXmlValue = 0;
-
                 try
                 {
+                    int? dbValue = 0;
+                    int currentXmlValue = 0;
+
                     if (dbModel.Item3.Contains("."))
                     {
                         dbValue = Convert.ToInt32(dbModel.Item3.Replace(".", ","));
@@ -617,16 +617,22 @@ public class UpdatePriceQuantityService
                         currentXmlValue = Convert.ToInt32(xmlValue);
                     }
 
-                    if (dbValue != currentXmlValue)
+                    var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+
+                    if (productToUpdate == null)
+                        continue;
+
+                    if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності
                     {
-                        if (dbValue < currentXmlValue)
+                        productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty?? 0;
+                    }
+                    else
+                    {
+                        if (dbValue != currentXmlValue)
                         {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
-                            
-                            if (productToUpdate != null)
+                            if (dbValue < currentXmlValue)
                             {
-                                //if(_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku))
-                                if(currentXmlValue > 0)
+                                if (currentXmlValue > 0)
                                 {
                                     productToUpdate.Quantity = currentXmlValue;
                                     productToUpdate.StockStatusId = 7;
@@ -637,13 +643,10 @@ public class UpdatePriceQuantityService
                                     productToUpdate.Quantity = currentXmlValue;
                                     productToUpdate.StockStatusId = 5;
                                     stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
-                                }                                
+                                }
                             }
-                        }
-                        else
-                        {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
-                            if (productToUpdate != null)                            {
+                            else
+                            {
                                 if (currentXmlValue > 0)
                                 {
                                     productToUpdate.Quantity = currentXmlValue;
@@ -655,7 +658,7 @@ public class UpdatePriceQuantityService
                                     productToUpdate.Quantity = currentXmlValue;
                                     productToUpdate.StockStatusId = 5;
                                     stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
-                                }                                
+                                }
                             }
                         }
                     }

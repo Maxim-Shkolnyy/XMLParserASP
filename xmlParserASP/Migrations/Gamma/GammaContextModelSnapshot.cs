@@ -10655,29 +10655,6 @@ namespace xmlParserASP.Migrations.Gamma
 
                     b.ToView("product_order", (string)null);
                 });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsManualSetQuanity", b =>
-                {
-                    b.Property<DateOnly?>("DateEnd")
-                        .HasColumnType("date")
-                        .HasColumnName("date_end");
-
-                    b.Property<DateOnly?>("DateStart")
-                        .HasColumnType("date")
-                        .HasColumnName("date_start");
-
-                    b.Property<int>("SetInStockQty")
-                        .HasColumnType("int")
-                        .HasColumnName("set_in_stock_qty");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)")
-                        .HasColumnName("sku");
-
-                    b.ToTable("products_manual_set_quanitys", (string)null);
-                });
 #pragma warning restore 612, 618
         }
     }
