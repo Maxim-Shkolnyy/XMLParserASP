@@ -54,17 +54,22 @@ static class ProcessExcel
 
 
 
-    public static string[,] ReadWorksheetToArrayNoPassword(string filePath, int sheetIndex, int? col1, int? col2, int? col3, int? col4, int firstRowToRemove, int lastRowToRemove)  //ClosedXML
+    public static string[,] ReadWorksheetToArrayNoPassword(string filePath, int sheetIndex, int? col1, int? col2, int? col3, int? col4, int? firstRowToRemove, int? lastRowToRemove)  //ClosedXML
     {
         using (var workbook = new XLWorkbook(filePath))
         {
             var worksheet = workbook.Worksheet(sheetIndex);
 
-            if (firstRowToRemove > 0 && lastRowToRemove >= firstRowToRemove)
+
+            if (firstRowToRemove != null)
             {
-                var rangeToRemove = worksheet.Range(firstRowToRemove, 1, lastRowToRemove, worksheet.ColumnsUsed().Count());
-                rangeToRemove.Delete(XLShiftDeletedCells.ShiftCellsUp);
+                if (firstRowToRemove > 0 && lastRowToRemove >= firstRowToRemove)
+                {
+                    var rangeToRemove = worksheet.Range((int)firstRowToRemove, 1, (int)lastRowToRemove, worksheet.ColumnsUsed().Count());
+                    rangeToRemove.Delete(XLShiftDeletedCells.ShiftCellsUp);
+                }
             }
+            
 
             var rows = worksheet.RowsUsed();
             int rowCount = rows.Count();
@@ -108,6 +113,42 @@ static class ProcessExcel
             }
 
             return dataArray;
+        }
+    }
+
+
+
+    public static string[,] GetExcelData(string filePath)
+    {
+        using (var workbook = new XLWorkbook(filePath))
+        {
+            var worksheet = workbook.Worksheet(1); // Припускається, що ви хочете прочитати з першого аркуша
+
+            var range = worksheet.RangeUsed();
+
+            int rows = range.RowCount();
+            int columns = range.ColumnCount();
+
+            string[,] data = new string[rows, columns];
+
+            for (int row = 1; row <= rows; row++)
+            {
+                for (int col = 1; col <= columns; col++)
+                {
+                    var cellValue = range.Cell(row, col).Value;
+
+                    if (!string.IsNullOrEmpty(cellValue.ToString()))
+                    {
+                        data[row - 1, col - 1] = cellValue.ToString();
+                    }
+                    else
+                    {
+                        data[row - 1, col - 1] = "";
+                    }
+                }
+            }
+
+            return data;
         }
     }
 
