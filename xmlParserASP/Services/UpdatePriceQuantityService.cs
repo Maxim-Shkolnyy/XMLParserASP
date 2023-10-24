@@ -557,7 +557,7 @@ public class UpdatePriceQuantityService
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ price increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
                         }
                         else
@@ -567,7 +567,7 @@ public class UpdatePriceQuantityService
                             {
                                 productToUpdate.Price = normalizedXmlValue;
 
-                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ price decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -625,6 +625,8 @@ public class UpdatePriceQuantityService
                     if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності
                     {
                         productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty?? 0;
+                        stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity set default. Old - new:_{dbModel.Item3}_{currentXmlValue}", "black"));
+
                     }
                     else
                     {
@@ -636,13 +638,13 @@ public class UpdatePriceQuantityService
                                 {
                                     productToUpdate.Quantity = currentXmlValue;
                                     productToUpdate.StockStatusId = 7;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                 }
                                 else
                                 {
                                     productToUpdate.Quantity = currentXmlValue;
                                     productToUpdate.StockStatusId = 5;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                 }
                             }
                             else
@@ -651,13 +653,13 @@ public class UpdatePriceQuantityService
                                 {
                                     productToUpdate.Quantity = currentXmlValue;
                                     productToUpdate.StockStatusId = 7;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                 }
                                 else
                                 {
                                     productToUpdate.Quantity = currentXmlValue;
                                     productToUpdate.StockStatusId = 5;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Our - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                 }
                             }
                         }
