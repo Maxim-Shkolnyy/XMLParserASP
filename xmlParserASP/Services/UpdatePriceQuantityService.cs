@@ -41,7 +41,6 @@ public class UpdatePriceQuantityService
 
         stateMessages = new List<(string, string)>();
 
-
         if (settingsId == null)
         {
             stateMessages.Add(("Setting ID was not passed", "red"));

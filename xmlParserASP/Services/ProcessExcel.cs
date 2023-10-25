@@ -7,58 +7,15 @@ namespace xmlParserASP.Services;
 
 static class ProcessExcel
 {
-    public static string[,] ReadWorksheetToArrayPassword(string filePath, int sheetIndex, int? col1, int? col2, int? col3, int? col4, int firstRowToRemove, int lastRowToRemove, string password)
+    public static string[,] ReadWorksheetToArrayNoPassword(string filePath, int? sheetIndex, int? col1, int? col2, int? col3, int? col4, int? firstRowToRemove, int? lastRowToRemove)  //ClosedXML
     {
-        Application excelApp = new Application();
-        Workbook workbook = null;
-        Worksheet worksheet = null;
-
-        try
+        if (sheetIndex == null)
         {
-            workbook = excelApp.Workbooks.Open(filePath, Password: password);
-            worksheet = (Worksheet)workbook.Sheets[sheetIndex];
-
-            if (firstRowToRemove > 0 && lastRowToRemove >= firstRowToRemove)
-            {
-                Range rangeToRemove = worksheet.Range[worksheet.Cells[firstRowToRemove, 1], worksheet.Cells[lastRowToRemove, worksheet.UsedRange.Columns.Count]];
-                rangeToRemove.Delete(XlDeleteShiftDirection.xlShiftUp);
-            }
-
-            Range usedRange = worksheet.UsedRange;
-            int rowCount = usedRange.Rows.Count;
-            int columnCount = usedRange.Columns.Count;
-            string[,] dataArray = new string[rowCount -1, columnCount -1];
-
-            for (int rowIdx = 1; rowIdx <= rowCount; rowIdx++)
-            {
-                for (int colIdx = 1; colIdx <= columnCount; colIdx++)
-                {
-                    dataArray[rowIdx - 1, colIdx - 1] = ((Range)usedRange.Cells[rowIdx, colIdx]).Value?.ToString() ?? "";
-                }
-            }
-
-            return dataArray;
+            sheetIndex = 1;
         }
-        finally
-        {
-            if (worksheet != null) Marshal.ReleaseComObject(worksheet);
-            if (workbook != null) Marshal.ReleaseComObject(workbook);
-            if (excelApp != null)
-            {
-                excelApp.Quit();
-                Marshal.ReleaseComObject(excelApp);
-            }
-        }
-    }
-
-
-
-
-    public static string[,] ReadWorksheetToArrayNoPassword(string filePath, int sheetIndex, int? col1, int? col2, int? col3, int? col4, int? firstRowToRemove, int? lastRowToRemove)  //ClosedXML
-    {
         using (var workbook = new XLWorkbook(filePath))
         {
-            var worksheet = workbook.Worksheet(sheetIndex);
+            var worksheet = workbook.Worksheet((int)sheetIndex);
 
 
             if (firstRowToRemove != null)
@@ -111,11 +68,9 @@ static class ProcessExcel
                         dataArray[rowIdx, colIdx++] = row.Cell(col4.Value + 1).CachedValue.ToString();
                 }
             }
-
             return dataArray;
         }
     }
-
 
 
     public static string[,] GetExcelData(string filePath)
@@ -153,5 +108,47 @@ static class ProcessExcel
     }
 
 
+    public static string[,] ReadWorksheetToArrayPassword(string filePath, int sheetIndex, int? col1, int? col2, int? col3, int? col4, int firstRowToRemove, int lastRowToRemove, string password)
+    {
+        Application excelApp = new Application();
+        Workbook workbook = null;
+        Worksheet worksheet = null;
 
+        try
+        {
+            workbook = excelApp.Workbooks.Open(filePath, Password: password);
+            worksheet = (Worksheet)workbook.Sheets[sheetIndex];
+
+            if (firstRowToRemove > 0 && lastRowToRemove >= firstRowToRemove)
+            {
+                Range rangeToRemove = worksheet.Range[worksheet.Cells[firstRowToRemove, 1], worksheet.Cells[lastRowToRemove, worksheet.UsedRange.Columns.Count]];
+                rangeToRemove.Delete(XlDeleteShiftDirection.xlShiftUp);
+            }
+
+            Range usedRange = worksheet.UsedRange;
+            int rowCount = usedRange.Rows.Count;
+            int columnCount = usedRange.Columns.Count;
+            string[,] dataArray = new string[rowCount -1, columnCount -1];
+
+            for (int rowIdx = 1; rowIdx <= rowCount; rowIdx++)
+            {
+                for (int colIdx = 1; colIdx <= columnCount; colIdx++)
+                {
+                    dataArray[rowIdx - 1, colIdx - 1] = ((Range)usedRange.Cells[rowIdx, colIdx]).Value?.ToString() ?? "";
+                }
+            }
+
+            return dataArray;
+        }
+        finally
+        {
+            if (worksheet != null) Marshal.ReleaseComObject(worksheet);
+            if (workbook != null) Marshal.ReleaseComObject(workbook);
+            if (excelApp != null)
+            {
+                excelApp.Quit();
+                Marshal.ReleaseComObject(excelApp);
+            }
+        }
+    }
 }
