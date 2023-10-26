@@ -29,6 +29,7 @@ public class Program
         //new[] { DbLoggerCategory.Database.Command.Name },
         //LogLevel.Information).EnableDetailedErrors());
 
+        builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
         builder.Services.AddScoped<WriteRuToXL>();
@@ -39,8 +40,8 @@ public class Program
         builder.Services.AddScoped<UpdatePriceQuantityService>();
         builder.Services.AddScoped<UpdatePriceQuantityController>();
         builder.Services.AddScoped<ProcessXMLController>();
-        builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<PriceQuantityViewModel>();
+        builder.Services.AddScoped<UpdateMainXml>();
 
         //builder.Services.AddLogging(b => b.AddConsole());
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);
