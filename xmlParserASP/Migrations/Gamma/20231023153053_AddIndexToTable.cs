@@ -4,15 +4,15 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace xmlParserASP.Migrations.Gamma
+namespace xmlParserASP.Migrations.Gamma;
+
+/// <inheritdoc />
+public partial class AddIndexToTable : Migration
 {
     /// <inheritdoc />
-    public partial class AddIndexToTable : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
+        migrationBuilder.CreateTable(
                 name: "products_manual_set_quanitys",
                 columns: table => new
                 {
@@ -27,20 +27,19 @@ namespace xmlParserASP.Migrations.Gamma
                 {
                     table.PrimaryKey("pk_products_manual_set_quanitys", x => x.id);
                 })
-                .Annotation("MySQL:Charset", "utf8mb4");
+            .Annotation("MySQL:Charset", "utf8mb4");
 
-            migrationBuilder.CreateIndex(
-                name: "ix_products_manual_set_quanitys_sku",
-                table: "products_manual_set_quanitys",
-                column: "sku",
-                unique: true);
-        }
+        migrationBuilder.CreateIndex(
+            name: "ix_products_manual_set_quanitys_sku",
+            table: "products_manual_set_quanitys",
+            column: "sku",
+            unique: true);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "products_manual_set_quanitys");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "products_manual_set_quanitys");
     }
 }

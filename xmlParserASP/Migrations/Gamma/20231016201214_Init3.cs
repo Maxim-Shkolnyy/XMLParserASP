@@ -4,21 +4,20 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace xmlParserASP.Migrations.Gamma
+namespace xmlParserASP.Migrations.Gamma;
+
+/// <inheritdoc />
+public partial class Init3 : Migration
 {
     /// <inheritdoc />
-    public partial class Init3 : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {         
+
+    }
+
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {         
-
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
             
-        }
     }
 }

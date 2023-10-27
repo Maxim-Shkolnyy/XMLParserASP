@@ -8,26 +8,25 @@ using System.Threading.Tasks;
 using xmlParserASP.Presistant;
 using xmlParserASP.Entities.Gamma;
 
-namespace xmlParserASP.Services.Tests
+namespace xmlParserASP.Services.Tests;
+
+[TestClass()]
+public class UpdateMainXmlTests
 {
-    [TestClass()]
-    public class UpdateMainXmlTests
+    GammaContext _gammaContext;
+
+    public UpdateMainXmlTests(GammaContext gammaContext)
     {
-        GammaContext _gammaContext;
+        _gammaContext = gammaContext;
+    }
 
-        public UpdateMainXmlTests(GammaContext gammaContext)
-        {
-            _gammaContext = gammaContext;
-        }
+    [TestMethod()]
+    public void UpdateGammaXmlTest()
+    {
+        UpdateMainXml ux = new(_gammaContext);
 
-        [TestMethod()]
-        public void UpdateGammaXmlTest()
-        {
-            UpdateMainXml ux = new(_gammaContext);
+        //var myObj = ux.UpdateGammaXml();
 
-            //var myObj = ux.UpdateGammaXml();
-
-            //Assert.IsNotNull(myObj);
-        }
+        //Assert.IsNotNull(myObj);
     }
 }

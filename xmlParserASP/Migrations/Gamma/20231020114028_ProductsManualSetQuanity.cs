@@ -3,15 +3,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace xmlParserASP.Migrations.Gamma
+namespace xmlParserASP.Migrations.Gamma;
+
+/// <inheritdoc />
+public partial class ProductsManualSetQuanity : Migration
 {
     /// <inheritdoc />
-    public partial class ProductsManualSetQuanity : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
+        migrationBuilder.CreateTable(
                 name: "products_manual_set_quanitys",
                 columns: table => new
                 {
@@ -24,14 +24,13 @@ namespace xmlParserASP.Migrations.Gamma
                 {
                     table.PrimaryKey("pk_products_manual_set_quanitys", x => x.sku);
                 })
-                .Annotation("MySQL:Charset", "utf8mb4");
-        }
+            .Annotation("MySQL:Charset", "utf8mb4");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "products_manual_set_quanitys");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "products_manual_set_quanitys");
     }
 }
