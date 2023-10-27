@@ -14,15 +14,20 @@ public class UpdateMainXml
 
     public void UpdateGammaXml()
     {
-        var gammaAllProducts = _dbContextGamma.OcProducts.Where(p =>!p.Sku.StartsWith("4")). ToList();
+        var gammaAllProducts = _dbContextGamma.OcProducts.Where(p => !p.Sku.StartsWith("4") & !p.Sku.StartsWith("5")).ToList();
 
-        var skuPriceQtyString = gammaAllProducts.Select(p => new
-        {
-            ProducrId = p.ProductId.ToString(),
-            Sku = p.Sku.ToString(), 
-            Price = p.Price.ToString(),
-            Quantity = p.Quantity.ToString()
-        });
+
+        var AllProducts = _dbContextGamma.OcProducts.Where(p => !p.Sku.StartsWith("4") & !p.Sku.StartsWith("5")).
+            Join(_dbContextGamma.OcProductDescriptions.Where(m => m.LanguageId == 4)
+                .Select(n => new
+                {
+                    n.ProductId,
+                    n.Description
+                });
+
+
+
+
 
         var skuPriceQty = gammaAllProducts.Select(p => new
         {
@@ -32,13 +37,20 @@ public class UpdateMainXml
             p.Quantity
         });
 
-        //var nameCat =
-        //    _dbContextGamma.OcProductToCategories.Where(p => p.ProductId).Contains(n => n..)
-        }
-
-        public void UpdateSuppliersXml()
+        var gammaNames = _dbContextGamma.OcProductDescriptions.Where(n => n.LanguageId ==4).Select(t => new
         {
+            t.ProductId,
+            t.Name
 
-        }
-    
+        });
+
+
+
+    }
+
+    public void UpdateSuppliersXml()
+    {
+
+    }
+
 }

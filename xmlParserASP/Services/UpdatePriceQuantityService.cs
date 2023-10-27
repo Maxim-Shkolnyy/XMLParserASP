@@ -481,7 +481,6 @@ public class UpdatePriceQuantityService
             int stock1 = 0;
             int stock2 = 0;
             int stock3 = 0;
-
             if (!int.TryParse(item.SelectSingleNode(suppSettings.QuantityDBStock1)?.InnerText, out stock1))
             {
                 stock1 = 0;
