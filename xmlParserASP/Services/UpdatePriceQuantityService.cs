@@ -589,83 +589,87 @@ public class UpdatePriceQuantityService
     {
         foreach (var dbModel in dbCodeModelPriceList)
         {
+            string? xmlValue;
 
-            if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
+            if (xmlModelPriceList.TryGetValue(dbModel.Item2, out xmlValue))
             {
-                try
+                if (dbModel.Item3 != xmlValue)
                 {
-                    int? dbValue = 0;
-                    int currentXmlValue = 0;
-
-                    if (dbModel.Item3.Contains("."))
+                    try
                     {
-                        dbValue = Convert.ToInt32(dbModel.Item3.Replace(".", ","));
-                    }
-                    else
-                    {
-                        dbValue = Convert.ToInt32(dbModel.Item3);
-                    }
+                        int? dbValue = 0;
+                        int currentXmlValue = 0;
 
-                    if (xmlValue.Contains("."))
-                    {
-                        currentXmlValue = Convert.ToInt32(xmlValue.Replace(".", ","));
-                    }
-                    else
-                    {
-                        currentXmlValue = Convert.ToInt32(xmlValue);
-                    }
-
-                    var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
-
-                    if (productToUpdate == null)
-                        continue;
-
-                    if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності
-                    {
-                        productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty?? 0;
-                        stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity set default. Old - new:_{dbModel.Item3}_{currentXmlValue}", "black"));
-
-                    }
-                    else
-                    {
-                        if (dbValue != currentXmlValue)
+                        if (dbModel.Item3.Contains("."))
                         {
-                            if (dbValue < currentXmlValue)
+                            dbValue = Convert.ToInt32(dbModel.Item3.Replace(".", ","));
+                        }
+                        else
+                        {
+                            dbValue = Convert.ToInt32(dbModel.Item3);
+                        }
+
+                        if (xmlValue.Contains("."))
+                        {
+                            currentXmlValue = Convert.ToInt32(xmlValue.Replace(".", ","));
+                        }
+                        else
+                        {
+                            currentXmlValue = Convert.ToInt32(xmlValue);
+                        }
+
+                        var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+
+                        if (productToUpdate == null)
+                            continue;
+
+                        if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності
+                        {
+                            productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty?? 0;
+                            stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
+
+                        }
+                        else
+                        {
+                            if (dbValue != currentXmlValue)
                             {
-                                if (currentXmlValue > 0)
+                                if (dbValue < currentXmlValue)
                                 {
-                                    productToUpdate.Quantity = currentXmlValue;
-                                    productToUpdate.StockStatusId = 7;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    if (currentXmlValue > 0)
+                                    {
+                                        productToUpdate.Quantity = currentXmlValue;
+                                        productToUpdate.StockStatusId = 7;
+                                        stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    }
+                                    else
+                                    {
+                                        productToUpdate.Quantity = currentXmlValue;
+                                        productToUpdate.StockStatusId = 5;
+                                        stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    }
                                 }
                                 else
                                 {
-                                    productToUpdate.Quantity = currentXmlValue;
-                                    productToUpdate.StockStatusId = 5;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
-                                }
-                            }
-                            else
-                            {
-                                if (currentXmlValue > 0)
-                                {
-                                    productToUpdate.Quantity = currentXmlValue;
-                                    productToUpdate.StockStatusId = 7;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
-                                }
-                                else
-                                {
-                                    productToUpdate.Quantity = currentXmlValue;
-                                    productToUpdate.StockStatusId = 5;
-                                    stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    if (currentXmlValue > 0)
+                                    {
+                                        productToUpdate.Quantity = currentXmlValue;
+                                        productToUpdate.StockStatusId = 7;
+                                        stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    }
+                                    else
+                                    {
+                                        productToUpdate.Quantity = currentXmlValue;
+                                        productToUpdate.StockStatusId = 5;
+                                        stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                catch (Exception)
-                {
-                    stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    catch (Exception)
+                    {
+                        stateMessages.Add(($"Error occurred while quantity of {suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    }
                 }
             }
         }
