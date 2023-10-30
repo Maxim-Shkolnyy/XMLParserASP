@@ -65,6 +65,19 @@ public class UpdateMainXml
                 i.Name
             });
 
+        var query = from product in _dbContextGamma.OcProducts
+            join prodName in _dbContextGamma.OcProductDescriptions on product.ProductId equals prodName.ProductId
+            join prodCat in _dbContextGamma.OcProductToCategories on product.ProductId equals prodCat.ProductId
+
+            select new
+            {
+                Id = product.ProductId,
+                Quantity = product.Quantity,
+                Price = product.Price,
+                Name = prodName.Name,
+                Cat = prodCat.CategoryId
+            };
+
 
 
         return str;
