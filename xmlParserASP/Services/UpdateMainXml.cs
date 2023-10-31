@@ -3,6 +3,7 @@ using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Entities.TestGamma;
 using xmlParserASP.Presistant;
 using xmlParserASP.Entities;
+using System.Xml.Serialization;
 
 namespace xmlParserASP.Services;
 
@@ -78,6 +79,8 @@ public class UpdateMainXml
                         Name = prodName.Name,
                         Category = prodCat.CategoryId
                     };
+
+        string myXml = XmlSerializer.GetXmlSerializerAssemblyName(typeof(ProductToXml));
 
 
 
