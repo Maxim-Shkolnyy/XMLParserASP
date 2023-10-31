@@ -2,6 +2,7 @@
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Entities.TestGamma;
 using xmlParserASP.Presistant;
+using xmlParserASP.Entities;
 
 namespace xmlParserASP.Services;
 
@@ -22,12 +23,12 @@ public class UpdateMainXml
         var AllProducts = _dbContextGamma.OcProducts.Where(p => !p.Sku.StartsWith("4") && !p.Sku.StartsWith("5")).
         Join(_dbContextGamma.OcProductDescriptions.Where(p => p.LanguageId == 4),
             o => o.ProductId, i => i.ProductId, (o, i) => new
-        {
-            o.ProductId,
-            o.Sku,
-            i.Name,
+            {
+                o.ProductId,
+                o.Sku,
+                i.Name,
 
-        });
+            });
 
 
         var newQuery = _dbContextGamma.OcProducts.Where(p => !p.Sku.StartsWith("4") && !p.Sku.StartsWith("5")).
@@ -56,7 +57,7 @@ public class UpdateMainXml
 
         string str = JsonConvert.SerializeObject(AllProducts);
 
-       
+
 
         var maxProd = _dbContextGamma.OcProducts.Where(n => n.Sku.StartsWith("4")).
             Join(_dbContextGamma.OcProductDescriptions, o => o.ProductId, i => i.ProductId, (o, i) => new
@@ -66,17 +67,17 @@ public class UpdateMainXml
             });
 
         var query = from product in _dbContextGamma.OcProducts
-            join prodName in _dbContextGamma.OcProductDescriptions on product.ProductId equals prodName.ProductId
-            join prodCat in _dbContextGamma.OcProductToCategories on product.ProductId equals prodCat.ProductId
+                    join prodName in _dbContextGamma.OcProductDescriptions on product.ProductId equals prodName.ProductId
+                    join prodCat in _dbContextGamma.OcProductToCategories on product.ProductId equals prodCat.ProductId
 
-            select new
-            {
-                Id = product.ProductId,
-                Quantity = product.Quantity,
-                Price = product.Price,
-                Name = prodName.Name,
-                Cat = prodCat.CategoryId
-            };
+                    select new ProductToXml
+                    {
+                        Sku = product.Sku,
+                        Quantity = product.Quantity,
+                        Price = product.Price,
+                        Name = prodName.Name,
+                        Category = prodCat.CategoryId
+                    };
 
 
 
