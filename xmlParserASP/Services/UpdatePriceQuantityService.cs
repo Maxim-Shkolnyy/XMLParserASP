@@ -372,8 +372,10 @@ public class UpdatePriceQuantityService
         }
         else
         {
-            // З'єднання з FTP для отримання списку файлів
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{remoteFilePath}"));
+            // З'єднання з FTP для отримання списку файлів з екрануванням спецсиволів у імені файла
+            string filePath = Uri.EscapeUriString(remoteFilePath);
+
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{filePath}"));
             request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
             request.Method = WebRequestMethods.Ftp.ListDirectory;
 
@@ -394,7 +396,7 @@ public class UpdatePriceQuantityService
                     // Завантаження найновішого файлу
                     WebClient ftpClient = new WebClient();
                     ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-                    ftpClient.DownloadFile($"ftp://{ftpHost}/{remoteFilePath}/{newestFileName}", newestFileName);
+                    ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
 
                     // Обробка файлу Excel
                     using (var vb = new XLWorkbook(newestFileName))
