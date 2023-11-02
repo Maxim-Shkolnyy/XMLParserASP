@@ -6,6 +6,7 @@ using xmlParserASP.Entities;
 using System.Xml.Serialization;
 using System.Net;
 using FluentFTP;
+using System.Diagnostics;
 
 namespace xmlParserASP.Services;
 
@@ -16,7 +17,7 @@ public class UpdateMainXml
     private readonly string _ftpUser = "zi391919_victor";
     private readonly string _ftpPass = "6C8z94TFhn";
     private readonly string _remoteFilePath = @"/image/catalog/xml/gamma/old1s.xml"; //\image\catalog\xml\exchange\max.xml
-    private readonly string _localFilePath = @"D:\Downloads\andr.txt";
+    private readonly string _localFilePath = @"D:\Downloads\andr.txt";  // "/db_backups"
 
     public UpdateMainXml(GammaContext gammaContext)
     {
@@ -141,6 +142,49 @@ public class UpdateMainXml
         //        o.Sku,
         //        i.Name
         //    });
+    }
+
+    static void FTPUpload()
+    {
+        try
+        {
+            FtpTrace.AddListener(new ConsoleTraceListener());
+
+            FtpClient client = new FtpClient(ftpServer);
+            client.Credentials = new NetworkCredential(ftpLogin, ftpPassword);
+            client.RetryAttempts = 3;
+            client.Connect();
+
+            if (!string.IsNullOrEmpty(ftpDir) && ftpDir != "/")
+            {
+                if (!client.DirectoryExists(ftpDir))
+                {
+                    client.CreateDirectory(ftpDir);
+                }
+            }
+
+            foreach (FtpListItem item in client.GetListing(ftpDir))
+            {
+                if (item.Type == FtpFileSystemObjectType.File)
+                {
+                    DateTime time = client.GetModifiedTime(item.FullName);
+
+                    if (time < DateTime.Now.AddDays(-DeletionDays))
+                        client.DeleteFile(item.FullName);
+                }
+            }
+
+            string[] localFiles = Directory.GetFiles(backupDir);
+
+            client.UploadFiles(localFiles, ftpDir, FtpExists.Skip, true, FtpVerify.Retry);
+
+            client.Disconnect();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
     }
 
     public void UpdateSuppliersXml()
