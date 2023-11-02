@@ -5,6 +5,7 @@ using xmlParserASP.Presistant;
 using xmlParserASP.Entities;
 using System.Xml.Serialization;
 using System.Net;
+using FluentFTP;
 
 namespace xmlParserASP.Services;
 
@@ -14,6 +15,8 @@ public class UpdateMainXml
     private readonly string _ftpHost = "zi391919.ftp.tools";
     private readonly string _ftpUser = "zi391919_victor";
     private readonly string _ftpPass = "6C8z94TFhn";
+    private readonly string _remoteFilePath = @"/image/catalog/xml/gamma/old1s.xml"; //\image\catalog\xml\exchange\max.xml
+    private readonly string _localFilePath = @"D:\Downloads\andr.txt";
 
     public UpdateMainXml(GammaContext gammaContext)
     {
@@ -35,6 +38,8 @@ public class UpdateMainXml
                         Category = prodCat.CategoryId
                     };
 
+        List<ProductToXml> products = query.ToList();
+
         var xmlSerializer = new XmlSerializer(typeof(List<ProductToXml>));
 
         using (MemoryStream stream = new())
@@ -42,13 +47,41 @@ public class UpdateMainXml
             xmlSerializer.Serialize(stream, query.ToList());
             stream.Seek(0, SeekOrigin.Begin);
 
+            using (FtpClient client = new FtpClient(_ftpHost, _ftpUser, _ftpPass))
+            {
+                client.Connect();
 
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri("https://gamma.net.ua/image/catalog/xml/exchange/max.xml"));
+                if (client.IsConnected)
+                {
+                    // Upload the file
+                    client.UploadFile(_localFilePath, _remoteFilePath);
 
-            request.Credentials = new NetworkCredential(_ftpUser, _ftpPass, _ftpHost);
-            request.Method = WebRequestMethods.Ftp.UploadData;
+                    Console.WriteLine("File uploaded successfully.");
 
-            //using (var xmlString = new StreamWriter())
+                    client.Disconnect();
+                }
+                else
+                {
+                    Console.WriteLine("Failed to connect to the FTP server.");
+                }
+            }
+
+
+            //FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{_ftpHost}/image/catalog/xml/exchange/max.xml"));
+
+            //request.Credentials = new NetworkCredential(_ftpUser, _ftpPass);
+            //request.Method = WebRequestMethods.Ftp.UploadFile;
+
+            //using (Stream fileStream = File.OpenRead(@"D:\Downloads\andr.txt"))
+
+            //using (Stream ftpStream = request.GetResponse().GetResponseStream())
+            //{
+            //    fileStream.CopyTo(ftpStream);
+            //}
+            //FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            //Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+            //response.Close();
+
 
 
 
