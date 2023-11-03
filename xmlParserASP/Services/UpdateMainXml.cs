@@ -16,6 +16,7 @@ public class UpdateMainXml
     private readonly string _ftpPass = "6C8z94TFhn";
     private readonly string _localFilePath = @"D:\ftp\";  // "/db_backups"
     private readonly string _ftpDir = "/exchange/";
+    private readonly string _fileName = "products.xml";
     private readonly int deletionDays = 3;
 
     public UpdateMainXml(GammaContext gammaContext)
@@ -23,7 +24,7 @@ public class UpdateMainXml
         _dbContextGamma = gammaContext;
     }
 
-    public string UpdateGammaXml()
+    public void UpdateGammaXml()
     {
         var query = from product in _dbContextGamma.OcProducts
                     join prodName in _dbContextGamma.OcProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
@@ -42,7 +43,7 @@ public class UpdateMainXml
 
         var xmlSerializer = new XmlSerializer(typeof(List<ProductToXml>));
 
-        var localFile = Path.Combine(_localFilePath, "products1.xml");
+        var localFile = Path.Combine(_localFilePath, _fileName);
 
         using (FileStream stream = new(localFile, FileMode.Create))
         {
@@ -51,10 +52,6 @@ public class UpdateMainXml
         }
 
         FTPUpload();
-
-        string str = "";
-        return str;
-
     }
 
     private void FTPUpload()
@@ -107,7 +104,7 @@ public class UpdateMainXml
             }
             else
             {
-                Console.WriteLine($"3 unsuccessful attempts to connect to ftp server: {ex.ToString()}");
+                Console.WriteLine($"3 unsuccessful attempts to connect to ftp server: {ex}");
             }
 
         }
