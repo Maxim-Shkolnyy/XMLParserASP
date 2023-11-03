@@ -28,8 +28,6 @@ public class UpdateMainXml
         var query = from product in _dbContextGamma.OcProducts
                     join prodName in _dbContextGamma.OcProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
                     join prodCat in _dbContextGamma.OcProductToCategories on product.ProductId equals prodCat.ProductId
-                    let firstCat = _dbContextGamma.OcProductToCategories.Where(pc => pc.ProductId == prodCat.ProductId).
-                    Select(cat => cat.CategoryId).FirstOrDefault()
 
                     select new ProductToXml
                     {
