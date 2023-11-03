@@ -23,20 +23,24 @@ public class UpdateMainXml
         _dbContextGamma = gammaContext;
     }
 
-    public string UpdateGammaXml()
+    public void UpdateGammaXml()
     {
         var query = from product in _dbContextGamma.OcProducts
-                    join prodName in _dbContextGamma.OcProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
-                    join prodCat in _dbContextGamma.OcProductToCategories on product.ProductId equals prodCat.ProductId
+            join prodName in _dbContextGamma.OcProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
+            join prodCat in _dbContextGamma.OcProductToCategories.
+                    GroupBy(pc => pc.ProductId).Select(g => new { ProductId = g.Key, GroupId = g.FirstOrDefault().CategoryId })
 
-                    select new ProductToXml
-                    {
-                        Sku = product.Sku,
-                        Quantity = product.Quantity,
-                        Price = product.Price,
-                        Name = prodName.Name,
-                        Category = prodCat.CategoryId
-                    };
+                on product.ProductId equals prodCat.ProductId
+
+            select new ProductToXml
+            {
+                Sku = product.Sku,
+                Quantity = product.Quantity,
+                Price = product.Price,
+                Name = prodName.Name,
+                Category = prodCat.GroupId  // Змінено тут з CategoryId на GroupId
+            };
+
 
         List<ProductToXml> products = query.ToList();
 
@@ -51,10 +55,6 @@ public class UpdateMainXml
         }
 
         FTPUpload();
-
-        string str = "";
-        return str;
-
     }
 
     private void FTPUpload()
