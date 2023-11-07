@@ -16,6 +16,7 @@ public class UpdateMainXml
     private readonly string _ftpPass = "6C8z94TFhn";
     private readonly string _localFilePath = @"D:\ftp\";  // "/db_backups"
     private readonly string _ftpDir = "/exchange/";
+    private readonly string _fileName = "products46.xml";
     private readonly int deletionDays = 3;
 
     public UpdateMainXml(GammaContext gammaContext)
@@ -42,11 +43,11 @@ public class UpdateMainXml
             };
 
 
-        List<ProductToXml> products = query.ToList();
+        //List<ProductToXml> products = query.ToList();
 
         var xmlSerializer = new XmlSerializer(typeof(List<ProductToXml>));
 
-        var localFile = Path.Combine(_localFilePath, "products1.xml");
+        var localFile = Path.Combine(_localFilePath, _fileName);
 
         using (FileStream stream = new(localFile, FileMode.Create))
         {
@@ -66,7 +67,7 @@ public class UpdateMainXml
             client.Credentials = new NetworkCredential(_ftpUser, _ftpPass);
 
 
-            Trace.TraceInformation("Attempting to open an FTP connection.");
+            //Trace.TraceInformation("Attempting to open an FTP connection.");
 
             client.Connect();
 
