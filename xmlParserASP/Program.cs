@@ -5,6 +5,16 @@ using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
 
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
+
 namespace xmlParserASP;
 
 public class Program
@@ -30,6 +40,21 @@ public class Program
         //LogLevel.Information).EnableDetailedErrors());
 
         builder.Services.AddControllersWithViews();
+        builder.Services.AddAuthorization();
+
+        builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+            .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+
+        builder.Services.AddControllersWithViews(options =>
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+            options.Filters.Add(new AuthorizeFilter(policy));
+        });
+        builder.Services.AddRazorPages()
+            .AddMicrosoftIdentityUI();
+
         builder.Services.AddScoped<SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
         builder.Services.AddScoped<WriteRuToXL>();
@@ -61,7 +86,7 @@ public class Program
         app.UseRouting();
 
         app.UseAuthorization();
-        //app.UseAuthentication();
+        app.UseAuthentication();
 
         app.MapControllerRoute(
             name: "default",

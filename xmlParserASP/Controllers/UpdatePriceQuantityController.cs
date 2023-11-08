@@ -3,10 +3,11 @@ using xmlParserASP.Presistant;
 using xmlParserASP.Entities;
 using xmlParserASP.Models;
 using xmlParserASP.Services;
-
+using xmlParserASP.Authentication;
 
 namespace xmlParserASP.Controllers;
 
+[HasPermission(Permission.FullAccessesMember)]
 public class UpdatePriceQuantityController : Controller
 {
     private readonly MyDBContext _db;
