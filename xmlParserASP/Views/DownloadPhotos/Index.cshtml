@@ -14,15 +14,15 @@
     <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting">
         <option value="">-- Select --</option>
         @foreach (var setting in Model.SupplierXmlSettings)
-    {
-        <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
-    }
+        {
+            <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
+        }
     </select>
     <br /><br />
 
     @using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post))
-{
-    <div class="form-group">
+    {
+        <div class="form-group">
             <label>Rename photos?</label>
             <div>
                 <label>
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-    <div id="renameBlock" style="display: none;">
+        <div id="renameBlock" style="display: none;">
             Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
             <table width="70%">
                 <thead>
@@ -54,9 +54,9 @@
             </table>
 
         </div>
-    <br />
-    <button type="submit" class="btn btn-primary">Download photos from xml</button>
-}
+        <br />
+        <button type="submit" class="btn btn-primary">Download photos from xml</button>
+    }
 </form>
 <br />
 <br />
@@ -67,27 +67,25 @@
 
 <p>
     @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @* <div class="form-group">
-    <label for="filePath" class="control-label">Choose folder:</label>
-    <select name="filePath" class="form-control" asp-items="@ViewBag.stringPath">
-    </select>
-    </div> *@
-    <label for="ModelColumn">Model column</label>
-    <input asp-for="ModelColumn" value="1">
-    <label for="PictureColumn">Picture column</label>
-    <input asp-for="PictureColumn" value="2">
-    <label for="SheetNumber">Sheet number</label>
-    <input asp-for="SheetNumber" value="1">
-    <br /><br />
+    {
 
-    <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
-    <input type="hidden" asp-action="DownloadFromXL" />
-    <br />
 
-    <br />
-    <button type="submit" class="btn btn-success">Download from Xl</button>
-}
+        <form asp-action="DownloadFromXL" method="post" enctype="multipart/form-data">
+            <label for="ModelColumn">Model column</label>
+            <input type="text" asp-for="ModelColumn" value="sku">
+            <label for="PictureColumn">Picture column</label>
+            <input type="text" asp-for="PictureColumn" value="image_name">
+            <label for="SheetNumber">Sheet number</label>
+            <input asp-for="SheetNumber" value="1">
+            <br /><br />
+
+            <label for="ExcelFile">Select Excel File</label>
+            <input type="file" id="excelFile" name="excelFile" class="form-control" required />
+            <br />
+
+            <button type="submit" class="btn btn-success">Download from Xl</button>
+        </form>
+    }
 </p>
 
 @section scripts {
@@ -104,3 +102,53 @@
         });
     </script>
 }
+
+
+
+
+
+
+
+@* звантаження фото НА сервер
+
+    <script>
+    document.getElementById("excelFile").addEventListener("change", function () {
+    var fileName = this.value.split("\\").pop();
+    var label = document.querySelector('[for="ExcelFile"]');
+    label.innerHTML = "Selected Excel File: " + fileName;
+    });
+
+    document.getElementById("photoFolder").addEventListener("change", function () {
+    var folderName = this.value.split("\\").pop();
+    var label = document.querySelector('[for="PhotoFolder"]');
+    label.innerHTML = "Selected Photo Folder: " + folderName;
+    });
+    </script>
+    *@
+
+@* <div class="form-group">
+    <label for="filePath" class="control-label">Choose folder:</label>
+    <select name="filePath" class="form-control" asp-items="@ViewBag.stringPath">
+    </select>
+    </div> *@
+@*     <label for="ModelColumn">Model column</label>
+    <input type="text" asp-for="ModelColumn" value="sku">
+    <label for="PictureColumn">Picture column</label>
+    <input type="text" asp-for="PictureColumn" value="image_name">
+    <label for="SheetNumber">Sheet number</label>
+    <input asp-for="SheetNumber" value="1">
+    <br /><br />
+
+    <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
+    <input type="hidden" asp-action="DownloadFromXL" />
+    <br />
+
+    <br />
+    <button type="submit" class="btn btn-success">Download from Xl</button>
+
+
+    @* <label for="PhotoFolder">Select Photo Folder</label>
+    <input type="file" id="photoFolder" name="photoFolder" class="form-control" webkitdirectory required/>
+    <br/> *@
+
+

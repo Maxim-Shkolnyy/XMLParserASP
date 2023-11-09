@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
-using Microsoft.Office.Interop.Excel;
+//using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using Range = Microsoft.Office.Interop.Excel.Range;
+//using Range = Microsoft.Office.Interop.Excel.Range;
 
 namespace xmlParserASP.Services;
 
@@ -108,47 +108,47 @@ static class ProcessExcel
     }
 
 
-    public static string[,] ReadWorksheetToArrayPassword(string filePath, int sheetIndex, int? col1, int? col2, int? col3, int? col4, int firstRowToRemove, int lastRowToRemove, string password)
-    {
-        Application excelApp = new Application();
-        Workbook workbook = null;
-        Worksheet worksheet = null;
+    //public static string[,] ReadWorksheetToArrayPassword(string filePath, int sheetIndex, int? col1, int? col2, int? col3, int? col4, int firstRowToRemove, int lastRowToRemove, string password)
+    //{
+    //    Application excelApp = new Application();
+    //    Workbook workbook = null;
+    //    Worksheet worksheet = null;
 
-        try
-        {
-            workbook = excelApp.Workbooks.Open(filePath, Password: password);
-            worksheet = (Worksheet)workbook.Sheets[sheetIndex];
+    //    try
+    //    {
+    //        workbook = excelApp.Workbooks.Open(filePath, Password: password);
+    //        worksheet = (Worksheet)workbook.Sheets[sheetIndex];
 
-            if (firstRowToRemove > 0 && lastRowToRemove >= firstRowToRemove)
-            {
-                Range rangeToRemove = worksheet.Range[worksheet.Cells[firstRowToRemove, 1], worksheet.Cells[lastRowToRemove, worksheet.UsedRange.Columns.Count]];
-                rangeToRemove.Delete(XlDeleteShiftDirection.xlShiftUp);
-            }
+    //        if (firstRowToRemove > 0 && lastRowToRemove >= firstRowToRemove)
+    //        {
+    //            Range rangeToRemove = worksheet.Range[worksheet.Cells[firstRowToRemove, 1], worksheet.Cells[lastRowToRemove, worksheet.UsedRange.Columns.Count]];
+    //            rangeToRemove.Delete(XlDeleteShiftDirection.xlShiftUp);
+    //        }
 
-            Range usedRange = worksheet.UsedRange;
-            int rowCount = usedRange.Rows.Count;
-            int columnCount = usedRange.Columns.Count;
-            string[,] dataArray = new string[rowCount -1, columnCount -1];
+    //        Range usedRange = worksheet.UsedRange;
+    //        int rowCount = usedRange.Rows.Count;
+    //        int columnCount = usedRange.Columns.Count;
+    //        string[,] dataArray = new string[rowCount -1, columnCount -1];
 
-            for (int rowIdx = 1; rowIdx <= rowCount; rowIdx++)
-            {
-                for (int colIdx = 1; colIdx <= columnCount; colIdx++)
-                {
-                    dataArray[rowIdx - 1, colIdx - 1] = ((Range)usedRange.Cells[rowIdx, colIdx]).Value?.ToString() ?? "";
-                }
-            }
+    //        for (int rowIdx = 1; rowIdx <= rowCount; rowIdx++)
+    //        {
+    //            for (int colIdx = 1; colIdx <= columnCount; colIdx++)
+    //            {
+    //                dataArray[rowIdx - 1, colIdx - 1] = ((Range)usedRange.Cells[rowIdx, colIdx]).Value?.ToString() ?? "";
+    //            }
+    //        }
 
-            return dataArray;
-        }
-        finally
-        {
-            if (worksheet != null) Marshal.ReleaseComObject(worksheet);
-            if (workbook != null) Marshal.ReleaseComObject(workbook);
-            if (excelApp != null)
-            {
-                excelApp.Quit();
-                Marshal.ReleaseComObject(excelApp);
-            }
-        }
-    }
+    //        return dataArray;
+    //    }
+    //    finally
+    //    {
+    //        if (worksheet != null) Marshal.ReleaseComObject(worksheet);
+    //        if (workbook != null) Marshal.ReleaseComObject(workbook);
+    //        if (excelApp != null)
+    //        {
+    //            excelApp.Quit();
+    //            Marshal.ReleaseComObject(excelApp);
+    //        }
+    //    }
+    //}
 }

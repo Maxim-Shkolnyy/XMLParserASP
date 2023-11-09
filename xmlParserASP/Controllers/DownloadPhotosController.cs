@@ -229,19 +229,12 @@ public class DownloadPhotosController : Controller
         return View("DownloadFromXml");
     }
 
-    private string SanitizeModelValue(string modelValue)
-    {
-        string sanitizedValue = Regex.Replace(modelValue, @"[^a-zA-Z0-9-]", "-");
-
-        sanitizedValue = sanitizedValue.ToLowerInvariant();
-
-        return sanitizedValue;
-    }
+  
 
 
 
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile,  int? ModelColumn, int? PictureColumn, int? SheetNumber) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile,  string? ModelColumn, string? PictureColumn, int? SheetNumber) //string? filePath,
     {
         try
         {
@@ -267,9 +260,9 @@ public class DownloadPhotosController : Controller
                     await xmlFile.CopyToAsync(stream);
                 }
 
-                string modelColumnName = ModelColumn.ToString();
+                string modelColumnName = ModelColumn;
 
-                string photoUrlColumnName = PictureColumn.ToString();
+                string photoUrlColumnName = PictureColumn;
 
                 int numberOfSheet = SheetNumber ?? 1;
                 
@@ -403,5 +396,12 @@ public class DownloadPhotosController : Controller
     }
 
 
+    private string SanitizeModelValue(string modelValue)
+    {
+        string sanitizedValue = Regex.Replace(modelValue, @"[^a-zA-Z0-9-]", "-");
 
+        sanitizedValue = sanitizedValue.ToLowerInvariant();
+
+        return sanitizedValue;
+    }
 }
