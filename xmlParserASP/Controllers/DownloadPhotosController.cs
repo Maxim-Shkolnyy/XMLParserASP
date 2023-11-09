@@ -11,6 +11,7 @@ using xmlParserASP.Services;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using DocumentFormat.OpenXml.Office.Word;
 
 namespace xmlParserASP.Controllers;
 
@@ -234,8 +235,11 @@ public class DownloadPhotosController : Controller
 
 
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile,  string? ModelColumn, string? PictureColumn, int? SheetNumber) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber) //string? filePath,
     {
+        var suppSetting = _dbContext.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+        string? downloadFolder = suppSetting.PhotoFolder;
+        
         try
         {
             using (var client = new HttpClient())
@@ -249,7 +253,6 @@ public class DownloadPhotosController : Controller
                 int cannotDownload = 0;
                 int newPhotosAdded = 0;
 
-                //string excelFilePath = PathModel.Path;
                 string fileFileName = xmlFile.FileName;
                 string tempFolderPath = Path.GetTempPath();
 
@@ -269,7 +272,7 @@ public class DownloadPhotosController : Controller
 
                 using (var workbook = new XLWorkbook(tempFilePath))
                 {
-                    var worksheet = workbook.Worksheet(numberOfSheet); // Sheet Number
+                    var worksheet = workbook.Worksheet(numberOfSheet);
                     var firstRowUsed = worksheet.FirstRowUsed();
                     var modelColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == modelColumnName)?.WorksheetColumn();
                     var photoUrlColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == photoUrlColumnName)?.WorksheetColumn();
@@ -306,7 +309,7 @@ public class DownloadPhotosController : Controller
 
                         var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{cleanOriginalFileName}";
 
-                        //var fullFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
+                        var fullFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
 
                         if (modelPhotoUrls[modelValue].Contains(photoUrl))
                         {

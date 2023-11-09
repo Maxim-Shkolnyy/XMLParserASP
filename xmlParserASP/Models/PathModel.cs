@@ -46,7 +46,7 @@ public static class PathModel
     public static string imageNameInCatImg = "";
     
 
-    public static string PhotoFolder = @"D:\Downloads\Photo\";
+    public static string PhotoFolder = @"D:\img_download\";
     public static string Supplier = "Horoz";
 
 

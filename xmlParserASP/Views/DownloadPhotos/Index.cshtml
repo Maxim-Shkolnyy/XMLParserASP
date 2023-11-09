@@ -63,30 +63,44 @@
 
 
 <h2>Download from excel</h2>
-
-
 <p>
-    @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
 
+    <form asp-action="DownloadFromXL" method="post" enctype="multipart/form-data">
+        
+        <label for="selectedSupplierXmlSetting">Select supplier:</label>
+        <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting">
+            <option value="">-- Select --</option>
+            @foreach (var setting in Model.SupplierXmlSettings)
+            {
+                <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
+            }
+        </select>
+        <br /><br />
 
-        <form asp-action="DownloadFromXL" method="post" enctype="multipart/form-data">
+        @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post))
+        {
+
             <label for="ModelColumn">Model column</label>
             <input type="text" asp-for="ModelColumn" value="sku">
             <label for="PictureColumn">Picture column</label>
             <input type="text" asp-for="PictureColumn" value="image_name">
             <label for="SheetNumber">Sheet number</label>
             <input asp-for="SheetNumber" value="1">
-            <br /><br />
+            <br/>
+
+            <br/>
 
             <label for="ExcelFile">Select Excel File</label>
-            <input type="file" id="excelFile" name="excelFile" class="form-control" required />
-            <br />
+            <input type="file" id="xmlFile" name="xmlFile" class="form-control" required />
+            <br/>
 
             <button type="submit" class="btn btn-success">Download from Xl</button>
-        </form>
-    }
+
+        }
+    </form>
 </p>
+
+
 
 @section scripts {
     <script>
