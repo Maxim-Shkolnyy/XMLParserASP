@@ -235,7 +235,7 @@ public class DownloadPhotosController : Controller
 
 
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename) //string? filePath,
     {
         var suppSetting = _dbContext.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         string? downloadFolder = suppSetting.PhotoFolder;
