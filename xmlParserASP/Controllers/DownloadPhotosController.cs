@@ -18,20 +18,18 @@ namespace xmlParserASP.Controllers;
 public class DownloadPhotosController : Controller
 {
     private readonly MyDBContext _dbContext;
-    private readonly GammaContext _gammaContext;
     private string? suppName;
     private SupplierXmlSetting _suppSetting;
 
-    public DownloadPhotosController(MyDBContext dbContext, GammaContext gammaContext)
+    public DownloadPhotosController(MyDBContext dbContext)
     {
         _dbContext = dbContext;
-        _gammaContext = gammaContext;
     }
     public IActionResult Index()
     {
         //var myContext = _dbContext.SupplierXmlSettings;
 
-        var settingsWithSupplier = _gammaContext.SupplierXmlSettings.Where(s => s.Supplier != null).Include(m => m.Supplier).ToList();
+        var settingsWithSupplier = _dbContext.SupplierXmlSettings.Where(s => s.Supplier != null).Include(m => m.Supplier).ToList();
 
         //return View(settingsWithSupplier);
 
@@ -237,10 +235,10 @@ public class DownloadPhotosController : Controller
 
 
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename) //string? filePath,
     {
         var suppSetting = _dbContext.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
-        string? downloadFolder = suppSetting.PhotoFolder ?? "";
+        string? downloadFolder = suppSetting.PhotoFolder;
         
         try
         {
@@ -293,7 +291,7 @@ public class DownloadPhotosController : Controller
                         var photoUrl = currentRow.Cell(photoUrlColumn.ColumnNumber()).Value.ToString();
 
                         var originalFileName = Path.GetFileName(photoUrl);
-                        var cleanOriginalFileName = DelSpecialSymbols.SpecialSymbolsToDashes(originalFileName);
+                        var cleanOriginalFileName = DelSpecialSymbols.ToLowerAndSpecialSymbolsToDashes(originalFileName);
 
                         if (!modelCount.ContainsKey(modelValue))
                         {

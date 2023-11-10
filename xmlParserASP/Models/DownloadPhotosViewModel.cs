@@ -10,5 +10,5 @@ public class DownloadPhotosViewModel
     public int? PictureColumn { get; set;}
 
     public int? SheetNumber { get; set; }
-    //public bool Rename { get; set; } = false;
+    public bool? Rename { get; set; } = false;
 }

@@ -86,8 +86,8 @@
             <input type="text" asp-for="PictureColumn" value="image_name">
             <label for="SheetNumber">Sheet number</label>
             <input asp-for="SheetNumber" value="1">
-            @*<label for="Rename">Rename</label>
-            <input type="checkbox" asp-for="Rename" unchecked>*@
+            <label for="Rename">Rename</label>
+            <input type="checkbox" asp-for="Rename" unchecked>
             <br/>
 
             <br/>
@@ -95,40 +95,6 @@
             <label for="ExcelFile">Select Excel File</label>
             <input type="file" id="xmlFile" name="xmlFile" class="form-control" required />
             <br/>
-
-            <div class="form-group">
-                <label>Rename photos?</label>
-                <div>
-                    <label>
-                        <input type="radio" name="renameXlPhotos" value="true" /> Yes
-                    </label>
-                    <label>
-                        <input type="radio" name="renameXlPhotos" value="false" checked /> No
-                    </label>
-                </div>
-            </div>
-
-            <div id="renameXlBlock" style="display: none;">
-                Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
-                <table width="70%">
-                    <thead>
-                    <tr>
-                        <th>Prefix:</th>
-                        <th>Main Part:</th>
-                        <th>Suffix:</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><input type="text" id="prefix" name="prefix" class="form-control" /></td>
-                        <td><input type="text" id="mainPart" name="mainPart" class="form-control" /></td>
-                        <td><input type="text" id="suffix" name="suffix" class="form-control" /></td>
-                    </tr>
-                    </tbody>
-                </table>
-
-            </div>
-            <br />
 
             <button type="submit" class="btn btn-success">Download from Xl</button>
 
@@ -147,18 +113,6 @@
                     $('#renameBlock').show();
                 } else {
                     $('#renameBlock').hide();
-                }
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            $('input[name="renameXlPhotos"]').on('change', function () {
-                var selectedValue = $(this).val();
-                if (selectedValue === "true") {
-                    $('#renameXlBlock').show();
-                } else {
-                    $('#renameXlBlock').hide();
                 }
             });
         });
