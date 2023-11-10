@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using xmlParserASP.Entities.Gamma;
 
 namespace xmlParserASP.Entities;
 
-public class SupplierXmlSetting
+public class Mm_SupplierXmlSetting
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -17,7 +18,7 @@ public class SupplierXmlSetting
     public int? SupplierId { get; set; }
 
     // Навигационное свойство для связи с Supplier
-    public Supplier? Supplier { get; set; }
+    public Mm_Supplier? Supplier { get; set; }
 
     public string? Path { get; set; }
     public int? StartGammaIDFrom { get; set; }

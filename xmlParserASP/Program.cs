@@ -30,7 +30,7 @@ public class Program
         //LogLevel.Information).EnableDetailedErrors());
 
         builder.Services.AddControllersWithViews();
-        builder.Services.AddScoped<SupplierXmlSetting>();
+        builder.Services.AddScoped<Mm_SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
         builder.Services.AddScoped<WriteRuToXL>();
         builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsRU>();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using xmlParserASP.Entities;
+using xmlParserASP.Entities.TestGamma.OldMy;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 

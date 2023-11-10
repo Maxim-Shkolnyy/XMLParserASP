@@ -9,13 +9,13 @@ namespace xmlParserASP.Controllers;
 
 public class UpdatePriceQuantityController : Controller
 {
-    private readonly MyDBContext _db;
-    private readonly SupplierXmlSetting _setting;
+    private readonly GammaContext _db;
+    private readonly Mm_SupplierXmlSetting _setting;
     private readonly UpdatePriceQuantityService _updatePriceQuantityService;
     private readonly PriceQuantityViewModel _priceQuantityViewModel;
     private List<(string, string)>? updateAllPrices = new();
     private List<(string, string)>? updateQuantity = new();
-    public UpdatePriceQuantityController(MyDBContext db, SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
+    public UpdatePriceQuantityController(GammaContext db, Mm_SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
     {
         _db = db;
         _setting = setting;
@@ -27,7 +27,7 @@ public class UpdatePriceQuantityController : Controller
     {
         var settingList = new PriceQuantityViewModel
         {
-            SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
+            SupplierXmlSettings = _db.Mm_SupplierXmlSettings.ToList()
         };
 
         return View(settingList);
@@ -40,7 +40,7 @@ public class UpdatePriceQuantityController : Controller
         {
             var mySettingList = new PriceQuantityViewModel
             {
-                SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
+                SupplierXmlSettings = _db.Mm_SupplierXmlSettings.ToList()
             };
 
             ViewBag.SelectSupSetting = "Choose supplier first";

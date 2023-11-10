@@ -6,15 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
+using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
 
 public class SuppliersController : Controller
 {
-    private readonly MyDBContext _context;
+    private readonly GammaContext _context;
 
-    public SuppliersController(MyDBContext context)
+    public SuppliersController(GammaContext context)
     {
         _context = context;
     }
@@ -22,20 +23,20 @@ public class SuppliersController : Controller
     // GET: Suppliers
     public async Task<IActionResult> Index()
     {
-          return _context.Suppliers != null ? 
-                      View(await _context.Suppliers.OrderBy(n => n.SupplierName).ToListAsync()) :
+          return _context.Mm_Supplier != null ? 
+                      View(await _context.Mm_Supplier.OrderBy(n => n.SupplierName).ToListAsync()) :
                       Problem("Entity set 'MyDBContext.Suppliers'  is null.");
     }
 
     // GET: Suppliers/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null || _context.Suppliers == null)
+        if (id == null || _context.Mm_Supplier == null)
         {
             return NotFound();
         }
 
-        var supplier = await _context.Suppliers
+        var supplier = await _context.Mm_Supplier
             .FirstOrDefaultAsync(m => m.SupplierId == id);
         if (supplier == null)
         {
@@ -56,7 +57,7 @@ public class SuppliersController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     //[ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("SupplierName")] Supplier supplier)
+    public async Task<IActionResult> Create([Bind("SupplierName")] Mm_Supplier supplier)
     {
         if (ModelState.IsValid)
         {
@@ -70,12 +71,12 @@ public class SuppliersController : Controller
     // GET: Suppliers/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null || _context.Suppliers == null)
+        if (id == null || _context.Mm_Supplier == null)
         {
             return NotFound();
         }
 
-        var supplier = await _context.Suppliers.FindAsync(id);
+        var supplier = await _context.Mm_Supplier.FindAsync(id);
         if (supplier == null)
         {
             return NotFound();
@@ -88,7 +89,7 @@ public class SuppliersController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("SupplierId,SupplierName")] Supplier supplier)
+    public async Task<IActionResult> Edit(int id, [Bind("SupplierId,SupplierName")] Mm_Supplier supplier)
     {
         if (id != supplier.SupplierId)
         {
@@ -121,12 +122,12 @@ public class SuppliersController : Controller
     // GET: Suppliers/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null || _context.Suppliers == null)
+        if (id == null || _context.Mm_Supplier == null)
         {
             return NotFound();
         }
 
-        var supplier = await _context.Suppliers
+        var supplier = await _context.Mm_Supplier
             .FirstOrDefaultAsync(m => m.SupplierId.Equals(id));
         if (supplier == null)
         {
@@ -141,14 +142,14 @@ public class SuppliersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (_context.Suppliers == null)
+        if (_context.Mm_Supplier == null)
         {
             return Problem("Entity set 'MyDBContext.Suppliers'  is null.");
         }
-        var supplier = await _context.Suppliers.FindAsync(id);
+        var supplier = await _context.Mm_Supplier.FindAsync(id);
         if (supplier != null)
         {
-            _context.Suppliers.Remove(supplier);
+            _context.Mm_Supplier.Remove(supplier);
         }
         
         await _context.SaveChangesAsync();
@@ -157,6 +158,6 @@ public class SuppliersController : Controller
 
     private bool SupplierExists(int supplier)
     {
-      return (_context.Suppliers?.Any(e => e.SupplierId.Equals(supplier))).GetValueOrDefault();
+      return (_context.Mm_Supplier?.Any(e => e.SupplierId.Equals(supplier))).GetValueOrDefault();
     }
 }

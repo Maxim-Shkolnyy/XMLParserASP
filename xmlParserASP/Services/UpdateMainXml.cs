@@ -1,6 +1,5 @@
 ﻿using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
-using xmlParserASP.Entities;
 using System.Xml.Serialization;
 using System.Net;
 using FluentFTP;
@@ -33,7 +32,7 @@ public class UpdateMainXml
 
                 on product.ProductId equals prodCat.ProductId
 
-            select new ProductToXml
+            select new Mm_ProductToXml
             {
                 Sku = product.Sku,
                 Quantity = product.Quantity,
@@ -45,7 +44,7 @@ public class UpdateMainXml
 
         //List<ProductToXml> products = query.ToList();
 
-        var xmlSerializer = new XmlSerializer(typeof(List<ProductToXml>));
+        var xmlSerializer = new XmlSerializer(typeof(List<Mm_ProductToXml>));
 
         var localFile = Path.Combine(_localFilePath, _fileName);
 

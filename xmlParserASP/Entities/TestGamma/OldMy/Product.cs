@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace xmlParserASP.Entities;
+namespace xmlParserASP.Entities.TestGamma.OldMy;
 
 //[PrimaryKey(nameof(ProductId), nameof(MyCatId), nameof(SupplierId))]
 public class Product

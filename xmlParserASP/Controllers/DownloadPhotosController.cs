@@ -18,24 +18,26 @@ namespace xmlParserASP.Controllers;
 public class DownloadPhotosController : Controller
 {
     private readonly MyDBContext _dbContext;
+    private readonly GammaContext _gammaContext;
     private string? suppName;
-    private SupplierXmlSetting _suppSetting;
+    private Mm_SupplierXmlSetting _suppSetting;
 
-    public DownloadPhotosController(MyDBContext dbContext)
+    public DownloadPhotosController(MyDBContext dbContext, GammaContext gammaContext)
     {
         _dbContext = dbContext;
+        _gammaContext=gammaContext;
     }
     public IActionResult Index()
     {
         //var myContext = _dbContext.SupplierXmlSettings;
 
-        var settingsWithSupplier = _dbContext.SupplierXmlSettings.Where(s => s.Supplier != null).Include(m => m.Supplier).ToList();
+        var settingsWithSupplier = _gammaContext.Mm_SupplierXmlSettings.Where(s => s.Supplier != null).Include(m => m.Supplier).ToList();
 
         //return View(settingsWithSupplier);
 
         var model = new DownloadPhotosViewModel
         {
-            SupplierXmlSettings = _dbContext.SupplierXmlSettings.Include(m => m.Supplier).ToList()
+            SupplierXmlSettings = _gammaContext.Mm_SupplierXmlSettings.Include(m => m.Supplier).ToList()
         };
 
         var stringPath = new List<SelectListItem>
@@ -53,7 +55,7 @@ public class DownloadPhotosController : Controller
     [HttpPost]
     public async Task<ActionResult> DownloadFromXml(int? selectedSupplierXmlSetting, bool renamePhotos, string prefix, string mainPart, string suffix)
     {
-        _suppSetting = _dbContext.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+        _suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         if (_suppSetting == null)
         {
             ViewBag.MessageNoURL = "Supplier XML setting not found.";
@@ -237,7 +239,7 @@ public class DownloadPhotosController : Controller
     [HttpPost]
     public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename) //string? filePath,
     {
-        var suppSetting = _dbContext.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+        var suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         string? downloadFolder = suppSetting.PhotoFolder;
         
         try

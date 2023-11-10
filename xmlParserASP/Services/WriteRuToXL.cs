@@ -7,15 +7,15 @@ namespace xmlParserASP.Services;
 
 public class WriteRuToXL
 {
-    private readonly MyDBContext _db;
-    public WriteRuToXL(MyDBContext db)
+    private readonly GammaContext _db;
+    public WriteRuToXL(GammaContext db)
     {
         _db = db;
     }
 
     public void WriteRuColumnsToXL(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
         using (XLWorkbook workbook = new XLWorkbook())
         {

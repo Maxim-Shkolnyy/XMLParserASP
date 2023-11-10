@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace xmlParserASP.Entities;
+namespace xmlParserASP.Entities.TestGamma.OldMy;
 
 //[PrimaryKey(nameof(MyAttrId), nameof(LanguageId))]
 public class MyAttribute
 {
     [Key]
-    
+
     public int MyAttrId { get; set; }
 
     [Required]
@@ -16,6 +16,6 @@ public class MyAttribute
     public string MyAttrNameUA { get; set; }
 
     public string? MyAttrGroup { get; set; }
-    public ICollection <SupplierAttribute> SupplierAttributes {get; set;} 
+    public ICollection<SupplierAttribute> SupplierAttributes { get; set; }
 
 }

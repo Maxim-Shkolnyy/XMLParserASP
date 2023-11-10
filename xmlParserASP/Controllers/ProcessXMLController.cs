@@ -9,12 +9,13 @@ namespace xmlParserASP.Controllers;
 public class ProcessXMLController : Controller
 {
     private readonly MyDBContext _db;
+    private readonly GammaContext _gammaContext;
     private readonly ReadAttrFromXmlTo3ColumnsRU _readAttrFromXmlTo3ColumnsRU;
     private readonly ReadAttrFromXmlTo3ColumnsUA _readAttrFromXmlTo3ColumnsUA;
     private readonly WriteToXL _writeToXL;
     private readonly WriteRuToXL _writeToRuToXL;
     private readonly UniqNodesInXML _uniqNodesInXML;
-    public ProcessXMLController(MyDBContext db, ReadAttrFromXmlTo3ColumnsRU readAttrFromXmlTo3ColumnsRU, ReadAttrFromXmlTo3ColumnsUA readAttrFromXmlTo3ColumnsUA, WriteRuToXL writeRuToXL, WriteToXL writeToXL, UniqNodesInXML uniqNodesInXML)
+    public ProcessXMLController(MyDBContext db, ReadAttrFromXmlTo3ColumnsRU readAttrFromXmlTo3ColumnsRU, ReadAttrFromXmlTo3ColumnsUA readAttrFromXmlTo3ColumnsUA, WriteRuToXL writeRuToXL, WriteToXL writeToXL, UniqNodesInXML uniqNodesInXML, GammaContext gammaContext)
     {
         _db=db;
         _readAttrFromXmlTo3ColumnsRU=readAttrFromXmlTo3ColumnsRU;
@@ -22,15 +23,15 @@ public class ProcessXMLController : Controller
         _writeToRuToXL=writeRuToXL;
         _writeToXL=writeToXL;
         _uniqNodesInXML=uniqNodesInXML;
-
+        _gammaContext=gammaContext;
     }
     public IActionResult Index()
     {
-        var myContext = _db.SupplierXmlSettings;
+        var myContext = _gammaContext.Mm_SupplierXmlSettings;
 
         var model = new DownloadPhotosViewModel
         {
-            SupplierXmlSettings = _db.SupplierXmlSettings.ToList()
+            SupplierXmlSettings = _gammaContext.Mm_SupplierXmlSettings.ToList()
         };
 
         return View(model);
@@ -41,7 +42,7 @@ public class ProcessXMLController : Controller
     {
         _uniqNodesInXML.Read(selectedSupplierXmlSetting);
 
-        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
         if (suppSetting != null)
         {
             if (PathModel.Language == Language.Ua)
@@ -52,7 +53,7 @@ public class ProcessXMLController : Controller
             }
             else
             {
-                var writeToXLru = new WriteRuToXL(_db);
+                var writeToXLru = new WriteRuToXL(_gammaContext);
                 writeToXLru.WriteRuColumnsToXL(selectedSupplierXmlSetting);
 
                 _readAttrFromXmlTo3ColumnsRU.ReadAttrto3ru(selectedSupplierXmlSetting);

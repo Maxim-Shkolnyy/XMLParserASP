@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using xmlParserASP.Entities;
 using xmlParserASP.Entities.Gamma;
 
 namespace xmlParserASP.Presistant;
@@ -19,7 +20,13 @@ public partial class GammaContext : DbContext
         optionsBuilder.UseSnakeCaseNamingConvention();
     }
 
-    public virtual DbSet<ProductsManualSetQuanity> ProductsManualSetQuanitys { get; set; }
+    public virtual DbSet<Mm_Supplier> Mm_Supplier { get; set; }
+
+    public virtual DbSet<Mm_SupplierXmlSetting> Mm_SupplierXmlSettings { get; set; }
+    
+    public virtual DbSet<Mm_ManualSetQuanity> ProductsManualSetQuanitys { get; set; }
+
+    public virtual DbSet<Mm_ManualSetPrice> ProductsManualSetPrices { get; set; }
 
     public virtual DbSet<OcAddress> OcAddresses { get; set; }
 
@@ -7613,7 +7620,7 @@ public partial class GammaContext : DbContext
                 .HasColumnName("Ф.И.О.");
         });
 
-        modelBuilder.Entity<ProductsManualSetQuanity>().HasIndex(p => p.Sku).IsUnique();
+        modelBuilder.Entity<Mm_ManualSetQuanity>().HasIndex(p => p.Sku).IsUnique();
 
         OnModelCreatingPartial(modelBuilder);
     }

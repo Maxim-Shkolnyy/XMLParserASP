@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace xmlParserASP.Entities;
+namespace xmlParserASP.Entities.TestGamma.OldMy;
 
 //[PrimaryKey(nameof(SupplierCatId), nameof(SupplierId), nameof(LanguageId))]
 public class SupplierCategory

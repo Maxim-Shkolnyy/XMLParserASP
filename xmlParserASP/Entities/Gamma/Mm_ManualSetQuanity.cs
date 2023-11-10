@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace xmlParserASP.Entities.Gamma;
 
-public partial class ProductsManualSetQuanity
+public partial class Mm_ManualSetQuanity
 {
     //public ProductsManualSetQuanity()
     //{
@@ -19,5 +19,5 @@ public partial class ProductsManualSetQuanity
     [NotNull] 
     public int SetInStockQty { get; set; }
     public DateTime? DateStart { get; set; } = DateTime.Now;
-    public DateTime? DateEnd { get; set; } = DateTime.Now.AddMonths(1);
+    public DateTime? DateEnd { get; set; } = DateTime.Now.AddMonths(2);
 }

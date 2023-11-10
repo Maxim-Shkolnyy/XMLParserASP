@@ -6,15 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities;
+using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
 
 public class SupplierXmlSettingsController : Controller
 {
-    private readonly MyDBContext _context;
+    private readonly GammaContext _context;
 
-    public SupplierXmlSettingsController(MyDBContext context)
+    public SupplierXmlSettingsController(GammaContext context)
     {
         _context = context;
     }
@@ -22,19 +23,19 @@ public class SupplierXmlSettingsController : Controller
     // GET: SupplierXmlSettings
     public async Task<IActionResult> Index()
     {
-        var myDBContext = _context.SupplierXmlSettings.Include(s => s.Supplier);
+        var myDBContext = _context.Mm_SupplierXmlSettings.Include(s => s.Supplier);
         return View(await myDBContext.ToListAsync());
     }
 
     // GET: SupplierXmlSettings/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null || _context.SupplierXmlSettings == null)
+        if (id == null || _context.Mm_SupplierXmlSettings == null)
         {
             return NotFound();
         }
 
-        var supplierXmlSetting = await _context.SupplierXmlSettings
+        var supplierXmlSetting = await _context.Mm_SupplierXmlSettings
             .Include(s => s.Supplier)
             .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
         if (supplierXmlSetting == null)
@@ -48,7 +49,7 @@ public class SupplierXmlSettingsController : Controller
     // GET: SupplierXmlSettings/Create
     public IActionResult Create()
     {
-        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName");
+        ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName");
         return View();
     }
 
@@ -57,7 +58,7 @@ public class SupplierXmlSettingsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+    public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] Mm_SupplierXmlSetting supplierXmlSetting)
     {
         if (ModelState.IsValid)
         {
@@ -65,24 +66,24 @@ public class SupplierXmlSettingsController : Controller
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
+        ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
         return View(supplierXmlSetting);
     }
 
     // GET: SupplierXmlSettings/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null || _context.SupplierXmlSettings == null)
+        if (id == null || _context.Mm_SupplierXmlSettings == null)
         {
             return NotFound();
         }
 
-        var supplierXmlSetting = await _context.SupplierXmlSettings.FindAsync(id);
+        var supplierXmlSetting = await _context.Mm_SupplierXmlSettings.FindAsync(id);
         if (supplierXmlSetting == null)
         {
             return NotFound();
         }
-        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
+        ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
         return View(supplierXmlSetting);
     }
 
@@ -91,7 +92,7 @@ public class SupplierXmlSettingsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] SupplierXmlSetting supplierXmlSetting)
+    public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,StartGammaIDFrom,MainProductNode,ProductNode,paramAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,imageNameInCatImg,PhotoFolder,QuantityNode,QuantityDBStock1,QuantityDBStock2,QuantityDBStock3,QuantityDBStock4,QuantityDBStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode")] Mm_SupplierXmlSetting supplierXmlSetting)
     {
         if (id != supplierXmlSetting.SupplierXmlSettingId)
         {
@@ -118,19 +119,19 @@ public class SupplierXmlSettingsController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
+        ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName", supplierXmlSetting.SupplierId);
         return View(supplierXmlSetting);
     }
 
     // GET: SupplierXmlSettings/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null || _context.SupplierXmlSettings == null)
+        if (id == null || _context.Mm_SupplierXmlSettings == null)
         {
             return NotFound();
         }
 
-        var supplierXmlSetting = await _context.SupplierXmlSettings
+        var supplierXmlSetting = await _context.Mm_SupplierXmlSettings
             .Include(s => s.Supplier)
             .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
         if (supplierXmlSetting == null)
@@ -146,14 +147,14 @@ public class SupplierXmlSettingsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (_context.SupplierXmlSettings == null)
+        if (_context.Mm_SupplierXmlSettings == null)
         {
             return Problem("Entity set 'MyDBContext.SupplierXmlSettings'  is null.");
         }
-        var supplierXmlSetting = await _context.SupplierXmlSettings.FindAsync(id);
+        var supplierXmlSetting = await _context.Mm_SupplierXmlSettings.FindAsync(id);
         if (supplierXmlSetting != null)
         {
-            _context.SupplierXmlSettings.Remove(supplierXmlSetting);
+            _context.Mm_SupplierXmlSettings.Remove(supplierXmlSetting);
         }
         
         await _context.SaveChangesAsync();
@@ -162,6 +163,6 @@ public class SupplierXmlSettingsController : Controller
 
     private bool SupplierXmlSettingExists(int id)
     {
-      return (_context.SupplierXmlSettings?.Any(e => e.SupplierXmlSettingId == id)).GetValueOrDefault();
+      return (_context.Mm_SupplierXmlSettings?.Any(e => e.SupplierXmlSettingId == id)).GetValueOrDefault();
     }
 }

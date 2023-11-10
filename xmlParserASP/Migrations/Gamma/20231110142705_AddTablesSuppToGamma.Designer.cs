@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,78 +11,16 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.Gamma
 {
     [DbContext(typeof(GammaContext))]
-    partial class GammaContextModelSnapshot : ModelSnapshot
+    [Migration("20231110142705_AddTablesSuppToGamma")]
+    partial class AddTablesSuppToGamma
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.Mm_ManualSetPrice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateEnd")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_end");
-
-                    b.Property<DateTime?>("DateStart")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_start");
-
-                    b.Property<int>("SetInStockPrice")
-                        .HasColumnType("int")
-                        .HasColumnName("set_in_stock_price");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("sku");
-
-                    b.HasKey("Id")
-                        .HasName("pk_products_manual_set_prices");
-
-                    b.ToTable("products_manual_set_prices", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.Mm_ManualSetQuanity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateEnd")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_end");
-
-                    b.Property<DateTime?>("DateStart")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_start");
-
-                    b.Property<int>("SetInStockQty")
-                        .HasColumnType("int")
-                        .HasColumnName("set_in_stock_qty");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("sku");
-
-                    b.HasKey("Id")
-                        .HasName("pk_products_manual_set_quanitys");
-
-                    b.HasIndex("Sku")
-                        .IsUnique()
-                        .HasDatabaseName("ix_products_manual_set_quanitys_sku");
-
-                    b.ToTable("products_manual_set_quanitys", (string)null);
-                });
 
             modelBuilder.Entity("xmlParserASP.Entities.Gamma.OcAddress", b =>
                 {
@@ -6114,10 +6053,6 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnName("minimum")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<int?>("Mm_SupplierSupplierId")
-                        .HasColumnType("int")
-                        .HasColumnName("mm_supplier_supplier_id");
-
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -6225,9 +6160,6 @@ namespace xmlParserASP.Migrations.Gamma
 
                     b.HasKey("ProductId")
                         .HasName("PRIMARY");
-
-                    b.HasIndex("Mm_SupplierSupplierId")
-                        .HasDatabaseName("ix_oc_product_mm_supplier_supplier_id");
 
                     b.HasIndex(new[] { "NixSupplierProductId" }, "nix_supplier_product_id")
                         .HasDatabaseName("ix_oc_product_nix_supplier_product_id");
@@ -10727,176 +10659,38 @@ namespace xmlParserASP.Migrations.Gamma
                     b.ToView("product_order", (string)null);
                 });
 
-            modelBuilder.Entity("xmlParserASP.Entities.Mm_Supplier", b =>
+            modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsManualSetQuanity", b =>
                 {
-                    b.Property<int>("SupplierId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("supplier_id");
+                        .HasColumnName("id");
 
-                    b.Property<string>("SupplierName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("supplier_name");
+                    b.Property<DateTime?>("DateEnd")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_end");
 
-                    b.HasKey("SupplierId")
-                        .HasName("pk_mm_supplier");
+                    b.Property<DateTime?>("DateStart")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_start");
 
-                    b.ToTable("mm_supplier", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Mm_SupplierXmlSetting", b =>
-                {
-                    b.Property<int>("SupplierXmlSettingId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("SetInStockQty")
                         .HasColumnType("int")
-                        .HasColumnName("supplier_xml_setting_id");
+                        .HasColumnName("set_in_stock_qty");
 
-                    b.Property<string>("CurrencyNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("currency_node");
-
-                    b.Property<string>("DescriptionNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("description_node");
-
-                    b.Property<string>("MainProductNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("main_product_node");
-
-                    b.Property<string>("ModelNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("model_node");
-
-                    b.Property<string>("ModelXlColumn")
-                        .HasColumnType("longtext")
-                        .HasColumnName("model_xl_column");
-
-                    b.Property<string>("NameNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("name_node");
-
-                    b.Property<string>("ParamAttrNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("param_attr_node");
-
-                    b.Property<string>("ParamNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("param_node");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("longtext")
-                        .HasColumnName("path");
-
-                    b.Property<string>("PhotoFolder")
-                        .HasColumnType("longtext")
-                        .HasColumnName("photo_folder");
-
-                    b.Property<string>("PictureNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("picture_node");
-
-                    b.Property<string>("PicturePriceQuantityXlColumn")
-                        .HasColumnType("longtext")
-                        .HasColumnName("picture_price_quantity_xl_column");
-
-                    b.Property<string>("PriceNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("price_node");
-
-                    b.Property<string>("ProductNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("product_node");
-
-                    b.Property<string>("QuantityDBStock1")
-                        .HasColumnType("longtext")
-                        .HasColumnName("quantity_db_stock1");
-
-                    b.Property<string>("QuantityDBStock2")
-                        .HasColumnType("longtext")
-                        .HasColumnName("quantity_db_stock2");
-
-                    b.Property<string>("QuantityDBStock3")
-                        .HasColumnType("longtext")
-                        .HasColumnName("quantity_db_stock3");
-
-                    b.Property<string>("QuantityDBStock4")
-                        .HasColumnType("longtext")
-                        .HasColumnName("quantity_db_stock4");
-
-                    b.Property<string>("QuantityDBStock5")
-                        .HasColumnType("longtext")
-                        .HasColumnName("quantity_db_stock5");
-
-                    b.Property<string>("QuantityLongTermNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("quantity_long_term_node");
-
-                    b.Property<string>("QuantityNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("quantity_node");
-
-                    b.Property<string>("SettingName")
+                    b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("setting_name");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("sku");
 
-                    b.Property<int?>("StartGammaIDFrom")
-                        .HasColumnType("int")
-                        .HasColumnName("start_gamma_id_from");
+                    b.HasKey("Id")
+                        .HasName("pk_products_manual_set_quanitys");
 
-                    b.Property<int?>("SupplierId")
-                        .IsRequired()
-                        .HasColumnType("int")
-                        .HasColumnName("supplier_id");
+                    b.HasIndex("Sku")
+                        .IsUnique()
+                        .HasDatabaseName("ix_products_manual_set_quanitys_sku");
 
-                    b.Property<string>("SupplierNode")
-                        .HasColumnType("longtext")
-                        .HasColumnName("supplier_node");
-
-                    b.Property<string>("imageNameInCatImg")
-                        .HasColumnType("longtext")
-                        .HasColumnName("image_name_in_cat_img");
-
-                    b.Property<string>("paramAttribute")
-                        .HasColumnType("longtext")
-                        .HasColumnName("param_attribute");
-
-                    b.HasKey("SupplierXmlSettingId")
-                        .HasName("pk_mm_supplier_xml_settings");
-
-                    b.HasIndex("SupplierId")
-                        .HasDatabaseName("ix_mm_supplier_xml_settings_supplier_id");
-
-                    b.ToTable("mm_supplier_xml_settings", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.OcProduct", b =>
-                {
-                    b.HasOne("xmlParserASP.Entities.Mm_Supplier", null)
-                        .WithMany("Products")
-                        .HasForeignKey("Mm_SupplierSupplierId")
-                        .HasConstraintName("fk_oc_product_mm_supplier_mm_supplier_supplier_id");
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Mm_SupplierXmlSetting", b =>
-                {
-                    b.HasOne("xmlParserASP.Entities.Mm_Supplier", "Supplier")
-                        .WithMany("SupplierXmlSetting")
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_mm_supplier_xml_settings_mm_supplier_supplier_id");
-
-                    b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Mm_Supplier", b =>
-                {
-                    b.Navigation("Products");
-
-                    b.Navigation("SupplierXmlSetting");
+                    b.ToTable("products_manual_set_quanitys", (string)null);
                 });
 #pragma warning restore 612, 618
         }

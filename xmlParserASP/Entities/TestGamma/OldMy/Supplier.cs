@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using xmlParserASP.Models;
 
-namespace xmlParserASP.Entities;
+namespace xmlParserASP.Entities.TestGamma.OldMy;
 
 public class Supplier
 {

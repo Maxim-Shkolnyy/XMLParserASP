@@ -17,22 +17,22 @@ namespace xmlParserASP.Services;
 
 public class UpdatePriceQuantityService
 {
-    private readonly SupplierXmlSetting _supplierXmlSetting;
-    private readonly MyDBContext _dbContext;
+    private readonly Mm_SupplierXmlSetting _supplierXmlSetting;
+    //private readonly MyDBContext _dbContext;
     private readonly GammaContext _dbContextGamma;
-    private readonly TestGammaDBContext _dbContextTestGamma;
-    private SupplierXmlSetting? suppSettings;
+    //private readonly TestGammaDBContext _dbContextTestGamma;
+    private Mm_SupplierXmlSetting? suppSettings;
     private string? suppName;
     private List<(string, string)>? stateMessages;
     private string currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
 
-    public UpdatePriceQuantityService(SupplierXmlSetting supplierXmlSetting, MyDBContext myDBContext, TestGammaDBContext dbContextTestGamma, GammaContext dbContextGamma)
+    public UpdatePriceQuantityService(Mm_SupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
     {
         _supplierXmlSetting = supplierXmlSetting;
-        _dbContext = myDBContext;
-        _dbContextTestGamma = dbContextTestGamma;
-        _dbContextGamma=dbContextGamma;
+        //_dbContext = myDBContext;
+        //_dbContextTestGamma = dbContextTestGamma;
+        //_dbContextGamma=dbContextGamma;
     }
 
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId, string tableDbColumnToUpdate)
@@ -51,7 +51,7 @@ public class UpdatePriceQuantityService
         {
             #region Получение текущих значений из БД
 
-            suppSettings = await _dbContext.SupplierXmlSettings
+            suppSettings = await _dbContextGamma.Mm_SupplierXmlSettings
                 .Where(m => m.SupplierXmlSettingId == id)
                 .FirstOrDefaultAsync();
             if (suppSettings == null)
@@ -60,7 +60,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            suppName = (await _dbContext.Suppliers.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
+            suppName = (await _dbContextGamma.Mm_Supplier.FirstOrDefaultAsync(m => m.SupplierId == suppSettings.SupplierId))?.SupplierName;
 
             if (suppName == null)
             {

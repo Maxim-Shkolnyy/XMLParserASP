@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
-using xmlParserASP.Entities;
+using xmlParserASP.Entities.TestGamma.OldMy;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
