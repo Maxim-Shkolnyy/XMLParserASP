@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;

@@ -3,7 +3,6 @@ using xmlParserASP.Presistant;
 using System.Xml.Serialization;
 using System.Net;
 using FluentFTP;
-using System.Diagnostics;
 
 namespace xmlParserASP.Services;
 

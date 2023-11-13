@@ -1,16 +1,10 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Diagnostics;
-using System.Drawing.Text;
 using System.Globalization;
 using System.Net;
-using System.Reflection;
 using System.Xml;
-using System.Xml.Linq;
-using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
-using xmlParserASP.Entities.TestGamma;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Services;
@@ -18,9 +12,7 @@ namespace xmlParserASP.Services;
 public class UpdatePriceQuantityService
 {
     private readonly Mm_SupplierXmlSetting _supplierXmlSetting;
-    //private readonly MyDBContext _dbContext;
     private readonly GammaContext _dbContextGamma;
-    //private readonly TestGammaDBContext _dbContextTestGamma;
     private Mm_SupplierXmlSetting? suppSettings;
     private string? suppName;
     private List<(string, string)>? stateMessages;
@@ -29,10 +21,7 @@ public class UpdatePriceQuantityService
 
     public UpdatePriceQuantityService(Mm_SupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
     {
-        _supplierXmlSetting = supplierXmlSetting;
-        //_dbContext = myDBContext;
-        //_dbContextTestGamma = dbContextTestGamma;
-        //_dbContextGamma=dbContextGamma;
+        _dbContextGamma = dbContextGamma;
     }
 
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId, string tableDbColumnToUpdate)

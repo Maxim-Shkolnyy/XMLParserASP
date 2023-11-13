@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using xmlParserASP.Entities.Gamma;
-using xmlParserASP.Models;
 
 namespace xmlParserASP.Entities;
 

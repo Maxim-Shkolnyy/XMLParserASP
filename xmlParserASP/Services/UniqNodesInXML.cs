@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-using System.Xml;
-using System.Xml.Schema;
+﻿using System.Xml;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 

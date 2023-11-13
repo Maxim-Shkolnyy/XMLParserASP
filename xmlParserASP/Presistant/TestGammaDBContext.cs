@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.TestGamma;
 
 namespace xmlParserASP.Presistant;

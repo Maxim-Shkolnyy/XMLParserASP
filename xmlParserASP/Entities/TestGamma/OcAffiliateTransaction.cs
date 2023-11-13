@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace xmlParserASP.Entities.TestGamma;
+﻿namespace xmlParserASP.Entities.TestGamma;
 
 public partial class OcAffiliateTransaction
 {

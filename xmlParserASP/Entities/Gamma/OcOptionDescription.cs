@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace xmlParserASP.Entities.Gamma;
+﻿namespace xmlParserASP.Entities.Gamma;
 
 public partial class OcOptionDescription
 {

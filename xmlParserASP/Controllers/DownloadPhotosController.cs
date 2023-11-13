@@ -11,7 +11,6 @@ using xmlParserASP.Services;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using DocumentFormat.OpenXml.Office.Word;
 
 namespace xmlParserASP.Controllers;
 

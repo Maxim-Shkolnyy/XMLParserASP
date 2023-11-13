@@ -1,6 +1,4 @@
-﻿using System.Xml;
-
-namespace xmlParserASP.Services.UpdateServices;
+﻿namespace xmlParserASP.Services.UpdateServices;
 
 public class GammaUpdater : ISupplierUpdater
 {
