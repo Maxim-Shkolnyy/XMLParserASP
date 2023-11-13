@@ -21,7 +21,6 @@ public class Mm_SupplierXmlSetting
     public Mm_Supplier? Supplier { get; set; }
 
     public string? Path { get; set; }
-    public int? StartGammaIDFrom { get; set; }
     public string? MainProductNode { get; set; }
     public string? ProductNode { get; set; }
     public string? paramAttribute { get; set; }
@@ -37,8 +36,6 @@ public class Mm_SupplierXmlSetting
 
     public string? PictureNode { get; set; }
     public string? PicturePriceQuantityXlColumn { get; set; }
-    public string? imageNameInCatImg { get; set; }
-
     public string? PhotoFolder { get; set; } = @"D:\Downloads\Photo\";
 
     public string? QuantityNode { get; set; }

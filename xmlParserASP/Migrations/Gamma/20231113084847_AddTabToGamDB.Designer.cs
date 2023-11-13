@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,9 +11,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.Gamma
 {
     [DbContext(typeof(GammaContext))]
-    partial class GammaContextModelSnapshot : ModelSnapshot
+    [Migration("20231113084847_AddTabToGamDB")]
+    partial class AddTabToGamDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10842,6 +10845,10 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnType("longtext")
                         .HasColumnName("setting_name");
 
+                    b.Property<int?>("StartGammaIDFrom")
+                        .HasColumnType("int")
+                        .HasColumnName("start_gamma_id_from");
+
                     b.Property<int?>("SupplierId")
                         .IsRequired()
                         .HasColumnType("int")
@@ -10850,6 +10857,10 @@ namespace xmlParserASP.Migrations.Gamma
                     b.Property<string>("SupplierNode")
                         .HasColumnType("longtext")
                         .HasColumnName("supplier_node");
+
+                    b.Property<string>("imageNameInCatImg")
+                        .HasColumnType("longtext")
+                        .HasColumnName("image_name_in_cat_img");
 
                     b.Property<string>("paramAttribute")
                         .HasColumnType("longtext")
