@@ -12,8 +12,9 @@ namespace xmlParserASP.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                
             }
+            return View(model);
         }
 
 

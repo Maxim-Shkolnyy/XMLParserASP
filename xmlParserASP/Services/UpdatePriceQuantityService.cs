@@ -251,7 +251,7 @@ public class UpdatePriceQuantityService
                 {
                     if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
                     {
-                        _stateMessages.Add(($"{_suppName}_{_supplierXmlSetting.ModelNode} NOT FOUND in xml1", "red"));
+                        _stateMessages.Add(($"{_suppName}_{_supplierXmlSetting.ModelNode} {item.InnerText} NOT FOUND in xml", "red"));
                         continue;
                     }
 
