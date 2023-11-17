@@ -22,7 +22,7 @@ public class Program
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
 
-        //builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma).LogTo(Console.WriteLine,
+        //builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")).LogTo(Console.WriteLine,
         //new[] { DbLoggerCategory.Database.Command.Name },
         //LogLevel.Information).EnableDetailedErrors());
 
