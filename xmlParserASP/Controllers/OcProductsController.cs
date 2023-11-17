@@ -18,7 +18,7 @@ namespace xmlParserASP.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.OcProducts != null ? 
-                          View(await _context.OcProducts.Take(20).ToListAsync()) :
+                          View(await _context.OcProducts.Take(20).OrderByDescending(p => p.Sku).ToListAsync()) :
                           Problem("Entity set 'GammaContext.OcProducts'  is null.");
         }
 
