@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
 using xmlParserASP.Models;
@@ -13,17 +14,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        string connectionString = "Database=zi391919_maxim;Data Source=zi391919.mysql.tools;User Id=zi391919_maxim;Password=y5E~v52!Cv;CharSet=utf8;"; // gamma max program DB
+        builder.Configuration.AddUserSecrets<Program>();
 
-        string connectionStringTestGamma = "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;"; // test gamma 
+        builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("myDbConnectionString")));
 
-        string connectionStringGamma = "Database=zi391919_gamma;Data Source=zi391919.mysql.tools;User Id=zi391919_gamma;Password=6+0i4rZtS_;"; //gamma
+        builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("connectionStringTestGamma")));
 
-        builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(connectionString));
-
-        builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(connectionStringTestGamma));
-
-        builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma));
+        builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
 
         //builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(connectionStringGamma).LogTo(Console.WriteLine,
         //new[] { DbLoggerCategory.Database.Command.Name },
