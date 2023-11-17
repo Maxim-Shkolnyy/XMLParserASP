@@ -21,11 +21,10 @@ public class Program
         builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("connectionStringTestGamma")));
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
-
+        builder.Services.AddAntiforgery(options => { });
         //builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")).LogTo(Console.WriteLine,
         //new[] { DbLoggerCategory.Database.Command.Name },
         //LogLevel.Information).EnableDetailedErrors());
-
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<Mm_SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
