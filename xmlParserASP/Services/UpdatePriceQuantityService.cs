@@ -38,7 +38,7 @@ public class UpdatePriceQuantityService
 
         foreach (int id in settingsId)
         {
-            #region Получение текущих значений из БД
+            #region Get current values from DB and add them to new 'dbCodeModelPriceList' on each iteration
 
             _supplierXmlSetting = await _dbContextGamma.Mm_SupplierXmlSettings
                 .Where(m => m.SupplierXmlSettingId == id)
@@ -154,6 +154,8 @@ public class UpdatePriceQuantityService
         }
         return _stateMessages;
     }
+
+    #region Get xml values from all suppliers unloads and add it to 'xmlModelPriceList'
 
     private void GetXmlValues()
     {
@@ -497,6 +499,7 @@ public class UpdatePriceQuantityService
             }
         }
     }
+    #endregion
 
 
     private void UpdatePrices(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
@@ -614,7 +617,7 @@ public class UpdatePriceQuantityService
                         if (productToUpdate == null)
                             continue;
 
-                        if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності
+                        if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності. Винести вище if (dbModel.Item3 != xmlValue)
                         {
                             productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty?? 0;
                             _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
