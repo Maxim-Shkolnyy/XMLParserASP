@@ -3,48 +3,45 @@ using xmlParserASP.Entities.TestGamma.OldMy;
 
 namespace xmlParserASP.Presistant;
 
-public class MyDBContext : DbContext
-{
-    public MyDBContext(DbContextOptions<MyDBContext> options)
-    : base(options) { }
+//public class MyDBContext : DbContext
+//{
+//    public MyDBContext(DbContextOptions<MyDBContext> options)
+//    : base(options) { }
 
-    public DbSet<MyAttribute> MyAttributes { get; set; }
-    public DbSet<SupplierAttribute> SupplierAttributes { get; set; }
+//    public DbSet<MyAttribute> MyAttributes { get; set; }
+//    public DbSet<SupplierAttribute> SupplierAttributes { get; set; }
 
-    public DbSet<MyCategory> MyCategories { get; set; }
-    public DbSet<SupplierCategory> SupplierCategories { get; set; }
+//    public DbSet<MyCategory> MyCategories { get; set; }
+//    public DbSet<SupplierCategory> SupplierCategories { get; set; }
 
-    public DbSet<Supplier> Suppliers { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<SupplierXmlSetting> SupplierXmlSettings { get; set; }
+//    public DbSet<Supplier> Suppliers { get; set; }
+//    public DbSet<Product> Products { get; set; }
+//    public DbSet<SupplierXmlSetting> SupplierXmlSettings { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+//    protected override void OnModelCreating(ModelBuilder modelBuilder)
+//    {
+//        base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<MyAttribute>()
-            .HasMany(m => m.SupplierAttributes)
-            .WithMany(c => c.MyAttributes)
-            .UsingEntity(j=>j.ToTable("my_attributes_supplier_attributes"));
+//        modelBuilder.Entity<MyAttribute>()
+//            .HasMany(m => m.SupplierAttributes)
+//            .WithMany(c => c.MyAttributes)
+//            .UsingEntity(j=>j.ToTable("my_attributes_supplier_attributes"));
 
-        modelBuilder.Entity<MyCategory>()
-            .HasMany(n => n.SupplierCategories)
-            .WithMany(j => j.MyCategories)
-            .UsingEntity(k => k.ToTable("my_categories_supplier_categories"));
+//        modelBuilder.Entity<MyCategory>()
+//            .HasMany(n => n.SupplierCategories)
+//            .WithMany(j => j.MyCategories)
+//            .UsingEntity(k => k.ToTable("my_categories_supplier_categories"));
 
-        //modelBuilder.Entity<SupplierXmlSetting>()
-        //    .HasMany(supplier => supplier.)
-        //    .WithOne(pathModel => pathModel.Supplier)
-        //    .HasForeignKey(pathModel => pathModel.SupplierId);
+       
 
 
-    }
+//    }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-        optionsBuilder.UseSnakeCaseNamingConvention();
-    }
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//    {
+//        base.OnConfiguring(optionsBuilder);
+//        optionsBuilder.UseSnakeCaseNamingConvention();
+//    }
 
     
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -67,5 +64,5 @@ public class MyDBContext : DbContext
     //}
     // створити всі абстракції таблиць із існуючої бд
     //  dotnet ef dbcontext scaffold "Database=zi391919_sandboxgamma;Data Source=zi391919.mysql.tools;User Id=zi391919_sandboxgamma;Password=!6km4kKY_9;" MySql.EntityFrameworkCore -o Entities/GammaTables;
-}
+//}
 

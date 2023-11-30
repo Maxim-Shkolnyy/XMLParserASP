@@ -8,11 +8,10 @@ namespace xmlParserASP.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly MyDBContext _db;
+    
 
-    public HomeController(ILogger<HomeController> logger, MyDBContext db)
+    public HomeController(ILogger<HomeController> logger)
     {
-        _db = db;
         _logger = logger;
     }
 

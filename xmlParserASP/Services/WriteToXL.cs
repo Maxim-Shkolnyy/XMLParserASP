@@ -9,15 +9,15 @@ namespace xmlParserASP.Services;
 
 public class WriteToXL
 {
-    private readonly MyDBContext _db;
+    private readonly GammaContext _db;
     
-    public WriteToXL(MyDBContext db)
+    public WriteToXL(GammaContext db)
     {
         _db = db;
     }
     public void WriteSheet(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
         using (XLWorkbook workbook = new XLWorkbook())
         {
@@ -77,7 +77,7 @@ public class WriteToXL
             XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSetting.ProductNode);
 
             int row = 2;
-            int? startIdFrom = suppSetting.StartGammaIDFrom;
+            int? startIdFrom = 1;
 
             
             #region Получение значений из XML и вставка в соответствующие колонки листа Products
@@ -169,7 +169,7 @@ public class WriteToXL
                     Status = true
                 };
 
-                _db.Products.Add(product);
+                //_db.Products.Add(product);  ??????????????????????? може це було потрібно у старому MyDbContext ????
                 
             }
             _db.SaveChanges();

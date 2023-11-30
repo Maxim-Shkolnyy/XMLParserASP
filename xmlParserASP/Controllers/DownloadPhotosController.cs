@@ -16,14 +16,13 @@ namespace xmlParserASP.Controllers;
 
 public class DownloadPhotosController : Controller
 {
-    private readonly MyDBContext _dbContext;
+    //private readonly MyDBContext _dbContext;
     private readonly GammaContext _gammaContext;
     private string? suppName;
     private Mm_SupplierXmlSetting _suppSetting;
 
-    public DownloadPhotosController(MyDBContext dbContext, GammaContext gammaContext)
+    public DownloadPhotosController(GammaContext gammaContext)
     {
-        _dbContext = dbContext;
         _gammaContext=gammaContext;
     }
     public IActionResult Index()
@@ -61,7 +60,7 @@ public class DownloadPhotosController : Controller
             return View("Index");
         }
 
-        suppName = _dbContext.Suppliers
+        suppName = _gammaContext.Mm_Supplier
             .Where(s => s.SupplierId == _suppSetting.SupplierId)
             .Select(s => s.SupplierName)
             .FirstOrDefault();

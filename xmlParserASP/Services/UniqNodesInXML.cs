@@ -6,14 +6,14 @@ namespace xmlParserASP.Services;
 
 public class UniqNodesInXML
 {
-    private readonly MyDBContext _db;
-    public UniqNodesInXML(MyDBContext db)
+    private readonly GammaContext _db;
+    public UniqNodesInXML(GammaContext db)
     {
         _db = db;
     }
     public void Read(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
         string xmlFilePath = suppSetting.Path; // work
 

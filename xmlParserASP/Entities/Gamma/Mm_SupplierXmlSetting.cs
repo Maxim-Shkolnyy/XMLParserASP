@@ -26,6 +26,7 @@ public class Mm_SupplierXmlSetting
     public string? ModelNode { get; set; }
     public string? ModelXlColumn { get; set; }
     public string? PicturePriceQuantityXlColumn { get; set; }
+    public string? QtyInBoxColumn { get; set; }
     public string? PhotoFolder { get; set; } = @"D:\Downloads\Photo\";
     public string? PriceNode { get; set; }
     public string? DescriptionNode { get; set; }

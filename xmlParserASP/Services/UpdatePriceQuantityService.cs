@@ -134,6 +134,10 @@ public class UpdatePriceQuantityService
                 {
                     GetExcelValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber);
                 }
+                if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Feron_excel")
+                {
+                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber);
+                }
             }
             else
             {
@@ -435,9 +439,130 @@ public class UpdatePriceQuantityService
 
     }
 
-    private void GetFeronQtyXlValues()
+    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn)
     {
+        if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
+        {
+            //DirectoryInfo directory = new DirectoryInfo(_supplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
 
+            if (remoteFilePath != null)
+            {
+                // Завантаження файлу з URL
+                string localFilePath = Path.GetTempFileName();
+                localFilePath = Path.ChangeExtension(localFilePath, "xls");
+                string filePath = Uri.EscapeUriString(remoteFilePath);
+                WebClient client = new();
+                client.DownloadFile(filePath, localFilePath);
+
+                using (var vb = new XLWorkbook(localFilePath))
+                {
+                    var worksheet = vb.Worksheet(1);
+
+                    //int modelColumnNumber = GetColumnIndex(worksheet, 1, modelColumn);
+                    //int priceQtyColumnNumber = GetColumnIndex(worksheet, 1, priceQuantityColumn);
+
+                    string? model = null;
+                    string? priceOrQuantityColumn = null;
+                    xmlModelPriceList.Clear();
+
+                    foreach (var row in worksheet.RowsUsed())
+                    {
+                        model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
+                        if (string.IsNullOrEmpty(model))
+                        {
+                            continue;
+                        }
+
+                        priceOrQuantityColumn = row.Cell(priceQuantityColumn).Value.ToString();
+
+                        if (!xmlModelPriceList.ContainsKey(model))
+                        {
+                            xmlModelPriceList.Add(model, priceOrQuantityColumn);
+                        }
+                        else
+                        {
+                            _stateMessages.Add(($"Duplicate model in excel file {_suppName} {model}", "red"));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                _stateMessages.Add(($"Excel file {_suppName} not found", "red"));
+            }
+
+        }
+        else
+        {
+            // З'єднання з FTP для отримання списку файлів з екрануванням спецсиволів у імені файла
+            string filePath = Uri.EscapeUriString(remoteFilePath);
+
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{filePath}"));
+            request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+            request.Method = WebRequestMethods.Ftp.ListDirectory;
+
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(responseStream);
+
+            string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            if (files.Length > 0)
+            {
+                string? newestFileName = files
+                    .Where(f => f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(f => f).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(newestFileName))
+                {
+                    // Завантаження найновішого файлу
+                    WebClient ftpClient = new WebClient();
+                    ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+                    ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
+
+                    // Обробка файлу Excel
+                    using (var vb = new XLWorkbook(newestFileName))
+                    {
+                        var vs = vb.Worksheet(1);
+
+                        string? model = null;
+                        string? priceOrQuantityColumn = null;
+                        xmlModelPriceList.Clear();
+
+                        foreach (var row in vs.RowsUsed())
+                        {
+                            model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+                            if (string.IsNullOrEmpty(model))
+                            {
+                                continue;
+                            }
+
+                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
+
+                            if (!xmlModelPriceList.ContainsKey(model))
+                            {
+                                xmlModelPriceList.Add(model, priceOrQuantityColumn);
+                            }
+                            else
+                            {
+                                _stateMessages.Add(($"Duplicate model in excel file {_suppName} {model}", "red"));
+                            }
+                        }
+                    }
+
+                    // Видаляємо завантажений файл
+                    File.Delete(newestFileName);
+                }
+                else
+                {
+                    _stateMessages.Add(($"No Excel files found in {remoteFilePath}", "red"));
+                }
+            }
+            else
+            {
+                _stateMessages.Add(($"No files found in {remoteFilePath}", "red"));
+            }
+        }
     }
 
     private void GetGammaQtyXmlValues()

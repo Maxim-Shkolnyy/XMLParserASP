@@ -6,14 +6,14 @@ namespace xmlParserASP.Services;
 
 public class ReadAttrFromXmlTo3ColumnsRU
 {
-    private readonly MyDBContext _db;
-    public ReadAttrFromXmlTo3ColumnsRU(MyDBContext db)
+    private readonly GammaContext _db;
+    public ReadAttrFromXmlTo3ColumnsRU(GammaContext db)
     {
             _db = db;
     }
     public void ReadAttrto3ru(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
         XmlDocument doc = new XmlDocument();
         doc.Load(suppSetting.Path);
 

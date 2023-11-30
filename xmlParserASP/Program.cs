@@ -16,9 +16,9 @@ public class Program
 
         builder.Configuration.AddUserSecrets<Program>();
 
-        builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("myDbConnectionString")));
+        //builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("myDbConnectionString")));
 
-        builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("connectionStringTestGamma")));
+        //builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("connectionStringTestGamma")));
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         builder.Services.AddAntiforgery(options => { });

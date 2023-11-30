@@ -7,16 +7,14 @@ namespace xmlParserASP.Controllers;
 
 public class ProcessXMLController : Controller
 {
-    private readonly MyDBContext _db;
     private readonly GammaContext _gammaContext;
     private readonly ReadAttrFromXmlTo3ColumnsRU _readAttrFromXmlTo3ColumnsRU;
     private readonly ReadAttrFromXmlTo3ColumnsUA _readAttrFromXmlTo3ColumnsUA;
     private readonly WriteToXL _writeToXL;
     private readonly WriteRuToXL _writeToRuToXL;
     private readonly UniqNodesInXML _uniqNodesInXML;
-    public ProcessXMLController(MyDBContext db, ReadAttrFromXmlTo3ColumnsRU readAttrFromXmlTo3ColumnsRU, ReadAttrFromXmlTo3ColumnsUA readAttrFromXmlTo3ColumnsUA, WriteRuToXL writeRuToXL, WriteToXL writeToXL, UniqNodesInXML uniqNodesInXML, GammaContext gammaContext)
+    public ProcessXMLController(ReadAttrFromXmlTo3ColumnsRU readAttrFromXmlTo3ColumnsRU, ReadAttrFromXmlTo3ColumnsUA readAttrFromXmlTo3ColumnsUA, WriteRuToXL writeRuToXL, WriteToXL writeToXL, UniqNodesInXML uniqNodesInXML, GammaContext gammaContext)
     {
-        _db=db;
         _readAttrFromXmlTo3ColumnsRU=readAttrFromXmlTo3ColumnsRU;
         _readAttrFromXmlTo3ColumnsUA=readAttrFromXmlTo3ColumnsUA;
         _writeToRuToXL=writeRuToXL;
