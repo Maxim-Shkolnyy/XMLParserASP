@@ -136,7 +136,7 @@ public class UpdatePriceQuantityService
                 }
                 if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Feron_excel")
                 {
-                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber);
+                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber, _supplierXmlSetting.QtyInBoxColumnNumber);
                 }
             }
             else
@@ -439,7 +439,7 @@ public class UpdatePriceQuantityService
 
     }
 
-    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn)
+    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn, string boxColumn)
     {
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {

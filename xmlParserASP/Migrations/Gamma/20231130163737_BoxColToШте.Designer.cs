@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -10,9 +11,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.Gamma
 {
     [DbContext(typeof(GammaContext))]
-    partial class GammaContextModelSnapshot : ModelSnapshot
+    [Migration("20231130163737_BoxColToШте")]
+    partial class BoxColToШте
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10809,8 +10812,8 @@ namespace xmlParserASP.Migrations.Gamma
                         .HasColumnType("longtext")
                         .HasColumnName("product_node");
 
-                    b.Property<string>("QtyInBoxColumnNumber")
-                        .HasColumnType("longtext")
+                    b.Property<int?>("QtyInBoxColumnNumber")
+                        .HasColumnType("int")
                         .HasColumnName("qty_in_box_column_number");
 
                     b.Property<string>("QuantityDBStock1")
