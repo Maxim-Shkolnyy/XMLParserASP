@@ -111,6 +111,9 @@ public class UpdatePriceQuantityService
             else if (_suppName == "Kanlux")
             {
                 int modelColumnNumber;
+
+                // TODO: Move TryParse to method GetExcelValues ant parse it there
+
                 if (!int.TryParse(_supplierXmlSetting.ModelXlColumn, out modelColumnNumber))
                 {
                     _stateMessages.Add(($"{_suppName} model column number in excel file was not converted successful, model column set to 1", "red"));
@@ -134,10 +137,18 @@ public class UpdatePriceQuantityService
                 {
                     GetExcelValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber);
                 }
+                //if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Feron_excel")
+                //{
+                //    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber, _supplierXmlSetting.QtyInBoxColumnNumber);
+                //}
+            }
+            else if (_suppName == "Feron")
+            {
                 if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Feron_excel")
                 {
-                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber, _supplierXmlSetting.QtyInBoxColumnNumber);
+                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, _supplierXmlSetting.ModelXlColumn, _supplierXmlSetting.PicturePriceQuantityXlColumn, _supplierXmlSetting.QtyInBoxColumnNumber);
                 }
+
             }
             else
             {
@@ -439,7 +450,7 @@ public class UpdatePriceQuantityService
 
     }
 
-    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn, string boxColumn)
+    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, string? modelColumnNumber, string? priceQuantityColumn, string? boxColumn)
     {
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
@@ -749,7 +760,7 @@ public class UpdatePriceQuantityService
 
                         if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності. Винести вище if (dbModel.Item3 != xmlValue)
                         {
-                            productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty?? 0;
+                            productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
                             _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
 
                         }
