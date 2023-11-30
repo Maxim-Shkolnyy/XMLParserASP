@@ -106,7 +106,7 @@ public class UpdatePriceQuantityService
 
             if ((_suppName == "Gamma" || _suppName == "Gamma-K") & _currentTableDbColumnToUpdate == "Quantity")
             {
-                GetGammaQuantityXmlValues();
+                GetGammaQtyXmlValues();
             }
             else if (_suppName == "Kanlux")
             {
@@ -155,7 +155,7 @@ public class UpdatePriceQuantityService
         return _stateMessages;
     }
 
-    #region Get xml values from all suppliers unloads and add it to 'xmlModelPriceList'
+    #region Get xml and excel values from all suppliers unloads and add it to 'xmlModelPriceList'
 
     private void GetXmlValues()
     {
@@ -435,8 +435,12 @@ public class UpdatePriceQuantityService
 
     }
 
+    private void GetFeronQtyXlValues()
+    {
 
-    private void GetGammaQuantityXmlValues()
+    }
+
+    private void GetGammaQtyXmlValues()
     {
         XmlDocument xmlDoc = new();
 
@@ -499,6 +503,7 @@ public class UpdatePriceQuantityService
             }
         }
     }
+
     #endregion
 
 
