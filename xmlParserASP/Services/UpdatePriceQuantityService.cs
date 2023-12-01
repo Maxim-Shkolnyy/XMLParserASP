@@ -112,7 +112,7 @@ public class UpdatePriceQuantityService
             {
                 int modelColumnNumber;
 
-                // TODO: Move TryParse to method GetExcelValues ant parse it there
+                // TODO: Move TryParse to method GetExcelValues and parse it there
 
                 if (!int.TryParse(_supplierXmlSetting.ModelXlColumn, out modelColumnNumber))
                 {
@@ -460,7 +460,7 @@ public class UpdatePriceQuantityService
             {
                 // Завантаження файлу з URL
                 string localFilePath = Path.GetTempFileName();
-                localFilePath = Path.ChangeExtension(localFilePath, "xls");
+                localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
                 string filePath = Uri.EscapeUriString(remoteFilePath);
                 WebClient client = new();
                 client.DownloadFile(filePath, localFilePath);
@@ -474,6 +474,7 @@ public class UpdatePriceQuantityService
 
                     string? model = null;
                     string? priceOrQuantityColumn = null;
+                    string? unitsInBox = null;
                     xmlModelPriceList.Clear();
 
                     foreach (var row in worksheet.RowsUsed())
@@ -485,6 +486,13 @@ public class UpdatePriceQuantityService
                         }
 
                         priceOrQuantityColumn = row.Cell(priceQuantityColumn).Value.ToString();
+                        unitsInBox = row.Cell(boxColumn).Value.ToString();
+
+                        if(priceOrQuantityColumn.Contains(">") & priceOrQuantityColumn.Contains("ящик"))
+                        {
+                            priceOrQuantityColumn = unitsInBox;
+                        }
+                        
 
                         if (!xmlModelPriceList.ContainsKey(model))
                         {
