@@ -32,7 +32,7 @@ public class UpdatePriceQuantityService
 
         if (settingsId == null)
         {
-            _stateMessages.Add(("Setting ID was not passed", "red"));
+            _stateMessages.Add(("1_Setting ID was not passed", "red"));
             return _stateMessages;
         }
 
@@ -45,7 +45,7 @@ public class UpdatePriceQuantityService
                 .FirstOrDefaultAsync();
             if (_supplierXmlSetting == null)
             {
-                _stateMessages.Add(("Supplier setting was not found in DB", "red"));
+                _stateMessages.Add(("1_Supplier setting was not found in DB", "red"));
                 continue;
             }
 
@@ -53,7 +53,7 @@ public class UpdatePriceQuantityService
 
             if (_suppName == null)
             {
-                _stateMessages.Add(("Supplier name was not found in DB", "red"));
+                _stateMessages.Add(("1_Supplier name was not found in DB", "red"));
                 continue;
             }
 
@@ -64,7 +64,7 @@ public class UpdatePriceQuantityService
 
             if (currentSuppProductsList == null)
             {
-                _stateMessages.Add(($"Supplier {_suppName} has no one product in DB", "red"));
+                _stateMessages.Add(($"1_Supplier {_suppName} has no one product in DB", "red"));
                 continue;
             }
 
@@ -116,14 +116,14 @@ public class UpdatePriceQuantityService
 
                 if (!int.TryParse(_supplierXmlSetting.ModelXlColumn, out modelColumnNumber))
                 {
-                    _stateMessages.Add(($"{_suppName} model column number in excel file was not converted successful, model column set to 1", "red"));
+                    _stateMessages.Add(($"1_{_suppName} model column number in excel file was not converted successful, model column set to 1", "red"));
                     modelColumnNumber = 1;
                 }
 
                 int priceColumnNumber;
                 if (!int.TryParse(_supplierXmlSetting.PicturePriceQuantityXlColumn, out priceColumnNumber))
                 {
-                    _stateMessages.Add(($"{_suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2", "red"));
+                    _stateMessages.Add(($"1_{_suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2", "red"));
                     priceColumnNumber = 2;
                 }
 
@@ -164,7 +164,7 @@ public class UpdatePriceQuantityService
                 UpdateQuantity(dbCodeModelPriceList, xmlModelPriceList);
             }
 
-            _stateMessages.Add(($"{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
+            _stateMessages.Add(($"ok_{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
 
         }
         return _stateMessages;
@@ -208,7 +208,7 @@ public class UpdatePriceQuantityService
 
                         if (String.IsNullOrEmpty(model))
                         {
-                            _stateMessages.Add(($"{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
+                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
                         }
                     }
                     else
@@ -217,7 +217,7 @@ public class UpdatePriceQuantityService
                         {
                             if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
                             {
-                                _stateMessages.Add(($"{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
+                                _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
                                 continue;
                             }
 
@@ -225,7 +225,7 @@ public class UpdatePriceQuantityService
 
                             if (String.IsNullOrEmpty(model))
                             {
-                                _stateMessages.Add(($"{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
+                                _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
                             }
                         }
                         else
@@ -239,7 +239,7 @@ public class UpdatePriceQuantityService
                         priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.PriceNode)?.InnerText ?? "";
                         if (priceOrQuantityNode == null)
                         {
-                            _stateMessages.Add(($"{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.PriceNode)} NOT FOUND in xml", "red"));
+                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.PriceNode)} NOT FOUND in xml", "red"));
                         }
                     }
                     else
@@ -247,7 +247,7 @@ public class UpdatePriceQuantityService
                         priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.QuantityNode)?.InnerText ?? "";
                         if (priceOrQuantityNode == null)
                         {
-                            _stateMessages.Add(($"{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.QuantityNode)} NOT FOUND in xml", "red"));
+                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.QuantityNode)} NOT FOUND in xml", "red"));
                         }
                     }
 
@@ -268,7 +268,7 @@ public class UpdatePriceQuantityService
                 {
                     if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
                     {
-                        _stateMessages.Add(($"{_suppName}_{_supplierXmlSetting.ModelNode} {item.InnerText} NOT FOUND in xml", "red"));
+                        _stateMessages.Add(($"error_{_suppName}_{_supplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));
                         continue;
                     }
 
@@ -276,7 +276,7 @@ public class UpdatePriceQuantityService
 
                     if (String.IsNullOrEmpty(model))
                     {
-                        _stateMessages.Add(($"{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} is Empty or Missing in xml", "red"));
+                        _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
                     }
                 }
                 else
@@ -286,7 +286,7 @@ public class UpdatePriceQuantityService
                         model = item.Attributes["id"]?.Value ?? "";
                         if (String.IsNullOrEmpty(model))
                         {
-                            _stateMessages.Add(($"{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} is Empty or Missing in xml", "red"));
+                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
                         }
                     }
                     else
@@ -365,14 +365,14 @@ public class UpdatePriceQuantityService
                         }
                         else
                         {
-                            _stateMessages.Add(($"Duplicate model in excel file {_suppName} {model}", "red"));
+                            _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
                         }
                     }
                 }
             }
             else
             {
-                _stateMessages.Add(($"Excel file {_suppName} not found", "red"));
+                _stateMessages.Add(($"error_Excel file {_suppName} not found", "red"));
             }
 
         }
@@ -429,7 +429,7 @@ public class UpdatePriceQuantityService
                             }
                             else
                             {
-                                _stateMessages.Add(($"Duplicate model in excel file {_suppName} {model}", "red"));
+                                _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
                             }
                         }
                     }
@@ -439,12 +439,12 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
-                    _stateMessages.Add(($"No Excel files found in {remoteFilePath}", "red"));
+                    _stateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
                 }
             }
             else
             {
-                _stateMessages.Add(($"No files found in {remoteFilePath}", "red"));
+                _stateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
             }
         }
 
@@ -500,14 +500,14 @@ public class UpdatePriceQuantityService
                         }
                         else
                         {
-                            _stateMessages.Add(($"Duplicate model in excel file {_suppName} {model}", "red"));
+                            _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
                         }
                     }
                 }
             }
             else
             {
-                _stateMessages.Add(($"Excel file {_suppName} not found", "red"));
+                _stateMessages.Add(($"error_Excel file {_suppName} not found", "red"));
             }
 
         }
@@ -564,7 +564,7 @@ public class UpdatePriceQuantityService
                             }
                             else
                             {
-                                _stateMessages.Add(($"Duplicate model in excel file {_suppName} {model}", "red"));
+                                _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
                             }
                         }
                     }
@@ -574,12 +574,12 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
-                    _stateMessages.Add(($"No Excel files found in {remoteFilePath}", "red"));
+                    _stateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
                 }
             }
             else
             {
-                _stateMessages.Add(($"No files found in {remoteFilePath}", "red"));
+                _stateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
             }
         }
     }
@@ -698,7 +698,7 @@ public class UpdatePriceQuantityService
                             if (productToUpdate != null)
                             {
                                 productToUpdate.Price = normalizedXmlValue;
-                                _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                             }
                         }
                         else
@@ -708,7 +708,7 @@ public class UpdatePriceQuantityService
                             {
                                 productToUpdate.Price = normalizedXmlValue;
 
-                                _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                             }
                         }
                     }
@@ -716,12 +716,12 @@ public class UpdatePriceQuantityService
                 catch (Exception)
                 {
 
-                    _stateMessages.Add(($"Error occurred while price of {_suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    _stateMessages.Add(($"error_Error occurred while price of {_suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                 }
             }
             else
             {
-                _stateMessages.Add(($"{_suppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item4}_ NOT FOUND in xml", "red"));
+                _stateMessages.Add(($"error_{_suppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item4}_ NOT FOUND in xml", "red"));
             }
         }
         _dbContextGamma.SaveChanges();
@@ -765,7 +765,7 @@ public class UpdatePriceQuantityService
                         if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності. Винести вище if (dbModel.Item3 != xmlValue)
                         {
                             productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
-                            _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
+                            _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
 
                         }
                         else
@@ -778,13 +778,13 @@ public class UpdatePriceQuantityService
                                     {
                                         productToUpdate.Quantity = currentXmlValue;
                                         productToUpdate.StockStatusId = 7;
-                                        _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                        _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                     else
                                     {
                                         productToUpdate.Quantity = currentXmlValue;
                                         productToUpdate.StockStatusId = 5;
-                                        _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                        _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                 }
                                 else
@@ -793,13 +793,13 @@ public class UpdatePriceQuantityService
                                     {
                                         productToUpdate.Quantity = currentXmlValue;
                                         productToUpdate.StockStatusId = 7;
-                                        _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                        _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                     else
                                     {
                                         productToUpdate.Quantity = currentXmlValue;
                                         productToUpdate.StockStatusId = 5;
-                                        _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                        _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                 }
                             }
@@ -811,7 +811,7 @@ public class UpdatePriceQuantityService
                     currentXmlValue = 0;
                     productToUpdate.Quantity = currentXmlValue;
                     productToUpdate.StockStatusId = 5;
-                    _stateMessages.Add(($"{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
+                    _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
 
                 }
 
@@ -819,7 +819,7 @@ public class UpdatePriceQuantityService
             }
             catch (Exception)
             {
-                _stateMessages.Add(($"Error occurred while quantity of {_suppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}", "red"));
+                _stateMessages.Add(($"error_Something happened while quantity of {_suppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}", "red"));
             }
         }
     }
