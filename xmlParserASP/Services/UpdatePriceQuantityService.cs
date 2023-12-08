@@ -167,6 +167,7 @@ public class UpdatePriceQuantityService
             _stateMessages.Add(($"ok_{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
 
         }
+        _stateMessages = _stateMessages.OrderBy(m => m.Item1).ToList();
         return _stateMessages;
     }
 
