@@ -56,7 +56,7 @@ public class Program
 
         app.UseRouting();
 
-        app.UseAuthorization();
+        app.UseAuthorization(); 
         //app.UseAuthentication();
 
         app.MapControllerRoute(
