@@ -1,5 +1,8 @@
+using Fluent.Infrastructure.FluentModel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities;
 using xmlParserASP.Models;
@@ -17,20 +20,19 @@ public class Program
         builder.Configuration.AddUserSecrets<Program>();
 
         //builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("myDbConnectionString")));
-
         //builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("connectionStringTestGamma")));
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
+        //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+        //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        //        .AddEntityFrameworkStores<GammaContext>();
         builder.Services.AddAntiforgery(options => { });
-        //builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")).LogTo(Console.WriteLine,
-        //new[] { DbLoggerCategory.Database.Command.Name },
-        //LogLevel.Information).EnableDetailedErrors());
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<Mm_SupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
         builder.Services.AddScoped<WriteRuToXL>();
         builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsRU>();
-        builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsUA>();
+        builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsUA>(); 
         builder.Services.AddScoped<UniqNodesInXML>();
         builder.Services.AddScoped<ReadUniqueCategorys>();
         builder.Services.AddScoped<UpdatePriceQuantityService>();
@@ -57,7 +59,7 @@ public class Program
         app.UseRouting();
 
         app.UseAuthorization(); 
-        //app.UseAuthentication();
+        app.UseAuthentication();
 
         app.MapControllerRoute(
             name: "default",
