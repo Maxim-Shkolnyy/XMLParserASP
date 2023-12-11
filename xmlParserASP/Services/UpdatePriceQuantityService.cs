@@ -731,7 +731,10 @@ public class UpdatePriceQuantityService
 
     private void UpdateQuantity(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
-        var prodListDb = 
+        var prodListDb = 1;
+        var manualQty =_dbContextGamma.ProductsManualSetQuanitys.ToList();
+
+
 
         foreach (var dbModel in dbCodeModelPriceList)
         {
@@ -742,11 +745,10 @@ public class UpdatePriceQuantityService
 
             try
             {
-                if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
+                if (manualQty.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
                 {
-                    productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
+                    productToUpdate.Quantity = manualQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
                     _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
-
                 }
                 else
                 {
@@ -806,7 +808,6 @@ public class UpdatePriceQuantityService
                                     }
                                 }
                             }
-
                         }
                     }
                     else
@@ -818,8 +819,6 @@ public class UpdatePriceQuantityService
 
                     }
                 }
-
-
 
                 _dbContextGamma.SaveChanges();
             }
