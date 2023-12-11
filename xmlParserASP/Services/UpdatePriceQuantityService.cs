@@ -654,8 +654,11 @@ public class UpdatePriceQuantityService
 
     private void UpdatePrices(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
+        var manualPrice = _dbContextGamma.ProductsManualSetPrices.ToList();
+        
         foreach (var dbModel in dbCodeModelPriceList)
         {
+            //if(dbModel.Item1.FirstOrDefault())
 
             if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
             {
@@ -733,8 +736,6 @@ public class UpdatePriceQuantityService
     {
         var prodListDb = 1;
         var manualQty =_dbContextGamma.ProductsManualSetQuanitys.ToList();
-
-
 
         foreach (var dbModel in dbCodeModelPriceList)
         {
@@ -816,7 +817,6 @@ public class UpdatePriceQuantityService
                         productToUpdate.Quantity = currentXmlValue;
                         productToUpdate.StockStatusId = 5;
                         _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
-
                     }
                 }
 
