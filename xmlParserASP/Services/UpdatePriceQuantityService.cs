@@ -731,6 +731,8 @@ public class UpdatePriceQuantityService
 
     private void UpdateQuantity(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
+        var prodListDb = 
+
         foreach (var dbModel in dbCodeModelPriceList)
         {
             string? xmlValue;
@@ -740,37 +742,37 @@ public class UpdatePriceQuantityService
 
             try
             {
-                if (xmlModelPriceList.TryGetValue(dbModel.Item2, out xmlValue))
+                if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
                 {
-                    if (dbModel.Item3 != xmlValue)
+                    productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
+                    _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
+
+                }
+                else
+                {
+                    if (xmlModelPriceList.TryGetValue(dbModel.Item2, out xmlValue))
                     {
+                        if (dbModel.Item3 != xmlValue)
+                        {
+                            if (dbModel.Item3.Contains("."))
+                            {
+                                dbValue = Convert.ToInt32(dbModel.Item3.Replace(".", ","));
+                            }
+                            else
+                            {
+                                dbValue = Convert.ToInt32(dbModel.Item3);
+                            }
 
-                        if (dbModel.Item3.Contains("."))
-                        {
-                            dbValue = Convert.ToInt32(dbModel.Item3.Replace(".", ","));
-                        }
-                        else
-                        {
-                            dbValue = Convert.ToInt32(dbModel.Item3);
-                        }
+                            if (xmlValue.Contains("."))
+                            {
+                                currentXmlValue = Convert.ToInt32(xmlValue.Replace(".", ","));
+                            }
+                            else
+                            {
+                                currentXmlValue = Convert.ToInt32(xmlValue);
+                            }
 
-                        if (xmlValue.Contains("."))
-                        {
-                            currentXmlValue = Convert.ToInt32(xmlValue.Replace(".", ","));
-                        }
-                        else
-                        {
-                            currentXmlValue = Convert.ToInt32(xmlValue);
-                        }
 
-                        if (_dbContextGamma.ProductsManualSetQuanitys.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності. Винести вище if (dbModel.Item3 != xmlValue)
-                        {
-                            productToUpdate.Quantity = _dbContextGamma.ProductsManualSetQuanitys.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
-                            _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
-
-                        }
-                        else
-                        {
                             if (dbValue != currentXmlValue)
                             {
                                 if (dbValue < currentXmlValue)
@@ -804,17 +806,20 @@ public class UpdatePriceQuantityService
                                     }
                                 }
                             }
-                        }                        
+
+                        }
+                    }
+                    else
+                    {
+                        currentXmlValue = 0;
+                        productToUpdate.Quantity = currentXmlValue;
+                        productToUpdate.StockStatusId = 5;
+                        _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
+
                     }
                 }
-                else
-                {
-                    currentXmlValue = 0;
-                    productToUpdate.Quantity = currentXmlValue;
-                    productToUpdate.StockStatusId = 5;
-                    _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
 
-                }
+
 
                 _dbContextGamma.SaveChanges();
             }
