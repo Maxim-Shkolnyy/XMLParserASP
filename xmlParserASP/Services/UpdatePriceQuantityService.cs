@@ -597,7 +597,6 @@ public class UpdatePriceQuantityService
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
 
-
         foreach (XmlNode item in itemsList)
         {
             if (_supplierXmlSetting.paramAttribute == null)
@@ -655,77 +654,88 @@ public class UpdatePriceQuantityService
     private void UpdatePrices(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
         var manualPrice = _dbContextGamma.ProductsManualSetPrices.ToList();
-        
+
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            //if(dbModel.Item1.FirstOrDefault())
+            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
-            if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
+            if (manualPrice.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
             {
-                decimal dbValue = 0;
-                decimal currentXmlValue = 0;
+                var manualValue = manualPrice.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
 
-                try
-                {
-                    if (dbModel.Item3.Contains("."))
-                    {
-                        dbValue = Convert.ToDecimal(dbModel.Item3.Replace(".", ","));
-                    }
-                    else
-                    {
-                        dbValue = Convert.ToDecimal(dbModel.Item3);
-                    }
+                productToUpdate.Price = manualValue;
 
-                    if (xmlValue.Contains("."))
-                    {
-                        currentXmlValue = Convert.ToDecimal(xmlValue.Replace(".", ","));
-                    }
-                    else
-                    {
-                        currentXmlValue = Convert.ToDecimal(xmlValue);
-                    }
-
-                    if (_suppName == "Gamma" || _suppName == "Gamma-K")
-                    {
-                        currentXmlValue = (currentXmlValue + (currentXmlValue * 0.4m)) * 50m;
-                    }
-
-
-                    var normalizedDbValue = Math.Round(dbValue, 2);
-                    var normalizedXmlValue = Math.Round(currentXmlValue, 2);
-
-                    if (normalizedDbValue != normalizedXmlValue)
-                    {
-                        if (normalizedDbValue < normalizedXmlValue)
-                        {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
-                            if (productToUpdate != null)
-                            {
-                                productToUpdate.Price = normalizedXmlValue;
-                                _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
-                            }
-                        }
-                        else
-                        {
-                            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
-                            if (productToUpdate != null)
-                            {
-                                productToUpdate.Price = normalizedXmlValue;
-
-                                _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
-                            }
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-
-                    _stateMessages.Add(($"error_Error occurred while price of {_suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
-                }
+                _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_Set:_{manualValue}", "black"));
             }
             else
             {
-                _stateMessages.Add(($"error_{_suppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item4}_ NOT FOUND in xml", "red"));
+
+                if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
+                {
+                    decimal dbValue = 0;
+                    decimal currentXmlValue = 0;
+
+                    try
+                    {
+                        if (dbModel.Item3.Contains("."))
+                        {
+                            dbValue = Convert.ToDecimal(dbModel.Item3.Replace(".", ","));
+                        }
+                        else
+                        {
+                            dbValue = Convert.ToDecimal(dbModel.Item3);
+                        }
+
+                        if (xmlValue.Contains("."))
+                        {
+                            currentXmlValue = Convert.ToDecimal(xmlValue.Replace(".", ","));
+                        }
+                        else
+                        {
+                            currentXmlValue = Convert.ToDecimal(xmlValue);
+                        }
+
+                        if (_suppName == "Gamma" || _suppName == "Gamma-K")
+                        {
+                            currentXmlValue = (currentXmlValue + (currentXmlValue * 0.4m)) * 50m;
+                        }
+
+
+                        var normalizedDbValue = Math.Round(dbValue, 2);
+                        var normalizedXmlValue = Math.Round(currentXmlValue, 2);
+
+                        if (normalizedDbValue != normalizedXmlValue)
+                        {
+                            if (normalizedDbValue < normalizedXmlValue)
+                            {
+                                if (productToUpdate != null)
+                                {
+                                    productToUpdate.Price = normalizedXmlValue;
+                                    _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                }
+                            }
+                            else
+                            {
+                                //var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                                if (productToUpdate != null)
+                                {
+                                    productToUpdate.Price = normalizedXmlValue;
+
+                                    _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                        _stateMessages.Add(($"error_Error occurred while price of {_suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                    }
+                }
+                else
+                {
+                    _stateMessages.Add(($"error_{_suppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item4}_ NOT FOUND in xml", "red"));
+                }
             }
         }
         _dbContextGamma.SaveChanges();
@@ -735,7 +745,9 @@ public class UpdatePriceQuantityService
     private void UpdateQuantity(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
         var prodListDb = 1;
-        var manualQty =_dbContextGamma.ProductsManualSetQuanitys.ToList();
+        var manualQty = _dbContextGamma.ProductsManualSetQuanitys.ToList();
+
+        //var productsList = _dbContextGamma.OcProducts.Where(p => manualQty.Contains(p.Sku)).ToList();
 
         foreach (var dbModel in dbCodeModelPriceList)
         {
@@ -750,12 +762,12 @@ public class UpdatePriceQuantityService
                 {
                     var manualValue = manualQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
 
-                    if(manualValue > 0)
+                    if (manualValue > 0)
                     {
                         productToUpdate.Quantity = manualValue;
                         productToUpdate.StockStatusId = 7;
                     }
-                    else 
+                    else
                     {
                         productToUpdate.Quantity = manualValue;
                         productToUpdate.StockStatusId = 5;
