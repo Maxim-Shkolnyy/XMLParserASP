@@ -748,7 +748,18 @@ public class UpdatePriceQuantityService
             {
                 if (manualQty.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
                 {
-                    productToUpdate.Quantity = manualQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
+                    var manualValue = manualQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
+
+                    if(manualValue > 0)
+                    {
+                        productToUpdate.Quantity = manualValue;
+                        productToUpdate.StockStatusId = 7;
+                    }
+                    else 
+                    {
+                        productToUpdate.Quantity = manualValue;
+                        productToUpdate.StockStatusId = 5;
+                    }
                     _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
                 }
                 else
