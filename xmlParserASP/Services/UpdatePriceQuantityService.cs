@@ -38,7 +38,7 @@ public class UpdatePriceQuantityService
 
         #region Get current values from DB and add them to new 'dbCodeModelPriceList' on each iteration
 
-        foreach (int id in settingsId)
+        foreach (int id in settingsId) 
         {
             _supplierXmlSetting = await _dbContextGamma.Mm_SupplierXmlSettings
                 .Where(m => m.SupplierXmlSettingId == id)
