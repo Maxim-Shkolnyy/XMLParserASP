@@ -137,10 +137,6 @@ public class UpdatePriceQuantityService
                 {
                     GetExcelValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber);
                 }
-                //if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Feron_excel")
-                //{
-                //    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber, _supplierXmlSetting.QtyInBoxColumnNumber);
-                //}
             }
             else if (_suppName == "Feron")
             {
@@ -148,7 +144,6 @@ public class UpdatePriceQuantityService
                 {
                     GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, _supplierXmlSetting.ModelXlColumn, _supplierXmlSetting.PicturePriceQuantityXlColumn, _supplierXmlSetting.QtyInBoxColumnNumber);
                 }
-
             }
             else
             {
@@ -164,7 +159,7 @@ public class UpdatePriceQuantityService
                 UpdateQuantity(dbCodeModelPriceList, xmlModelPriceList);
             }
 
-            _stateMessages.Add(($"ok_{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
+            _stateMessages.Add(($"{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
 
         }
         _stateMessages = _stateMessages.OrderBy(m => m.Item1).ToList();
