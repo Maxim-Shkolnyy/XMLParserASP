@@ -26,7 +26,7 @@ public class UpdatePriceQuantityService
 
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId, string tableDbColumnToUpdate)
     {
-        _currentTableDbColumnToUpdate = tableDbColumnToUpdate;
+        _currentTableDbColumnToUpdate = tableDbColumnToUpdate; 
 
         _stateMessages = new List<(string, string)>();
 
