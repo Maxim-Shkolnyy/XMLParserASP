@@ -319,7 +319,9 @@ public class DownloadPhotosController : Controller
 
                         var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}{extension}";
 
-                        var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, currentSupplierFolder, imageName);
+                        var subFolder = desktopSubFolder ?? "";
+
+                        var fullFilePath = Path.Combine(desktopPath, subFolder, currentSupplierFolder, imageName);
 
                         if (modelPhotoUrls[modelValue].Contains(photoUrl))
                         {
