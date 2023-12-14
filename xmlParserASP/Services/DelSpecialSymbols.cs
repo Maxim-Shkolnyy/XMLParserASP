@@ -7,7 +7,7 @@ public static class DelSpecialSymbols
     public static string ToLowerAndSpecialSymbolsToDashes(string input)
     {
         input = input.ToLower();
-        string regExString = Regex.Replace(input, @"[^\d\w-]", "-");
+        string regExString = Regex.Replace(input, @"[^\d\w-]", "-"); // .  also will be delete   Ab.jpg  => abjpg
 
         string result = DelDoubleDashes(regExString);
 
@@ -18,7 +18,7 @@ public static class DelSpecialSymbols
 
     public static string SpecialSymbolsToDashes(string input)
     {
-        string regExString = Regex.Replace(input, @"[^\d\w-]", "-");
+        string regExString = Regex.Replace(input, @"[^\d\w-]", "-");  // .  also will be delete   Ab.jpg  => abjpg
 
         string result = DelDoubleDashes(regExString);
 

@@ -11,6 +11,7 @@ using xmlParserASP.Services;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Windows.Storage.Pickers;
 
 namespace xmlParserASP.Controllers;
 
@@ -236,11 +237,11 @@ public class DownloadPhotosController : Controller
 
 
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder) //string? filePath,
     {
-        var suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
-        suppName = _gammaContext.Mm_Supplier.Where(m => m.SupplierId == suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
-        string? downloadFolder = suppSetting.PhotoFolder;
+        _suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+        suppName = _gammaContext.Mm_Supplier.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
+        string? downloadFolder = _suppSetting.PhotoFolder;
         
         try
         {
@@ -292,13 +293,20 @@ public class DownloadPhotosController : Controller
                         var modelValue = currentRow.Cell(modelColumn.ColumnNumber()).Value.ToString();
                         var photoUrl = currentRow.Cell(photoUrlColumn.ColumnNumber()).Value.ToString();
 
-                        var originalFileName = Path.GetFileName(photoUrl);
+                        var originalFileName = Path.GetFileNameWithoutExtension(photoUrl);
+                        var extension = Path.GetExtension(photoUrl);
+                        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        string? currentSupplierFolder = _suppSetting.PhotoFolder ?? "";
+                        
                         var cleanOriginalFileName = DelSpecialSymbols.ToLowerAndSpecialSymbolsToDashes(originalFileName);
 
                         if (!modelCount.ContainsKey(modelValue))
                         {
                             modelCount[modelValue] = 0;
-                            modelPhotoUrls[modelValue] = new HashSet<string>(); // Initialize the HashSet for photo URLs
+                            modelPhotoUrls[modelValue] = new HashSet<string>(); // Initialize the HashSet for photo URLs                            
+                        }
+                        else
+                        {
                             totalPhotoPassedExists++;
                         }
 
@@ -309,9 +317,9 @@ public class DownloadPhotosController : Controller
 
                         var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
 
-                        var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}";
+                        var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}{extension}";
 
-                        var fullFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
+                        var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, currentSupplierFolder, imageName);
 
                         if (modelPhotoUrls[modelValue].Contains(photoUrl))
                         {
@@ -324,7 +332,7 @@ public class DownloadPhotosController : Controller
                         {
                             if (response.IsSuccessStatusCode)
                             {
-                                string? photoFilePath = Path.Combine(PathModel.PhotoFolder, imageName) ?? @"D:\\Downloads\img\";
+                                //string? photoFilePath = Path.Combine(_suppSetting.PhotoFolder, imageName) ?? @"D:\\Downloads\img\";
 
                                 using (var photoStream = await response.Content.ReadAsStreamAsync())
                                 {
@@ -349,13 +357,13 @@ public class DownloadPhotosController : Controller
 
                                             using (var resizedImage = new Bitmap(image, newWidth, newHeight))
                                             {
-                                                resizedImage.Save(photoFilePath, ImageFormat.Jpeg);
+                                                resizedImage.Save(fullFilePath, ImageFormat.Jpeg);
                                                 totalPhotosResized++;
                                             }
                                         }
                                         else
                                         {
-                                            using (var fileStream = new FileStream(photoFilePath, FileMode.Create))
+                                            using (var fileStream = new FileStream(fullFilePath, FileMode.Create))
                                             {
                                                 photoStream.Seek(0, SeekOrigin.Begin);
                                                 await photoStream.CopyToAsync(fileStream);
