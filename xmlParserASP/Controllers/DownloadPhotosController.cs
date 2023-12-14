@@ -65,6 +65,7 @@ public class DownloadPhotosController : Controller
             .Select(s => s.SupplierName)
             .FirstOrDefault();
 
+
         try
         {
             var xmlDoc = new XmlDocument();
@@ -238,6 +239,7 @@ public class DownloadPhotosController : Controller
     public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename) //string? filePath,
     {
         var suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+        suppName = _gammaContext.Mm_Supplier.Where(m => m.SupplierId == suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
         string? downloadFolder = suppSetting.PhotoFolder;
         
         try
@@ -307,7 +309,7 @@ public class DownloadPhotosController : Controller
 
                         var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
 
-                        var imageName = $"{modelValue}-{alphabeticCharacter}-{PathModel.Supplier}_{cleanOriginalFileName}";
+                        var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}";
 
                         var fullFilePath = Path.Combine(PathModel.PhotoFolder, imageName);
 
@@ -333,6 +335,7 @@ public class DownloadPhotosController : Controller
                                         if (image.Width > 1000 || image.Height > 1000)
                                         {
                                             int newWidth, newHeight;
+                                           
                                             if (image.Width > image.Height)
                                             {
                                                 newWidth = 1000;
