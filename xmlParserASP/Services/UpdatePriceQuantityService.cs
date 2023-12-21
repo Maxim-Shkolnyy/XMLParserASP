@@ -26,9 +26,9 @@ public class UpdatePriceQuantityService
 
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId, string tableDbColumnToUpdate)
     {
-        _currentTableDbColumnToUpdate = tableDbColumnToUpdate; 
+        _currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
-        _stateMessages = new List<(string, string)>();
+        _stateMessages = new();
 
         if (settingsId == null)
         {
@@ -38,7 +38,7 @@ public class UpdatePriceQuantityService
 
         #region Get current values from DB and add them to new 'dbCodeModelPriceList' on each iteration
 
-        foreach (int id in settingsId) 
+        foreach (int id in settingsId)
         {
             _supplierXmlSetting = await _dbContextGamma.Mm_SupplierXmlSettings
                 .Where(m => m.SupplierXmlSettingId == id)
@@ -247,10 +247,10 @@ public class UpdatePriceQuantityService
                         }
                     }
 
-                    if (!xmlModelPriceList.ContainsKey(model))
-                    {
-                        xmlModelPriceList.Add(model, priceOrQuantityNode);
-                    }
+                    //if (!xmlModelPriceList.ContainsKey(model))
+                    //{
+                    xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+                    //}
                 }
             }
         }
@@ -309,11 +309,7 @@ public class UpdatePriceQuantityService
                     priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.QuantityNode)?.InnerText ?? "";
                 }
 
-
-                if (!xmlModelPriceList.ContainsKey(model))
-                {
-                    xmlModelPriceList.Add(model, priceOrQuantityNode);
-                }
+                xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
             }
 
         }
@@ -355,14 +351,8 @@ public class UpdatePriceQuantityService
 
                         priceOrQuantityColumn = row.Cell(priceQuantityColumn).Value.ToString();
 
-                        if (!xmlModelPriceList.ContainsKey(model))
-                        {
-                            xmlModelPriceList.Add(model, priceOrQuantityColumn);
-                        }
-                        else
-                        {
+                        if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
                             _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
-                        }
                     }
                 }
             }
@@ -383,7 +373,7 @@ public class UpdatePriceQuantityService
 
             FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             Stream responseStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(responseStream);
+            StreamReader reader = new(responseStream);
 
             string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
@@ -396,7 +386,7 @@ public class UpdatePriceQuantityService
                 if (!string.IsNullOrEmpty(newestFileName))
                 {
                     // Завантаження найновішого файлу
-                    WebClient ftpClient = new WebClient();
+                    WebClient ftpClient = new();
                     ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
                     ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
 
@@ -419,14 +409,8 @@ public class UpdatePriceQuantityService
 
                             priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
 
-                            if (!xmlModelPriceList.ContainsKey(model))
-                            {
-                                xmlModelPriceList.Add(model, priceOrQuantityColumn);
-                            }
-                            else
-                            {
+                            if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
                                 _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
-                            }
                         }
                     }
 
@@ -484,20 +468,14 @@ public class UpdatePriceQuantityService
                         priceOrQuantityColumn = row.Cell(priceQuantityColumn).Value.ToString();
                         unitsInBox = row.Cell(boxColumn).Value.ToString();
 
-                        if (priceOrQuantityColumn.Contains(">") & priceOrQuantityColumn.Contains("ящик"))
+                        if (priceOrQuantityColumn.Contains('>') & priceOrQuantityColumn.Contains("ящик"))
                         {
                             priceOrQuantityColumn = unitsInBox;
                         }
 
 
-                        if (!xmlModelPriceList.ContainsKey(model))
-                        {
-                            xmlModelPriceList.Add(model, priceOrQuantityColumn);
-                        }
-                        else
-                        {
+                        if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
                             _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
-                        }
                     }
                 }
             }
@@ -518,7 +496,7 @@ public class UpdatePriceQuantityService
 
             FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             Stream responseStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(responseStream);
+            StreamReader reader = new(responseStream);
 
             string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
@@ -531,7 +509,7 @@ public class UpdatePriceQuantityService
                 if (!string.IsNullOrEmpty(newestFileName))
                 {
                     // Завантаження найновішого файлу
-                    WebClient ftpClient = new WebClient();
+                    WebClient ftpClient = new();
                     ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
                     ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
 
@@ -554,14 +532,8 @@ public class UpdatePriceQuantityService
 
                             priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
 
-                            if (!xmlModelPriceList.ContainsKey(model))
-                            {
-                                xmlModelPriceList.Add(model, priceOrQuantityColumn);
-                            }
-                            else
-                            {
+                            if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
                                 _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
-                            }
                         }
                     }
 
@@ -636,10 +608,7 @@ public class UpdatePriceQuantityService
 
             priceOrQuantityNode = aggregatedQuantity.ToString();
 
-            if (!xmlModelPriceList.ContainsKey(model))
-            {
-                xmlModelPriceList.Add(model, priceOrQuantityNode);
-            }
+            xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
         }
     }
 
@@ -672,18 +641,18 @@ public class UpdatePriceQuantityService
 
                     try
                     {
-                        if (dbModel.Item3.Contains("."))
+                        if (dbModel.Item3.Contains('.'))
                         {
-                            dbValue = Convert.ToDecimal(dbModel.Item3.Replace(".", ","));
+                            dbValue = Convert.ToDecimal(dbModel.Item3.Replace('.', ','));
                         }
                         else
                         {
                             dbValue = Convert.ToDecimal(dbModel.Item3);
                         }
 
-                        if (xmlValue.Contains("."))
+                        if (xmlValue.Contains('.'))
                         {
-                            currentXmlValue = Convert.ToDecimal(xmlValue.Replace(".", ","));
+                            currentXmlValue = Convert.ToDecimal(xmlValue.Replace('.', ','));
                         }
                         else
                         {
@@ -744,9 +713,9 @@ public class UpdatePriceQuantityService
 
         //var productsList = _dbContextGamma.OcProducts.Where(p => manualQty.Contains(p.Sku)).ToList();
 
+        string? xmlValue;
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            string? xmlValue;
             int? dbValue = 0;
             int currentXmlValue = 0;
             var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
@@ -775,18 +744,18 @@ public class UpdatePriceQuantityService
                     {
                         if (dbModel.Item3 != xmlValue)
                         {
-                            if (dbModel.Item3.Contains("."))
+                            if (dbModel.Item3.Contains('.'))
                             {
-                                dbValue = Convert.ToInt32(dbModel.Item3.Replace(".", ","));
+                                dbValue = Convert.ToInt32(dbModel.Item3.Replace('.', ','));
                             }
                             else
                             {
                                 dbValue = Convert.ToInt32(dbModel.Item3);
                             }
 
-                            if (xmlValue.Contains("."))
+                            if (xmlValue.Contains('.'))
                             {
-                                currentXmlValue = Convert.ToInt32(xmlValue.Replace(".", ","));
+                                currentXmlValue = Convert.ToInt32(xmlValue.Replace('.', ','));
                             }
                             else
                             {
@@ -848,7 +817,7 @@ public class UpdatePriceQuantityService
     }
 
 
-    private string CutString(string input)
+    private static string CutString(string input)
     {
         const int maxLength = 60;
 
