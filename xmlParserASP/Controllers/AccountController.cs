@@ -4,18 +4,18 @@ namespace xmlParserASP.Controllers
 {
     public class AccountController : Controller
     {
-        [HttpGet]
-        public IActionResult Register() => View();
+        //[HttpGet]
+        //public IActionResult Register() => View();
 
-        [HttpPost]
-        public IActionResult Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
+        //[HttpPost]
+        //public IActionResult Register(RegisterViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
                 
-            }
-            return View(model);
-        }
+        //    }
+        //    return View(model);
+        //}
 
 
 
