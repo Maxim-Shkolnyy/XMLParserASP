@@ -24,9 +24,9 @@ public class UpdateMainXml
 
     public void UpdateGammaXml()
     {
-        var query = from product in _dbContextGamma.OcProducts
-            join prodName in _dbContextGamma.OcProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
-            join prodCat in _dbContextGamma.OcProductToCategories.
+        var query = from product in _dbContextGamma.NgProducts
+            join prodName in _dbContextGamma.NgProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
+            join prodCat in _dbContextGamma.NgProductToCategories.
                     GroupBy(pc => pc.ProductId).Select(g => new { ProductId = g.Key, GroupId = g.FirstOrDefault().CategoryId })
 
                 on product.ProductId equals prodCat.ProductId

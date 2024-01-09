@@ -4,21 +4,21 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Xml;
-using xmlParserASP.Entities;
+using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Services;
 
 public class UpdatePriceQuantityService
 {
-    private Mm_SupplierXmlSetting? _supplierXmlSetting;
+    private MmSupplierXmlSetting? _supplierXmlSetting;
     private readonly GammaContext _dbContextGamma;
     private string? _suppName;
     private List<(string, string)>? _stateMessages;
     private string _currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
 
-    public UpdatePriceQuantityService(Mm_SupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
+    public UpdatePriceQuantityService(MmSupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
     {
         _dbContextGamma = dbContextGamma;
         _supplierXmlSetting = supplierXmlSetting;
@@ -40,7 +40,7 @@ public class UpdatePriceQuantityService
 
         foreach (int id in settingsId)
         {
-            _supplierXmlSetting = await _dbContextGamma.Mm_SupplierXmlSettings
+            _supplierXmlSetting = await _dbContextGamma.MmSupplierXmlSettings
                 .Where(m => m.SupplierXmlSettingId == id)
                 .FirstOrDefaultAsync();
             if (_supplierXmlSetting == null)
@@ -49,7 +49,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            _suppName = (await _dbContextGamma.Mm_Supplier.FirstOrDefaultAsync(m => m.SupplierId == _supplierXmlSetting.SupplierId))?.SupplierName;
+            _suppName = (await _dbContextGamma.MmSuppliers.FirstOrDefaultAsync(m => m.SupplierId == _supplierXmlSetting.SupplierId))?.SupplierName;
 
             if (_suppName == null)
             {
@@ -57,7 +57,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var currentSuppProductsList = await _dbContextGamma.OcProductToSuppliers
+            var currentSuppProductsList = await _dbContextGamma.NgProductToSuppliers
                 .Where(m => m.SupplierId == _suppName)
                 .Select(m => m.ProductId)
                 .ToListAsync();
@@ -68,7 +68,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var products = await _dbContextGamma.OcProducts
+            var products = await _dbContextGamma.NgProducts
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
                 .ToListAsync();
 
@@ -84,12 +84,12 @@ public class UpdatePriceQuantityService
                     if (_currentTableDbColumnToUpdate == "Price")
                     {
                         priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture);
-                        productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
+                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
                     }
                     else
                     {
                         priceQuantityValue = product.Quantity.ToString();
-                        productName = _dbContextGamma.OcProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
+                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
                     }
                 }
                 catch (Exception ex)
@@ -198,7 +198,7 @@ public class UpdatePriceQuantityService
                 {
                     string? model = null;
 
-                    if (_supplierXmlSetting.paramAttribute == null)
+                    if (_supplierXmlSetting.ParamAttribute == null)
                     {
                         model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText;
 
@@ -260,7 +260,7 @@ public class UpdatePriceQuantityService
             {
                 string? model = null;
 
-                if (_supplierXmlSetting.paramAttribute == null)
+                if (_supplierXmlSetting.ParamAttribute == null)
                 {
                     if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
                     {
@@ -566,7 +566,7 @@ public class UpdatePriceQuantityService
 
         foreach (XmlNode item in itemsList)
         {
-            if (_supplierXmlSetting.paramAttribute == null)
+            if (_supplierXmlSetting.ParamAttribute == null)
             {
                 if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
                 {
@@ -589,17 +589,17 @@ public class UpdatePriceQuantityService
             int stock1 = 0;
             int stock2 = 0;
             int stock3 = 0;
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDBStock1)?.InnerText, out stock1))
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock1)?.InnerText, out stock1))
             {
                 stock1 = 0;
             }
 
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDBStock2)?.InnerText, out stock2))
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock2)?.InnerText, out stock2))
             {
                 stock2 = 0;
             }
 
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDBStock3)?.InnerText, out stock3))
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock3)?.InnerText, out stock3))
             {
                 stock3 = 0;
             }
@@ -621,7 +621,7 @@ public class UpdatePriceQuantityService
 
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+            var productToUpdate = _dbContextGamma.NgProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
             if (manualPrice.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
             {
@@ -680,7 +680,7 @@ public class UpdatePriceQuantityService
                             }
                             else
                             {
-                                //var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                                //var productToUpdate = _dbContextGamma.NgProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
                                 if (productToUpdate != null)
                                 {
                                     productToUpdate.Price = normalizedXmlValue;
@@ -711,14 +711,14 @@ public class UpdatePriceQuantityService
         var prodListDb = 1;
         var manualQty = _dbContextGamma.ProductsManualSetQuanitys.ToList();
 
-        //var productsList = _dbContextGamma.OcProducts.Where(p => manualQty.Contains(p.Sku)).ToList();
+        //var productsList = _dbContextGamma.NgProducts.Where(p => manualQty.Contains(p.Sku)).ToList();
 
         string? xmlValue;
         foreach (var dbModel in dbCodeModelPriceList)
         {
             int? dbValue = 0;
             int currentXmlValue = 0;
-            var productToUpdate = _dbContextGamma.OcProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+            var productToUpdate = _dbContextGamma.NgProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
             try
             {

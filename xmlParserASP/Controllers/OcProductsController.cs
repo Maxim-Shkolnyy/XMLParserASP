@@ -14,23 +14,23 @@ namespace xmlParserASP.Controllers
             _context = context;
         }
 
-        // GET: OcProducts
+        // GET: NgProducts
         public async Task<IActionResult> Index()
         {
-              return _context.OcProducts != null ? 
-                          View(await _context.OcProducts.Take(20).OrderByDescending(p => p.Sku).ToListAsync()) :
-                          Problem("Entity set 'GammaContext.OcProducts'  is null.");
+              return _context.NgProducts != null ? 
+                          View(await _context.NgProducts.Take(20).OrderByDescending(p => p.Sku).ToListAsync()) :
+                          Problem("Entity set 'GammaContext.NgProducts'  is null.");
         }
 
-        // GET: OcProducts/Details/5
+        // GET: NgProducts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.OcProducts == null)
+            if (id == null || _context.NgProducts == null)
             {
                 return NotFound();
             }
 
-            var ocProduct = await _context.OcProducts
+            var ocProduct = await _context.NgProducts
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (ocProduct == null)
             {
@@ -40,13 +40,13 @@ namespace xmlParserASP.Controllers
             return View(ocProduct);
         }
 
-        // GET: OcProducts/Create
+        // GET: NgProducts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: OcProducts/Create
+        // POST: NgProducts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -62,15 +62,15 @@ namespace xmlParserASP.Controllers
             return View(ocProduct);
         }
 
-        // GET: OcProducts/Edit/5
+        // GET: NgProducts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.OcProducts == null)
+            if (id == null || _context.NgProducts == null)
             {
                 return NotFound();
             }
 
-            var ocProduct = await _context.OcProducts.FindAsync(id);
+            var ocProduct = await _context.NgProducts.FindAsync(id);
             if (ocProduct == null)
             {
                 return NotFound();
@@ -78,7 +78,7 @@ namespace xmlParserASP.Controllers
             return View(ocProduct);
         }
 
-        // POST: OcProducts/Edit/5
+        // POST: NgProducts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -113,15 +113,15 @@ namespace xmlParserASP.Controllers
             return View(ocProduct);
         }
 
-        // GET: OcProducts/Delete/5
+        // GET: NgProducts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.OcProducts == null)
+            if (id == null || _context.NgProducts == null)
             {
                 return NotFound();
             }
 
-            var ocProduct = await _context.OcProducts
+            var ocProduct = await _context.NgProducts
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (ocProduct == null)
             {
@@ -131,19 +131,19 @@ namespace xmlParserASP.Controllers
             return View(ocProduct);
         }
 
-        // POST: OcProducts/Delete/5
+        // POST: NgProducts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.OcProducts == null)
+            if (_context.NgProducts == null)
             {
-                return Problem("Entity set 'GammaContext.OcProducts'  is null.");
+                return Problem("Entity set 'GammaContext.NgProducts'  is null.");
             }
-            var ocProduct = await _context.OcProducts.FindAsync(id);
+            var ocProduct = await _context.NgProducts.FindAsync(id);
             if (ocProduct != null)
             {
-                _context.OcProducts.Remove(ocProduct);
+                _context.NgProducts.Remove(ocProduct);
             }
             
             await _context.SaveChangesAsync();
@@ -152,7 +152,7 @@ namespace xmlParserASP.Controllers
 
         private bool OcProductExists(int id)
         {
-          return (_context.OcProducts?.Any(e => e.ProductId == id)).GetValueOrDefault();
+          return (_context.NgProducts?.Any(e => e.ProductId == id)).GetValueOrDefault();
         }
     }
 }

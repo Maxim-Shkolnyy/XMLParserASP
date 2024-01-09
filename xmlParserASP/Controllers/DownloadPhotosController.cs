@@ -5,12 +5,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using xmlParserASP.Entities;
-using xmlParserASP.Presistant;
-using xmlParserASP.Services;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Presistant;
+using xmlParserASP.Services;
 //using Windows.Storage.Pickers;
 
 namespace xmlParserASP.Controllers;
@@ -20,7 +20,7 @@ public class DownloadPhotosController : Controller
     //private readonly MyDBContext _dbContext;
     private readonly GammaContext _gammaContext;
     private string? suppName;
-    private Mm_SupplierXmlSetting _suppSetting;
+    private MmSupplierXmlSetting _suppSetting;
 
     public DownloadPhotosController(GammaContext gammaContext)
     {
@@ -30,13 +30,14 @@ public class DownloadPhotosController : Controller
     {
         //var myContext = _dbContext.SupplierXmlSettings;
 
-        var settingsWithSupplier = _gammaContext.Mm_SupplierXmlSettings.Where(s => s.Supplier != null).Include(m => m.Supplier).ToList();
+        var settingsWithSupplier = _gammaContext.MmSupplierXmlSettings.Where(s => s.SupplierId != null).Include(m => m.SupplierId).ToList();
 
         //return View(settingsWithSupplier);
 
         var model = new DownloadPhotosViewModel
         {
-            SupplierXmlSettings = _gammaContext.Mm_SupplierXmlSettings.Include(m => m.Supplier).ToList()
+            //SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.Include(m => m.SupplierId).ToList();
+            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.Include(n => n.SupplierId).ToList()
         };
 
         var stringPath = new List<SelectListItem>
@@ -54,14 +55,14 @@ public class DownloadPhotosController : Controller
     [HttpPost]
     public async Task<ActionResult> DownloadFromXml(int? selectedSupplierXmlSetting, bool renamePhotos, string prefix, string mainPart, string suffix)
     {
-        _suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+        _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         if (_suppSetting == null)
         {
             ViewBag.MessageNoURL = "Supplier XML setting not found.";
             return View("Index");
         }
 
-        suppName = _gammaContext.Mm_Supplier
+        suppName = _gammaContext.MmSuppliers
             .Where(s => s.SupplierId == _suppSetting.SupplierId)
             .Select(s => s.SupplierName)
             .FirstOrDefault();
@@ -99,13 +100,13 @@ public class DownloadPhotosController : Controller
 
                 string modelValue = null;
 
-                if (_suppSetting.paramAttribute == null)
+                if (_suppSetting.ParamAttribute == null)
                 {
                     modelValue = photoNode.SelectSingleNode(_suppSetting.ModelNode)?.InnerText ?? "";
                 }
                 else
                 {
-                    modelValue = photoNode.ParentNode.Attributes[_suppSetting.paramAttribute]?.Value;
+                    modelValue = photoNode.ParentNode.Attributes[_suppSetting.ParamAttribute]?.Value;
                 }
 
                 // Очистка и преобразование modelValue
@@ -239,8 +240,8 @@ public class DownloadPhotosController : Controller
     [HttpPost]
     public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder) //string? filePath,
     {
-        _suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
-        suppName = _gammaContext.Mm_Supplier.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
+        _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+        suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
         string? downloadFolder = _suppSetting.PhotoFolder;
         
         try

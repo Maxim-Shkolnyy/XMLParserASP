@@ -1,10 +1,10 @@
-﻿using xmlParserASP.Entities;
+﻿using xmlParserASP.Entities.Gamma;
 
 namespace xmlParserASP.Models;
 
 public class DownloadPhotosViewModel
 {
-    public List<Mm_SupplierXmlSetting>? SupplierXmlSettings { get; set; }
+    public List<MmSupplierXmlSetting>? SupplierXmlSettings { get; set; }
     public int SelectedSupplierXmlSettingId { get; set; }
     public int? ModelColumn { get; set; }
     public int? PictureColumn { get; set;}

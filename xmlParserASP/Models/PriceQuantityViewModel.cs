@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using xmlParserASP.Entities;
+using xmlParserASP.Entities.Gamma;
 
 namespace xmlParserASP.Models;
 
@@ -9,7 +9,7 @@ public class PriceQuantityViewModel
     public int? Quantity { get; set; }
     public int? SupplierId { get; set; }
     public string? Model { get; set; }
-    public List<Mm_SupplierXmlSetting>? SupplierXmlSettings { get; set; }
+    public List<MmSupplierXmlSetting>? SupplierXmlSettings { get; set; }
     [Required(ErrorMessage = "Select a supplier")]
     public int SupplierXmlSettingId { get; set; }
     public List<int>? PriceList { get; set; }
