@@ -15,7 +15,7 @@ public class WriteRuToXL
 
     public void WriteRuColumnsToXL(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
         using (XLWorkbook workbook = new XLWorkbook())
         {

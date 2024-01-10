@@ -13,7 +13,7 @@ public class UniqNodesInXML
     }
     public void Read(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
         string xmlFilePath = suppSetting.Path; // work
 

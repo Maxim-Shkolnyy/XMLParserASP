@@ -2,6 +2,7 @@
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
+using xmlParserASP.Entities.Gamma;
 
 namespace xmlParserASP.Controllers;
 
@@ -24,11 +25,9 @@ public class ProcessXMLController : Controller
     }
     public IActionResult Index()
     {
-        var myContext = _gammaContext.Mm_SupplierXmlSettings;
-
         var model = new DownloadPhotosViewModel
         {
-            SupplierXmlSettings = _gammaContext.Mm_SupplierXmlSettings.ToList()
+            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.ToList()
         };
 
         return View(model);
@@ -39,7 +38,7 @@ public class ProcessXMLController : Controller
     {
         _uniqNodesInXML.Read(selectedSupplierXmlSetting);
 
-        var suppSetting = _gammaContext.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
         if (suppSetting != null)
         {
             if (PathModel.Language == Language.Ua)

@@ -17,20 +17,20 @@ namespace xmlParserASP.Controllers
         // GET: Mm_Supplier
         public async Task<IActionResult> Index()
         {
-              return _context.Mm_Supplier != null ? 
-                          View(await _context.Mm_Supplier.ToListAsync()) :
+              return _context.MmSuppliers != null ? 
+                          View(await _context.MmSuppliers.ToListAsync()) :
                           Problem("Entity set 'GammaContext.Mm_Supplier'  is null.");
         }
 
         // GET: Mm_Supplier/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Mm_Supplier == null)
+            if (id == null || _context.MmSuppliers == null)
             {
                 return NotFound();
             }
 
-            var mm_Supplier = await _context.Mm_Supplier
+            var mm_Supplier = await _context.MmSuppliers
                 .FirstOrDefaultAsync(m => m.SupplierId == id);
             if (mm_Supplier == null)
             {
@@ -65,12 +65,12 @@ namespace xmlParserASP.Controllers
         // GET: Mm_Supplier/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Mm_Supplier == null)
+            if (id == null || _context.MmSuppliers == null)
             {
                 return NotFound();
             }
 
-            var mm_Supplier = await _context.Mm_Supplier.FindAsync(id);
+            var mm_Supplier = await _context.MmSuppliers.FindAsync(id);
             if (mm_Supplier == null)
             {
                 return NotFound();
@@ -116,12 +116,12 @@ namespace xmlParserASP.Controllers
         // GET: Mm_Supplier/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Mm_Supplier == null)
+            if (id == null || _context.MmSuppliers == null)
             {
                 return NotFound();
             }
 
-            var mm_Supplier = await _context.Mm_Supplier
+            var mm_Supplier = await _context.MmSuppliers
                 .FirstOrDefaultAsync(m => m.SupplierId == id);
             if (mm_Supplier == null)
             {
@@ -136,14 +136,14 @@ namespace xmlParserASP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Mm_Supplier == null)
+            if (_context.MmSuppliers == null)
             {
                 return Problem("Entity set 'GammaContext.Mm_Supplier'  is null.");
             }
-            var mm_Supplier = await _context.Mm_Supplier.FindAsync(id);
+            var mm_Supplier = await _context.MmSuppliers.FindAsync(id);
             if (mm_Supplier != null)
             {
-                _context.Mm_Supplier.Remove(mm_Supplier);
+                _context.MmSuppliers.Remove(mm_Supplier);
             }
             
             await _context.SaveChangesAsync();
@@ -152,7 +152,7 @@ namespace xmlParserASP.Controllers
 
         private bool Mm_SupplierExists(int id)
         {
-          return (_context.Mm_Supplier?.Any(e => e.SupplierId == id)).GetValueOrDefault();
+          return (_context.MmSuppliers?.Any(e => e.SupplierId == id)).GetValueOrDefault();
         }
     }
 }

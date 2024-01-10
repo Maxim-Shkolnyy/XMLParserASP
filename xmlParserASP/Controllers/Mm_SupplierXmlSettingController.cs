@@ -22,20 +22,20 @@ namespace xmlParserASP.Controllers
         // GET: Mm_SupplierXmlSetting
         public async Task<IActionResult> Index()
         {
-            var gammaContext = _context.Mm_SupplierXmlSettings.Include(m => m.Supplier);
+            var gammaContext = _context.MmSupplierXmlSettings.Include(m => m.SupplierId);
             return View(await gammaContext.ToListAsync());
         }
 
         // GET: Mm_SupplierXmlSetting/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Mm_SupplierXmlSettings == null)
+            if (id == null || _context.MmSupplierXmlSettings == null)
             {
                 return NotFound();
             }
 
-            var mm_SupplierXmlSetting = await _context.Mm_SupplierXmlSettings
-                .Include(m => m.Supplier)
+            var mm_SupplierXmlSetting = await _context.MmSupplierXmlSettings
+                .Include(m => m.SupplierId)
                 .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
             if (mm_SupplierXmlSetting == null)
             {
@@ -48,7 +48,7 @@ namespace xmlParserASP.Controllers
         // GET: Mm_SupplierXmlSetting/Create
         public IActionResult Create()
         {
-            ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName");
+            ViewData["SupplierId"] = new SelectList(_context.MmSuppliers, "SupplierId", "SupplierName");
             return View();
         }
 
@@ -65,24 +65,24 @@ namespace xmlParserASP.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName", mm_SupplierXmlSetting.SupplierId);
+            ViewData["SupplierId"] = new SelectList(_context.MmSuppliers, "SupplierId", "SupplierName", mm_SupplierXmlSetting.SupplierId);
             return View(mm_SupplierXmlSetting);
         }
 
         // GET: Mm_SupplierXmlSetting/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Mm_SupplierXmlSettings == null)
+            if (id == null || _context.MmSupplierXmlSettings == null)
             {
                 return NotFound();
             }
 
-            var mm_SupplierXmlSetting = await _context.Mm_SupplierXmlSettings.FindAsync(id);
+            var mm_SupplierXmlSetting = await _context.MmSupplierXmlSettings.FindAsync(id);
             if (mm_SupplierXmlSetting == null)
             {
                 return NotFound();
             }
-            ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName", mm_SupplierXmlSetting.SupplierId);
+            ViewData["SupplierId"] = new SelectList(_context.MmSuppliers, "SupplierId", "SupplierName", mm_SupplierXmlSetting.SupplierId);
             return View(mm_SupplierXmlSetting);
         }
 
@@ -118,20 +118,20 @@ namespace xmlParserASP.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SupplierId"] = new SelectList(_context.Mm_Supplier, "SupplierId", "SupplierName", mm_SupplierXmlSetting.SupplierId);
+            ViewData["SupplierId"] = new SelectList(_context.MmSuppliers, "SupplierId", "SupplierName", mm_SupplierXmlSetting.SupplierId);
             return View(mm_SupplierXmlSetting);
         }
 
         // GET: Mm_SupplierXmlSetting/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Mm_SupplierXmlSettings == null)
+            if (id == null || _context.MmSupplierXmlSettings == null)
             {
                 return NotFound();
             }
 
-            var mm_SupplierXmlSetting = await _context.Mm_SupplierXmlSettings
-                .Include(m => m.Supplier)
+            var mm_SupplierXmlSetting = await _context.MmSupplierXmlSettings
+                .Include(m => m.SupplierId)
                 .FirstOrDefaultAsync(m => m.SupplierXmlSettingId == id);
             if (mm_SupplierXmlSetting == null)
             {
@@ -146,14 +146,14 @@ namespace xmlParserASP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Mm_SupplierXmlSettings == null)
+            if (_context.MmSupplierXmlSettings == null)
             {
-                return Problem("Entity set 'GammaContext.Mm_SupplierXmlSettings'  is null.");
+                return Problem("Entity set 'GammaContext.MmSupplierXmlSettings'  is null.");
             }
-            var mm_SupplierXmlSetting = await _context.Mm_SupplierXmlSettings.FindAsync(id);
+            var mm_SupplierXmlSetting = await _context.MmSupplierXmlSettings.FindAsync(id);
             if (mm_SupplierXmlSetting != null)
             {
-                _context.Mm_SupplierXmlSettings.Remove(mm_SupplierXmlSetting);
+                _context.MmSupplierXmlSettings.Remove(mm_SupplierXmlSetting);
             }
             
             await _context.SaveChangesAsync();
@@ -162,7 +162,7 @@ namespace xmlParserASP.Controllers
 
         private bool Mm_SupplierXmlSettingExists(int id)
         {
-          return (_context.Mm_SupplierXmlSettings?.Any(e => e.SupplierXmlSettingId == id)).GetValueOrDefault();
+          return (_context.MmSupplierXmlSettings?.Any(e => e.SupplierXmlSettingId == id)).GetValueOrDefault();
         }
     }
 }

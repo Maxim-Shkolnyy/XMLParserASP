@@ -13,7 +13,7 @@ public class ReadAttrFromXmlTo3ColumnsUA
     }
     public void ReadAttrTo3(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
         XmlDocument doc = new XmlDocument();
         doc.Load(suppSetting.Path);
@@ -39,7 +39,7 @@ public class ReadAttrFromXmlTo3ColumnsUA
             {
                 string? modelID;
 
-                if (suppSetting.paramAttribute == null)
+                if (suppSetting.ParamAttribute == null)
                 {
                     modelID = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText;
                 }

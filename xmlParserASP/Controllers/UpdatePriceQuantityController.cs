@@ -27,7 +27,7 @@ public class UpdatePriceQuantityController : Controller
     {
         var settingList = new PriceQuantityViewModel
         {
-            SupplierXmlSettings = _db.Mm_SupplierXmlSettings.ToList()
+            SupplierXmlSettings = _db.MmSupplierXmlSettings.ToList()
         };
 
         return View(settingList);
@@ -40,7 +40,7 @@ public class UpdatePriceQuantityController : Controller
         {
             var mySettingList = new PriceQuantityViewModel
             {
-                SupplierXmlSettings = _db.Mm_SupplierXmlSettings.ToList()
+                SupplierXmlSettings = _db.MmSupplierXmlSettings.ToList()
             };
 
             ViewBag.SelectSupSetting = "Choose supplier first";

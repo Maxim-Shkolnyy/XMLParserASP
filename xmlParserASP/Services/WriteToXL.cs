@@ -17,7 +17,7 @@ public class WriteToXL
     }
     public void WriteSheet(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.Mm_SupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
 
         using (XLWorkbook workbook = new XLWorkbook())
         {
@@ -89,7 +89,7 @@ public class WriteToXL
 
                 string? model;
 
-                if (suppSetting.paramAttribute == null)
+                if (suppSetting.ParamAttribute == null)
                 {
                     model = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText;
                 }
@@ -119,7 +119,7 @@ public class WriteToXL
                 string dateModifiedStr = dateModified.ToString("yyyy-MM-dd HH:mm:ss");
                 //string supplier_id = "1";
                 var imageAdress = image.Split("/").Last();
-                var imageName = $"catalog/image/{model}-A-{suppSetting.Supplier}_{imageAdress}";
+                var imageName = $"catalog/image/{model}-A-{suppSetting.SupplierId}_{imageAdress}";
                
 
                 productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
