@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using xmlParserASP.Entities.TestGamma;
+//using xmlParserASP.Entities.TestGamma;
 
 namespace xmlParserASP.Presistant;
 
