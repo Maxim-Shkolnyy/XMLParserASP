@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using xmlParserASP.Controllers;
@@ -38,6 +39,7 @@ public class Program
         builder.Services.AddScoped<ProcessXMLController>();
         builder.Services.AddScoped<PriceQuantityViewModel>();
         builder.Services.AddScoped<UpdateMainXml>();
+        builder.Services.AddScoped<Entities.Gamma.MmSupplierXmlSetting>();
 
         //builder.Services.AddLogging(b => b.AddConsole());
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);
