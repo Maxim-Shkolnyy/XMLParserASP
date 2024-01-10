@@ -4,19 +4,19 @@ using xmlParserASP.Entities.Gamma;
 
 namespace xmlParserASP.Presistant;
 
-public partial class OLD_GammaContext : DbContext
-{
-    public OLD_GammaContext(DbContextOptions<OLD_GammaContext> options)
-        : base(options)
-    {
+//public partial class OLD_GammaContext : DbContext
+//{
+//    public OLD_GammaContext(DbContextOptions<OLD_GammaContext> options)
+//        : base(options)
+//    {
         
-    }
+//    }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-        optionsBuilder.UseSnakeCaseNamingConvention();
-    }
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//    {
+//        base.OnConfiguring(optionsBuilder);
+//        optionsBuilder.UseSnakeCaseNamingConvention();
+//    }
 
 //    public virtual DbSet<Mm_Supplier> Mm_Supplier { get; set; }
 
@@ -7624,4 +7624,4 @@ public partial class OLD_GammaContext : DbContext
 //    }
 
 //    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-}
+//}
