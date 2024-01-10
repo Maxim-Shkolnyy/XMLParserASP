@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using xmlParserASP.Presistant;
-using xmlParserASP.Entities;
+using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Services;
 
@@ -10,12 +10,12 @@ namespace xmlParserASP.Controllers;
 public class UpdatePriceQuantityController : Controller
 {
     private readonly GammaContext _db;
-    private readonly Mm_SupplierXmlSetting _setting;
+    private readonly MmSupplierXmlSetting _setting;
     private readonly UpdatePriceQuantityService _updatePriceQuantityService;
     private readonly PriceQuantityViewModel _priceQuantityViewModel;
     private List<(string, string)>? updateAllPrices = new();
     private List<(string, string)>? updateQuantity = new();
-    public UpdatePriceQuantityController(GammaContext db, Mm_SupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
+    public UpdatePriceQuantityController(GammaContext db, MmSupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
     {
         _db = db;
         _setting = setting;

@@ -2,7 +2,7 @@ using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using xmlParserASP.Controllers;
-using xmlParserASP.Entities;
+using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
@@ -27,7 +27,7 @@ public class Program
         //new[] { DbLoggerCategory.Database.Command.Name },
         //LogLevel.Information).EnableDetailedErrors());
         builder.Services.AddControllersWithViews();
-        builder.Services.AddScoped<Mm_SupplierXmlSetting>();
+        builder.Services.AddScoped<MmSupplierXmlSetting>();
         builder.Services.AddScoped<WriteToXL>();
         builder.Services.AddScoped<WriteRuToXL>();
         builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsRU>();

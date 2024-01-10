@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 using ClosedXML.Excel;
-using xmlParserASP.Entities.TestGamma.OldMy;
+using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using static xmlParserASP.Services.TranslitMethods;
@@ -151,23 +151,23 @@ public class WriteToXL
                 DateTime? parsedDateModified = DateTime.TryParse(dateModifiedStr, out DateTime parsedDateModifiedResult) ? parsedDateModifiedResult : (DateTime?)null;
                 DateTime? parsedDateAvailable = DateTime.TryParse(dateAvailable, out DateTime parsedDateAvailableResult) ? parsedDateAvailableResult : (DateTime?)null;
 
-                Product product = new Product
-                {
-                    //SupplierId = supplier_id.ToString(),
-                    ProductNameUA = nameUA,
-                    MyCatId = parsedMyCatID,
-                    Model = model,
-                    Quantity = parsedQuantity,
-                    Price = parsedPrice,
-                    ImageName = imageName,
-                    DescriptionUA = description,
-                    Manufacturer = vendor,
-                    DateAdded = parsedDateAdded?.ToString(),
-                    DateModified = parsedDateModified?.ToString(),
-                    DateAvailable = parsedDateAvailable?.ToString(),
-                    SeoKeyword = seoKeyword,
-                    Status = true
-                };
+                //Product product = new Product
+                //{
+                //    //SupplierId = supplier_id.ToString(),
+                //    ProductNameUA = nameUA,
+                //    MyCatId = parsedMyCatID,
+                //    Model = model,
+                //    Quantity = parsedQuantity,
+                //    Price = parsedPrice,
+                //    ImageName = imageName,
+                //    DescriptionUA = description,
+                //    Manufacturer = vendor,
+                //    DateAdded = parsedDateAdded?.ToString(),
+                //    DateModified = parsedDateModified?.ToString(),
+                //    DateAvailable = parsedDateAvailable?.ToString(),
+                //    SeoKeyword = seoKeyword,
+                //    Status = true
+                //};
 
                 //_db.Products.Add(product);  ??????????????????????? може це було потрібно у старому MyDbContext ????
                 
