@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Net;
 using System.Xml;
 using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Services;
@@ -70,7 +71,14 @@ public class UpdatePriceQuantityService
 
             var products = await _dbContextGamma.NgProducts
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                .ToListAsync();
+                .Select(m => new
+                {
+                    m.ProductId,
+                    m.Sku,
+                    m.Model,
+                    m.Price,
+                    m.Quantity
+                }).ToListAsync();
 
             List<(string, string, string, string)> dbCodeModelPriceList = new();
 
@@ -621,7 +629,15 @@ public class UpdatePriceQuantityService
 
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            var productToUpdate = _dbContextGamma.NgProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+            var productToUpdate = _dbContextGamma.NgProducts
+                .Select(m => new ProductMinInfoModel
+                {
+                    Sku = m.Sku,
+                    Model = m.Model,
+                    Price = m.Price,
+                    Quantity = m.Quantity
+                })
+                .FirstOrDefault(p => p.Sku == dbModel.Item1);
 
             if (manualPrice.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
             {
