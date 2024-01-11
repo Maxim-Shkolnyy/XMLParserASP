@@ -2,7 +2,8 @@
 {
     public class ProductMinInfoModel
     {
-        public string ProductId { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = string.Empty;
         public string Sku { get; set; }
         public string Model { get; set; }
         public decimal Price { get; set; }
