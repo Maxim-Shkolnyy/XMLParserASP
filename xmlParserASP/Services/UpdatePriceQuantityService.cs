@@ -650,11 +650,10 @@ public class UpdatePriceQuantityService
 
                 productToUpdate.Price = manualValue;
 
-                _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_Set:_{manualValue}", "black"));
+                _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{dbModel.Item4}_SetManually:_{manualValue} грн", "black"));
             }
             else
             {
-
                 if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
                 {
                     decimal dbValue = 0;
@@ -729,17 +728,25 @@ public class UpdatePriceQuantityService
 
     private void UpdateQuantity(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
-        var prodListDb = 1;
         var manualQty = _dbContextGamma.ProductsManualSetQuanitys.ToList();
 
-        //var productsList = _dbContextGamma.NgProducts.Where(p => manualQty.Contains(p.Sku)).ToList();
+        var skusToUpdate = dbCodeModelPriceList.Select(s => s.Item1).ToList(); 
+        var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku))
+            .Select(p => new ProductMinInfoModel
+            {
+                Sku = p.Sku,
+                Model = p.Model,
+                Price = p.Price,
+                Quantity = p.Quantity,
+                StockStatusId = p.StockStatusId
+            })
+            .ToList();
 
         string? xmlValue;
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            int? dbValue = 0;
             int currentXmlValue = 0;
-            var productToUpdate = _dbContextGamma.NgProducts.FirstOrDefault(p => p.Sku == dbModel.Item1);
+            var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
             try
             {
@@ -765,6 +772,7 @@ public class UpdatePriceQuantityService
                     {
                         if (dbModel.Item3 != xmlValue)
                         {
+                            int? dbValue = 0;
                             if (dbModel.Item3.Contains('.'))
                             {
                                 dbValue = Convert.ToInt32(dbModel.Item3.Replace('.', ','));
