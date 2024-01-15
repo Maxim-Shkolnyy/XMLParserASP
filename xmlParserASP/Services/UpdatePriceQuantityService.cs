@@ -7,6 +7,7 @@ using System.Xml;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
+using Z.EntityFramework.Plus;
 
 namespace xmlParserASP.Services;
 
@@ -731,12 +732,21 @@ public class UpdatePriceQuantityService
         var manualQty = _dbContextGamma.ProductsManualSetQuanitys.ToList();
 
         var skusToUpdate = dbCodeModelPriceList.Select(s => s.Item1).ToList();
-        var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku)).ToList();
+        var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku))
+            .Select(p => new ProductMinInfoModel
+            {
+                Sku = p.Sku,
+                Model = p.Model,
+                Price = p.Price,
+                Quantity = p.Quantity,
+                StockStatusId = p.StockStatusId
+            })
+            .ToList();
 
-        string? xmlValue;
         foreach (var dbModel in dbCodeModelPriceList)
         {
             int currentXmlValue = 0;
+
             var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
             try
@@ -759,6 +769,7 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
+                    string? xmlValue;
                     if (xmlModelPriceList.TryGetValue(dbModel.Item2, out xmlValue))
                     {
                         if (dbModel.Item3 != xmlValue)
@@ -782,20 +793,29 @@ public class UpdatePriceQuantityService
                                 currentXmlValue = Convert.ToInt32(xmlValue);
                             }
 
+
                             if (dbValue != currentXmlValue)
                             {
                                 if (dbValue < currentXmlValue)
                                 {
                                     if (currentXmlValue > 0)
                                     {
-                                        productToUpdate.Quantity = currentXmlValue;
-                                        productToUpdate.StockStatusId = 7;
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { StockStatusId = 7 });
+                                        //productToUpdate.Quantity = currentXmlValue;
+                                        //productToUpdate.StockStatusId = 7;
                                         _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                     else
                                     {
-                                        productToUpdate.Quantity = currentXmlValue;
-                                        productToUpdate.StockStatusId = 5;
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { StockStatusId = 5 });
+                                        //productToUpdate.Quantity = currentXmlValue;
+                                        //productToUpdate.StockStatusId = 5;
                                         _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                 }
@@ -803,14 +823,22 @@ public class UpdatePriceQuantityService
                                 {
                                     if (currentXmlValue > 0)
                                     {
-                                        productToUpdate.Quantity = currentXmlValue;
-                                        productToUpdate.StockStatusId = 7;
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { StockStatusId = 7 });
+                                        //productToUpdate.Quantity = currentXmlValue;
+                                        //productToUpdate.StockStatusId = 7;
                                         _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                     else
                                     {
-                                        productToUpdate.Quantity = currentXmlValue;
-                                        productToUpdate.StockStatusId = 5;
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { StockStatusId = 5 });
+                                        //productToUpdate.Quantity = currentXmlValue;
+                                        //productToUpdate.StockStatusId = 5;
                                         _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                 }
@@ -831,9 +859,10 @@ public class UpdatePriceQuantityService
                 _stateMessages.Add(($"error_Something happened while quantity of {_suppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}", "red"));
             }
         }
-
         _dbContextGamma.SaveChanges();
     }
+
+
 
 
 
