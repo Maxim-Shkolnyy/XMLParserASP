@@ -71,13 +71,13 @@ public class UpdatePriceQuantityService
 
             var products = await _dbContextGamma.NgProducts
                 .Where(p => currentSuppProductsList.Contains(p.ProductId))
-                .Select(m => new
+                .Select(m => new ProductMinInfoModel
                 {
-                    m.ProductId,
-                    m.Sku,
-                    m.Model,
-                    m.Price,
-                    m.Quantity
+                    ProductId = m.ProductId,
+                    Sku =  m.Sku,
+                    Model = m.Model,
+                    Price = m.Price,
+                    Quantity = m.Quantity
                 }).ToListAsync();
 
 
@@ -626,19 +626,23 @@ public class UpdatePriceQuantityService
 
     private void UpdatePrices(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
+        var skusToUpdate = dbCodeModelPriceList.Select(s => s.Item1).ToList();
         var manualPrice = _dbContextGamma.ProductsManualSetPrices.ToList();
+
+        var productsListToUpdate = _dbContextGamma.NgProducts
+            .Where(p => skusToUpdate.Contains(p.Sku))
+            .Select(m => new ProductMinInfoModel
+            {
+                Sku = m.Sku,
+                Model = m.Model,
+                Price = m.Price,
+                Quantity = m.Quantity
+            })
+            .ToList();
 
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            var productToUpdate = _dbContextGamma.NgProducts
-                .Select(m => new ProductMinInfoModel
-                {
-                    Sku = m.Sku,
-                    Model = m.Model,
-                    Price = m.Price,
-                    Quantity = m.Quantity
-                })
-                .FirstOrDefault(p => p.Sku == dbModel.Item1);
+            var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
             if (manualPrice.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
             {
