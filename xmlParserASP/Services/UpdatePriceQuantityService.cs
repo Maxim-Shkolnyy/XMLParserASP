@@ -835,20 +835,19 @@ public class UpdatePriceQuantityService
                         _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
                     }
                 }
-
-                _dbContextGamma.SaveChanges();
             }
             catch (Exception)
             {
                 _stateMessages.Add(($"error_Something happened while quantity of {_suppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}", "red"));
             }
         }
+        _dbContextGamma.SaveChanges();
     }
 
 
     private static string CutString(string input)
     {
-        const int maxLength = 60;
+        const int maxLength = 70;
 
         if (input.Length > maxLength)
         {
