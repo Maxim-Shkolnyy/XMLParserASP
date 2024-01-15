@@ -730,17 +730,8 @@ public class UpdatePriceQuantityService
     {
         var manualQty = _dbContextGamma.ProductsManualSetQuanitys.ToList();
 
-        var skusToUpdate = dbCodeModelPriceList.Select(s => s.Item1).ToList(); 
-        var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku))
-            .Select(p => new ProductMinInfoModel
-            {
-                Sku = p.Sku,
-                Model = p.Model,
-                Price = p.Price,
-                Quantity = p.Quantity,
-                StockStatusId = p.StockStatusId
-            })
-            .ToList();
+        var skusToUpdate = dbCodeModelPriceList.Select(s => s.Item1).ToList();
+        var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku)).ToList();
 
         string? xmlValue;
         foreach (var dbModel in dbCodeModelPriceList)
@@ -791,7 +782,6 @@ public class UpdatePriceQuantityService
                                 currentXmlValue = Convert.ToInt32(xmlValue);
                             }
 
-
                             if (dbValue != currentXmlValue)
                             {
                                 if (dbValue < currentXmlValue)
@@ -841,8 +831,10 @@ public class UpdatePriceQuantityService
                 _stateMessages.Add(($"error_Something happened while quantity of {_suppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}", "red"));
             }
         }
+
         _dbContextGamma.SaveChanges();
     }
+
 
 
     private static string CutString(string input)
