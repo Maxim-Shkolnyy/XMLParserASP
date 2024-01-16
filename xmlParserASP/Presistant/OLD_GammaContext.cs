@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using xmlParserASP.Entities;
-using xmlParserASP.Entities.Gamma;
-
-namespace xmlParserASP.Presistant;
+﻿namespace xmlParserASP.Presistant;
 
 //public partial class OLD_GammaContext : DbContext
 //{

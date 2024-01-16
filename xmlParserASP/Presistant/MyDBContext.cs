@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
 //using xmlParserASP.Entities.TestGamma.OldMy;
 
 namespace xmlParserASP.Presistant;

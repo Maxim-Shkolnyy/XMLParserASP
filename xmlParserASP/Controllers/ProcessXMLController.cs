@@ -2,7 +2,6 @@
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
-using xmlParserASP.Entities.Gamma;
 
 namespace xmlParserASP.Controllers;
 

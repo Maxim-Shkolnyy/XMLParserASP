@@ -1,6 +1,4 @@
-﻿using xmlParserASP.Entities.Gamma;
-using xmlParserASP.Presistant;
-using System.Xml.Serialization;
+﻿using xmlParserASP.Presistant;
 using System.Net;
 using FluentFTP;
 

@@ -1,6 +1,4 @@
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
