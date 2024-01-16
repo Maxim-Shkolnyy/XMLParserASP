@@ -506,6 +506,8 @@ public partial class GammaContext : DbContext
 
     public virtual DbSet<ProductsManualSetQuanity> ProductsManualSetQuanitys { get; set; }
 
+    public virtual DbSet<ProductsSetQuantityWhenMin> ProductsSetQuantityWhenMin { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
