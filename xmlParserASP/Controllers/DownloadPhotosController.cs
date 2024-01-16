@@ -30,7 +30,7 @@ public class DownloadPhotosController : Controller
     {
         //var myContext = _dbContext.SupplierXmlSettings;
 
-        var settingsWithSupplier = _gammaContext.MmSupplierXmlSettings.Where(s => s.SupplierId != null).Include(m => m.SupplierId).ToList();
+       // var settingsWithSupplier = _gammaContext.MmSupplierXmlSettings.Where(s => s.SupplierId != null).Include(m => m.SupplierId).ToList();
 
         //return View(settingsWithSupplier);
 
