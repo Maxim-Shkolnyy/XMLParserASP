@@ -112,7 +112,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model.OrderByDescending(n => n.ProductId).Take(15))
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Model)
