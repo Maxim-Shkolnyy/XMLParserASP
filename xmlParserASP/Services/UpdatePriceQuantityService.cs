@@ -730,6 +730,7 @@ public class UpdatePriceQuantityService
     private void UpdateQuantity(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
         var manualQty = _dbContextGamma.ProductsManualSetQuanitys.ToList();
+        var setMinQty = _dbContextGamma.ProductsSetQuantityWhenMin.ToList();
 
         var skusToUpdate = dbCodeModelPriceList.Select(s => s.Item1).ToList();
         var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku))
@@ -767,6 +768,22 @@ public class UpdatePriceQuantityService
                     }
                     _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
                 }
+                //else if (setMinQty.Any(p => p.Sku == productToUpdate.Sku)) //
+                //{
+                //    var manualValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
+
+                //    if (manualValue > 0)
+                //    {
+                //        productToUpdate.Quantity = manualValue;
+                //        productToUpdate.StockStatusId = 7;
+                //    }
+                //    else
+                //    {
+                //        productToUpdate.Quantity = manualValue;
+                //        productToUpdate.StockStatusId = 5;
+                //    }
+                //    _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
+                //}
                 else
                 {
                     string? xmlValue;
