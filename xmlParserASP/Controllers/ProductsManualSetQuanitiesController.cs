@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
@@ -17,9 +22,26 @@ namespace xmlParserASP.Controllers
         // GET: ProductsManualSetQuanities
         public async Task<IActionResult> Index()
         {
-              return _context.ProductsManualSetQuanitys != null ? 
-                          View(await _context.ProductsManualSetQuanitys.ToListAsync()) :
-                          Problem("Entity set 'GammaContext.ProductsManualSetQuanitys'  is null.");
+            var languageId = 3;
+            
+            var products = await _context.ProductsManualSetQuanitys
+                .FromSqlInterpolated($"SELECT * FROM products_manual_set_quanitys pmsq JOIN ng_product_description pd ON pmsq.id = pd.product_id WHERE pd.language_id = {languageId}")
+                .ToListAsync();
+            var prod2 = await _context.ProductsManualSetQuanitys.Join(
+                _context.NgProductDescriptions.Where(m => m.LanguageId == 3),
+                p => p.Id,
+                d => d.ProductId, (p, d) => new
+                {
+                    p.Id,
+                    p.Sku,
+                    p.SetInStockQty,
+                    p.DateStart, p.DateEnd,
+                    d.Name
+                }).ToListAsync();
+            var f = 1;
+            
+            
+            return View(products);
         }
 
         // GET: ProductsManualSetQuanities/Details/5
