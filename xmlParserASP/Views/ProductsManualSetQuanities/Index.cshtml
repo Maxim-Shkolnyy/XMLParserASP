@@ -1,4 +1,4 @@
-﻿@model IEnumerable<xmlParserASP.Entities.Gamma.ProductsManualSetQuanity>
+﻿@model IEnumerable<xmlParserASP.Models.ProductViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateEnd)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name);
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -36,6 +39,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.SetInStockQty)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateStart)
             </td>

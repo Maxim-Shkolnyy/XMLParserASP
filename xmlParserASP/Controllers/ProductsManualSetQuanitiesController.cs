@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers
@@ -22,25 +23,19 @@ namespace xmlParserASP.Controllers
         // GET: ProductsManualSetQuanities
         public async Task<IActionResult> Index()
         {
-            var languageId = 3;
-            
-            var products = await _context.ProductsManualSetQuanitys
-                .FromSqlInterpolated($"SELECT * FROM products_manual_set_quanitys pmsq JOIN ng_product_description pd ON pmsq.id = pd.product_id WHERE pd.language_id = {languageId}")
-                .ToListAsync();
-            var prod2 = await _context.ProductsManualSetQuanitys.Join(
+            var products = await _context.ProductsManualSetQuanitys.Join(
                 _context.NgProductDescriptions.Where(m => m.LanguageId == 3),
                 p => p.Id,
-                d => d.ProductId, (p, d) => new
+                d => d.ProductId, (p, d) => new ProductViewModel
                 {
-                    p.Id,
-                    p.Sku,
-                    p.SetInStockQty,
-                    p.DateStart, p.DateEnd,
-                    d.Name
+                    Id = p.Id,
+                    Sku = p.Sku,
+                    SetInStockQty = p.SetInStockQty,
+                    DateStart = p.DateStart,
+                    DateEnd = p.DateEnd,
+                    Name = d.Name
                 }).ToListAsync();
-            var f = 1;
-            
-            
+
             return View(products);
         }
 
