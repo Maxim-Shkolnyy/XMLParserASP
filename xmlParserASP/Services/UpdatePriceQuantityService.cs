@@ -729,10 +729,10 @@ public class UpdatePriceQuantityService
 
     private void UpdateQuantity(List<(string, string, string, string)> dbCodeModelPriceList, Dictionary<string, string> xmlModelPriceList)
     {
-        var manualQty = _dbContextGamma.ProductsManualSetQuanitys.ToList();
-        var setMinQty = _dbContextGamma.ProductsSetQuantityWhenMin.ToList();
-
         var skusToUpdate = dbCodeModelPriceList.Select(s => s.Item1).ToList();
+        var manualQty = _dbContextGamma.ProductsManualSetQuanitys.Where(m => skusToUpdate.Contains(m.Sku)).ToList();
+        var setMinQty = _dbContextGamma.ProductsSetQuantityWhenMin.Where(m => skusToUpdate.Contains(m.Sku)).ToList();
+
         var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku))
             .Select(p => new ProductMinInfoModel
             {
@@ -746,52 +746,45 @@ public class UpdatePriceQuantityService
 
         foreach (var dbModel in dbCodeModelPriceList)
         {
-            int currentXmlValue = 0;
-
-            var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
-
             try
             {
-                if (manualQty.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
+                var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
+
+                if (manualQty.Any(p => p.Sku == productToUpdate?.Sku)) //ручне встановлення наявності.
                 {
                     var manualValue = manualQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
 
                     if (manualValue > 0)
                     {
-                        productToUpdate.Quantity = manualValue;
-                        productToUpdate.StockStatusId = 7;
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            .Update(x => new NgProduct { Quantity = manualValue });
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            .Update(x => new NgProduct { StockStatusId = 7 });
+                        //productToUpdate.Quantity = manualValue;
+                        //productToUpdate.StockStatusId = 7;
+
                     }
                     else
                     {
-                        productToUpdate.Quantity = manualValue;
-                        productToUpdate.StockStatusId = 5;
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            .Update(x => new NgProduct { Quantity = manualValue });
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            .Update(x => new NgProduct { StockStatusId = 5 });
+                        //productToUpdate.Quantity = manualValue;
+                        //productToUpdate.StockStatusId = 5;
                     }
-                    _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
+                    _stateMessages.Add(($"manualValue_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to default- {manualValue}. Old-_{dbModel.Item3}", "black"));
                 }
-                //else if (setMinQty.Any(p => p.Sku == productToUpdate.Sku)) //
-                //{
-                //    var manualValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
-
-                //    if (manualValue > 0)
-                //    {
-                //        productToUpdate.Quantity = manualValue;
-                //        productToUpdate.StockStatusId = 7;
-                //    }
-                //    else
-                //    {
-                //        productToUpdate.Quantity = manualValue;
-                //        productToUpdate.StockStatusId = 5;
-                //    }
-                //    _stateMessages.Add(($"default_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set default. Real xml was {currentXmlValue}. Old - new:_{dbModel.Item3}_{productToUpdate.Quantity}", "black"));
-                //}
                 else
                 {
-                    string? xmlValue;
-                    if (xmlModelPriceList.TryGetValue(dbModel.Item2, out xmlValue))
+                    #region Retieving xml value
+
+                    int currentXmlValue = 0;
+                    int? dbValue = 0;
+                    if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue))
                     {
                         if (dbModel.Item3 != xmlValue)
                         {
-                            int? dbValue = 0;
                             if (dbModel.Item3.Contains('.'))
                             {
                                 dbValue = Convert.ToInt32(dbModel.Item3.Replace('.', ','));
@@ -809,8 +802,50 @@ public class UpdatePriceQuantityService
                             {
                                 currentXmlValue = Convert.ToInt32(xmlValue);
                             }
+                        }
+                        
+                        #endregion
 
+                        if (setMinQty.Any(p => p.Sku == productToUpdate.Sku)) // ручне встановлення мінімальних залишків
+                        {
+                            var setQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
+                            var minQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
 
+                            if (currentXmlValue < minQtylValue)
+                            {
+                                if (setQtylValue > 0)
+                                {
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                        .Update(x => new NgProduct { Quantity = currentXmlValue });
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                        .Update(x => new NgProduct { StockStatusId = 7 });
+                                    //productToUpdate.Quantity = setQtylValue;
+                                    //productToUpdate.StockStatusId = 7;
+                                }
+                                else
+                                {
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                        .Update(x => new NgProduct { Quantity = setQtylValue });
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                        .Update(x => new NgProduct { StockStatusId = 5 });
+                                    //productToUpdate.Quantity = setQtylValue;
+                                    //productToUpdate.StockStatusId = 5;
+                                }
+                                _stateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to min: {setQtylValue}. Real xml was {currentXmlValue}. DB was:_{dbModel.Item3}", "yellow"));
+
+                            }
+                            else
+                            {
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                    .Update(x => new NgProduct { Quantity = currentXmlValue });
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                    .Update(x => new NgProduct { StockStatusId = 7 });
+                                //productToUpdate.Quantity = currentXmlValue;
+                                //productToUpdate.StockStatusId = 7;
+                            }
+                        }
+                        else
+                        {
                             if (dbValue != currentXmlValue)
                             {
                                 if (dbValue < currentXmlValue)
