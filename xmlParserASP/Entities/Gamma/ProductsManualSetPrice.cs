@@ -6,7 +6,7 @@ public partial class ProductsManualSetPrice
 
     public string Sku { get; set; } = null!;
 
-    public int SetInStockPrice { get; set; }
+    public decimal SetInStockPrice { get; set; }
 
     public DateTime? DateStart { get; set; }
 
