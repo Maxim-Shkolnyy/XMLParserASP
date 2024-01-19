@@ -756,22 +756,13 @@ public class UpdatePriceQuantityService
 
                     if (manualValue > 0)
                     {
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            .Update(x => new NgProduct { Quantity = manualValue });
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            .Update(x => new NgProduct { StockStatusId = 7 });
-                        //productToUpdate.Quantity = manualValue;
-                        //productToUpdate.StockStatusId = 7;
-
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = manualValue });
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
                     }
                     else
                     {
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            .Update(x => new NgProduct { Quantity = manualValue });
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            .Update(x => new NgProduct { StockStatusId = 5 });
-                        //productToUpdate.Quantity = manualValue;
-                        //productToUpdate.StockStatusId = 5;
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = manualValue });
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
                     }
                     _stateMessages.Add(($"manualValue_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to default- {manualValue}. Old-_{dbModel.Item3}", "black"));
                 }
@@ -811,37 +802,17 @@ public class UpdatePriceQuantityService
                         {
                             var setQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
 
-                            
-                                if (setQtylValue > 0)
-                                {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { Quantity = currentXmlValue });
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { StockStatusId = 7 });
-                                    //productToUpdate.Quantity = setQtylValue;
-                                    //productToUpdate.StockStatusId = 7;
-                                }
-                                else
-                                {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { Quantity = setQtylValue });
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { StockStatusId = 5 });
-                                    //productToUpdate.Quantity = setQtylValue;
-                                    //productToUpdate.StockStatusId = 5;
-                                }
-                                _stateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to min: {setQtylValue}. Real xml was {currentXmlValue}. DB was:_{dbModel.Item3}", "yellow"));
-
-                            //}
-                            //else
-                            //{
-                            //    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            //        .Update(x => new NgProduct { Quantity = currentXmlValue });
-                            //    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            //        .Update(x => new NgProduct { StockStatusId = 7 });
-                            //    //productToUpdate.Quantity = currentXmlValue;
-                            //    //productToUpdate.StockStatusId = 7;
-                            //}
+                            if (setQtylValue > 0)
+                            {
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
+                            }
+                            else
+                            {
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = setQtylValue });
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
+                            }
+                            _stateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to min: {setQtylValue}. Real xml was {currentXmlValue}. DB was:_{dbModel.Item3}", "yellow"));
                         }
                         else
                         {
@@ -851,22 +822,16 @@ public class UpdatePriceQuantityService
                                 {
                                     if (currentXmlValue > 0)
                                     {
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { StockStatusId = 7 });
-                                        //productToUpdate.Quantity = currentXmlValue;
-                                        //productToUpdate.StockStatusId = 7;
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
+
                                         _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                     else
                                     {
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { StockStatusId = 5 });
-                                        //productToUpdate.Quantity = currentXmlValue;
-                                        //productToUpdate.StockStatusId = 5;
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
+
                                         _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                 }
@@ -874,12 +839,9 @@ public class UpdatePriceQuantityService
                                 {
                                     if (currentXmlValue > 0)
                                     {
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { StockStatusId = 7 });
-                                        //productToUpdate.Quantity = currentXmlValue;
-                                        //productToUpdate.StockStatusId = 7;
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
+
                                         _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                     else
@@ -888,8 +850,7 @@ public class UpdatePriceQuantityService
                                             .Update(x => new NgProduct { Quantity = currentXmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
                                             .Update(x => new NgProduct { StockStatusId = 5 });
-                                        //productToUpdate.Quantity = currentXmlValue;
-                                        //productToUpdate.StockStatusId = 5;
+
                                         _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                 }
@@ -899,12 +860,9 @@ public class UpdatePriceQuantityService
                     else
                     {
                         currentXmlValue = 0;
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            .Update(x => new NgProduct { Quantity = currentXmlValue });
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                            .Update(x => new NgProduct { StockStatusId = 5 });
-                        //productToUpdate.Quantity = currentXmlValue;
-                        //productToUpdate.StockStatusId = 5;
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
+
                         _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
                     }
                 }
@@ -918,9 +876,6 @@ public class UpdatePriceQuantityService
     }
 
 
-
-
-
     private static string CutString(string input)
     {
         const int maxLength = 70;
@@ -929,24 +884,6 @@ public class UpdatePriceQuantityService
         {
             return input.Substring(0, maxLength - 3) + "...";
         }
-        else
-        {
-            return input.PadRight(maxLength);
-        }
-    }
-
-    private int GetColumnIndex(IXLWorksheet worksheet, int rowWithNames, string columnName)
-    {
-        if (rowWithNames == null)
-            rowWithNames = 1;
-
-        int columnIndex = 1;
-
-        while (worksheet.Cell(rowWithNames, columnIndex).Value.ToString() != columnName)
-        {
-            columnIndex++;
-        }
-
-        return columnIndex;
+        return input.PadRight(maxLength);
     }
 }
