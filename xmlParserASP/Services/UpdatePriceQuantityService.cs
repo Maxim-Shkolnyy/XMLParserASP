@@ -803,16 +803,15 @@ public class UpdatePriceQuantityService
                                 currentXmlValue = Convert.ToInt32(xmlValue);
                             }
                         }
-                        
+
                         #endregion
 
-                        if (setMinQty.Any(p => p.Sku == productToUpdate.Sku)) // ручне встановлення мінімальних залишків
+                        var minQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
+                        if (setMinQty.Any(p => p.Sku == productToUpdate.Sku && currentXmlValue < minQtylValue)) // ручне встановлення мінімальних залишків
                         {
                             var setQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
-                            var minQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
 
-                            if (currentXmlValue < minQtylValue)
-                            {
+                            
                                 if (setQtylValue > 0)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
@@ -833,16 +832,16 @@ public class UpdatePriceQuantityService
                                 }
                                 _stateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to min: {setQtylValue}. Real xml was {currentXmlValue}. DB was:_{dbModel.Item3}", "yellow"));
 
-                            }
-                            else
-                            {
-                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                    .Update(x => new NgProduct { Quantity = currentXmlValue });
-                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                    .Update(x => new NgProduct { StockStatusId = 7 });
-                                //productToUpdate.Quantity = currentXmlValue;
-                                //productToUpdate.StockStatusId = 7;
-                            }
+                            //}
+                            //else
+                            //{
+                            //    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            //        .Update(x => new NgProduct { Quantity = currentXmlValue });
+                            //    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            //        .Update(x => new NgProduct { StockStatusId = 7 });
+                            //    //productToUpdate.Quantity = currentXmlValue;
+                            //    //productToUpdate.StockStatusId = 7;
+                            //}
                         }
                         else
                         {
@@ -900,8 +899,12 @@ public class UpdatePriceQuantityService
                     else
                     {
                         currentXmlValue = 0;
-                        productToUpdate.Quantity = currentXmlValue;
-                        productToUpdate.StockStatusId = 5;
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            .Update(x => new NgProduct { Quantity = currentXmlValue });
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                            .Update(x => new NgProduct { StockStatusId = 5 });
+                        //productToUpdate.Quantity = currentXmlValue;
+                        //productToUpdate.StockStatusId = 5;
                         _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
                     }
                 }
