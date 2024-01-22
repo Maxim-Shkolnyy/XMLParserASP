@@ -11,9 +11,9 @@ namespace xmlParserASP.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<decimal>(
-                name: "SetInStockPrice",
-                table: "YourTableName",  // Замініть "YourTableName" на реальне ім'я таблиці
-                type: "decimal(10,4)",   // Задайте бажаний тип для вашої бази даних
+                name: "set_in_stock_price",
+                table: "products_manual_set_prices", 
+                type: "decimal(10,4)",   
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
@@ -23,8 +23,8 @@ namespace xmlParserASP.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<int>(
-                name: "SetInStockPrice",
-                table: "YourTableName",  // Замініть "YourTableName" на реальне ім'я таблиці
+                name: "set_in_stock_price",
+                table: "products_manual_set_prices", 
                 type: "int",
                 nullable: false,
                 oldClrType: typeof(decimal),
