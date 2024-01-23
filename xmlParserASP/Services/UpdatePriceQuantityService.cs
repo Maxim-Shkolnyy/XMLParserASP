@@ -187,14 +187,10 @@ public class UpdatePriceQuantityService
 
         xmlModelPriceList.Clear();
 
-        //if (fileExtension == ".xml")
-        //{
         xmlDoc.Load(_supplierXmlSetting.Path);
-        //}
-        //else
-        //{
-        //    xmlDoc.LoadXml(_supplierXmlSetting.Path);
-        //}
+        
+        // xmlDoc.LoadXml(_supplierXmlSetting.Path);
+        
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
 
@@ -798,7 +794,7 @@ public class UpdatePriceQuantityService
                         #endregion
 
                         var minQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
-                        if (setMinQty.Any(p => p.Sku == productToUpdate.Sku && currentXmlValue < minQtylValue)) // ручне встановлення мінімальних залишків
+                        if (setMinQty.Any(p => p.Sku == productToUpdate.Sku && currentXmlValue < minQtylValue && currentXmlValue > 0)) // ручне встановлення мінімальних залишків
                         {
                             var setQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
 
