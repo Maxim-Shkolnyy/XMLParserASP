@@ -1,4 +1,6 @@
-﻿namespace xmlParserASP.Entities.Gamma;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace xmlParserASP.Entities.Gamma;
 
 public partial class MmSupplierXmlSetting
 {
@@ -36,15 +38,24 @@ public partial class MmSupplierXmlSetting
 
     public string? QuantityNode { get; set; }
 
+    [StringLength(20)]
     public string? QuantityDbStock1 { get; set; }
-
+    [StringLength(20)]
     public string? QuantityDbStock2 { get; set; }
-
+    [StringLength(20)]
     public string? QuantityDbStock3 { get; set; }
-
+    [StringLength(20)]
     public string? QuantityDbStock4 { get; set; }
-
+    [StringLength(20)]
     public string? QuantityDbStock5 { get; set; }
+    [StringLength(20)]
+    public string? QuantityDbStock6 { get; set; }
+    [StringLength(20)]
+    public string? QuantityDbStock7 { get; set; }
+    [StringLength(20)]
+    public string? QuantityDbStock8 { get; set; }
+    [StringLength(20)]
+    public string? QuantityDbStock9 { get; set; }
 
     public string? QuantityLongTermNode { get; set; }
 

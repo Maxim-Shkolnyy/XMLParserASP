@@ -511,7 +511,7 @@ public partial class GammaContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AttributeDescription>(entity =>
+       modelBuilder.Entity<AttributeDescription>(entity =>
         {
             entity
                 .HasNoKey()
@@ -6820,6 +6820,8 @@ public partial class GammaContext : DbContext
 
             entity.ToTable("products_manual_set_prices");
 
+            entity.HasIndex(e => e.Sku).IsUnique();
+
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
@@ -6857,6 +6859,12 @@ public partial class GammaContext : DbContext
                 .HasColumnName("set_in_stock_qty");
             entity.Property(e => e.Sku).HasColumnName("sku");
         });
+
+        modelBuilder.Entity<ProductsSetQuantityWhenMin>(entity =>
+            {
+                entity.HasIndex(e => e.Sku).IsUnique();
+            });
+            
 
         OnModelCreatingPartial(modelBuilder);
     }

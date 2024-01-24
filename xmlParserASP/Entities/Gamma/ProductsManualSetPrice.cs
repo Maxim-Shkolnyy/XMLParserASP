@@ -1,10 +1,17 @@
-﻿namespace xmlParserASP.Entities.Gamma;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+
+namespace xmlParserASP.Entities.Gamma;
 
 public partial class ProductsManualSetPrice
 {
+    [Key]
     public int Id { get; set; }
 
-    public string Sku { get; set; } = null!;
+    [StringLength(7)]
+    public string Sku { get; set; }
 
     public decimal SetInStockPrice { get; set; }
 
