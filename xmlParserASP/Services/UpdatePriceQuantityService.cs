@@ -586,83 +586,85 @@ public class UpdatePriceQuantityService
             { "QuantityDbStock9", _supplierXmlSetting.QuantityDbStock9 },
         };
 
-        object lockObject = new object();
+        //object lockObject = new object();
 
-        Parallel.ForEach(itemsList.Cast<XmlNode>(), item =>
-        {
-            // Отримання model
-            model = _supplierXmlSetting.ParamAttribute != null ? item.Attributes["id"]?.Value : item.SelectSingleNode(xPathExpressions["Model"])?.InnerText;
-
-            if (string.IsNullOrEmpty(model))
-                return;
-
-            // Отримання кількостей
-            var quantities = xPathExpressions
-                .Where(pair => pair.Key.StartsWith("QuantityDbStock"))
-                .Select(pair => item.SelectSingleNode(pair.Value)?.InnerText)
-                .Select(value => int.TryParse(value, out int result) ? result : 0)
-                .ToList();
-
-            int aggregatedQuantity = quantities.Sum();
-
-            string priceOrQuantityNode = aggregatedQuantity.ToString();
-
-            // Блокування доступу до колекції
-            lock (lockObject)
-            {
-                xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
-            }
-        });
-
-        //foreach (XmlNode item in itemsList)
+        //Parallel.ForEach(itemsList.Cast<XmlNode>(), item =>
         //{
-        //    if (_supplierXmlSetting.ParamAttribute == null)
-        //    {
-        //        if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
-        //        {
-        //            continue;
-        //        }
-        //        model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText;
-        //    }
-        //    else
-        //    {
-        //        if (item.Attributes["id"] != null)
-        //        {
-        //            model = item.Attributes["id"]?.Value;
-        //        }
-        //        else
-        //        {
-        //            continue;
-        //        }
-        //    }
+        //    // Отримання model
+        //    model = _supplierXmlSetting.ParamAttribute != null ? item.Attributes["id"]?.Value : item.SelectSingleNode(xPathExpressions["Model"])?.InnerText;
 
+        //    if (string.IsNullOrEmpty(model))
+        //        return;
 
-        //    // Список XPath для всіх полів
-        //    List<string> xPaths = new List<string>
-        //    {
-        //        _supplierXmlSetting.QuantityDbStock1,
-        //        _supplierXmlSetting.QuantityDbStock2,
-        //        _supplierXmlSetting.QuantityDbStock3,
-        //        _supplierXmlSetting.QuantityDbStock4,
-        //        _supplierXmlSetting.QuantityDbStock5,
-        //        _supplierXmlSetting.QuantityDbStock6,
-        //        _supplierXmlSetting.QuantityDbStock7,
-        //        _supplierXmlSetting.QuantityDbStock8,
-        //        _supplierXmlSetting.QuantityDbStock9
-        //    };
-
-        //    var quantities = xPaths
-        //        .Select(xpath => item.SelectSingleNode(xpath)?.InnerText)
+        //    // Отримання кількостей
+        //    var quantities = xPathExpressions
+        //        .Where(pair => pair.Key.StartsWith("QuantityDbStock"))
+        //        .Select(pair => item.SelectSingleNode(pair.Value)?.InnerText)
         //        .Select(value => int.TryParse(value, out int result) ? result : 0)
         //        .ToList();
 
         //    int aggregatedQuantity = quantities.Sum();
 
-        //    priceOrQuantityNode = aggregatedQuantity.ToString();
+        //    string priceOrQuantityNode = aggregatedQuantity.ToString();
 
-        //    xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
-        //}
-    }
+        //    // Блокування доступу до колекції
+        //    lock (lockObject)
+        //    {
+        //        xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+        //    }
+        //});
+
+        foreach (XmlNode item in itemsList)
+        {
+            if (_supplierXmlSetting.ParamAttribute == null)
+            {
+                if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
+                {
+                    continue;
+                }
+
+                model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText;
+            }
+            else
+            {
+                if (item.Attributes["id"] != null)
+                {
+                    model = item.Attributes["id"]?.Value;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+        }
+
+
+        //    // Список XPath для всіх полів
+            //    List<string> xPaths = new List<string>
+            //    {
+            //        _supplierXmlSetting.QuantityDbStock1,
+            //        _supplierXmlSetting.QuantityDbStock2,
+            //        _supplierXmlSetting.QuantityDbStock3,
+            //        _supplierXmlSetting.QuantityDbStock4,
+            //        _supplierXmlSetting.QuantityDbStock5,
+            //        _supplierXmlSetting.QuantityDbStock6,
+            //        _supplierXmlSetting.QuantityDbStock7,
+            //        _supplierXmlSetting.QuantityDbStock8,
+            //        _supplierXmlSetting.QuantityDbStock9
+            //    };
+
+            //    var quantities = xPaths
+            //        .Select(xpath => item.SelectSingleNode(xpath)?.InnerText)
+            //        .Select(value => int.TryParse(value, out int result) ? result : 0)
+            //        .ToList();
+
+            //    int aggregatedQuantity = quantities.Sum();
+
+            //    priceOrQuantityNode = aggregatedQuantity.ToString();
+
+            //    xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+            //}
+        }
 
     #endregion
 
