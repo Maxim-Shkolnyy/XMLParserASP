@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
@@ -51,7 +56,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,MainProductNode,ProductNode,ParamAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,PhotoFolder,QuantityNode,QuantityDbStock1,QuantityDbStock2,QuantityDbStock3,QuantityDbStock4,QuantityDbStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode,QtyInBoxColumnNumber")] MmSupplierXmlSetting mmSupplierXmlSetting)
+        public async Task<IActionResult> Create([Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,MainProductNode,ProductNode,ParamAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,PhotoFolder,QuantityNode,QuantityDbStock1,QuantityDbStock2,QuantityDbStock3,QuantityDbStock4,QuantityDbStock5,QuantityDbStock6,QuantityDbStock7,QuantityDbStock8,QuantityDbStock9,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode,QtyInBoxColumnNumber")] MmSupplierXmlSetting mmSupplierXmlSetting)
         {
             if (ModelState.IsValid)
             {
@@ -83,7 +88,7 @@ namespace xmlParserASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,MainProductNode,ProductNode,ParamAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,PhotoFolder,QuantityNode,QuantityDbStock1,QuantityDbStock2,QuantityDbStock3,QuantityDbStock4,QuantityDbStock5,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode,QtyInBoxColumnNumber")] MmSupplierXmlSetting mmSupplierXmlSetting)
+        public async Task<IActionResult> Edit(int id, [Bind("SupplierXmlSettingId,SettingName,SupplierId,Path,MainProductNode,ProductNode,ParamAttribute,ModelNode,ModelXlColumn,PriceNode,DescriptionNode,NameNode,CurrencyNode,PictureNode,PicturePriceQuantityXlColumn,PhotoFolder,QuantityNode,QuantityDbStock1,QuantityDbStock2,QuantityDbStock3,QuantityDbStock4,QuantityDbStock5,QuantityDbStock6,QuantityDbStock7,QuantityDbStock8,QuantityDbStock9,QuantityLongTermNode,SupplierNode,ParamNode,ParamAttrNode,QtyInBoxColumnNumber")] MmSupplierXmlSetting mmSupplierXmlSetting)
         {
             if (id != mmSupplierXmlSetting.SupplierXmlSettingId)
             {
