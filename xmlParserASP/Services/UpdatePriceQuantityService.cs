@@ -206,7 +206,7 @@ public class UpdatePriceQuantityService
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
 
-        if (_supplierXmlSetting.MainProductNode != null) //Main node need to Proforma etc
+        if (_supplierXmlSetting.MainProductNode != null) //Main node we need to Proforma etc
         {
             XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.MainProductNode);
 
@@ -275,10 +275,7 @@ public class UpdatePriceQuantityService
                         }
                     }
 
-                    //if (!xmlModelPriceList.ContainsKey(model))
-                    //{
                     xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
-                    //}
                 }
             }
         }
@@ -349,8 +346,7 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath,
-        int modelColumnNumber, int priceQuantityColumn)
+    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn)
     {
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
