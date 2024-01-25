@@ -27,7 +27,8 @@ public class UpdatePriceQuantityService
         _supplierXmlSetting = supplierXmlSetting;
     }
 
-    public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId, string tableDbColumnToUpdate)
+    public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId,
+        string tableDbColumnToUpdate)
     {
         _currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
@@ -52,7 +53,8 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            _suppName = (await _dbContextGamma.MmSuppliers.FirstOrDefaultAsync(m => m.SupplierId == _supplierXmlSetting.SupplierId))?.SupplierName;
+            _suppName = (await _dbContextGamma.MmSuppliers.FirstOrDefaultAsync(m =>
+                m.SupplierId == _supplierXmlSetting.SupplierId))?.SupplierName;
 
             if (_suppName == null)
             {
@@ -76,7 +78,7 @@ public class UpdatePriceQuantityService
                 .Select(m => new ProductMinInfoModel
                 {
                     ProductId = m.ProductId,
-                    Sku =  m.Sku,
+                    Sku = m.Sku,
                     Model = m.Model,
                     Price = m.Price,
                     Quantity = m.Quantity
@@ -95,12 +97,14 @@ public class UpdatePriceQuantityService
                     if (_currentTableDbColumnToUpdate == "Price")
                     {
                         priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture);
-                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
+                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId)
+                            .Select(m => m.Name).FirstOrDefault();
                     }
                     else
                     {
                         priceQuantityValue = product.Quantity.ToString();
-                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId).Select(m => m.Name).FirstOrDefault();
+                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId)
+                            .Select(m => m.Name).FirstOrDefault();
                     }
                 }
                 catch (Exception ex)
@@ -110,6 +114,7 @@ public class UpdatePriceQuantityService
 
                 dbCodeModelPriceList.Add((product.Sku, product.Model, priceQuantityValue, productName));
             }
+
             #endregion
 
 
@@ -127,14 +132,18 @@ public class UpdatePriceQuantityService
 
                 if (!int.TryParse(_supplierXmlSetting.ModelXlColumn, out modelColumnNumber))
                 {
-                    _stateMessages.Add(($"1_{_suppName} model column number in excel file was not converted successful, model column set to 1", "red"));
+                    _stateMessages.Add((
+                        $"1_{_suppName} model column number in excel file was not converted successful, model column set to 1",
+                        "red"));
                     modelColumnNumber = 1;
                 }
 
                 int priceColumnNumber;
                 if (!int.TryParse(_supplierXmlSetting.PicturePriceQuantityXlColumn, out priceColumnNumber))
                 {
-                    _stateMessages.Add(($"1_{_suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2", "red"));
+                    _stateMessages.Add((
+                        $"1_{_suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
+                        "red"));
                     priceColumnNumber = 2;
                 }
 
@@ -153,7 +162,8 @@ public class UpdatePriceQuantityService
             {
                 if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Feron_excel")
                 {
-                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, _supplierXmlSetting.ModelXlColumn, _supplierXmlSetting.PicturePriceQuantityXlColumn, _supplierXmlSetting.QtyInBoxColumnNumber);
+                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, _supplierXmlSetting.ModelXlColumn,
+                        _supplierXmlSetting.PicturePriceQuantityXlColumn, _supplierXmlSetting.QtyInBoxColumnNumber);
                 }
             }
             else
@@ -173,6 +183,7 @@ public class UpdatePriceQuantityService
             _stateMessages.Add(($"{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
 
         }
+
         _stateMessages = _stateMessages.OrderBy(m => m.Item1).ToList();
         return _stateMessages;
     }
@@ -189,13 +200,13 @@ public class UpdatePriceQuantityService
         xmlModelPriceList.Clear();
 
         xmlDoc.Load(_supplierXmlSetting.Path);
-        
+
         // xmlDoc.LoadXml(_supplierXmlSetting.Path);
-        
+
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
 
-        if (_supplierXmlSetting.MainProductNode != null)  //Main node need to Proforma etc
+        if (_supplierXmlSetting.MainProductNode != null) //Main node need to Proforma etc
         {
             XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.MainProductNode);
 
@@ -211,7 +222,9 @@ public class UpdatePriceQuantityService
 
                         if (String.IsNullOrEmpty(model))
                         {
-                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
+                            _stateMessages.Add((
+                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                "red"));
                         }
                     }
                     else
@@ -220,7 +233,9 @@ public class UpdatePriceQuantityService
                         {
                             if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
                             {
-                                _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
+                                _stateMessages.Add((
+                                    $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                    "red"));
                                 continue;
                             }
 
@@ -228,7 +243,9 @@ public class UpdatePriceQuantityService
 
                             if (String.IsNullOrEmpty(model))
                             {
-                                _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml", "red"));
+                                _stateMessages.Add((
+                                    $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                    "red"));
                             }
                         }
                         else
@@ -242,7 +259,9 @@ public class UpdatePriceQuantityService
                         priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.PriceNode)?.InnerText ?? "";
                         if (priceOrQuantityNode == null)
                         {
-                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.PriceNode)} NOT FOUND in xml", "red"));
+                            _stateMessages.Add((
+                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.PriceNode)} NOT FOUND in xml",
+                                "red"));
                         }
                     }
                     else
@@ -250,7 +269,9 @@ public class UpdatePriceQuantityService
                         priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.QuantityNode)?.InnerText ?? "";
                         if (priceOrQuantityNode == null)
                         {
-                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.QuantityNode)} NOT FOUND in xml", "red"));
+                            _stateMessages.Add((
+                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.QuantityNode)} NOT FOUND in xml",
+                                "red"));
                         }
                     }
 
@@ -279,7 +300,9 @@ public class UpdatePriceQuantityService
 
                     if (String.IsNullOrEmpty(model))
                     {
-                        _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
+                        _stateMessages.Add((
+                            $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
+                            "red"));
                     }
                 }
                 else
@@ -289,7 +312,9 @@ public class UpdatePriceQuantityService
                         model = item.Attributes["id"]?.Value ?? "";
                         if (String.IsNullOrEmpty(model))
                         {
-                            _stateMessages.Add(($"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
+                            _stateMessages.Add((
+                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
+                                "red"));
                         }
                     }
                     else
@@ -304,6 +329,7 @@ public class UpdatePriceQuantityService
                     {
                         continue;
                     }
+
                     priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.PriceNode)?.InnerText ?? "";
 
                 }
@@ -313,6 +339,7 @@ public class UpdatePriceQuantityService
                     {
                         continue;
                     }
+
                     priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.QuantityNode)?.InnerText ?? "";
                 }
 
@@ -322,7 +349,8 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn)
+    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath,
+        int modelColumnNumber, int priceQuantityColumn)
     {
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
@@ -382,7 +410,8 @@ public class UpdatePriceQuantityService
             Stream responseStream = response.GetResponseStream();
             StreamReader reader = new(responseStream);
 
-            string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] files = reader.ReadToEnd()
+                .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             if (files.Length > 0)
             {
@@ -414,7 +443,8 @@ public class UpdatePriceQuantityService
                                 continue;
                             }
 
-                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
+                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value
+                                .ToString();
 
                             if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
                                 _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
@@ -437,7 +467,8 @@ public class UpdatePriceQuantityService
 
     }
 
-    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, string? modelColumnNumber, string? priceQuantityColumn, string? boxColumn)
+    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath,
+        string? modelColumnNumber, string? priceQuantityColumn, string? boxColumn)
     {
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
@@ -505,7 +536,8 @@ public class UpdatePriceQuantityService
             Stream responseStream = response.GetResponseStream();
             StreamReader reader = new(responseStream);
 
-            string[] files = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] files = reader.ReadToEnd()
+                .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             if (files.Length > 0)
             {
@@ -537,7 +569,8 @@ public class UpdatePriceQuantityService
                                 continue;
                             }
 
-                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value.ToString();
+                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value
+                                .ToString();
 
                             if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
                                 _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
@@ -571,49 +604,6 @@ public class UpdatePriceQuantityService
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
 
-
-        Dictionary<string, string> xPathExpressions = new Dictionary<string, string>
-        {
-            { "Model", _supplierXmlSetting.ModelNode },
-            { "QuantityDbStock1", _supplierXmlSetting.QuantityDbStock1 },
-            { "QuantityDbStock2", _supplierXmlSetting.QuantityDbStock2 },
-            { "QuantityDbStock3", _supplierXmlSetting.QuantityDbStock3 },
-            { "QuantityDbStock4", _supplierXmlSetting.QuantityDbStock4 },
-            { "QuantityDbStock5", _supplierXmlSetting.QuantityDbStock5 },
-            { "QuantityDbStock6", _supplierXmlSetting.QuantityDbStock6 },
-            { "QuantityDbStock7", _supplierXmlSetting.QuantityDbStock7 },
-            { "QuantityDbStock8", _supplierXmlSetting.QuantityDbStock8 },
-            { "QuantityDbStock9", _supplierXmlSetting.QuantityDbStock9 },
-        };
-
-        //object lockObject = new object();
-
-        //Parallel.ForEach(itemsList.Cast<XmlNode>(), item =>
-        //{
-        //    // Отримання model
-        //    model = _supplierXmlSetting.ParamAttribute != null ? item.Attributes["id"]?.Value : item.SelectSingleNode(xPathExpressions["Model"])?.InnerText;
-
-        //    if (string.IsNullOrEmpty(model))
-        //        return;
-
-        //    // Отримання кількостей
-        //    var quantities = xPathExpressions
-        //        .Where(pair => pair.Key.StartsWith("QuantityDbStock"))
-        //        .Select(pair => item.SelectSingleNode(pair.Value)?.InnerText)
-        //        .Select(value => int.TryParse(value, out int result) ? result : 0)
-        //        .ToList();
-
-        //    int aggregatedQuantity = quantities.Sum();
-
-        //    string priceOrQuantityNode = aggregatedQuantity.ToString();
-
-        //    // Блокування доступу до колекції
-        //    lock (lockObject)
-        //    {
-        //        xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
-        //    }
-        //});
-
         foreach (XmlNode item in itemsList)
         {
             if (_supplierXmlSetting.ParamAttribute == null)
@@ -622,7 +612,6 @@ public class UpdatePriceQuantityService
                 {
                     continue;
                 }
-
                 model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText;
             }
             else
@@ -636,35 +625,195 @@ public class UpdatePriceQuantityService
                     continue;
                 }
             }
+
+            int stock1 = 0;
+            int stock2 = 0;
+            int stock3 = 0;
+            int stock4 = 0;
+            int stock5 = 0;
+            int stock6 = 0;
+            int stock7 = 0;
+            int stock8 = 0;
+            int stock9 = 0;
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock1)?.InnerText, out stock1))
+            {
+                stock1 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock2)?.InnerText, out stock2))
+            {
+                stock2 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock3)?.InnerText, out stock3))
+            {
+                stock3 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock4)?.InnerText, out stock4))
+            {
+                stock4 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock5)?.InnerText, out stock5))
+            {
+                stock5 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock6)?.InnerText, out stock6))
+            {
+                stock6 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock7)?.InnerText, out stock7))
+            {
+                stock7 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock8)?.InnerText, out stock8))
+            {
+                stock8 = 0;
+            }
+
+            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock9)?.InnerText, out stock9))
+            {
+                stock9 = 0;
+            }
+
+            int aggregatedQuantity = stock1 + stock2 + stock3 + stock4 + stock5 + stock6 + stock7 + stock8 + stock9;
+
+            priceOrQuantityNode = aggregatedQuantity.ToString();
+
+            xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
         }
+    }
+
+    //int aggregatedQuantity = 0;
+
+    //for (int i = 1; i <= 9; i++)
+    //{
+    //    string xpath = _supplierXmlSetting.GetType().GetProperty($"QuantityDbStock{i}")?.GetValue(_supplierXmlSetting)?.ToString();
+
+    //    if (int.TryParse(item.SelectSingleNode(xpath)?.InnerText, out int stock))
+    //    {
+    //        aggregatedQuantity += stock;
+    //    }
+    //    else
+    //    {
+    //        // Якщо не вдалося зробити парсинг, прирівнюємо до 0
+    //        aggregatedQuantity += 0;
+    //    }
+    //}
 
 
-        //    // Список XPath для всіх полів
-            //    List<string> xPaths = new List<string>
-            //    {
-            //        _supplierXmlSetting.QuantityDbStock1,
-            //        _supplierXmlSetting.QuantityDbStock2,
-            //        _supplierXmlSetting.QuantityDbStock3,
-            //        _supplierXmlSetting.QuantityDbStock4,
-            //        _supplierXmlSetting.QuantityDbStock5,
-            //        _supplierXmlSetting.QuantityDbStock6,
-            //        _supplierXmlSetting.QuantityDbStock7,
-            //        _supplierXmlSetting.QuantityDbStock8,
-            //        _supplierXmlSetting.QuantityDbStock9
-            //    };
 
-            //    var quantities = xPaths
-            //        .Select(xpath => item.SelectSingleNode(xpath)?.InnerText)
-            //        .Select(value => int.TryParse(value, out int result) ? result : 0)
-            //        .ToList();
+    //Dictionary<string, string> xPathExpressions = new Dictionary<string, string>
+    //{
+    //    { "Model", _supplierXmlSetting.ModelNode },
+    //    { "QuantityDbStock1", _supplierXmlSetting.QuantityDbStock1 },
+    //    { "QuantityDbStock2", _supplierXmlSetting.QuantityDbStock2 },
+    //    { "QuantityDbStock3", _supplierXmlSetting.QuantityDbStock3 },
+    //    { "QuantityDbStock4", _supplierXmlSetting.QuantityDbStock4 },
+    //    { "QuantityDbStock5", _supplierXmlSetting.QuantityDbStock5 },
+    //    { "QuantityDbStock6", _supplierXmlSetting.QuantityDbStock6 },
+    //    { "QuantityDbStock7", _supplierXmlSetting.QuantityDbStock7 },
+    //    { "QuantityDbStock8", _supplierXmlSetting.QuantityDbStock8 },
+    //    { "QuantityDbStock9", _supplierXmlSetting.QuantityDbStock9 },
+    //};
 
-            //    int aggregatedQuantity = quantities.Sum();
+    //object lockObject = new object();
 
-            //    priceOrQuantityNode = aggregatedQuantity.ToString();
+    //Parallel.ForEach(itemsList.Cast<XmlNode>(), item =>
+    //{
+    //    // Отримання model
+    //    model = _supplierXmlSetting.ParamAttribute != null ? item.Attributes["id"]?.Value : item.SelectSingleNode(xPathExpressions["Model"])?.InnerText;
 
-            //    xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
-            //}
-        }
+    //    if (string.IsNullOrEmpty(model))
+    //        return;
+    //    lock (lockObject)
+    //    {
+
+    //        // Отримання кількостей
+    //        var quantities = xPathExpressions
+    //        .Where(pair => pair.Key.StartsWith("QuantityDbStock"))
+    //        .Select(pair => item.SelectSingleNode(pair.Value)?.InnerText)
+    //        .Select(value => int.TryParse(value, out int result) ? result : 0)
+    //        .ToList();
+
+    //    int aggregatedQuantity = quantities.Sum();
+
+    //    string priceOrQuantityNode = aggregatedQuantity.ToString();
+
+
+
+    //        // Перевірка існування ключа та оновлення значення
+    //        if (xmlModelPriceList.ContainsKey(model))
+    //        {
+    //            xmlModelPriceList[model] = priceOrQuantityNode;
+    //        }
+    //        else
+    //        {
+    //            xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+    //        }
+    //    }
+    //});
+
+    //foreach (XmlNode item in itemsList)
+    //{
+    //    if (_supplierXmlSetting.ParamAttribute == null)
+    //    {
+    //        if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
+    //        {
+    //            continue;
+    //        }
+
+    //        model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText;
+    //    }
+    //    else
+    //    {
+    //        if (item.Attributes["id"] != null)
+    //        {
+    //            model = item.Attributes["id"]?.Value;
+    //        }
+    //        else
+    //        {
+    //            continue;
+    //        }
+    //    }
+    //}
+
+
+    // Список XPath для всіх полів
+    //List<string> xPaths = new List<string>
+    //{
+    //    _supplierXmlSetting.QuantityDbStock1,
+    //    _supplierXmlSetting.QuantityDbStock2,
+    //    _supplierXmlSetting.QuantityDbStock3,
+    //    _supplierXmlSetting.QuantityDbStock4,
+    //    _supplierXmlSetting.QuantityDbStock5,
+    //    _supplierXmlSetting.QuantityDbStock6,
+    //    _supplierXmlSetting.QuantityDbStock7,
+    //    _supplierXmlSetting.QuantityDbStock8,
+    //    _supplierXmlSetting.QuantityDbStock9
+    //};
+
+    //var quantities = xPaths
+    //    .Select(xpath => item.SelectSingleNode(xpath)?.InnerText)
+    //    .Select(value => int.TryParse(value, out int result) ? result : 0)
+    //    .ToList();
+
+    //int aggregatedQuantity = quantities.Sum();
+
+    //    priceOrQuantityNode = aggregatedQuantity.ToString();
+
+    //    xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+
+
+
+
+
+
 
     #endregion
 
