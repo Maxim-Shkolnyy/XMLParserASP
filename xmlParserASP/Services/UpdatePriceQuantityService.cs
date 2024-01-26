@@ -21,6 +21,8 @@ public class UpdatePriceQuantityService
     private List<(string, string)>? _stateMessages;
     private string _currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
+    private List<MmSupplier>? _suppliersList = new ();
+    private List<MmSupplierXmlSetting>? _suppSettingList = new ();
 
     public UpdatePriceQuantityService(MmSupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
     {
@@ -31,6 +33,12 @@ public class UpdatePriceQuantityService
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId,
         string tableDbColumnToUpdate)
     {
+        if(_suppliersList.Count == 0)
+        {
+            _suppliersList = _dbContextGamma.MmSuppliers.ToList();
+            _suppSettingList = _dbContextGamma.MmSupplierXmlSettings.ToList();
+        }
+
         _currentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
         _stateMessages = new();
@@ -45,16 +53,16 @@ public class UpdatePriceQuantityService
 
         foreach (int id in settingsId)
         {
-            _supplierXmlSetting = await _dbContextGamma.MmSupplierXmlSettings
+            _supplierXmlSetting = _suppSettingList
                 .Where(m => m.SupplierXmlSettingId == id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
             if (_supplierXmlSetting == null)
             {
                 _stateMessages.Add(("1_Supplier setting was not found in DB", "red"));
                 continue;
             }
 
-            _suppName = (await _dbContextGamma.MmSuppliers.FirstOrDefaultAsync(m =>
+            _suppName = (_suppliersList.FirstOrDefault(m =>
                 m.SupplierId == _supplierXmlSetting.SupplierId))?.SupplierName;
 
             if (_suppName == null)
@@ -127,36 +135,17 @@ public class UpdatePriceQuantityService
             }
             else if (_suppName == "Kanlux")
             {
-                int modelColumnNumber;
-
-                // TODO: Move TryParse to method GetExcelValues and parse it there
-
-                if (!int.TryParse(_supplierXmlSetting.ModelXlColumn, out modelColumnNumber))
-                {
-                    _stateMessages.Add((
-                        $"1_{_suppName} model column number in excel file was not converted successful, model column set to 1",
-                        "red"));
-                    modelColumnNumber = 1;
-                }
-
-                int priceColumnNumber;
-                if (!int.TryParse(_supplierXmlSetting.PicturePriceQuantityXlColumn, out priceColumnNumber))
-                {
-                    _stateMessages.Add((
-                        $"1_{_suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
-                        "red"));
-                    priceColumnNumber = 2;
-                }
+                
 
 
                 if (_currentTableDbColumnToUpdate == "Price" & _supplierXmlSetting.SettingName == "Kanlux_price_XL")
                 {
-                    GetExcelValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber);
+                    GetExcelValues("", "", "", _supplierXmlSetting.Path);
                 }
 
                 if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Kanlux_qty_XL")
                 {
-                    GetExcelValues("", "", "", _supplierXmlSetting.Path, modelColumnNumber, priceColumnNumber);
+                    GetExcelValues("", "", "", _supplierXmlSetting.Path);
                 }
             }
             else if (_suppName == "Feron")
@@ -347,8 +336,23 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath, int modelColumnNumber, int priceQuantityColumn)
+    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath) //, int modelColumnNumber, int priceQuantityColumn
     {
+        if (!int.TryParse(_supplierXmlSetting.ModelXlColumn, out var modelColumnNumber))
+        {
+            _stateMessages.Add((
+                $"1_{_suppName} model column number in excel file was not converted successful, model column set to 1",
+                "red"));
+            modelColumnNumber = 1;
+        }
+
+        if (!int.TryParse(_supplierXmlSetting.PicturePriceQuantityXlColumn, out var priceColumnNumber))
+        {
+            _stateMessages.Add((
+                $"1_{_suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
+                "red"));
+            priceColumnNumber = 2;
+        }
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
             //DirectoryInfo directory = new DirectoryInfo(_supplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
@@ -381,7 +385,7 @@ public class UpdatePriceQuantityService
                             continue;
                         }
 
-                        priceOrQuantityColumn = row.Cell(priceQuantityColumn).Value.ToString();
+                        priceOrQuantityColumn = row.Cell(priceColumnNumber).Value.ToString();
 
                         if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
                             _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
@@ -392,7 +396,6 @@ public class UpdatePriceQuantityService
             {
                 _stateMessages.Add(($"error_Excel file {_suppName} not found", "red"));
             }
-
         }
         else
         {
@@ -447,7 +450,6 @@ public class UpdatePriceQuantityService
                                 _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
                         }
                     }
-
                     // Видаляємо завантажений файл
                     File.Delete(newestFileName);
                 }
@@ -461,7 +463,6 @@ public class UpdatePriceQuantityService
                 _stateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
             }
         }
-
     }
 
     private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath,
