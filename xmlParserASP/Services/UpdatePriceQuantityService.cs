@@ -21,8 +21,8 @@ public class UpdatePriceQuantityService
     private List<(string, string)>? _stateMessages;
     private string _currentTableDbColumnToUpdate = "";
     Dictionary<string, string> xmlModelPriceList = new();
-    private List<MmSupplier>? _suppliersList = new ();
-    private List<MmSupplierXmlSetting>? _suppSettingList = new ();
+    private List<MmSupplier>? _suppliersList = new();
+    private List<MmSupplierXmlSetting>? _suppSettingList = new();
 
     public UpdatePriceQuantityService(MmSupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
     {
@@ -33,7 +33,7 @@ public class UpdatePriceQuantityService
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId,
         string tableDbColumnToUpdate)
     {
-        if(_suppliersList.Count == 0)
+        if (_suppliersList.Count == 0)
         {
             _suppliersList = _dbContextGamma.MmSuppliers.ToList();
             _suppSettingList = _dbContextGamma.MmSupplierXmlSettings.ToList();
@@ -71,19 +71,19 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            var currentSuppProductsList = await _dbContextGamma.NgProductToSuppliers
+            var currentSuppProductIDList = await _dbContextGamma.NgProductToSuppliers
                 .Where(m => m.SupplierId == _suppName)
                 .Select(m => m.ProductId)
                 .ToListAsync();
 
-            if (currentSuppProductsList == null)
+            if (currentSuppProductIDList == null)
             {
                 _stateMessages.Add(($"1_Supplier {_suppName} has no one product in DB", "red"));
                 continue;
             }
 
             var products = await _dbContextGamma.NgProducts
-                .Where(p => currentSuppProductsList.Contains(p.ProductId))
+                .Where(p => currentSuppProductIDList.Contains(p.ProductId))
                 .Select(m => new ProductMinInfoModel
                 {
                     ProductId = m.ProductId,
@@ -92,6 +92,16 @@ public class UpdatePriceQuantityService
                     Price = m.Price,
                     Quantity = m.Quantity
                 }).ToListAsync();
+
+            var namesOfProducts =
+                await _dbContextGamma.NgProductDescriptions.Where(p => currentSuppProductIDList.Contains(p.ProductId))
+                    .Where(n => n.LanguageId ==3)
+                    .Select(p => new
+                    {
+                        p.ProductId,
+                        p.Name
+                    }
+                ).ToListAsync();
 
 
             List<(string, string, string, string)> dbCodeModelPriceList = new();
@@ -106,14 +116,13 @@ public class UpdatePriceQuantityService
                     if (_currentTableDbColumnToUpdate == "Price")
                     {
                         priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture);
-                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId)
-                            .Select(m => m.Name).FirstOrDefault();
+                        productName = namesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.Name;
+
                     }
                     else
                     {
                         priceQuantityValue = product.Quantity.ToString();
-                        productName = _dbContextGamma.NgProductDescriptions.Where(n => n.ProductId == product.ProductId)
-                            .Select(m => m.Name).FirstOrDefault();
+                        productName = namesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.Name;
                     }
                 }
                 catch (Exception ex)
@@ -127,17 +136,12 @@ public class UpdatePriceQuantityService
             #endregion
 
 
-
-
             if ((_suppName == "Gamma" || _suppName == "Gamma-K") & _currentTableDbColumnToUpdate == "Quantity")
             {
                 GetGammaQtyXmlValues();
             }
             else if (_suppName == "Kanlux")
             {
-                
-
-
                 if (_currentTableDbColumnToUpdate == "Price" & _supplierXmlSetting.SettingName == "Kanlux_price_XL")
                 {
                     GetExcelValues("", "", "", _supplierXmlSetting.Path);
@@ -171,7 +175,6 @@ public class UpdatePriceQuantityService
             }
 
             _stateMessages.Add(($"{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
-
         }
 
         _stateMessages = _stateMessages.OrderBy(m => m.Item1).ToList();
@@ -614,7 +617,7 @@ public class UpdatePriceQuantityService
             _supplierXmlSetting.QuantityDbStock9
         };
 
-        List <string> stocksList = xPaths.Where(x => x != null).ToList();
+        List<string> stocksList = xPaths.Where(x => x != null).ToList();
 
         foreach (XmlNode item in itemsList)
         {
