@@ -23,6 +23,10 @@ public class UpdatePriceQuantityService
     Dictionary<string, string> xmlModelPriceList = new();
     private List<MmSupplier>? _suppliersList = new();
     private List<MmSupplierXmlSetting>? _suppSettingList = new();
+    private List<ProductsManualSetPrice>? _productsManualSetPrices = new();
+    private List<ProductsManualSetQuanity>? _productsManualSetQuanityList = new();
+    private List<ProductsSetQuantityWhenMin>? _productsSetQuantityWhenMinList = new();
+    private List<string>? _suppNameThatWasUpdatedList = new();
 
     public UpdatePriceQuantityService(MmSupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
     {
@@ -56,6 +60,7 @@ public class UpdatePriceQuantityService
             _supplierXmlSetting = _suppSettingList
                 .Where(m => m.SupplierXmlSettingId == id)
                 .FirstOrDefault();
+
             if (_supplierXmlSetting == null)
             {
                 _stateMessages.Add(("1_Supplier setting was not found in DB", "red"));
@@ -64,7 +69,7 @@ public class UpdatePriceQuantityService
 
             _suppName = (_suppliersList.FirstOrDefault(m =>
                 m.SupplierId == _supplierXmlSetting.SupplierId))?.SupplierName;
-
+            
             if (_suppName == null)
             {
                 _stateMessages.Add(("1_Supplier name was not found in DB", "red"));
@@ -102,6 +107,25 @@ public class UpdatePriceQuantityService
                         p.Name
                     }
                 ).ToListAsync();
+
+            //todo: END this
+
+            if (_suppNameThatWasUpdatedList != null)
+            {
+                if (_currentTableDbColumnToUpdate == "Price"  && !_suppNameThatWasUpdatedList.Contains(_suppName))
+                {
+                    _productsManualSetPrices = await _dbContextGamma.ProductsManualSetPrices
+                        .Where(p => products.Select(product => product.Sku).Contains(p.Sku))
+                        .ToListAsync();
+
+                }
+                else
+                {
+                    
+                }
+            }
+
+            
 
 
             List<(string, string, string, string)> dbCodeModelPriceList = new();
@@ -174,6 +198,7 @@ public class UpdatePriceQuantityService
                 UpdateQuantity(dbCodeModelPriceList, xmlModelPriceList);
             }
 
+            _suppNameThatWasUpdatedList.Add(_suppName);
             _stateMessages.Add(($"{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
         }
 
