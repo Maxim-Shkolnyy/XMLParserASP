@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Globalization;
@@ -87,8 +88,8 @@ public class UpdatePriceQuantityService
 
             List<(string, string, string, string)> dbCodeModelPriceList = new();
 
-            string priceQuantityValue = "";
-            string productName = "";
+            string? priceQuantityValue = "";
+            string? productName = "";
 
             foreach (var product in products)
             {
@@ -600,8 +601,7 @@ public class UpdatePriceQuantityService
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
 
-        List<string> xPaths = new List<string>
-        {
+        List<string?> xPaths = new() {
             _supplierXmlSetting.QuantityDbStock1,
             _supplierXmlSetting.QuantityDbStock2,
             _supplierXmlSetting.QuantityDbStock3,
@@ -613,11 +613,11 @@ public class UpdatePriceQuantityService
             _supplierXmlSetting.QuantityDbStock9
         };
 
+        List <string> stocksList = xPaths.Where(x => x != null).ToList();
+
         foreach (XmlNode item in itemsList)
         {
-
-            //var quantities = xPaths.Select(xPaths => item.SelectSingleNode());
-
+            // get model
             if (_supplierXmlSetting.ParamAttribute == null)
             {
                 if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
@@ -638,66 +638,76 @@ public class UpdatePriceQuantityService
                 }
             }
 
-            int stock1 = 0;
-            int stock2 = 0;
-            int stock3 = 0;
-            int stock4 = 0;
-            int stock5 = 0;
-            int stock6 = 0;
-            int stock7 = 0;
-            int stock8 = 0;
-            int stock9 = 0;
+            //get quantities from all stocks
+            var quantities = stocksList
+                .Select(stocksList => item.SelectSingleNode(stocksList)?.InnerText)
+                .Select(value => value != null ? (int.TryParse(value, out int result) ? result : 0) : 0)
+                .ToList();
 
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock1)?.InnerText, out stock1))
-            {
-                stock1 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock2)?.InnerText, out stock2))
-            {
-                stock2 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock3)?.InnerText, out stock3))
-            {
-                stock3 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock4)?.InnerText, out stock4))
-            {
-                stock4 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock5)?.InnerText, out stock5))
-            {
-                stock5 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock6)?.InnerText, out stock6))
-            {
-                stock6 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock7)?.InnerText, out stock7))
-            {
-                stock7 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock8)?.InnerText, out stock8))
-            {
-                stock8 = 0;
-            }
-
-            if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock9)?.InnerText, out stock9))
-            {
-                stock9 = 0;
-            }
-
-            int aggregatedQuantity = stock1 + stock2 + stock3 + stock4 + stock5 + stock6 + stock7 + stock8 + stock9;
-
-            priceOrQuantityNode = aggregatedQuantity.ToString();
+            priceOrQuantityNode = quantities.Sum().ToString();
 
             xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+
+            //int stock1 = 0;
+            //int stock2 = 0;
+            //int stock3 = 0;
+            //int stock4 = 0;
+            //int stock5 = 0;
+            //int stock6 = 0;
+            //int stock7 = 0;
+            //int stock8 = 0;
+            //int stock9 = 0;
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock1)?.InnerText, out stock1))
+            //{
+            //    stock1 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock2)?.InnerText, out stock2))
+            //{
+            //    stock2 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock3)?.InnerText, out stock3))
+            //{
+            //    stock3 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock4)?.InnerText, out stock4))
+            //{
+            //    stock4 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock5)?.InnerText, out stock5))
+            //{
+            //    stock5 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock6)?.InnerText, out stock6))
+            //{
+            //    stock6 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock7)?.InnerText, out stock7))
+            //{
+            //    stock7 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock8)?.InnerText, out stock8))
+            //{
+            //    stock8 = 0;
+            //}
+
+            //if (!int.TryParse(item.SelectSingleNode(_supplierXmlSetting.QuantityDbStock9)?.InnerText, out stock9))
+            //{
+            //    stock9 = 0;
+            //}
+
+            //int aggregatedQuantity = stock1 + stock2 + stock3 + stock4 + stock5 + stock6 + stock7 + stock8 + stock9;
+
+            //priceOrQuantityNode = aggregatedQuantity.ToString();
+
+
         }
     }
 
