@@ -87,6 +87,7 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
+
             var products = await _dbContextGamma.NgProducts
                 .Where(p => currentSuppProductIDList.Contains(p.ProductId))
                 .Select(m => new ProductMinInfoModel
@@ -98,34 +99,33 @@ public class UpdatePriceQuantityService
                     Quantity = m.Quantity
                 }).ToListAsync();
 
-            var namesOfProducts =
-                await _dbContextGamma.NgProductDescriptions.Where(p => currentSuppProductIDList.Contains(p.ProductId))
-                    .Where(n => n.LanguageId ==3)
-                    .Select(p => new
-                    {
-                        p.ProductId,
-                        p.Name
-                    }
-                ).ToListAsync();
-
             //todo: END this
 
-            if (_suppNameThatWasUpdatedList != null)
-            {
-                if (_currentTableDbColumnToUpdate == "Price"  && !_suppNameThatWasUpdatedList.Contains(_suppName))
-                {
-                    _productsManualSetPrices = await _dbContextGamma.ProductsManualSetPrices
-                        .Where(p => products.Select(product => product.Sku).Contains(p.Sku))
-                        .ToListAsync();
+            //var namesOfProducts =
+            //    await _dbContextGamma.NgProductDescriptions.Where(p => currentSuppProductIDList.Contains(p.ProductId))
+            //        .Where(n => n.LanguageId ==3)
+            //        .Select(p => new
+            //        {
+            //            p.ProductId,
+            //            p.Name
+            //        }
+            //    ).ToListAsync();
 
-                }
-                else
-                {
+            //if (_suppNameThatWasUpdatedList != null)
+            //{
+            //    if (_currentTableDbColumnToUpdate == "Price"  && !_suppNameThatWasUpdatedList.Contains(_suppName))
+            //    {
+            //        _productsManualSetPrices = await _dbContextGamma.ProductsManualSetPrices
+            //            .Where(p => products.Select(product => product.Sku).Contains(p.Sku))
+            //            .ToListAsync();
+
+            //    }
+            //    else
+            //    {
                     
-                }
-            }
+            //    }
+            //}
 
-            
 
 
             List<(string, string, string, string)> dbCodeModelPriceList = new();
