@@ -6818,7 +6818,7 @@ public partial class GammaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("products_manual_set_prices");
+            entity.ToTable("mm_products_manual_set_prices");
 
             entity.HasIndex(e => e.Sku).IsUnique();
 
@@ -6841,7 +6841,7 @@ public partial class GammaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("products_manual_set_quanitys");
+            entity.ToTable("mm_products_manual_set_quanitys");
 
             entity.HasIndex(e => e.Sku, "ix_products_manual_set_quanitys_sku").IsUnique();
 
@@ -6862,7 +6862,13 @@ public partial class GammaContext : DbContext
 
         modelBuilder.Entity<ProductsSetQuantityWhenMin>(entity =>
             {
+                entity.HasKey(e => e.Id).HasName("PRIMARY");
+                entity.ToTable("mm_products_set_quantity_when_min");
+                
                 entity.HasIndex(e => e.Sku).IsUnique();
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
             });
             
 
