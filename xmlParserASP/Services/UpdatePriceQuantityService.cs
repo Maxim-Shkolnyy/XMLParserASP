@@ -101,15 +101,15 @@ public class UpdatePriceQuantityService
 
             //todo: END this
 
-            //var namesOfProducts =
-            //    await _dbContextGamma.NgProductDescriptions.Where(p => currentSuppProductIDList.Contains(p.ProductId))
-            //        .Where(n => n.LanguageId ==3)
-            //        .Select(p => new
-            //        {
-            //            p.ProductId,
-            //            p.Name
-            //        }
-            //    ).ToListAsync();
+            var namesOfProducts =
+                await _dbContextGamma.NgProductDescriptions.Where(p => currentSuppProductIDList.Contains(p.ProductId))
+                    .Where(n => n.LanguageId ==3)
+                    .Select(p => new
+                    {
+                        p.ProductId,
+                        p.Name
+                    }
+                ).ToListAsync();
 
             //if (_suppNameThatWasUpdatedList != null)
             //{
@@ -122,7 +122,7 @@ public class UpdatePriceQuantityService
             //    }
             //    else
             //    {
-                    
+
             //    }
             //}
 
