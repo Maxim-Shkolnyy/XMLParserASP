@@ -1,9 +1,8 @@
-﻿namespace xmlParserASP.Authentication
+﻿namespace xmlParserASP.Authentication;
+
+public enum Permission
 {
-    public enum Permission
-    {
-        FullAccessesMember = 2,
-        ReadMember = 1 
+    FullAccessesMember = 2,
+    ReadMember = 1 
         
-    }
 }

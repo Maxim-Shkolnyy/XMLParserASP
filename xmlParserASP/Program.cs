@@ -4,6 +4,7 @@ using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
+using xmlParserASP.Services.UpdateServices;
 
 namespace xmlParserASP;
 
@@ -37,7 +38,8 @@ public class Program
         builder.Services.AddScoped<ProcessXMLController>();
         builder.Services.AddScoped<PriceQuantityViewModel>();
         builder.Services.AddScoped<UpdateMainXml>();
-        builder.Services.AddScoped<Entities.Gamma.MmSupplierXmlSetting>();
+        builder.Services.AddSingleton<DataContainer>();
+        builder.Services.AddSingleton<DataContainerSingleton>();
 
         //builder.Services.AddLogging(b => b.AddConsole());
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);

@@ -9,81 +9,73 @@ using System.Xml.XPath;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
+using xmlParserASP.Services.UpdateServices;
 using Z.EntityFramework.Plus;
 
 namespace xmlParserASP.Services;
 
 public class UpdatePriceQuantityService
 {
-    private MmSupplierXmlSetting? _supplierXmlSetting;
     private readonly GammaContext _dbContextGamma;
-    private string? _suppName;
-    private List<(string, string)>? _stateMessages;
-    private string _currentTableDbColumnToUpdate = "";
-    Dictionary<string, string> xmlModelPriceList = new();
-    private List<MmSupplier>? _suppliersList = new();
-    private List<MmSupplierXmlSetting>? _suppSettingList = new();
-    private List<ProductsManualSetPrice>? _productsManualSetPrices = new();
-    private List<ProductsManualSetQuanity>? _productsManualSetQuanityList = new();
-    private List<ProductsSetQuantityWhenMin>? _productsSetQuantityWhenMinList = new();
-    private List<string>? _suppNameThatWasUpdatedList = new();
+    private readonly DataContainer _dc;
 
-    public UpdatePriceQuantityService(MmSupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma)
+
+    public UpdatePriceQuantityService(MmSupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma, DataContainerSingleton dcS)
     {
         _dbContextGamma = dbContextGamma;
-        _supplierXmlSetting = supplierXmlSetting;
+        _dc = dcS.Instance;
     }
 
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId,
         string tableDbColumnToUpdate)
     {
-        if (_suppliersList.Count == 0)
+        if (_dc.SuppliersList.Count == 0)
         {
-            _suppliersList = _dbContextGamma.MmSuppliers.ToList();
-            _suppSettingList = _dbContextGamma.MmSupplierXmlSettings.ToList();
+            _dc.SuppliersList = _dbContextGamma.MmSuppliers.ToList();
+            _dc.SuppSettingList = _dbContextGamma.MmSupplierXmlSettings.ToList();
         }
 
-        _currentTableDbColumnToUpdate = tableDbColumnToUpdate;
+        _dc.CurrentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
-        _stateMessages = new();
+        _dc.StateMessages = new();
 
         if (settingsId == null)
         {
-            _stateMessages.Add(("1_Setting ID was not passed", "red"));
-            return _stateMessages;
+            _dc.StateMessages.Add(("1_Setting ID was not passed", "red"));
+            return _dc.StateMessages;
         }
 
         #region Get current values from DB and add them to new 'dbCodeModelPriceList' on each iteration
 
         foreach (int id in settingsId)
         {
-            _supplierXmlSetting = _suppSettingList
+            _dc.SupplierXmlSetting = _dc.SuppSettingList
                 .Where(m => m.SupplierXmlSettingId == id)
                 .FirstOrDefault();
 
-            if (_supplierXmlSetting == null)
+            if (_dc.SupplierXmlSetting == null)
             {
-                _stateMessages.Add(("1_Supplier setting was not found in DB", "red"));
+                _dc.StateMessages.Add(("1_Supplier setting was not found in DB", "red"));
                 continue;
             }
 
-            _suppName = (_suppliersList.FirstOrDefault(m =>
-                m.SupplierId == _supplierXmlSetting.SupplierId))?.SupplierName;
+            _dc.SuppName = (_dc.SuppliersList.FirstOrDefault(m =>
+                m.SupplierId == _dc.SupplierXmlSetting.SupplierId))?.SupplierName;
             
-            if (_suppName == null)
+            if (_dc.SuppName == null)
             {
-                _stateMessages.Add(("1_Supplier name was not found in DB", "red"));
+                _dc.StateMessages.Add(("1_Supplier name was not found in DB", "red"));
                 continue;
             }
 
             var currentSuppProductIDList = await _dbContextGamma.NgProductToSuppliers
-                .Where(m => m.SupplierId == _suppName)
+                .Where(m => m.SupplierId == _dc.SuppName)
                 .Select(m => m.ProductId)
                 .ToListAsync();
 
             if (currentSuppProductIDList == null)
             {
-                _stateMessages.Add(($"1_Supplier {_suppName} has no one product in DB", "red"));
+                _dc.StateMessages.Add(($"1_Supplier {_dc.SuppName} has no one product in DB", "red"));
                 continue;
             }
 
@@ -111,9 +103,9 @@ public class UpdatePriceQuantityService
                     }
                 ).ToListAsync();
 
-            //if (_suppNameThatWasUpdatedList != null)
+            //if (_dc.SuppNameThatWasUpdatedList != null)
             //{
-            //    if (_currentTableDbColumnToUpdate == "Price"  && !_suppNameThatWasUpdatedList.Contains(_suppName))
+            //    if (_dc.CurrentTableDbColumnToUpdate == "Price"  && !_dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName))
             //    {
             //        _productsManualSetPrices = await _dbContextGamma.ProductsManualSetPrices
             //            .Where(p => products.Select(product => product.Sku).Contains(p.Sku))
@@ -137,7 +129,7 @@ public class UpdatePriceQuantityService
             {
                 try
                 {
-                    if (_currentTableDbColumnToUpdate == "Price")
+                    if (_dc.CurrentTableDbColumnToUpdate == "Price")
                     {
                         priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture);
                         productName = namesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.Name;
@@ -160,28 +152,28 @@ public class UpdatePriceQuantityService
             #endregion
 
 
-            if ((_suppName == "Gamma" || _suppName == "Gamma-K") & _currentTableDbColumnToUpdate == "Quantity")
+            if ((_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K") & _dc.CurrentTableDbColumnToUpdate == "Quantity")
             {
                 GetGammaQtyXmlValues();
             }
-            else if (_suppName == "Kanlux")
+            else if (_dc.SuppName == "Kanlux")
             {
-                if (_currentTableDbColumnToUpdate == "Price" & _supplierXmlSetting.SettingName == "Kanlux_price_XL")
+                if (_dc.CurrentTableDbColumnToUpdate == "Price" & _dc.SupplierXmlSetting.SettingName == "Kanlux_price_XL")
                 {
-                    GetExcelValues("", "", "", _supplierXmlSetting.Path);
+                    GetExcelValues("", "", "", _dc.SupplierXmlSetting.Path);
                 }
 
-                if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Kanlux_qty_XL")
+                if (_dc.CurrentTableDbColumnToUpdate == "Quantity" & _dc.SupplierXmlSetting.SettingName == "Kanlux_qty_XL")
                 {
-                    GetExcelValues("", "", "", _supplierXmlSetting.Path);
+                    GetExcelValues("", "", "", _dc.SupplierXmlSetting.Path);
                 }
             }
-            else if (_suppName == "Feron")
+            else if (_dc.SuppName == "Feron")
             {
-                if (_currentTableDbColumnToUpdate == "Quantity" & _supplierXmlSetting.SettingName == "Feron_excel")
+                if (_dc.CurrentTableDbColumnToUpdate == "Quantity" & _dc.SupplierXmlSetting.SettingName == "Feron_excel")
                 {
-                    GetFeronQtyXlValues("", "", "", _supplierXmlSetting.Path, _supplierXmlSetting.ModelXlColumn,
-                        _supplierXmlSetting.PicturePriceQuantityXlColumn, _supplierXmlSetting.QtyInBoxColumnNumber);
+                    GetFeronQtyXlValues("", "", "", _dc.SupplierXmlSetting.Path, _dc.SupplierXmlSetting.ModelXlColumn,
+                        _dc.SupplierXmlSetting.PicturePriceQuantityXlColumn, _dc.SupplierXmlSetting.QtyInBoxColumnNumber);
                 }
             }
             else
@@ -189,44 +181,44 @@ public class UpdatePriceQuantityService
                 GetXmlValues();
             }
 
-            if (_currentTableDbColumnToUpdate == "Price")
+            if (_dc.CurrentTableDbColumnToUpdate == "Price")
             {
-                UpdatePrices(dbCodeModelPriceList, xmlModelPriceList);
+                UpdatePrices(dbCodeModelPriceList, _dc.XmlModelPriceList);
             }
             else
             {
-                UpdateQuantity(dbCodeModelPriceList, xmlModelPriceList);
+                UpdateQuantity(dbCodeModelPriceList, _dc.XmlModelPriceList);
             }
 
-            _suppNameThatWasUpdatedList.Add(_suppName);
-            _stateMessages.Add(($"{_suppName} {_currentTableDbColumnToUpdate} updated successful", "green"));
+            _dc.SuppNameThatWasUpdatedList.Add(_dc.SuppName);
+            _dc.StateMessages.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
         }
 
-        _stateMessages = _stateMessages.OrderBy(m => m.Item1).ToList();
-        return _stateMessages;
+        _dc.StateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
+        return _dc.StateMessages;
     }
 
-    #region Get xml and excel values from all suppliers unloads and add it to 'xmlModelPriceList'
+    #region Get xml and excel values from all suppliers unloads and add it to '_dc.XmlModelPriceList'
 
     private void GetXmlValues()
     {
         XmlDocument xmlDoc = new();
 
-        string fileExtension = Path.GetExtension(_supplierXmlSetting.Path);
+        string fileExtension = Path.GetExtension(_dc.SupplierXmlSetting.Path);
         string priceOrQuantityNode = "";
 
-        xmlModelPriceList.Clear();
+        _dc.XmlModelPriceList.Clear();
 
-        xmlDoc.Load(_supplierXmlSetting.Path);
+        xmlDoc.Load(_dc.SupplierXmlSetting.Path);
 
-        // xmlDoc.LoadXml(_supplierXmlSetting.Path);
+        // xmlDoc.LoadXml(_dc.SupplierXmlSetting.Path);
 
 
-        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
+        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.ProductNode);
 
-        if (_supplierXmlSetting.MainProductNode != null) //Main node we need to Proforma etc
+        if (_dc.SupplierXmlSetting.MainProductNode != null) //Main node we need to Proforma etc
         {
-            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.MainProductNode);
+            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.MainProductNode);
 
             foreach (XmlNode items in parentItemsList)
             {
@@ -234,14 +226,14 @@ public class UpdatePriceQuantityService
                 {
                     string? model = null;
 
-                    if (_supplierXmlSetting.ParamAttribute == null)
+                    if (_dc.SupplierXmlSetting.ParamAttribute == null)
                     {
-                        model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText;
+                        model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText;
 
                         if (String.IsNullOrEmpty(model))
                         {
-                            _stateMessages.Add((
-                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                            _dc.StateMessages.Add((
+                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} NOT FOUND in xml",
                                 "red"));
                         }
                     }
@@ -249,10 +241,10 @@ public class UpdatePriceQuantityService
                     {
                         if (item.Attributes["id"] != null)
                         {
-                            if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
+                            if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
                             {
-                                _stateMessages.Add((
-                                    $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                _dc.StateMessages.Add((
+                                    $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} NOT FOUND in xml",
                                     "red"));
                                 continue;
                             }
@@ -261,8 +253,8 @@ public class UpdatePriceQuantityService
 
                             if (String.IsNullOrEmpty(model))
                             {
-                                _stateMessages.Add((
-                                    $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                _dc.StateMessages.Add((
+                                    $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} NOT FOUND in xml",
                                     "red"));
                             }
                         }
@@ -272,28 +264,28 @@ public class UpdatePriceQuantityService
                         }
                     }
 
-                    if (_currentTableDbColumnToUpdate == "Price")
+                    if (_dc.CurrentTableDbColumnToUpdate == "Price")
                     {
-                        priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.PriceNode)?.InnerText ?? "";
+                        priceOrQuantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
                         if (priceOrQuantityNode == null)
                         {
-                            _stateMessages.Add((
-                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.PriceNode)} NOT FOUND in xml",
+                            _dc.StateMessages.Add((
+                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} NOT FOUND in xml",
                                 "red"));
                         }
                     }
                     else
                     {
-                        priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.QuantityNode)?.InnerText ?? "";
+                        priceOrQuantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
                         if (priceOrQuantityNode == null)
                         {
-                            _stateMessages.Add((
-                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.QuantityNode)} NOT FOUND in xml",
+                            _dc.StateMessages.Add((
+                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)} NOT FOUND in xml",
                                 "red"));
                         }
                     }
 
-                    xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+                    _dc.XmlModelPriceList.TryAdd(model, priceOrQuantityNode);
                 }
             }
         }
@@ -303,20 +295,20 @@ public class UpdatePriceQuantityService
             {
                 string? model = null;
 
-                if (_supplierXmlSetting.ParamAttribute == null)
+                if (_dc.SupplierXmlSetting.ParamAttribute == null)
                 {
-                    if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
+                    if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
                     {
-                        //_stateMessages.Add(($"error_{_suppName}_{_supplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
+                        //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
                         continue;
                     }
 
-                    model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText ?? "";
+                    model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText ?? "";
 
                     if (String.IsNullOrEmpty(model))
                     {
-                        _stateMessages.Add((
-                            $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
+                        _dc.StateMessages.Add((
+                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
                             "red"));
                     }
                 }
@@ -327,8 +319,8 @@ public class UpdatePriceQuantityService
                         model = item.Attributes["id"]?.Value ?? "";
                         if (String.IsNullOrEmpty(model))
                         {
-                            _stateMessages.Add((
-                                $"error_{_suppName}_{item.SelectSingleNode(_supplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
+                            _dc.StateMessages.Add((
+                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
                                 "red"));
                         }
                     }
@@ -338,27 +330,27 @@ public class UpdatePriceQuantityService
                     }
                 }
 
-                if (_currentTableDbColumnToUpdate == "Price")
+                if (_dc.CurrentTableDbColumnToUpdate == "Price")
                 {
-                    if (item.SelectSingleNode(_supplierXmlSetting.PriceNode) == null)
+                    if (item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode) == null)
                     {
                         continue;
                     }
 
-                    priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.PriceNode)?.InnerText ?? "";
+                    priceOrQuantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
 
                 }
                 else
                 {
-                    if (item.SelectSingleNode(_supplierXmlSetting.QuantityNode) == null)
+                    if (item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode) == null)
                     {
                         continue;
                     }
 
-                    priceOrQuantityNode = item.SelectSingleNode(_supplierXmlSetting.QuantityNode)?.InnerText ?? "";
+                    priceOrQuantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
                 }
 
-                xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+                _dc.XmlModelPriceList.TryAdd(model, priceOrQuantityNode);
             }
 
         }
@@ -366,24 +358,24 @@ public class UpdatePriceQuantityService
 
     private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath) //, int modelColumnNumber, int priceQuantityColumn
     {
-        if (!int.TryParse(_supplierXmlSetting.ModelXlColumn, out var modelColumnNumber))
+        if (!int.TryParse(_dc.SupplierXmlSetting.ModelXlColumn, out var modelColumnNumber))
         {
-            _stateMessages.Add((
-                $"1_{_suppName} model column number in excel file was not converted successful, model column set to 1",
+            _dc.StateMessages.Add((
+                $"1_{_dc.SuppName} model column number in excel file was not converted successful, model column set to 1",
                 "red"));
             modelColumnNumber = 1;
         }
 
-        if (!int.TryParse(_supplierXmlSetting.PicturePriceQuantityXlColumn, out var priceColumnNumber))
+        if (!int.TryParse(_dc.SupplierXmlSetting.PicturePriceQuantityXlColumn, out var priceColumnNumber))
         {
-            _stateMessages.Add((
-                $"1_{_suppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
+            _dc.StateMessages.Add((
+                $"1_{_dc.SuppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
                 "red"));
             priceColumnNumber = 2;
         }
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
-            //DirectoryInfo directory = new DirectoryInfo(_supplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
+            //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
 
             if (remoteFilePath != null)
             {
@@ -403,7 +395,7 @@ public class UpdatePriceQuantityService
 
                     string? model = null;
                     string? priceOrQuantityColumn = null;
-                    xmlModelPriceList.Clear();
+                    _dc.XmlModelPriceList.Clear();
 
                     foreach (var row in worksheet.RowsUsed())
                     {
@@ -415,14 +407,14 @@ public class UpdatePriceQuantityService
 
                         priceOrQuantityColumn = row.Cell(priceColumnNumber).Value.ToString();
 
-                        if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-                            _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
+                        if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                     }
                 }
             }
             else
             {
-                _stateMessages.Add(($"error_Excel file {_suppName} not found", "red"));
+                _dc.StateMessages.Add(($"error_Excel file {_dc.SuppName} not found", "red"));
             }
         }
         else
@@ -461,21 +453,21 @@ public class UpdatePriceQuantityService
 
                         string? model = null;
                         string? priceOrQuantityColumn = null;
-                        xmlModelPriceList.Clear();
+                        _dc.XmlModelPriceList.Clear();
 
                         foreach (var row in vs.RowsUsed())
                         {
-                            model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+                            model = row.Cell(_dc.SupplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
                             if (string.IsNullOrEmpty(model))
                             {
                                 continue;
                             }
 
-                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value
+                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PicturePriceQuantityXlColumn).Value
                                 .ToString();
 
-                            if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-                                _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
+                            if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                         }
                     }
                     // Видаляємо завантажений файл
@@ -483,12 +475,12 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
-                    _stateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
+                    _dc.StateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
                 }
             }
             else
             {
-                _stateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
+                _dc.StateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
             }
         }
     }
@@ -498,7 +490,7 @@ public class UpdatePriceQuantityService
     {
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
-            //DirectoryInfo directory = new DirectoryInfo(_supplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
+            //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
 
             if (remoteFilePath != null)
             {
@@ -519,7 +511,7 @@ public class UpdatePriceQuantityService
                     string? model = null;
                     string? priceOrQuantityColumn = null;
                     string? unitsInBox = null;
-                    xmlModelPriceList.Clear();
+                    _dc.XmlModelPriceList.Clear();
 
                     foreach (var row in worksheet.RowsUsed())
                     {
@@ -538,14 +530,14 @@ public class UpdatePriceQuantityService
                         }
 
 
-                        if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-                            _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
+                        if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                     }
                 }
             }
             else
             {
-                _stateMessages.Add(($"error_Excel file {_suppName} not found", "red"));
+                _dc.StateMessages.Add(($"error_Excel file {_dc.SuppName} not found", "red"));
             }
 
         }
@@ -585,21 +577,21 @@ public class UpdatePriceQuantityService
 
                         string? model = null;
                         string? priceOrQuantityColumn = null;
-                        xmlModelPriceList.Clear();
+                        _dc.XmlModelPriceList.Clear();
 
                         foreach (var row in vs.RowsUsed())
                         {
-                            model = row.Cell(_supplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+                            model = row.Cell(_dc.SupplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
                             if (string.IsNullOrEmpty(model))
                             {
                                 continue;
                             }
 
-                            priceOrQuantityColumn = row.Cell(_supplierXmlSetting.PicturePriceQuantityXlColumn).Value
+                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PicturePriceQuantityXlColumn).Value
                                 .ToString();
 
-                            if (!xmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-                                _stateMessages.Add(($"error_Duplicate model in excel file {_suppName} {model}", "red"));
+                            if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                         }
                     }
 
@@ -608,12 +600,12 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
-                    _stateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
+                    _dc.StateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
                 }
             }
             else
             {
-                _stateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
+                _dc.StateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
             }
         }
     }
@@ -624,22 +616,22 @@ public class UpdatePriceQuantityService
 
         string priceOrQuantityNode = "";
         string model = "";
-        xmlModelPriceList.Clear();
+        _dc.XmlModelPriceList.Clear();
 
-        xmlDoc.Load(_supplierXmlSetting.Path);
+        xmlDoc.Load(_dc.SupplierXmlSetting.Path);
 
-        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_supplierXmlSetting.ProductNode);
+        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.ProductNode);
 
         List<string?> xPaths = new() {
-            _supplierXmlSetting.QuantityDbStock1,
-            _supplierXmlSetting.QuantityDbStock2,
-            _supplierXmlSetting.QuantityDbStock3,
-            _supplierXmlSetting.QuantityDbStock4,
-            _supplierXmlSetting.QuantityDbStock5,
-            _supplierXmlSetting.QuantityDbStock6,
-            _supplierXmlSetting.QuantityDbStock7,
-            _supplierXmlSetting.QuantityDbStock8,
-            _supplierXmlSetting.QuantityDbStock9
+            _dc.SupplierXmlSetting.QuantityDbStock1,
+            _dc.SupplierXmlSetting.QuantityDbStock2,
+            _dc.SupplierXmlSetting.QuantityDbStock3,
+            _dc.SupplierXmlSetting.QuantityDbStock4,
+            _dc.SupplierXmlSetting.QuantityDbStock5,
+            _dc.SupplierXmlSetting.QuantityDbStock6,
+            _dc.SupplierXmlSetting.QuantityDbStock7,
+            _dc.SupplierXmlSetting.QuantityDbStock8,
+            _dc.SupplierXmlSetting.QuantityDbStock9
         };
 
         List<string> stocksList = xPaths.Where(x => x != null).ToList();
@@ -647,13 +639,13 @@ public class UpdatePriceQuantityService
         foreach (XmlNode item in itemsList)
         {
             // get model
-            if (_supplierXmlSetting.ParamAttribute == null)
+            if (_dc.SupplierXmlSetting.ParamAttribute == null)
             {
-                if (item.SelectSingleNode(_supplierXmlSetting.ModelNode) == null)
+                if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
                 {
                     continue;
                 }
-                model = item.SelectSingleNode(_supplierXmlSetting.ModelNode)?.InnerText;
+                model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText;
             }
             else
             {
@@ -675,7 +667,7 @@ public class UpdatePriceQuantityService
 
             priceOrQuantityNode = quantities.Sum().ToString();
 
-            xmlModelPriceList.TryAdd(model, priceOrQuantityNode);
+            _dc.XmlModelPriceList.TryAdd(model, priceOrQuantityNode);
         }
     }
 
@@ -708,11 +700,11 @@ public class UpdatePriceQuantityService
 
                 _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = manualValue });
 
-                _stateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{dbModel.Item4}_SetValue:_{manualValue} грн", "black"));
+                _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item4}_SetValue:_{manualValue} грн", "black"));
             }
             else
             {
-                if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
+                if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
                 {
                     decimal dbValue = 0;
                     decimal currentXmlValue = 0;
@@ -737,7 +729,7 @@ public class UpdatePriceQuantityService
                             currentXmlValue = Convert.ToDecimal(xmlValue);
                         }
 
-                        if (_suppName == "Gamma" || _suppName == "Gamma-K")
+                        if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                         {
                             currentXmlValue = (currentXmlValue + (currentXmlValue * 0.4m)) * 50m;
                         }
@@ -753,7 +745,7 @@ public class UpdatePriceQuantityService
                                 if (productToUpdate != null)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                 }
                             }
                             else
@@ -761,7 +753,7 @@ public class UpdatePriceQuantityService
                                 if (productToUpdate != null)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                 }
                             }
                         }
@@ -769,12 +761,12 @@ public class UpdatePriceQuantityService
                     catch (Exception)
                     {
 
-                        _stateMessages.Add(($"error_Error occurred while price of {_suppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                        _dc.StateMessages.Add(($"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item4)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
                     }
                 }
                 else
                 {
-                    _stateMessages.Add(($"error_{_suppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item4}_ NOT FOUND in xml", "red"));
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item4}_ NOT FOUND in xml", "red"));
                 }
             }
         }
@@ -819,7 +811,7 @@ public class UpdatePriceQuantityService
                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = manualValue });
                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
                     }
-                    _stateMessages.Add(($"manualValue_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to default- {manualValue}. Old-_{dbModel.Item3}", "black"));
+                    _dc.StateMessages.Add(($"manualValue_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ quantity set to default- {manualValue}. Old-_{dbModel.Item3}", "black"));
                 }
                 else
                 {
@@ -827,7 +819,7 @@ public class UpdatePriceQuantityService
 
                     int currentXmlValue = 0;
                     int? dbValue = 0;
-                    if (xmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue))
+                    if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue))
                     {
                         if (dbModel.Item3 != xmlValue)
                         {
@@ -867,7 +859,7 @@ public class UpdatePriceQuantityService
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = setQtylValue });
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
                             }
-                            _stateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity set to min: {setQtylValue}. Real xml was {currentXmlValue}. DB was:_{dbModel.Item3}", "yellow"));
+                            _dc.StateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ quantity set to min: {setQtylValue}. Real xml was {currentXmlValue}. DB was:_{dbModel.Item3}", "yellow"));
                         }
                         else
                         {
@@ -880,14 +872,14 @@ public class UpdatePriceQuantityService
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
 
-                                        _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                        _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                     else
                                     {
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
 
-                                        _stateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                        _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ quantity increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                     }
                                 }
                                 else
@@ -897,7 +889,7 @@ public class UpdatePriceQuantityService
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
 
-                                        _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                        _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                     else
                                     {
@@ -906,7 +898,7 @@ public class UpdatePriceQuantityService
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
                                             .Update(x => new NgProduct { StockStatusId = 5 });
 
-                                        _stateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                        _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ quantity decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                     }
                                 }
                             }
@@ -918,13 +910,13 @@ public class UpdatePriceQuantityService
                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
 
-                        _stateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_suppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
+                        _dc.StateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item4)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item3}_{currentXmlValue}", "brown"));
                     }
                 }
             }
             catch (Exception)
             {
-                _stateMessages.Add(($"error_Something happened while quantity of {_suppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}", "red"));
+                _dc.StateMessages.Add(($"error_Something happened while quantity of {_dc.SuppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item4)} {dbModel.Item3}", "red"));
             }
         }
         _dbContextGamma.SaveChanges();

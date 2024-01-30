@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace xmlParserASP.Authentication
+namespace xmlParserASP.Authentication;
+
+public sealed class HasPermissionAttribute : AuthorizeAttribute
 {
-    public sealed class HasPermissionAttribute : AuthorizeAttribute
-    {
-        public HasPermissionAttribute(Permission permission)
+    public HasPermissionAttribute(Permission permission)
         :base(policy: permission.ToString())
-        {
+    {
                 
-        }
     }
 }
