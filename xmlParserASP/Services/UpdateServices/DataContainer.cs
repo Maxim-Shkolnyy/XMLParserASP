@@ -5,7 +5,7 @@ namespace xmlParserASP.Services.UpdateServices;
 
 public class DataContainer
 {
-    public MmSupplierXmlSetting? SupplierXmlSetting { get; set; }
+    public MmSupplierXmlSetting? SupplierXmlSetting { get; set; } = null;
     public string? SuppName { get; set; }
     public List<(string, string)>? StateMessages { get; set; }
     public string CurrentTableDbColumnToUpdate { get; set; } = "";
