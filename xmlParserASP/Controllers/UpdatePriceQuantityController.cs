@@ -13,6 +13,7 @@ public class UpdatePriceQuantityController : Controller
     private readonly MmSupplierXmlSetting _setting;
     private readonly UpdatePriceQuantityService _updatePriceQuantityService;
     private readonly PriceQuantityViewModel _priceQuantityViewModel;
+    private readonly List<MmSupplierXmlSetting> _settingsList = new();
     private List<(string, string)>? updateAllPrices = new();
     private List<(string, string)>? updateQuantity = new();
     public UpdatePriceQuantityController(GammaContext db, MmSupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
@@ -21,13 +22,14 @@ public class UpdatePriceQuantityController : Controller
         _setting = setting;
         _updatePriceQuantityService = updatePriceQuantityService;
         _priceQuantityViewModel = priceQuantityViewModel;
+        _settingsList = _db.MmSupplierXmlSettings.ToList();
 
     }
     public IActionResult Index()
     {
         var settingList = new PriceQuantityViewModel
         {
-            SupplierXmlSettings = _db.MmSupplierXmlSettings.ToList()
+            SupplierXmlSettings = _settingsList
         };
 
         return View(settingList);
@@ -47,39 +49,80 @@ public class UpdatePriceQuantityController : Controller
 
             return View("Index", mySettingList);
         }
-        
 
-        if (PriceList != null && PriceList.Any())
+        List<(string, string)>? commonMessagesList = new();
+
+        if (QuantityList.Count == 0)
         {
-            try
+            foreach (var suppSetting in PriceList)
             {
-                updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(PriceList, "Price");
-
-                ViewBag.UpdatePriceResult = updateAllPrices;
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "Price was not updated!!! " + ex.Message);
-                ViewBag.PriceError = "Price was not updated!!!" + ex.Message;
+                try
+                {
+                    updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting, "Price");
+                    commonMessagesList.AddRange(updateAllPrices);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Price was not updated!!! " + ex.Message);
+                    ViewBag.PriceError = "Price was not updated!!!" + ex.Message;
+                }
             }
         }
-
-        if (QuantityList != null && QuantityList.Any())
+        else if (PriceList.Count == 0)
         {
-            try
+            foreach (var suppSetting in QuantityList)
             {
-                updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(QuantityList, "Quantity");
-
-                ViewBag.UpdateQuantityResult = updateQuantity;
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "Quantity was not updated!!! " + ex.Message);
-                ViewBag.QuantityError = "Quantity was not updated!!! " + ex.Message;
+                try
+                {
+                    updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting, "Quantity");
+                    commonMessagesList.AddRange(updateQuantity);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Quantity was not updated!!! " + ex.Message);
+                    ViewBag.QuantityError = "Quantity was not updated!!! " + ex.Message;
+                }
             }
         }
+        else if (PriceList.Count > 0 & QuantityList.Count > 0)
+        {
+            PriceList.Sort();
+            QuantityList.Sort();
 
+            //int maxId = _settingsList.Max(s => s.SupplierXmlSettingId);
+            int maxId = _settingsList.Select(m => m.SupplierXmlSettingId).ToList().Max();
+
+            for (int i = 1; i < maxId +1; i++)
+            {
+                if (PriceList.Contains(i))
+                {
+                    try
+                    {
+                        updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i, "Price");
+                        commonMessagesList.AddRange(updateAllPrices);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "Price was not updated!!! " + ex.Message);
+                        ViewBag.PriceError = "Price was not updated!!!" + ex.Message;
+                    }
+                }
+                if (QuantityList.Contains(i))
+                {
+                    try
+                    {
+                        updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i, "Quantity");
+                        commonMessagesList.AddRange(updateQuantity);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "Quantity was not updated!!! " + ex.Message);
+                        ViewBag.QuantityError = "Quantity was not updated!!! " + ex.Message;
+                    }
+                }
+            }
+        }
+        ViewBag.UpdateQuantityResult = commonMessagesList;
         return View();
-
     }
 }
