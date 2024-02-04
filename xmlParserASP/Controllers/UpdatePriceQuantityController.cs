@@ -92,7 +92,7 @@ public class UpdatePriceQuantityController : Controller
             //int maxId = _settingsList.Max(s => s.SupplierXmlSettingId);
             int maxId = _settingsList.Select(m => m.SupplierXmlSettingId).ToList().Max();
 
-            for (int i = 1; i < maxId +1; i++)
+            for (int i = 1; i < maxId; i++)
             {
                 if (PriceList.Contains(i))
                 {

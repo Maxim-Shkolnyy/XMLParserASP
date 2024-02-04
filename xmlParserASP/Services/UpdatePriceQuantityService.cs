@@ -59,54 +59,54 @@ public class UpdatePriceQuantityService
             m.SupplierId == _dc.SupplierXmlSetting.SupplierId))?.SupplierName;
 
 
-        //if (_dc.SuppNameThatWasUpdatedList != null && !_dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName))
-        //{
-        _dc.CurrentSuppProductIDList = await _dbContextGamma.NgProductToSuppliers
+        if (_dc.SuppNameThatWasUpdatedList != null && !_dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName))
+        {
+            _dc.CurrentSuppProductIDList = await _dbContextGamma.NgProductToSuppliers
         .Where(m => m.SupplierId == _dc.SuppName)
         .Select(m => m.ProductId)
         .ToListAsync();
 
-        if (_dc.CurrentSuppProductIDList == null)
-        {
-            _dc.StateMessages.Add(($"1_Supplier {_dc.SuppName} has no one product in DB", "red"));
-            return _dc.StateMessages;
+            if (_dc.CurrentSuppProductIDList == null)
+            {
+                _dc.StateMessages.Add(($"1_Supplier {_dc.SuppName} has no one product in DB", "red"));
+                return _dc.StateMessages;
+            }
+
+
+            _dc.Products = await _dbContextGamma.NgProducts
+                .Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId) && p.Status == true)
+                .Select(m => new ProductMinInfoModel
+                {
+                    ProductId = m.ProductId,
+                    Sku = m.Sku,
+                    Model = m.Model,
+                    Price = m.Price,
+                    Quantity = m.Quantity
+                }).ToListAsync();
+
+            //todo: END this
+
+            _dc.NamesOfProducts =
+                await _dbContextGamma.NgProductDescriptions.Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId))
+                    .Where(n => n.LanguageId ==3)
+                    .Select(p => new ProductNamesListModel
+                    {
+                        ProductId = p.ProductId,
+                        ProductName = p.Name
+                    }
+                ).ToListAsync();
         }
 
-
-        _dc.Products = await _dbContextGamma.NgProducts
-            .Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId) && p.Status == true)
-            .Select(m => new ProductMinInfoModel
-            {
-                ProductId = m.ProductId,
-                Sku = m.Sku,
-                Model = m.Model,
-                Price = m.Price,
-                Quantity = m.Quantity
-            }).ToListAsync();
-
-        //todo: END this
-
-        _dc.NamesOfProducts =
-            await _dbContextGamma.NgProductDescriptions.Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId))
-                .Where(n => n.LanguageId ==3)
-                .Select(p => new ProductNamesListModel
-                {
-                    ProductId = p.ProductId,
-                    ProductName = p.Name
-                }
-            ).ToListAsync();
-        //}
-
-        string? priceValue = "";
-        string? qtyValue = "";
+        //string? priceValue = "";
+        //string? qtyValue = "";
         string? productName = "";
 
         foreach (var product in _dc.Products)
         {
             try
             {
-                priceValue = product.Price.ToString();
-                qtyValue = product.Quantity.ToString();
+                var priceValue = product.Price.ToString();
+                var qtyValue = product.Quantity.ToString();
                 productName = _dc.NamesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.ProductName;
 
                 _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, qtyValue, productName));
@@ -169,7 +169,7 @@ public class UpdatePriceQuantityService
 
         _dc.SuppNameThatWasUpdatedList.Add(_dc.SuppName);
         _dc.StateMessages.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
-        //}
+        
 
         var stateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
 
@@ -690,7 +690,6 @@ public class UpdatePriceQuantityService
                     _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item5}_SetValue:_{manualValue} грн", "black"));
                 }
 
-
             }
             else
             {
@@ -735,7 +734,7 @@ public class UpdatePriceQuantityService
                                 if (productToUpdate != null)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price increased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "purple"));
                                 }
                             }
                             else
@@ -743,7 +742,7 @@ public class UpdatePriceQuantityService
                                 if (productToUpdate != null)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price decreased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "blue"));
                                 }
                             }
                         }
@@ -831,11 +830,11 @@ public class UpdatePriceQuantityService
                                 currentXmlValue = Convert.ToInt32(xmlValue);
                             }
 
-                            if(currentXmlValue < 0)
+                            if (currentXmlValue < 0)
                             {
                                 currentXmlValue = 0;
                             }
-                            
+
                         }
 
                         #endregion
