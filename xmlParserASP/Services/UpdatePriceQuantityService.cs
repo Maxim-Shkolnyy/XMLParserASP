@@ -690,6 +690,7 @@ public class UpdatePriceQuantityService
                     _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item5}_SetValue:_{manualValue} грн", "black"));
                 }
 
+
             }
             else
             {
@@ -734,7 +735,7 @@ public class UpdatePriceQuantityService
                                 if (productToUpdate != null)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price increased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "purple"));
+                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
                                 }
                             }
                             else
@@ -742,7 +743,7 @@ public class UpdatePriceQuantityService
                                 if (productToUpdate != null)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price decreased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "blue"));
+                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
                                 }
                             }
                         }
