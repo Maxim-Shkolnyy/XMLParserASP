@@ -81,7 +81,7 @@ public class UpdatePriceQuantityService
 
 
             var products = await _dbContextGamma.NgProducts
-                .Where(p => currentSuppProductIDList.Contains(p.ProductId))
+                .Where(p => currentSuppProductIDList.Contains(p.ProductId) && p.Status == true)
                 .Select(m => new ProductMinInfoModel
                 {
                     ProductId = m.ProductId,
@@ -103,11 +103,11 @@ public class UpdatePriceQuantityService
                     }
                 ).ToListAsync();
 
-            //if (_dc.SuppNameThatWasUpdatedList != null)
+            //if (_dc.SuppNameThatWasUpdatedList != null && !_dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName))
             //{
             //    if (_dc.CurrentTableDbColumnToUpdate == "Price"  && !_dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName))
             //    {
-            //        _productsManualSetPrices = await _dbContextGamma.ProductsManualSetPrices
+            //        _dc.ProductsManualSetPrices = await _dbContextGamma.ProductsManualSetPrices
             //            .Where(p => products.Select(product => product.Sku).Contains(p.Sku))
             //            .ToListAsync();
 
@@ -131,9 +131,8 @@ public class UpdatePriceQuantityService
                 {
                     if (_dc.CurrentTableDbColumnToUpdate == "Price")
                     {
-                        priceQuantityValue = product.Price.ToString(CultureInfo.CurrentCulture);
+                        priceQuantityValue = product.Price.ToString();
                         productName = namesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.Name;
-
                     }
                     else
                     {
@@ -698,9 +697,14 @@ public class UpdatePriceQuantityService
             {
                 var manualValue = manualPriceProductList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
 
-                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = manualValue });
+                if(decimal.TryParse(dbModel.Item3, out decimal currentDbManualPrice) && currentDbManualPrice != manualValue)  // remove this if tsatement, to see all manual prices added
+                {
+                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = manualValue });
 
-                _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item4}_SetValue:_{manualValue} грн", "black"));
+                    _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item4}_SetValue:_{manualValue} грн", "black"));
+                }
+
+                
             }
             else
             {
