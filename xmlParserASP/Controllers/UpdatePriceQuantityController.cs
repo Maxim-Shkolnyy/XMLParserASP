@@ -88,8 +88,7 @@ public class UpdatePriceQuantityController : Controller
         {
             PriceList.Sort();
             QuantityList.Sort();
-
-            //int maxId = _settingsList.Max(s => s.SupplierXmlSettingId);
+            
             int maxId = _settingsList.Select(m => m.SupplierXmlSettingId).ToList().Max();
 
             for (int i = 1; i < maxId; i++)

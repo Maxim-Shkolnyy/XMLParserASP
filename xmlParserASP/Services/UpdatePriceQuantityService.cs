@@ -104,15 +104,6 @@ public class UpdatePriceQuantityService
                     var productName = _dc.NamesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.ProductName;
 
                     _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, qtyValue, productName));
-
-                    //if (_dc.CurrentTableDbColumnToUpdate == "Price")
-                    //{
-                    //    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, productName));
-                    //}
-                    //else
-                    //{
-                    //    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, qtyValue, productName));
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -511,7 +502,7 @@ public class UpdatePriceQuantityService
                     string? model = null;
                     string? priceOrQuantityColumn = null;
                     string? unitsInBox = null;
-                    _dc.XmlModelPriceList.Clear();
+                    _dc.XmlModelQuantityList.Clear();
 
                     foreach (var row in worksheet.RowsUsed())
                     {
@@ -530,7 +521,7 @@ public class UpdatePriceQuantityService
                         }
 
 
-                        if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+                        if (!_dc.XmlModelQuantityList.TryAdd(model, priceOrQuantityColumn))
                             _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                     }
                 }
@@ -577,7 +568,7 @@ public class UpdatePriceQuantityService
 
                         string? model = null;
                         string? priceOrQuantityColumn = null;
-                        _dc.XmlModelPriceList.Clear();
+                        _dc.XmlModelQuantityList.Clear();
 
                         foreach (var row in vs.RowsUsed())
                         {
@@ -590,7 +581,7 @@ public class UpdatePriceQuantityService
                             priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PicturePriceQuantityXlColumn).Value
                                 .ToString();
 
-                            if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+                            if (!_dc.XmlModelQuantityList.TryAdd(model, priceOrQuantityColumn))
                                 _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                         }
                     }
