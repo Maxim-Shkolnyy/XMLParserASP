@@ -247,6 +247,7 @@ public class UpdatePriceQuantityService
                                 $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                 "red"));
                         }
+                        _dc.XmlModelPriceList.TryAdd(model, priceNode);
                     }
                     else
                     {
@@ -257,10 +258,11 @@ public class UpdatePriceQuantityService
                                 $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                 "red"));
                         }
+                        _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
                     }
 
-                    _dc.XmlModelPriceList.TryAdd(model, priceNode);
-                    _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
+                    //_dc.XmlModelPriceList.TryAdd(model, priceNode);
+                    //_dc.XmlModelQuantityList.TryAdd(model, quantityNode);
                 }
             }
         }
@@ -316,7 +318,7 @@ public class UpdatePriceQuantityService
                     }
                     _dc.XmlModelPriceList.TryAdd(model, priceNode);
                 }
-                else if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
+                else if(_dc.CurrentTableDbColumnToUpdate == "Quantity")
                 {
                     quantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
                     if (quantityNode == null)
@@ -327,23 +329,23 @@ public class UpdatePriceQuantityService
                     }
                     _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
                 }
-                else
-                {
-                    if (item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode) == null)
-                    {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                    }
-                    if (item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode) == null)
-                    {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}  {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                    }
+                //else
+                //{
+                //    if (item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode) == null)
+                //    {
+                //        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
+                //    }
+                //    if (item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode) == null)
+                //    {
+                //        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}  {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
+                //    }
 
-                    priceNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
-                    quantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
+                //    priceNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
+                //    quantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
 
-                    _dc.XmlModelPriceList.TryAdd(model, priceNode);
-                    _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
-                }
+                //    _dc.XmlModelPriceList.TryAdd(model, priceNode);
+                //    _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
+                //}
             }
         }
     }
