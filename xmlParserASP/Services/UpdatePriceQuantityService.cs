@@ -23,7 +23,6 @@ public class UpdatePriceQuantityService
         _dc = dcS.Instance;
     }
 
-    //public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(List<int> settingsId, string tableDbColumnToUpdate)
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(int settingsId, string tableDbColumnToUpdate)
 
     {
@@ -95,34 +94,30 @@ public class UpdatePriceQuantityService
                         ProductName = p.Name
                     }
                 ).ToListAsync();
-        }
 
-        //string? priceValue = "";
-        //string? qtyValue = "";
-        string? productName = "";
-
-        foreach (var product in _dc.Products)
-        {
-            try
+            foreach (var product in _dc.Products)
             {
-                var priceValue = product.Price.ToString();
-                var qtyValue = product.Quantity.ToString();
-                productName = _dc.NamesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.ProductName;
+                try
+                {
+                    var priceValue = product.Price.ToString();
+                    var qtyValue = product.Quantity.ToString();
+                    var productName = _dc.NamesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.ProductName;
 
-                _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, qtyValue, productName));
+                    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, qtyValue, productName));
 
-                //if (_dc.CurrentTableDbColumnToUpdate == "Price")
-                //{
-                //    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, productName));
-                //}
-                //else
-                //{
-                //    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, qtyValue, productName));
-                //}
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error processing field {product.Sku} : {ex.Message}");
+                    //if (_dc.CurrentTableDbColumnToUpdate == "Price")
+                    //{
+                    //    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, productName));
+                    //}
+                    //else
+                    //{
+                    //    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, qtyValue, productName));
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error processing field {product.Sku} : {ex.Message}");
+                }
             }
         }
 
@@ -169,7 +164,7 @@ public class UpdatePriceQuantityService
 
         _dc.SuppNameThatWasUpdatedList.Add(_dc.SuppName);
         _dc.StateMessages.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
-        
+
 
         var stateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
 
@@ -336,7 +331,7 @@ public class UpdatePriceQuantityService
                     if (quantityNode == null)
                     {
                         _dc.StateMessages.Add((
-                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)} NOT FOUND in xml",
+                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                             "red"));
                     }
                     _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
@@ -345,11 +340,11 @@ public class UpdatePriceQuantityService
                 {
                     if (item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode) == null)
                     {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} Price NOT FOUND in xml", "red"));
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
                     }
                     if (item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode) == null)
                     {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} Quantity NOT FOUND in xml", "red"));
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}  {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
                     }
 
                     priceNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
@@ -357,7 +352,7 @@ public class UpdatePriceQuantityService
 
                     _dc.XmlModelPriceList.TryAdd(model, priceNode);
                     _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
-                }               
+                }
             }
         }
     }
