@@ -318,7 +318,8 @@ public class UpdatePriceQuantityService
                     }
                     _dc.XmlModelPriceList.TryAdd(model, priceNode);
                 }
-                else if(_dc.CurrentTableDbColumnToUpdate == "Quantity")
+                
+                if(_dc.CurrentTableDbColumnToUpdate == "Quantity")
                 {
                     quantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
                     if (quantityNode == null)
