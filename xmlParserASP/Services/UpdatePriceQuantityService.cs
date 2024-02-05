@@ -207,7 +207,7 @@ public class UpdatePriceQuantityService
                         if (String.IsNullOrEmpty(model))
                         {
                             _dc.StateMessages.Add((
-                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                 "red"));
                         }
                     }
@@ -218,7 +218,7 @@ public class UpdatePriceQuantityService
                             if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
                             {
                                 _dc.StateMessages.Add((
-                                    $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                    $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                     "red"));
                                 continue;
                             }
@@ -228,7 +228,7 @@ public class UpdatePriceQuantityService
                             if (String.IsNullOrEmpty(model))
                             {
                                 _dc.StateMessages.Add((
-                                    $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} NOT FOUND in xml",
+                                    $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                     "red"));
                             }
                         }
@@ -244,7 +244,7 @@ public class UpdatePriceQuantityService
                         if (priceNode == null)
                         {
                             _dc.StateMessages.Add((
-                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} NOT FOUND in xml",
+                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                 "red"));
                         }
                     }
@@ -254,7 +254,7 @@ public class UpdatePriceQuantityService
                         if (quantityNode == null)
                         {
                             _dc.StateMessages.Add((
-                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)} NOT FOUND in xml",
+                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                 "red"));
                         }
                     }
@@ -311,7 +311,7 @@ public class UpdatePriceQuantityService
                     if (priceNode == null)
                     {
                         _dc.StateMessages.Add((
-                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} NOT FOUND in xml",
+                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                             "red"));
                     }
                     _dc.XmlModelPriceList.TryAdd(model, priceNode);
@@ -760,7 +760,7 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_ NOT FOUND in xml", "red"));
+                    _dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate}NotFound in xml", "red"));
                 }
             }
         }
@@ -785,11 +785,13 @@ public class UpdatePriceQuantityService
             })
             .ToList();
 
+        ProductMinInfoModel productToUpdate = new();
+
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
             try
             {
-                var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
                 if (manualQty.Any(p => p.Sku == productToUpdate?.Sku)) //ручне встановлення наявності.
                 {
