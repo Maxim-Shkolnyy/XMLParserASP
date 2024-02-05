@@ -10,6 +10,7 @@ public class DataContainer
     public List<(string, string)>? StateMessages { get; set; }
     public string CurrentTableDbColumnToUpdate { get; set; } = "";
     public Dictionary<string, string> XmlModelPriceList { get; set; } = new();
+    public Dictionary<string, string> XmlModelQuantityList { get; set; } = new();
     public List<MmSupplier>? SuppliersList { get; set; }
     public List<MmSupplierXmlSetting>? SuppSettingList { get; set; }
     public List<ProductsManualSetPrice>? ProductsManualSetPrices { get; set; }
