@@ -16,7 +16,6 @@ public class UpdatePriceQuantityService
     private readonly GammaContext _dbContextGamma;
     private readonly DataContainer _dc;
 
-
     public UpdatePriceQuantityService(GammaContext dbContextGamma, DataContainerSingleton dcS)
     {
         _dbContextGamma = dbContextGamma;
@@ -24,7 +23,6 @@ public class UpdatePriceQuantityService
     }
 
     public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(int settingsId, string tableDbColumnToUpdate)
-
     {
         if (_dc.SuppliersList.Count == 0)
         {
@@ -33,14 +31,6 @@ public class UpdatePriceQuantityService
         }
 
         _dc.CurrentTableDbColumnToUpdate = tableDbColumnToUpdate;
-
-        //_dc.StateMessages = new(); //it help to avoid messages duplicates, when called update price and quantity simultaneously
-
-        //if (settingsId == null)
-        //{
-        //    _dc.StateMessages.Add(("Setting ID was not passed", "red"));
-        //    return _dc.StateMessages;
-        //}
 
         #region Get current values from DB and add them to new '_dc.DbCodeModelPriceList' on each iteration
 
@@ -133,10 +123,9 @@ public class UpdatePriceQuantityService
         }
         else if (_dc.SuppName == "Feron")
         {
-            if (_dc.CurrentTableDbColumnToUpdate == "Quantity" & _dc.SupplierXmlSetting.SettingName == "Feron_excel")
+            if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
             {
-                GetFeronQtyXlValues("", "", "", _dc.SupplierXmlSetting.Path, _dc.SupplierXmlSetting.ModelXlColumn,
-                    _dc.SupplierXmlSetting.PricePictureXlColumn, _dc.SupplierXmlSetting.QtyInBoxColumnNumber);
+                GetFeronXlValues("", "", "");
             }
         }
         else
@@ -479,16 +468,27 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private void GetFeronQtyXlValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath,
-        string? modelColumnNumber, string? priceQuantityColumn, string? boxColumn)
+    private void GetFeronXlValues(string ftpHost, string ftpUser, string ftpPassword)
     {
+        if (_dc.SupplierXmlSetting.SettingName != "Feron_excel")
+        {
+            _dc.StateMessages.Add(($"Feron {_dc.CurrentTableDbColumnToUpdate} was not updated", "red"));
+            return;
+        }
+        string? remoteFilePath = _dc.SupplierXmlSetting.Path;
+        string? modelColumnNumber = _dc.SupplierXmlSetting.ModelXlColumn;
+        string? priceColumn = _dc.SupplierXmlSetting.PricePictureXlColumn;
+
+        string? quantityColumn = _dc.SupplierXmlSetting.QuantityXlColumn;
+        string? boxColumn = _dc.SupplierXmlSetting.QtyInBoxColumnNumber;
+
+
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
             //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
 
             if (remoteFilePath != null)
             {
-                // Завантаження файлу з URL
                 string localFilePath = Path.GetTempFileName();
                 localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
                 string filePath = Uri.EscapeUriString(remoteFilePath);
@@ -502,9 +502,10 @@ public class UpdatePriceQuantityService
                     //int modelColumnNumber = GetColumnIndex(worksheet, 1, modelColumn);
                     //int priceQtyColumnNumber = GetColumnIndex(worksheet, 1, priceQuantityColumn);
 
-                    string? model = null;
-                    string? priceOrQuantityColumn = null;
-                    string? unitsInBox = null;
+                    string? model = "";
+                    string? quantity = "";
+                    string? price = "";
+                    string? unitsInBox = "";
                     _dc.XmlModelQuantityList.Clear();
 
                     foreach (var row in worksheet.RowsUsed())
@@ -515,17 +516,30 @@ public class UpdatePriceQuantityService
                             continue;
                         }
 
-                        priceOrQuantityColumn = row.Cell(priceQuantityColumn).Value.ToString();
+                        price = row.Cell(priceColumn).Value.ToString();
+
+                        quantity = row.Cell(quantityColumn).Value.ToString();
                         unitsInBox = row.Cell(boxColumn).Value.ToString();
 
-                        if (priceOrQuantityColumn.Contains('>') & priceOrQuantityColumn.Contains("ящик"))
+                        
+
+                        if (quantity.Contains('>') & quantity.Contains("ящик"))
                         {
-                            priceOrQuantityColumn = unitsInBox;
+                            quantity = unitsInBox;
                         }
 
+                        if (_dc.CurrentTableDbColumnToUpdate == "Price")
+                        {
+                            if (!_dc.XmlModelPriceList.TryAdd(model, price))
+                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        }
+                        else
+                        {
+                            if (!_dc.XmlModelQuantityList.TryAdd(model, quantity))
+                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        }
 
-                        if (!_dc.XmlModelQuantityList.TryAdd(model, priceOrQuantityColumn))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        
                     }
                 }
             }
