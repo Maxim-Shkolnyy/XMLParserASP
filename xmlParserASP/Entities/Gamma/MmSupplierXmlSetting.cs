@@ -32,7 +32,9 @@ public partial class MmSupplierXmlSetting
 
     public string? PictureNode { get; set; }
 
-    public string? PicturePriceQuantityXlColumn { get; set; }
+    public string? PricePictureXlColumn { get; set; }
+
+    public string? QuantityXlColumn { get; set; }
 
     public string? PhotoFolder { get; set; }
 

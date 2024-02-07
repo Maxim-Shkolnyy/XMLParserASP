@@ -52,7 +52,10 @@
                 @Html.DisplayNameFor(model => model.PictureNode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PicturePriceQuantityXlColumn)
+                @Html.DisplayNameFor(model => model.PricePictureXlColumn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityXlColumn)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PhotoFolder)
@@ -106,7 +109,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.OrderBy(m => m.SettingName)) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.SettingName)
@@ -148,7 +151,10 @@
                 @Html.DisplayFor(modelItem => item.PictureNode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PicturePriceQuantityXlColumn)
+                @Html.DisplayFor(modelItem => item.PricePictureXlColumn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityXlColumn)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PhotoFolder)

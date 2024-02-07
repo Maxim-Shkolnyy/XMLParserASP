@@ -17,7 +17,7 @@ public class UpdatePriceQuantityService
     private readonly DataContainer _dc;
 
 
-    public UpdatePriceQuantityService(MmSupplierXmlSetting supplierXmlSetting, GammaContext dbContextGamma, DataContainerSingleton dcS)
+    public UpdatePriceQuantityService(GammaContext dbContextGamma, DataContainerSingleton dcS)
     {
         _dbContextGamma = dbContextGamma;
         _dc = dcS.Instance;
@@ -136,7 +136,7 @@ public class UpdatePriceQuantityService
             if (_dc.CurrentTableDbColumnToUpdate == "Quantity" & _dc.SupplierXmlSetting.SettingName == "Feron_excel")
             {
                 GetFeronQtyXlValues("", "", "", _dc.SupplierXmlSetting.Path, _dc.SupplierXmlSetting.ModelXlColumn,
-                    _dc.SupplierXmlSetting.PicturePriceQuantityXlColumn, _dc.SupplierXmlSetting.QtyInBoxColumnNumber);
+                    _dc.SupplierXmlSetting.PricePictureXlColumn, _dc.SupplierXmlSetting.QtyInBoxColumnNumber);
             }
         }
         else
@@ -318,8 +318,8 @@ public class UpdatePriceQuantityService
                     }
                     _dc.XmlModelPriceList.TryAdd(model, priceNode);
                 }
-                
-                if(_dc.CurrentTableDbColumnToUpdate == "Quantity")
+
+                if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
                 {
                     quantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
                     if (quantityNode == null)
@@ -360,7 +360,7 @@ public class UpdatePriceQuantityService
             modelColumnNumber = 1;
         }
 
-        if (!int.TryParse(_dc.SupplierXmlSetting.PicturePriceQuantityXlColumn, out var priceColumnNumber))
+        if (!int.TryParse(_dc.SupplierXmlSetting.PricePictureXlColumn, out var priceColumnNumber))
         {
             _dc.StateMessages.Add((
                 $"1_{_dc.SuppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
@@ -457,7 +457,7 @@ public class UpdatePriceQuantityService
                                 continue;
                             }
 
-                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PicturePriceQuantityXlColumn).Value
+                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PricePictureXlColumn).Value
                                 .ToString();
 
                             if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
@@ -581,7 +581,7 @@ public class UpdatePriceQuantityService
                                 continue;
                             }
 
-                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PicturePriceQuantityXlColumn).Value
+                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PricePictureXlColumn).Value
                                 .ToString();
 
                             if (!_dc.XmlModelQuantityList.TryAdd(model, priceOrQuantityColumn))

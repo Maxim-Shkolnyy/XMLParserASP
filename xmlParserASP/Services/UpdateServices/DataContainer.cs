@@ -13,9 +13,9 @@ public class DataContainer
     public Dictionary<string, string> XmlModelQuantityList { get; set; } = new();
     public List<MmSupplier>? SuppliersList { get; set; }
     public List<MmSupplierXmlSetting>? SuppSettingList { get; set; }
-    public List<ProductsManualSetPrice>? ProductsManualSetPrices { get; set; }
-    public List<ProductsManualSetQuanity>? ProductsManualSetQuanityList { get; set; }
-    public List<ProductsSetQuantityWhenMin>? ProductsSetQuantityWhenMinList { get; set; }
+    public List<MmProductsManualSetPrice>? ProductsManualSetPrices { get; set; }
+    public List<MmProductsManualSetQuanity>? ProductsManualSetQuanityList { get; set; }
+    public List<MmProductsSetQuantityWhenMin>? ProductsSetQuantityWhenMinList { get; set; }
     public List<string>? SuppNameThatWasUpdatedList { get; set; }
     public List<int>? CurrentSuppProductIDList { get; set; }
 

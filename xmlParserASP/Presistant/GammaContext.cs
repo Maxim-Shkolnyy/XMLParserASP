@@ -502,11 +502,11 @@ public partial class GammaContext : DbContext
 
     public virtual DbSet<NgZoneToGeoZone> NgZoneToGeoZones { get; set; }
 
-    public virtual DbSet<ProductsManualSetPrice> ProductsManualSetPrices { get; set; }
+    public virtual DbSet<MmProductsManualSetPrice> ProductsManualSetPrices { get; set; }
 
-    public virtual DbSet<ProductsManualSetQuanity> ProductsManualSetQuanitys { get; set; }
+    public virtual DbSet<MmProductsManualSetQuanity> ProductsManualSetQuanitys { get; set; }
 
-    public virtual DbSet<ProductsSetQuantityWhenMin> ProductsSetQuantityWhenMin { get; set; }
+    public virtual DbSet<MmProductsSetQuantityWhenMin> ProductsSetQuantityWhenMin { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -579,7 +579,7 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.Path).HasColumnName("path");
             entity.Property(e => e.PhotoFolder).HasColumnName("photo_folder");
             entity.Property(e => e.PictureNode).HasColumnName("picture_node");
-            entity.Property(e => e.PicturePriceQuantityXlColumn).HasColumnName("picture_price_quantity_xl_column");
+            entity.Property(e => e.PricePictureXlColumn).HasColumnName("price_picture_xl_column");
             entity.Property(e => e.PriceNode).HasColumnName("price_node");
             entity.Property(e => e.ProductNode).HasColumnName("product_node");
             entity.Property(e => e.QtyInBoxColumnNumber).HasColumnName("qty_in_box_column_number");
@@ -6814,7 +6814,7 @@ public partial class GammaContext : DbContext
                 .HasColumnName("zone_id");
         });
 
-        modelBuilder.Entity<ProductsManualSetPrice>(entity =>
+        modelBuilder.Entity<MmProductsManualSetPrice>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -6837,7 +6837,7 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.Sku).HasColumnName("sku");
         });
 
-        modelBuilder.Entity<ProductsManualSetQuanity>(entity =>
+        modelBuilder.Entity<MmProductsManualSetQuanity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -6860,7 +6860,7 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.Sku).HasColumnName("sku");
         });
 
-        modelBuilder.Entity<ProductsSetQuantityWhenMin>(entity =>
+        modelBuilder.Entity<MmProductsSetQuantityWhenMin>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PRIMARY");
                 entity.ToTable("mm_products_set_quantity_when_min");

@@ -3,7 +3,7 @@
 
 namespace xmlParserASP.Entities.Gamma;
 
-public partial class ProductsManualSetPrice
+public partial class MmProductsManualSetPrice
 {
     [Key]
     public int Id { get; set; }

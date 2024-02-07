@@ -51,7 +51,7 @@ public class ProductsSetQuantityWhenMinsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Sku,MinQuantity,SetQuantity")] ProductsSetQuantityWhenMin productsSetQuantityWhenMin)
+    public async Task<IActionResult> Create([Bind("Id,Sku,MinQuantity,SetQuantity")] MmProductsSetQuantityWhenMin productsSetQuantityWhenMin)
     {
         if (ModelState.IsValid)
         {
@@ -83,7 +83,7 @@ public class ProductsSetQuantityWhenMinsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Sku,MinQuantity,SetQuantity")] ProductsSetQuantityWhenMin productsSetQuantityWhenMin)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Sku,MinQuantity,SetQuantity")] MmProductsSetQuantityWhenMin productsSetQuantityWhenMin)
     {
         if (id != productsSetQuantityWhenMin.Id)
         {

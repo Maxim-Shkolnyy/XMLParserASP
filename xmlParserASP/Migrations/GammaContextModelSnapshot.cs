@@ -54,6 +54,111 @@ namespace xmlParserASP.Migrations
                     b.ToTable("__EFMigrationsHistory", (string)null);
                 });
 
+            modelBuilder.Entity("xmlParserASP.Entities.Gamma.MmProductsManualSetPrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int(11)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("DateEnd")
+                        .HasMaxLength(6)
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_end");
+
+                    b.Property<DateTime?>("DateStart")
+                        .HasMaxLength(6)
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_start");
+
+                    b.Property<int>("SetInStockPrice")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("set_in_stock_price");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)")
+                        .HasColumnName("sku");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("Sku")
+                        .IsUnique()
+                        .HasDatabaseName("ix_mm_products_manual_set_prices_sku");
+
+                    b.ToTable("mm_products_manual_set_prices", (string)null);
+                });
+
+            modelBuilder.Entity("xmlParserASP.Entities.Gamma.MmProductsManualSetQuanity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int(11)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("DateEnd")
+                        .HasMaxLength(6)
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_end");
+
+                    b.Property<DateTime?>("DateStart")
+                        .HasMaxLength(6)
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_start");
+
+                    b.Property<int>("SetInStockQty")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("set_in_stock_qty");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)")
+                        .HasColumnName("sku");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex(new[] { "Sku" }, "ix_products_manual_set_quanitys_sku")
+                        .IsUnique()
+                        .HasDatabaseName("ix_mm_products_manual_set_quanitys_sku");
+
+                    b.ToTable("mm_products_manual_set_quanitys", (string)null);
+                });
+
+            modelBuilder.Entity("xmlParserASP.Entities.Gamma.MmProductsSetQuantityWhenMin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int(11)")
+                        .HasColumnName("id");
+
+                    b.Property<int>("MinQuantity")
+                        .HasColumnType("int")
+                        .HasColumnName("min_quantity");
+
+                    b.Property<int>("SetQuantity")
+                        .HasColumnType("int")
+                        .HasColumnName("set_quantity");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)")
+                        .HasColumnName("sku");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("Sku")
+                        .IsUnique()
+                        .HasDatabaseName("ix_mm_products_set_quantity_when_min_sku");
+
+                    b.ToTable("mm_products_set_quantity_when_min", (string)null);
+                });
+
             modelBuilder.Entity("xmlParserASP.Entities.Gamma.MmSupplier", b =>
                 {
                     b.Property<int>("SupplierId")
@@ -128,13 +233,13 @@ namespace xmlParserASP.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("picture_node");
 
-                    b.Property<string>("PicturePriceQuantityXlColumn")
-                        .HasColumnType("longtext")
-                        .HasColumnName("picture_price_quantity_xl_column");
-
                     b.Property<string>("PriceNode")
                         .HasColumnType("longtext")
                         .HasColumnName("price_node");
+
+                    b.Property<string>("PricePictureXlColumn")
+                        .HasColumnType("longtext")
+                        .HasColumnName("picture_price_quantity_xl_column");
 
                     b.Property<string>("ProductNode")
                         .HasColumnType("longtext")
@@ -196,6 +301,10 @@ namespace xmlParserASP.Migrations
                     b.Property<string>("QuantityNode")
                         .HasColumnType("longtext")
                         .HasColumnName("quantity_node");
+
+                    b.Property<string>("QuantityXlColumn")
+                        .HasColumnType("longtext")
+                        .HasColumnName("quantity_xl_column");
 
                     b.Property<string>("SettingName")
                         .IsRequired()
@@ -9572,111 +9681,6 @@ namespace xmlParserASP.Migrations
                         .HasName("PRIMARY");
 
                     b.ToTable("ng_zone_to_geo_zone", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsManualSetPrice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int(11)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateEnd")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_end");
-
-                    b.Property<DateTime?>("DateStart")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_start");
-
-                    b.Property<int>("SetInStockPrice")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("set_in_stock_price");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("varchar(7)")
-                        .HasColumnName("sku");
-
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex("Sku")
-                        .IsUnique()
-                        .HasDatabaseName("ix_products_manual_set_prices_sku");
-
-                    b.ToTable("products_manual_set_prices", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsManualSetQuanity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int(11)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateEnd")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_end");
-
-                    b.Property<DateTime?>("DateStart")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_start");
-
-                    b.Property<int>("SetInStockQty")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("set_in_stock_qty");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("varchar(7)")
-                        .HasColumnName("sku");
-
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex(new[] { "Sku" }, "ix_products_manual_set_quanitys_sku")
-                        .IsUnique()
-                        .HasDatabaseName("ix_products_manual_set_quanitys_sku");
-
-                    b.ToTable("products_manual_set_quanitys", (string)null);
-                });
-
-            modelBuilder.Entity("xmlParserASP.Entities.Gamma.ProductsSetQuantityWhenMin", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<int>("MinQuantity")
-                        .HasColumnType("int")
-                        .HasColumnName("min_quantity");
-
-                    b.Property<int>("SetQuantity")
-                        .HasColumnType("int")
-                        .HasColumnName("set_quantity");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("varchar(7)")
-                        .HasColumnName("sku");
-
-                    b.HasKey("Id")
-                        .HasName("pk_products_set_quantity_when_min");
-
-                    b.HasIndex("Sku")
-                        .IsUnique()
-                        .HasDatabaseName("ix_products_set_quantity_when_min_sku");
-
-                    b.ToTable("products_set_quantity_when_min", (string)null);
                 });
 #pragma warning restore 612, 618
         }

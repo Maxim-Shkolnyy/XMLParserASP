@@ -63,7 +63,7 @@ public class ProductsManualSetQuanitiesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Sku,SetInStockQty,DateStart,DateEnd")] ProductsManualSetQuanity productsManualSetQuanity)
+    public async Task<IActionResult> Create([Bind("Id,Sku,SetInStockQty,DateStart,DateEnd")] MmProductsManualSetQuanity productsManualSetQuanity)
     {
         if (ModelState.IsValid)
         {
@@ -95,7 +95,7 @@ public class ProductsManualSetQuanitiesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Sku,SetInStockQty,DateStart,DateEnd")] ProductsManualSetQuanity productsManualSetQuanity)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Sku,SetInStockQty,DateStart,DateEnd")] MmProductsManualSetQuanity productsManualSetQuanity)
     {
         if (id != productsManualSetQuanity.Id)
         {

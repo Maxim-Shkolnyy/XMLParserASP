@@ -16,9 +16,9 @@ public class DataContainerSingleton
         dc.SupplierXmlSetting = new MmSupplierXmlSetting();
         dc.SuppName = "";
         dc.StateMessages = new List<(string, string)>();
-        dc.ProductsManualSetPrices = new List<ProductsManualSetPrice>();
-        dc.ProductsManualSetQuanityList = new List<ProductsManualSetQuanity>();
-        dc.ProductsSetQuantityWhenMinList = new List<ProductsSetQuantityWhenMin>();
+        dc.ProductsManualSetPrices = new List<MmProductsManualSetPrice>();
+        dc.ProductsManualSetQuanityList = new List<MmProductsManualSetQuanity>();
+        dc.ProductsSetQuantityWhenMinList = new List<MmProductsSetQuantityWhenMin>();
         dc.SuppNameThatWasUpdatedList = new List<string>();
         dc.SuppliersList = new List<MmSupplier>();
         dc.SuppSettingList = new List<MmSupplierXmlSetting>();
