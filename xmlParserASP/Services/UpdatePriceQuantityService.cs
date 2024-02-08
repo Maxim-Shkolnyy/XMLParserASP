@@ -471,126 +471,35 @@ public class UpdatePriceQuantityService
     private void GetFeronXlValues(string ftpHost, string ftpUser, string ftpPassword)
     {
         string? remoteFilePath = _dc.SupplierXmlSetting.Path;
+        if (remoteFilePath == null)
+        {
+            _dc.StateMessages.Add(($"Error_Excel file {_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} not found", "red"));
+            return;
+        }
+
+        if (_dc.CurrentTableDbColumnToUpdate == "Quantity" &
+            _dc.SupplierXmlSetting.SettingName == "Feron_excel" & _dc.XmlModelQuantityList.Count > 0)
+        {
+            return;
+        }
+
         string? modelColumnNumber = _dc.SupplierXmlSetting.ModelXlColumn;
         string? priceColumn = _dc.SupplierXmlSetting.PricePictureXlColumn;
 
         string? quantityColumn = _dc.SupplierXmlSetting.QuantityXlColumn;
         string? boxColumn = _dc.SupplierXmlSetting.QtyInBoxColumnNumber;
+        string localFilePath = Path.GetTempFileName();
+        localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
 
+        string filePath = Uri.EscapeUriString(remoteFilePath);
 
         if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
         {
-            //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
-
-            if (remoteFilePath == null)
-            {
-                _dc.StateMessages.Add(($"Error_Excel file {_dc.SuppName} not found", "red"));
-                return;
-            }
-
-            string localFilePath = Path.GetTempFileName();
-            localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
-            string filePath = Uri.EscapeUriString(remoteFilePath);
             WebClient client = new();
             client.DownloadFile(filePath, localFilePath);
-
-            using (var vb = new XLWorkbook(localFilePath))
-            {
-                var worksheet = vb.Worksheet(1);
-
-                //int modelColumnNumber = GetColumnIndex(worksheet, 1, modelColumn);
-                //int priceQtyColumnNumber = GetColumnIndex(worksheet, 1, priceQuantityColumn);
-
-                string? model = "";
-                string? quantity = "";
-                string? price = "";
-                string? unitsInBox = "";
-                if (_dc.CurrentTableDbColumnToUpdate == "Quantity" &
-                    _dc.SupplierXmlSetting.SettingName == "Feron_excel" & _dc.XmlModelQuantityList.Count > 0)
-                {
-                    return;
-                }
-
-                _dc.XmlModelQuantityList.Clear();
-
-                foreach (var row in worksheet.RowsUsed())
-                {
-                    model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
-                    if (string.IsNullOrEmpty(model))
-                    {
-                        continue;
-                    }
-
-                    if (_dc.WhatToUpdate == 1)
-                    {
-                        price = row.Cell(priceColumn).Value.ToString();
-
-                        if (!_dc.XmlModelPriceList.TryAdd(model, price))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                    }
-
-                    if (_dc.WhatToUpdate == 2)
-                    {
-                        quantity = row.Cell(quantityColumn).Value.ToString();
-                        unitsInBox = row.Cell(boxColumn).Value.ToString();
-
-
-                        if (quantity.Contains('>') & quantity.Contains("ящик"))
-                        {
-                            quantity = unitsInBox;
-                        }
-                        else
-                        {
-                            if (int.TryParse(quantity, out var quantityNumber) &&
-                                int.TryParse(unitsInBox, out var unitsInBoxNumber))
-                            {
-                                quantity = (quantityNumber * unitsInBoxNumber).ToString();
-                            }
-                            else
-                            {
-                                quantity = "0";
-                            }
-                        }
-
-                        if (!_dc.XmlModelQuantityList.TryAdd(model, quantity))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                    }
-
-                    if (_dc.WhatToUpdate == 3 && _dc.XmlModelPriceList.Count == 0)  //only if XmlModelPriceList not filled, we try to take new values
-                    {
-                        price = row.Cell(priceColumn).Value.ToString();
-                        quantity = row.Cell(quantityColumn).Value.ToString();
-                        unitsInBox = row.Cell(boxColumn).Value.ToString();
-
-                        if (quantity.Contains('>') & quantity.Contains("ящик"))
-                        {
-                            quantity = unitsInBox;
-                        }
-                        else
-                        {
-                            if (int.TryParse(quantity, out var quantityNumber) &&
-                                int.TryParse(unitsInBox, out var unitsInBoxNumber))
-                            {
-                                quantity = (quantityNumber * unitsInBoxNumber).ToString();
-                            }
-                            else
-                            {
-                                quantity = "0";
-                            }
-                        }
-                        if (!_dc.XmlModelPriceList.TryAdd(model, price))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-
-                        if (!_dc.XmlModelQuantityList.TryAdd(model, quantity))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                    }
-                }
-            }
         }
         else
         {
-            string filePath = Uri.EscapeUriString(remoteFilePath);
-
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{filePath}"));
             request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
             request.Method = WebRequestMethods.Ftp.ListDirectory;
@@ -601,6 +510,8 @@ public class UpdatePriceQuantityService
 
             string[] files = reader.ReadToEnd()
                 .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
 
             if (files.Length > 0)
             {
@@ -614,43 +525,95 @@ public class UpdatePriceQuantityService
                     WebClient ftpClient = new();
                     ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
                     ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
-
-                    // Обробка файлу Excel
-                    using (var vb = new XLWorkbook(newestFileName))
-                    {
-                        var vs = vb.Worksheet(1);
-
-                        string? model = null;
-                        string? priceOrQuantityColumn = null;
-                        _dc.XmlModelQuantityList.Clear();
-
-                        foreach (var row in vs.RowsUsed())
-                        {
-                            model = row.Cell(_dc.SupplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
-                            if (string.IsNullOrEmpty(model))
-                            {
-                                continue;
-                            }
-
-                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PricePictureXlColumn).Value
-                                .ToString();
-
-                            if (!_dc.XmlModelQuantityList.TryAdd(model, priceOrQuantityColumn))
-                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                        }
-                    }
-
-                    // Видаляємо завантажений файл
-                    File.Delete(newestFileName);
-                }
-                else
-                {
-                    _dc.StateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
                 }
             }
-            else
+        }
+
+        using (var vb = new XLWorkbook(localFilePath))
+        {
+            var worksheet = vb.Worksheet(1);
+            
+            string? model = "";
+            string? quantity = "";
+            string? price = "";
+            string? unitsInBox = "";
+
+            _dc.XmlModelQuantityList.Clear();
+
+            foreach (var row in worksheet.RowsUsed())
             {
-                _dc.StateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
+                model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
+                if (string.IsNullOrEmpty(model))
+                {
+                    continue;
+                }
+
+                if (_dc.WhatToUpdate == 1)
+                {
+                    price = row.Cell(priceColumn).Value.ToString();
+
+                    if (!_dc.XmlModelPriceList.TryAdd(model, price))
+                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                    continue;
+                }
+
+                if (_dc.WhatToUpdate == 2)
+                {
+                    quantity = row.Cell(quantityColumn).Value.ToString();
+                    unitsInBox = row.Cell(boxColumn).Value.ToString();
+
+
+                    if (quantity.Contains('>') & quantity.Contains("ящик"))
+                    {
+                        quantity = unitsInBox;
+                    }
+                    //else  // у ферона цифра у колонці Залишки означає штуки, тобто залишилось менше ящика
+                    //{
+                    //    if (int.TryParse(quantity, out var quantityNumber) &&
+                    //        int.TryParse(unitsInBox, out var unitsInBoxNumber))
+                    //    {
+                    //        quantity = (quantityNumber * unitsInBoxNumber).ToString();
+                    //    }
+                    //    else
+                    //    {
+                    //        quantity = "0";
+                    //    }
+                    //}
+
+                    if (!_dc.XmlModelQuantityList.TryAdd(model, quantity))
+                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+
+                    continue;
+                }
+
+                if (_dc.WhatToUpdate == 3 && _dc.XmlModelPriceList.Count == 0)  //only if XmlModelPriceList not filled, we try to take new values
+                {
+                    price = row.Cell(priceColumn).Value.ToString();
+                    quantity = row.Cell(quantityColumn).Value.ToString();
+                    unitsInBox = row.Cell(boxColumn).Value.ToString();
+
+                    if (quantity.Contains('>') & quantity.Contains("ящик"))
+                    {
+                        quantity = unitsInBox;
+                    }
+                    else
+                    {
+                        if (int.TryParse(quantity, out var quantityNumber) &&
+                            int.TryParse(unitsInBox, out var unitsInBoxNumber))
+                        {
+                            quantity = (quantityNumber * unitsInBoxNumber).ToString();
+                        }
+                        else
+                        {
+                            quantity = "0";
+                        }
+                    }
+                    if (!_dc.XmlModelPriceList.TryAdd(model, price))
+                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+
+                    if (!_dc.XmlModelQuantityList.TryAdd(model, quantity))
+                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                }
             }
         }
     }
