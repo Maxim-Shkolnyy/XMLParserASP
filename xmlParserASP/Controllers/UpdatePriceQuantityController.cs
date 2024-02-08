@@ -3,6 +3,7 @@ using xmlParserASP.Presistant;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Services;
+using xmlParserASP.Services.UpdateServices;
 
 
 namespace xmlParserASP.Controllers;
@@ -16,13 +17,15 @@ public class UpdatePriceQuantityController : Controller
     private readonly List<MmSupplierXmlSetting> _settingsList = new();
     private List<(string, string)>? updateAllPrices = new();
     private List<(string, string)>? updateQuantity = new();
-    public UpdatePriceQuantityController(GammaContext db, MmSupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel)
+    private readonly DataContainer _dc;
+    public UpdatePriceQuantityController(GammaContext db, MmSupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel, DataContainerSingleton dcS)
     {
         _db = db;
         _setting = setting;
         _updatePriceQuantityService = updatePriceQuantityService;
         _priceQuantityViewModel = priceQuantityViewModel;
         _settingsList = _db.MmSupplierXmlSettings.ToList();
+        _dc = dcS.Instance;
 
     }
     public IActionResult Index()
@@ -52,8 +55,9 @@ public class UpdatePriceQuantityController : Controller
 
         List<(string, string)>? commonMessagesList = new();
 
-        if (QuantityList.Count == 0)
+        if (QuantityList.Count == 0) //only prices. WhatToUpdate = 1
         {
+            _dc.WhatToUpdate = 1;
             foreach (var suppSetting in PriceList)
             {
                 try
@@ -68,8 +72,9 @@ public class UpdatePriceQuantityController : Controller
                 }
             }
         }
-        else if (PriceList.Count == 0)
+        else if (PriceList.Count == 0) //only quantity. WhatToUpdate = 2
         {
+            _dc.WhatToUpdate = 2;
             foreach (var suppSetting in QuantityList)
             {
                 try
@@ -84,14 +89,16 @@ public class UpdatePriceQuantityController : Controller
                 }
             }
         }
-        else if (PriceList.Count > 0 & QuantityList.Count > 0)
+        else if (PriceList.Count > 0 & QuantityList.Count > 0) //both price and quantity. WhatToUpdate = 3
         {
+            _dc.WhatToUpdate = 3;
+
             PriceList.Sort();
             QuantityList.Sort();
-            
+
             int maxId = _settingsList.Select(m => m.SupplierXmlSettingId).ToList().Max();
 
-            for (int i = 1; i < maxId; i++)
+            for (int i = 1; i < maxId + 1; i++)
             {
                 if (PriceList.Contains(i))
                 {
