@@ -122,12 +122,9 @@ public class UpdatePriceQuantityService
                 GetExcelValues("", "", "");
             }
         }
-        else if (_dc.SuppName == "Feron")
+        else if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
         {
-            if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
-            {
-                GetExcelValues("", "", "");
-            }
+            GetExcelValues("", "", "");
         }
         else
         {
@@ -156,7 +153,6 @@ public class UpdatePriceQuantityService
             _dc.XmlModelPriceList.Clear();
             _dc.XmlModelQuantityList.Clear();
         }
-
 
         return stateMessages;
     }
@@ -536,7 +532,7 @@ public class UpdatePriceQuantityService
         using (var vb = new XLWorkbook(localFilePath))
         {
             var worksheet = vb.Worksheet(1);
-            
+
             string? model = "";
             string? quantity = "";
             decimal price = 0;
@@ -555,7 +551,7 @@ public class UpdatePriceQuantityService
                 if (_dc.WhatToUpdate == 1)
                 {
                     if (row.Cell(priceColumn).DataType == XLDataType.Number)
-                    { 
+                    {
                         price = row.Cell(priceColumn).GetValue<decimal>();
                     }
                     else
@@ -572,7 +568,7 @@ public class UpdatePriceQuantityService
                 {
                     quantity = row.Cell(quantityColumn).Value.ToString();
 
-                    if(_dc.SupplierXmlSetting.SettingName == "Feron_excel")
+                    if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
                     {
                         unitsInBox = row.Cell(boxColumn).Value.ToString();
 
@@ -582,7 +578,7 @@ public class UpdatePriceQuantityService
                             quantity = unitsInBox;
                         }
                     }
-                    
+
                     //else  // у ферона цифра у колонці Залишки означає штуки, тобто залишилось менше ящика
                     //{
                     //    if (int.TryParse(quantity, out var quantityNumber) &&
@@ -739,38 +735,47 @@ public class UpdatePriceQuantityService
             }
             else
             {
-                if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice) && dbPrice != xmlPrice)  
+                if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice))
                 {
-                    try
+                    if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                     {
-                        if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
-                        {
-                            xmlPrice = (xmlPrice + (xmlPrice * 0.4m)) * 50m;
-                        }
-                        
-                        if (dbPrice != xmlPrice)
+                        xmlPrice = (xmlPrice + (xmlPrice * 0.4m)) * 50m;
+                    }
+
+                    if (dbPrice != xmlPrice)
+                    {
+                        try
                         {
                             if (dbPrice < xmlPrice)
                             {
                                 if (productToUpdate != null)
                                 {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = xmlPrice });
-                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                        .Update(x => new NgProduct { Price = xmlPrice });
+                                    _dc.StateMessages.Add((
+                                        $"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}",
+                                        "purple"));
                                 }
                             }
                             else
                             {
                                 if (productToUpdate != null)
                                 {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = xmlPrice });
-                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                        .Update(x => new NgProduct { Price = xmlPrice });
+                                    _dc.StateMessages.Add((
+                                        $"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}",
+                                        "blue"));
                                 }
                             }
+
                         }
-                    }
-                    catch (Exception)
-                    {
-                        _dc.StateMessages.Add(($"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ", "red"));
+                        catch (Exception)
+                        {
+                            _dc.StateMessages.Add((
+                                $"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ",
+                                "red"));
+                        }
                     }
                 }
                 else
