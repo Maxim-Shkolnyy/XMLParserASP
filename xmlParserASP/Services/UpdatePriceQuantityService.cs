@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Net;
@@ -113,19 +114,19 @@ public class UpdatePriceQuantityService
         {
             if (_dc.CurrentTableDbColumnToUpdate == "Price" & _dc.SupplierXmlSetting.SettingName == "Kanlux_price_XL")
             {
-                GetExcelValues("", "", "", _dc.SupplierXmlSetting.Path);
+                GetExcelValues("", "", "");
             }
 
             if (_dc.CurrentTableDbColumnToUpdate == "Quantity" & _dc.SupplierXmlSetting.SettingName == "Kanlux_qty_XL")
             {
-                GetExcelValues("", "", "", _dc.SupplierXmlSetting.Path);
+                GetExcelValues("", "", "");
             }
         }
         else if (_dc.SuppName == "Feron")
         {
             if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
             {
-                GetFeronXlValues("", "", "");
+                GetExcelValues("", "", "");
             }
         }
         else
@@ -230,13 +231,15 @@ public class UpdatePriceQuantityService
                     if (_dc.CurrentTableDbColumnToUpdate == "Price")
                     {
                         priceNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
+                        decimal.TryParse(priceNode, out var price);
+
                         if (priceNode == null)
                         {
                             _dc.StateMessages.Add((
                                 $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                                 "red"));
                         }
-                        _dc.XmlModelPriceList.TryAdd(model, priceNode);
+                        _dc.XmlModelPriceList.TryAdd(model, price);
                     }
                     else
                     {
@@ -299,13 +302,14 @@ public class UpdatePriceQuantityService
                 if (_dc.CurrentTableDbColumnToUpdate == "Price")
                 {
                     priceNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
+                    decimal.TryParse(priceNode, out var price);
                     if (priceNode == null)
                     {
                         _dc.StateMessages.Add((
                             $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml",
                             "red"));
                     }
-                    _dc.XmlModelPriceList.TryAdd(model, priceNode);
+                    _dc.XmlModelPriceList.TryAdd(model, price);
                 }
 
                 if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
@@ -340,135 +344,135 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath) //, int modelColumnNumber, int priceQuantityColumn
-    {
-        if (!int.TryParse(_dc.SupplierXmlSetting.ModelXlColumn, out var modelColumnNumber))
-        {
-            _dc.StateMessages.Add(($"1_{_dc.SuppName} model column number in excel file was not converted successful, model column set to 1",
-                "red"));
-            modelColumnNumber = 1;
-        }
+    //private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath) //, int modelColumnNumber, int priceQuantityColumn
+    //{
+    //    if (!int.TryParse(_dc.SupplierXmlSetting.ModelXlColumn, out var modelColumnNumber))
+    //    {
+    //        _dc.StateMessages.Add(($"1_{_dc.SuppName} model column number in excel file was not converted successful, model column set to 1",
+    //            "red"));
+    //        modelColumnNumber = 1;
+    //    }
 
-        if (!int.TryParse(_dc.SupplierXmlSetting.PricePictureXlColumn, out var priceColumnNumber))
-        {
-            _dc.StateMessages.Add((
-                $"1_{_dc.SuppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
-                "red"));
-            priceColumnNumber = 2;
-        }
-        if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
-        {
-            //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
+    //    if (!int.TryParse(_dc.SupplierXmlSetting.PricePictureXlColumn, out var priceColumnNumber))
+    //    {
+    //        _dc.StateMessages.Add((
+    //            $"1_{_dc.SuppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
+    //            "red"));
+    //        priceColumnNumber = 2;
+    //    }
+    //    if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
+    //    {
+    //        //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
 
-            if (remoteFilePath != null)
-            {
-                // Завантаження файлу з URL
-                string localFilePath = Path.GetTempFileName();
-                localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
-                string filePath = Uri.EscapeUriString(remoteFilePath);
-                WebClient client = new();
-                client.DownloadFile(filePath, localFilePath);
+    //        if (remoteFilePath != null)
+    //        {
+    //            // Завантаження файлу з URL
+    //            string localFilePath = Path.GetTempFileName();
+    //            localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
+    //            string filePath = Uri.EscapeUriString(remoteFilePath);
+    //            WebClient client = new();
+    //            client.DownloadFile(filePath, localFilePath);
 
-                using (var vb = new XLWorkbook(localFilePath))
-                {
-                    var worksheet = vb.Worksheet(1);
+    //            using (var vb = new XLWorkbook(localFilePath))
+    //            {
+    //                var worksheet = vb.Worksheet(1);
 
-                    //int modelColumnNumber = GetColumnIndex(worksheet, 1, modelColumn);
-                    //int priceQtyColumnNumber = GetColumnIndex(worksheet, 1, priceQuantityColumn);
+    //                //int modelColumnNumber = GetColumnIndex(worksheet, 1, modelColumn);
+    //                //int priceQtyColumnNumber = GetColumnIndex(worksheet, 1, priceQuantityColumn);
 
-                    string? model = null;
-                    string? priceOrQuantityColumn = null;
-                    _dc.XmlModelPriceList.Clear();
+    //                string? model = null;
+    //                string? priceOrQuantityColumn = null;
+    //                _dc.XmlModelPriceList.Clear();
 
-                    foreach (var row in worksheet.RowsUsed())
-                    {
-                        model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
-                        if (string.IsNullOrEmpty(model))
-                        {
-                            continue;
-                        }
+    //                foreach (var row in worksheet.RowsUsed())
+    //                {
+    //                    model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
+    //                    if (string.IsNullOrEmpty(model))
+    //                    {
+    //                        continue;
+    //                    }
 
-                        priceOrQuantityColumn = row.Cell(priceColumnNumber).Value.ToString();
+    //                    priceOrQuantityColumn = row.Cell(priceColumnNumber).Value.ToString();
 
-                        if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                    }
-                }
-            }
-            else
-            {
-                _dc.StateMessages.Add(($"error_Excel file {_dc.SuppName} not found", "red"));
-            }
-        }
-        else
-        {
-            // З'єднання з FTP для отримання списку файлів з екрануванням спецсиволів у імені файла
-            string filePath = Uri.EscapeUriString(remoteFilePath);
+    //                    if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+    //                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            _dc.StateMessages.Add(($"error_Excel file {_dc.SuppName} not found", "red"));
+    //        }
+    //    }
+    //    else
+    //    {
+    //        // З'єднання з FTP для отримання списку файлів з екрануванням спецсиволів у імені файла
+    //        string filePath = Uri.EscapeUriString(remoteFilePath);
 
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{filePath}"));
-            request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-            request.Method = WebRequestMethods.Ftp.ListDirectory;
+    //        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{filePath}"));
+    //        request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+    //        request.Method = WebRequestMethods.Ftp.ListDirectory;
 
-            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-            Stream responseStream = response.GetResponseStream();
-            StreamReader reader = new(responseStream);
+    //        FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+    //        Stream responseStream = response.GetResponseStream();
+    //        StreamReader reader = new(responseStream);
 
-            string[] files = reader.ReadToEnd()
-                .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+    //        string[] files = reader.ReadToEnd()
+    //            .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-            if (files.Length > 0)
-            {
-                string? newestFileName = files
-                    .Where(f => f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
-                    .OrderByDescending(f => f).FirstOrDefault();
+    //        if (files.Length > 0)
+    //        {
+    //            string? newestFileName = files
+    //                .Where(f => f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+    //                .OrderByDescending(f => f).FirstOrDefault();
 
-                if (!string.IsNullOrEmpty(newestFileName))
-                {
-                    // Завантаження найновішого файлу
-                    WebClient ftpClient = new();
-                    ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-                    ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
+    //            if (!string.IsNullOrEmpty(newestFileName))
+    //            {
+    //                // Завантаження найновішого файлу
+    //                WebClient ftpClient = new();
+    //                ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+    //                ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
 
-                    // Обробка файлу Excel
-                    using (var vb = new XLWorkbook(newestFileName))
-                    {
-                        var vs = vb.Worksheet(1);
+    //                // Обробка файлу Excel
+    //                using (var vb = new XLWorkbook(newestFileName))
+    //                {
+    //                    var vs = vb.Worksheet(1);
 
-                        string? model = null;
-                        string? priceOrQuantityColumn = null;
-                        _dc.XmlModelPriceList.Clear();
+    //                    string? model = null;
+    //                    string? priceOrQuantityColumn = null;
+    //                    _dc.XmlModelPriceList.Clear();
 
-                        foreach (var row in vs.RowsUsed())
-                        {
-                            model = row.Cell(_dc.SupplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
-                            if (string.IsNullOrEmpty(model))
-                            {
-                                continue;
-                            }
+    //                    foreach (var row in vs.RowsUsed())
+    //                    {
+    //                        model = row.Cell(_dc.SupplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
+    //                        if (string.IsNullOrEmpty(model))
+    //                        {
+    //                            continue;
+    //                        }
 
-                            priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PricePictureXlColumn).Value
-                                .ToString();
+    //                        priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PricePictureXlColumn).Value
+    //                            .ToString();
 
-                            if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                        }
-                    }
-                    // Видаляємо завантажений файл
-                    File.Delete(newestFileName);
-                }
-                else
-                {
-                    _dc.StateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
-                }
-            }
-            else
-            {
-                _dc.StateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
-            }
-        }
-    }
+    //                        if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
+    //                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+    //                    }
+    //                }
+    //                // Видаляємо завантажений файл
+    //                File.Delete(newestFileName);
+    //            }
+    //            else
+    //            {
+    //                _dc.StateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
+    //            }
+    //        }
+    //        else
+    //        {
+    //            _dc.StateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
+    //        }
+    //    }
+    //}
 
-    private void GetFeronXlValues(string ftpHost, string ftpUser, string ftpPassword)
+    private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword)
     {
         string? remoteFilePath = _dc.SupplierXmlSetting.Path;
         if (remoteFilePath == null)
@@ -478,7 +482,7 @@ public class UpdatePriceQuantityService
         }
 
         if (_dc.CurrentTableDbColumnToUpdate == "Quantity" &
-            _dc.SupplierXmlSetting.SettingName == "Feron_excel" & _dc.XmlModelQuantityList.Count > 0)
+            _dc.WhatToUpdate == 3 & _dc.XmlModelQuantityList.Count > 0)
         {
             return;
         }
@@ -535,7 +539,7 @@ public class UpdatePriceQuantityService
             
             string? model = "";
             string? quantity = "";
-            string? price = "";
+            decimal price = 0;
             string? unitsInBox = "";
 
             _dc.XmlModelQuantityList.Clear();
@@ -550,7 +554,14 @@ public class UpdatePriceQuantityService
 
                 if (_dc.WhatToUpdate == 1)
                 {
-                    price = row.Cell(priceColumn).Value.ToString();
+                    if (row.Cell(priceColumn).DataType == XLDataType.Number)
+                    { 
+                        price = row.Cell(priceColumn).GetValue<decimal>();
+                    }
+                    else
+                    {
+                        price = 1000000;
+                    }
 
                     if (!_dc.XmlModelPriceList.TryAdd(model, price))
                         _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
@@ -560,13 +571,18 @@ public class UpdatePriceQuantityService
                 if (_dc.WhatToUpdate == 2)
                 {
                     quantity = row.Cell(quantityColumn).Value.ToString();
-                    unitsInBox = row.Cell(boxColumn).Value.ToString();
 
-
-                    if (quantity.Contains('>') & quantity.Contains("ящик"))
+                    if(_dc.SupplierXmlSetting.SettingName == "Feron_excel")
                     {
-                        quantity = unitsInBox;
+                        unitsInBox = row.Cell(boxColumn).Value.ToString();
+
+
+                        if (quantity.Contains('>') & quantity.Contains("ящик"))
+                        {
+                            quantity = unitsInBox;
+                        }
                     }
+                    
                     //else  // у ферона цифра у колонці Залишки означає штуки, тобто залишилось менше ящика
                     //{
                     //    if (int.TryParse(quantity, out var quantityNumber) &&
@@ -588,26 +604,27 @@ public class UpdatePriceQuantityService
 
                 if (_dc.WhatToUpdate == 3 && _dc.XmlModelPriceList.Count == 0)  //only if XmlModelPriceList not filled, we try to take new values
                 {
-                    price = row.Cell(priceColumn).Value.ToString();
-                    quantity = row.Cell(quantityColumn).Value.ToString();
-                    unitsInBox = row.Cell(boxColumn).Value.ToString();
-
-                    if (quantity.Contains('>') & quantity.Contains("ящик"))
+                    if (row.Cell(priceColumn).DataType == XLDataType.Number)
                     {
-                        quantity = unitsInBox;
+                        price = row.Cell(priceColumn).GetValue<decimal>();
                     }
                     else
                     {
-                        if (int.TryParse(quantity, out var quantityNumber) &&
-                            int.TryParse(unitsInBox, out var unitsInBoxNumber))
+                        price = 1000000;
+                    }
+
+                    quantity = row.Cell(quantityColumn).Value.ToString();
+
+                    if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
+                    {
+                        unitsInBox = row.Cell(boxColumn).Value.ToString();
+
+                        if (quantity.Contains('>') & quantity.Contains("ящик"))
                         {
-                            quantity = (quantityNumber * unitsInBoxNumber).ToString();
-                        }
-                        else
-                        {
-                            quantity = "0";
+                            quantity = unitsInBox;
                         }
                     }
+
                     if (!_dc.XmlModelPriceList.TryAdd(model, price))
                         _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
 
@@ -700,13 +717,20 @@ public class UpdatePriceQuantityService
 
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
+            // todo брати з бази даних уже decimal
+            if (!decimal.TryParse(dbModel.Item3, out decimal dbPrice))
+            {
+                _dc.StateMessages.Add(($"Error. Can not take price from DB {_dc.SuppName} {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}.", "red"));
+            }
+
+
             var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
             if (manualPriceProductList.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
             {
                 var manualValue = manualPriceProductList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
 
-                if (decimal.TryParse(dbModel.Item3, out decimal currentDbManualPrice) && currentDbManualPrice != manualValue)  // remove this if tsatement, to see all manual prices added
+                if (dbPrice != manualValue)  // remove this if statement, to see all manual prices added
                 {
                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = manualValue });
 
@@ -715,64 +739,38 @@ public class UpdatePriceQuantityService
             }
             else
             {
-                if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlValue) && dbModel.Item3 != xmlValue)
+                if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice) && dbPrice != xmlPrice)  
                 {
-                    decimal dbValue = 0;
-                    decimal currentXmlValue = 0;
-
                     try
                     {
-                        if (dbModel.Item3.Contains('.'))
-                        {
-                            dbValue = Convert.ToDecimal(dbModel.Item3.Replace('.', ','));
-                        }
-                        else
-                        {
-                            dbValue = Convert.ToDecimal(dbModel.Item3);
-                        }
-
-                        if (xmlValue.Contains('.'))
-                        {
-                            currentXmlValue = Convert.ToDecimal(xmlValue.Replace('.', ','));
-                        }
-                        else
-                        {
-                            currentXmlValue = Convert.ToDecimal(xmlValue);
-                        }
-
                         if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                         {
-                            currentXmlValue = (currentXmlValue + (currentXmlValue * 0.4m)) * 50m;
+                            xmlPrice = (xmlPrice + (xmlPrice * 0.4m)) * 50m;
                         }
-
-
-                        var normalizedDbValue = Math.Round(dbValue, 2);
-                        var normalizedXmlValue = Math.Round(currentXmlValue, 2);
-
-                        if (normalizedDbValue != normalizedXmlValue)
+                        
+                        if (dbPrice != xmlPrice)
                         {
-                            if (normalizedDbValue < normalizedXmlValue)
+                            if (dbPrice < xmlPrice)
                             {
                                 if (productToUpdate != null)
                                 {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price increased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "purple"));
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = xmlPrice });
+                                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
                                 }
                             }
                             else
                             {
                                 if (productToUpdate != null)
                                 {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = normalizedXmlValue });
-                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ price decreased. Old - new:_{dbModel.Item3}_{currentXmlValue}", "blue"));
+                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = xmlPrice });
+                                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
                                 }
                             }
                         }
                     }
                     catch (Exception)
                     {
-
-                        _dc.StateMessages.Add(($"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlValue} ", "red"));
+                        _dc.StateMessages.Add(($"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ", "red"));
                     }
                 }
                 else

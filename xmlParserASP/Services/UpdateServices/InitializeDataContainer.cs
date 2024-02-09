@@ -22,7 +22,7 @@ public class DataContainerSingleton
         dc.SuppNameThatWasUpdatedList = new List<string>();
         dc.SuppliersList = new List<MmSupplier>();
         dc.SuppSettingList = new List<MmSupplierXmlSetting>();
-        dc.XmlModelPriceList = new Dictionary<string, string>();
+        dc.XmlModelPriceList = new Dictionary<string, decimal>();
 
         return dc;
     }
