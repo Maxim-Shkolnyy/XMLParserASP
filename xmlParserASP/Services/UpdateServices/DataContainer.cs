@@ -28,5 +28,6 @@ public class DataContainer
     public List<ProductNamesListModel> NamesOfProducts { get; set; } = new();
     public List<ProductMinInfoModel>? Products { get; set; }
     public int WhatToUpdate { get; set; } = 0;
+    public List<string> SkusToUpdate { get; set; } = new();
 
 }

@@ -54,6 +54,7 @@ public class UpdatePriceQuantityController : Controller
         }
 
         List<(string, string)>? commonMessagesList = new();
+        
 
         if (QuantityList.Count == 0) //only prices. WhatToUpdate = 1
         {
@@ -62,7 +63,9 @@ public class UpdatePriceQuantityController : Controller
             {
                 try
                 {
-                    updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting, "Price");
+                    _dc.CurrentTableDbColumnToUpdate = "Price";
+                    updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting);
+                    
                     commonMessagesList.AddRange(updateAllPrices);
                 }
                 catch (Exception ex)
@@ -79,7 +82,9 @@ public class UpdatePriceQuantityController : Controller
             {
                 try
                 {
-                    updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting, "Quantity");
+                    _dc.CurrentTableDbColumnToUpdate = "Quantity";
+                    updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting);
+                    
                     commonMessagesList.AddRange(updateQuantity);
                 }
                 catch (Exception ex)
@@ -104,7 +109,9 @@ public class UpdatePriceQuantityController : Controller
                 {
                     try
                     {
-                        updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i, "Price");
+                        _dc.CurrentTableDbColumnToUpdate = "Price";
+                        updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i);
+                        
                         commonMessagesList.AddRange(updateAllPrices);
                     }
                     catch (Exception ex)
@@ -117,7 +124,9 @@ public class UpdatePriceQuantityController : Controller
                 {
                     try
                     {
-                        updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i, "Quantity");
+                        _dc.CurrentTableDbColumnToUpdate = "Quantity";
+                        updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i);
+                        
                         commonMessagesList.AddRange(updateQuantity);
                     }
                     catch (Exception ex)

@@ -23,15 +23,13 @@ public class UpdatePriceQuantityService
         _dc = dcS.Instance;
     }
 
-    public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(int settingsId, string tableDbColumnToUpdate)
+    public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(int settingsId)
     {
         if (_dc.SuppliersList.Count == 0)
         {
             _dc.SuppliersList = _dbContextGamma.MmSuppliers.ToList();
             _dc.SuppSettingList = _dbContextGamma.MmSupplierXmlSettings.ToList();
         }
-
-        _dc.CurrentTableDbColumnToUpdate = tableDbColumnToUpdate;
 
         #region Get current values from DB and add them to new '_dc.DbCodeModelPriceList' on each iteration
 
@@ -147,7 +145,7 @@ public class UpdatePriceQuantityService
         var stateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
 
         _dc.StateMessages.Clear();
-        if (tableDbColumnToUpdate == "Quantity")
+        if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
         {
             _dc.DbCodeModelPriceList.Clear();
             _dc.XmlModelPriceList.Clear();
@@ -340,133 +338,7 @@ public class UpdatePriceQuantityService
         }
     }
 
-    //private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword, string remoteFilePath) //, int modelColumnNumber, int priceQuantityColumn
-    //{
-    //    if (!int.TryParse(_dc.SupplierXmlSetting.ModelXlColumn, out var modelColumnNumber))
-    //    {
-    //        _dc.StateMessages.Add(($"1_{_dc.SuppName} model column number in excel file was not converted successful, model column set to 1",
-    //            "red"));
-    //        modelColumnNumber = 1;
-    //    }
-
-    //    if (!int.TryParse(_dc.SupplierXmlSetting.PricePictureXlColumn, out var priceColumnNumber))
-    //    {
-    //        _dc.StateMessages.Add((
-    //            $"1_{_dc.SuppName} price or quantity column number in excel file was not converted successful, price or quantity column set to 2",
-    //            "red"));
-    //        priceColumnNumber = 2;
-    //    }
-    //    if (string.IsNullOrEmpty(ftpHost) || string.IsNullOrEmpty(ftpUser) || string.IsNullOrEmpty(ftpPassword))
-    //    {
-    //        //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
-
-    //        if (remoteFilePath != null)
-    //        {
-    //            // Завантаження файлу з URL
-    //            string localFilePath = Path.GetTempFileName();
-    //            localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
-    //            string filePath = Uri.EscapeUriString(remoteFilePath);
-    //            WebClient client = new();
-    //            client.DownloadFile(filePath, localFilePath);
-
-    //            using (var vb = new XLWorkbook(localFilePath))
-    //            {
-    //                var worksheet = vb.Worksheet(1);
-
-    //                //int modelColumnNumber = GetColumnIndex(worksheet, 1, modelColumn);
-    //                //int priceQtyColumnNumber = GetColumnIndex(worksheet, 1, priceQuantityColumn);
-
-    //                string? model = null;
-    //                string? priceOrQuantityColumn = null;
-    //                _dc.XmlModelPriceList.Clear();
-
-    //                foreach (var row in worksheet.RowsUsed())
-    //                {
-    //                    model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
-    //                    if (string.IsNullOrEmpty(model))
-    //                    {
-    //                        continue;
-    //                    }
-
-    //                    priceOrQuantityColumn = row.Cell(priceColumnNumber).Value.ToString();
-
-    //                    if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-    //                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-    //                }
-    //            }
-    //        }
-    //        else
-    //        {
-    //            _dc.StateMessages.Add(($"error_Excel file {_dc.SuppName} not found", "red"));
-    //        }
-    //    }
-    //    else
-    //    {
-    //        // З'єднання з FTP для отримання списку файлів з екрануванням спецсиволів у імені файла
-    //        string filePath = Uri.EscapeUriString(remoteFilePath);
-
-    //        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"ftp://{ftpHost}/{filePath}"));
-    //        request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-    //        request.Method = WebRequestMethods.Ftp.ListDirectory;
-
-    //        FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-    //        Stream responseStream = response.GetResponseStream();
-    //        StreamReader reader = new(responseStream);
-
-    //        string[] files = reader.ReadToEnd()
-    //            .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-    //        if (files.Length > 0)
-    //        {
-    //            string? newestFileName = files
-    //                .Where(f => f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
-    //                .OrderByDescending(f => f).FirstOrDefault();
-
-    //            if (!string.IsNullOrEmpty(newestFileName))
-    //            {
-    //                // Завантаження найновішого файлу
-    //                WebClient ftpClient = new();
-    //                ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-    //                ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
-
-    //                // Обробка файлу Excel
-    //                using (var vb = new XLWorkbook(newestFileName))
-    //                {
-    //                    var vs = vb.Worksheet(1);
-
-    //                    string? model = null;
-    //                    string? priceOrQuantityColumn = null;
-    //                    _dc.XmlModelPriceList.Clear();
-
-    //                    foreach (var row in vs.RowsUsed())
-    //                    {
-    //                        model = row.Cell(_dc.SupplierXmlSetting.ModelXlColumn).Value.ToString() ?? "";
-    //                        if (string.IsNullOrEmpty(model))
-    //                        {
-    //                            continue;
-    //                        }
-
-    //                        priceOrQuantityColumn = row.Cell(_dc.SupplierXmlSetting.PricePictureXlColumn).Value
-    //                            .ToString();
-
-    //                        if (!_dc.XmlModelPriceList.TryAdd(model, priceOrQuantityColumn))
-    //                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-    //                    }
-    //                }
-    //                // Видаляємо завантажений файл
-    //                File.Delete(newestFileName);
-    //            }
-    //            else
-    //            {
-    //                _dc.StateMessages.Add(($"error_No Excel files found in {remoteFilePath}", "red"));
-    //            }
-    //        }
-    //        else
-    //        {
-    //            _dc.StateMessages.Add(($"error_No files found in {remoteFilePath}", "red"));
-    //        }
-    //    }
-    //}
+ 
 
     private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword)
     {
@@ -697,19 +569,23 @@ public class UpdatePriceQuantityService
 
     private void UpdatePrices()
     {
-        var skusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
-        var manualPriceProductList = _dbContextGamma.ProductsManualSetPrices.Where(n => skusToUpdate.Contains(n.Sku)).ToList();
+        
+            _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
+            _dc.ProductsManualSetPrices = _dbContextGamma.ProductsManualSetPrices.Where(n => _dc.SkusToUpdate.Contains(n.Sku)).ToList();
 
-        var productsListToUpdate = _dbContextGamma.NgProducts
-            .Where(p => skusToUpdate.Contains(p.Sku))
-            .Select(m => new ProductMinInfoModel
-            {
-                Sku = m.Sku,
-                Model = m.Model,
-                Price = m.Price,
-                Quantity = m.Quantity
-            })
-            .ToList();
+            _dc.Products = _dbContextGamma.NgProducts
+                .Where(p => _dc.SkusToUpdate.Contains(p.Sku))
+                .Select(m => new ProductMinInfoModel
+                {
+                    Sku = m.Sku,
+                    Model = m.Model,
+                    Price = m.Price,
+                    Quantity = m.Quantity
+                })
+                .ToList();
+        
+
+        
 
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
@@ -720,11 +596,11 @@ public class UpdatePriceQuantityService
             }
 
 
-            var productToUpdate = productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
+            var productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
-            if (manualPriceProductList.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
+            if (_dc.ProductsManualSetPrices.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
             {
-                var manualValue = manualPriceProductList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
+                var manualValue = _dc.ProductsManualSetPrices.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
 
                 if (dbPrice != manualValue)  // remove this if statement, to see all manual prices added
                 {
@@ -790,20 +666,24 @@ public class UpdatePriceQuantityService
 
     private void UpdateQuantity()
     {
-        var skusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
-        var manualQty = _dbContextGamma.ProductsManualSetQuanitys.Where(m => skusToUpdate.Contains(m.Sku)).ToList();
-        var setMinQty = _dbContextGamma.ProductsSetQuantityWhenMin.Where(m => skusToUpdate.Contains(m.Sku)).ToList();
+        if (_dc.WhatToUpdate != 3)
+        {
+            _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
+            _dc.ProductsManualSetQuanityList = _dbContextGamma.ProductsManualSetQuanitys.Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
+            _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin.Where(m => _dc.SkusToUpdate.Contains(m.Sku))
+                .ToList();
 
-        var productsListToUpdate = _dbContextGamma.NgProducts.Where(p => skusToUpdate.Contains(p.Sku))
-            .Select(p => new ProductMinInfoModel
-            {
-                Sku = p.Sku,
-                Model = p.Model,
-                Price = p.Price,
-                Quantity = p.Quantity,
-                StockStatusId = p.StockStatusId
-            })
-            .ToList();
+            _dc.Products = _dbContextGamma.NgProducts.Where(p => _dc.SkusToUpdate.Contains(p.Sku))
+                .Select(p => new ProductMinInfoModel
+                {
+                    Sku = p.Sku,
+                    Model = p.Model,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    StockStatusId = p.StockStatusId
+                })
+                .ToList();
+        }
 
         ProductMinInfoModel productToUpdate = new();
 
@@ -811,11 +691,11 @@ public class UpdatePriceQuantityService
         {
             try
             {
-                productsListToUpdate.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                _dc.Products.FirstOrDefault(p => p.Sku == dbModel.Item1);
 
-                if (manualQty.Any(p => p.Sku == productToUpdate?.Sku)) //ручне встановлення наявності.
+                if (_dc.ProductsManualSetQuanityList.Any(p => p.Sku == productToUpdate?.Sku)) //ручне встановлення наявності.
                 {
-                    var manualValue = manualQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
+                    var manualValue = _dc.ProductsManualSetQuanityList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
 
                     if (manualValue > 0)
                     {
@@ -865,10 +745,10 @@ public class UpdatePriceQuantityService
 
                         #endregion
 
-                        var minQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
-                        if (setMinQty.Any(p => p.Sku == productToUpdate.Sku && currentXmlValue < minQtylValue && currentXmlValue > 0)) // ручне встановлення мінімальних залишків
+                        var minQtylValue = _dc.ProductsSetQuantityWhenMinList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
+                        if (_dc.ProductsSetQuantityWhenMinList.Any(p => p.Sku == productToUpdate.Sku && currentXmlValue < minQtylValue && currentXmlValue > 0)) // ручне встановлення мінімальних залишків
                         {
-                            var setQtylValue = setMinQty.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
+                            var setQtylValue = _dc.ProductsSetQuantityWhenMinList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
 
                             if (setQtylValue > 0)
                             {
