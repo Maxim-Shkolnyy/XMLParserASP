@@ -25,6 +25,7 @@ public class UpdatePriceQuantityController : Controller
         _updatePriceQuantityService = updatePriceQuantityService;
         _priceQuantityViewModel = priceQuantityViewModel;
         _settingsList = _db.MmSupplierXmlSettings.ToList();
+        //_dc = new();
         _dc = dcS.Instance;
 
     }
@@ -54,6 +55,9 @@ public class UpdatePriceQuantityController : Controller
         }
 
         List<(string, string)>? commonMessagesList = new();
+        _dc.XmlModelPriceList.Clear();
+        _dc.XmlModelQuantityList.Clear();
+        _dc.SkusToUpdate.Clear();
         
 
         if (QuantityList.Count == 0) //only prices. WhatToUpdate = 1
