@@ -611,7 +611,7 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
-                    _dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate}NotFound in xml", "red"));
+                    _dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate}NotFound in xml {productToUpdate}", "red"));
                 }
             }
         }
