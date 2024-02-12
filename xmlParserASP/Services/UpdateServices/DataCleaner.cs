@@ -34,9 +34,6 @@ public class DataCleaner
         if (_dc.ProductsSetQuantityWhenMinList != null)
             _dc.ProductsSetQuantityWhenMinList.Clear();
 
-        if (_dc.SuppNameThatWasUpdatedList != null)
-            _dc.SuppNameThatWasUpdatedList.Clear();
-
         if (_dc.CurrentSuppProductIDList != null)
             _dc.CurrentSuppProductIDList.Clear();
 

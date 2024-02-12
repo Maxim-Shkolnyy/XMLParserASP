@@ -64,13 +64,13 @@ public class UpdatePriceQuantityController : Controller
         if (QuantityList.Count == 0) //only prices. WhatToUpdate = 1
         {
             _dc.WhatToUpdate = 1;
-            //_cleaner.CleanUp();
 
             foreach (var suppSetting in PriceList)
             {
                 try
                 {
                     _dc.CurrentTableDbColumnToUpdate = "Price";
+                    _cleaner.CleanUp();
                     updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting);
                     
                     commonMessagesList.AddRange(updateAllPrices);
@@ -85,13 +85,13 @@ public class UpdatePriceQuantityController : Controller
         else if (PriceList.Count == 0) //only quantity. WhatToUpdate = 2
         {
             _dc.WhatToUpdate = 2;
-            _cleaner.CleanUp();
 
             foreach (var suppSetting in QuantityList)
             {
                 try
                 {
                     _dc.CurrentTableDbColumnToUpdate = "Quantity";
+                    _cleaner.CleanUp();
                     updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting);
                     
                     commonMessagesList.AddRange(updateQuantity);
@@ -121,6 +121,7 @@ public class UpdatePriceQuantityController : Controller
                     try
                     {
                         _dc.CurrentTableDbColumnToUpdate = "Price";
+                        _cleaner.CleanUp();
                         updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i);
                         
                         commonMessagesList.AddRange(updateAllPrices);
