@@ -677,17 +677,18 @@ public class UpdatePriceQuantityService
                 {
                     #region Retieving xml value
 
-                    int xmlQtyValue = RetrieveXmlValue(dbModel.Item2);
+                    //var result = RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int val);
 
-                    if (_dc.XmlModelQuantityList.TryGetValue(dbModel.Item2, dbQtyValue, out var xmlQtyValue))
+                    if (RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
                     {
-                        if (dbQtyValue != xmlQtyValue)
-                        {
-                            if (xmlQtyValue < 0)
-                            {
-                                xmlQtyValue = 0;
-                            }
-                        }
+                        //if (dbQtyValue != xmlQtyValue)
+                        //{
+                        //    if (xmlQtyValue < 0)
+                        //    {
+                        //        xmlQtyValue = 0;
+                        //    }
+                        //}
+                        
 
                         #endregion
 
@@ -803,19 +804,21 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private bool RetrieveXmlValue(string f, int? dbQtyValue, out int val)
+    private bool RetrieveXmlValue(string f, int? dbQtyValue, out int xmlQtyValue)
     {
-        if (_dc.XmlModelQuantityList.TryGetValue(f, out var xmlQtyValue))
+        if (_dc.XmlModelQuantityList.TryGetValue(f, out xmlQtyValue))
         {
-            if (dbQtyValue != xmlQtyValue)
+            if (dbQtyValue.HasValue && dbQtyValue.Value != xmlQtyValue)
             {
-                if (xmlQtyValue < 0)
-                {
-                    xmlQtyValue = 0;
-                }
+                xmlQtyValue = Math.Max(0, xmlQtyValue); // Заміна умовної конструкції на Math.Max
+                return true;
             }
+            return true;
         }
+        xmlQtyValue = 0; // Значення за замовчуванням, якщо ключ не знайдено
+        return false;
     }
+
 
 
     private static string CutString(string input)
