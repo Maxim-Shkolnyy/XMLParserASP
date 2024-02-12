@@ -40,6 +40,8 @@ public class Program
         builder.Services.AddScoped<UpdateMainXml>();
         builder.Services.AddSingleton<DataContainer>();
         builder.Services.AddSingleton<DataContainerSingleton>();
+        builder.Services.AddTransient<DataCleaner>();
+
 
         //builder.Services.AddLogging(b => b.AddConsole());
         //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);

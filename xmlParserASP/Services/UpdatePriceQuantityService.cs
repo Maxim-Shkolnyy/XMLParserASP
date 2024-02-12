@@ -34,8 +34,7 @@ public class UpdatePriceQuantityService
         #region Get current values from DB and add them to new '_dc.DbCodeModelPriceList' on each iteration
 
         _dc.SupplierXmlSetting = _dc.SuppSettingList
-            .Where(m => m.SupplierXmlSettingId == settingsId)
-            .FirstOrDefault();
+            .FirstOrDefault(m => m.SupplierXmlSettingId == settingsId);
 
         if (_dc.SupplierXmlSetting == null)
         {
@@ -145,12 +144,12 @@ public class UpdatePriceQuantityService
         var stateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
 
         _dc.StateMessages.Clear();
-        if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
-        {
-            _dc.DbCodeModelPriceList.Clear();
-            _dc.XmlModelPriceList.Clear();
-            _dc.XmlModelQuantityList.Clear();
-        }
+        //if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
+        //{
+        //    _dc.DbCodeModelPriceList.Clear();
+        //    _dc.XmlModelPriceList.Clear();
+        //    _dc.XmlModelQuantityList.Clear();
+        //}
 
         return stateMessages;
     }
@@ -479,7 +478,7 @@ public class UpdatePriceQuantityService
 
         int quantityNode;
         string model = "";
-        _dc.XmlModelQuantityList.Clear();
+        //_dc.XmlModelQuantityList.Clear();
 
         xmlDoc.Load(_dc.SupplierXmlSetting.Path);
 
@@ -671,28 +670,28 @@ public class UpdatePriceQuantityService
                 {
                     #region Retieving xml value
 
-                    int currentXmlValue = 0;
-                    int? dbValue = 0;
+                    //int xmlValue = 0;
+                    int? dbValue = dbModel.Item4;
                     if (_dc.XmlModelQuantityList.TryGetValue(dbModel.Item2, out var xmlValue))
                     {
                         if (dbModel.Item4 != xmlValue)
                         {
-                            if (currentXmlValue < 0)
+                            if (xmlValue < 0)
                             {
-                                currentXmlValue = 0;
+                                xmlValue = 0;
                             }
                         }
 
                         #endregion
 
                         var minQtylValue = _dc.ProductsSetQuantityWhenMinList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
-                        if (_dc.ProductsSetQuantityWhenMinList.Any(p => p.Sku == productToUpdate.Sku && currentXmlValue < minQtylValue && currentXmlValue > 0)) // ручне встановлення мінімальних залишків
+                        if (_dc.ProductsSetQuantityWhenMinList.Any(p => p.Sku == productToUpdate.Sku && xmlValue < minQtylValue && xmlValue > 0)) // ручне встановлення мінімальних залишків
                         {
                             var setQtylValue = _dc.ProductsSetQuantityWhenMinList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
 
                             if (setQtylValue > 0)
                             {
-                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlValue });
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
                             }
                             else
@@ -700,46 +699,46 @@ public class UpdatePriceQuantityService
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = setQtylValue });
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
                             }
-                            _dc.StateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to min: {setQtylValue}. Real xml was {currentXmlValue}. DB was:_{dbModel.Item4}", "yellow"));
+                            _dc.StateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to min: {setQtylValue}. Real xml was {xmlValue}. DB was:_{dbModel.Item4}", "yellow"));
                         }
                         else
                         {
-                            if (dbValue != currentXmlValue)
+                            if (dbValue != xmlValue)
                             {
-                                if (dbValue < currentXmlValue)
+                                if (dbValue < xmlValue)
                                 {
-                                    if (currentXmlValue > 0)
+                                    if (xmlValue > 0)
                                     {
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
 
-                                        _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity increased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "purple"));
+                                        _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity increased. Old - new:_{dbModel.Item4}_{xmlValue}", "purple"));
                                     }
                                     else
                                     {
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
 
-                                        _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity increased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "purple"));
+                                        _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity increased. Old - new:_{dbModel.Item4}_{xmlValue}", "purple"));
                                     }
                                 }
                                 else
                                 {
-                                    if (currentXmlValue > 0)
+                                    if (xmlValue > 0)
                                     {
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
 
-                                        _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity decreased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "blue"));
+                                        _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity decreased. Old - new:_{dbModel.Item4}_{xmlValue}", "blue"));
                                     }
                                     else
                                     {
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { Quantity = currentXmlValue });
+                                            .Update(x => new NgProduct { Quantity = xmlValue });
                                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
                                             .Update(x => new NgProduct { StockStatusId = 5 });
 
-                                        _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity decreased. Old - new:_{dbModel.Item4}_{currentXmlValue}", "blue"));
+                                        _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity decreased. Old - new:_{dbModel.Item4}_{xmlValue}", "blue"));
                                     }
                                 }
                             }
@@ -747,11 +746,11 @@ public class UpdatePriceQuantityService
                     }
                     else
                     {
-                        currentXmlValue = 0;
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = currentXmlValue });
+                        xmlValue = 0;
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlValue });
                         _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
 
-                        _dc.StateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item4}_{currentXmlValue}", "brown"));
+                        _dc.StateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbModel.Item4}_{xmlValue}", "brown"));
                     }
                 }
             }

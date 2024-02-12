@@ -18,15 +18,16 @@ public class UpdatePriceQuantityController : Controller
     private List<(string, string)>? updateAllPrices = new();
     private List<(string, string)>? updateQuantity = new();
     private readonly DataContainer _dc;
-    public UpdatePriceQuantityController(GammaContext db, MmSupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel, DataContainerSingleton dcS)
+    private readonly DataCleaner _cleaner;
+    public UpdatePriceQuantityController(GammaContext db, MmSupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel, DataContainerSingleton dcS, DataCleaner cleaner)
     {
         _db = db;
         _setting = setting;
         _updatePriceQuantityService = updatePriceQuantityService;
         _priceQuantityViewModel = priceQuantityViewModel;
         _settingsList = _db.MmSupplierXmlSettings.ToList();
-        //_dc = new();
         _dc = dcS.Instance;
+        _cleaner = cleaner;
 
     }
     public IActionResult Index()
@@ -55,14 +56,16 @@ public class UpdatePriceQuantityController : Controller
         }
 
         List<(string, string)>? commonMessagesList = new();
-        _dc.XmlModelPriceList.Clear();
-        _dc.XmlModelQuantityList.Clear();
-        _dc.SkusToUpdate.Clear();
+        //_dc.XmlModelPriceList.Clear();
+        //_dc.XmlModelQuantityList.Clear();
+        //_dc.SkusToUpdate.Clear();
         
 
         if (QuantityList.Count == 0) //only prices. WhatToUpdate = 1
         {
             _dc.WhatToUpdate = 1;
+            //_cleaner.CleanUp();
+
             foreach (var suppSetting in PriceList)
             {
                 try
@@ -82,6 +85,8 @@ public class UpdatePriceQuantityController : Controller
         else if (PriceList.Count == 0) //only quantity. WhatToUpdate = 2
         {
             _dc.WhatToUpdate = 2;
+            _cleaner.CleanUp();
+
             foreach (var suppSetting in QuantityList)
             {
                 try
@@ -101,6 +106,8 @@ public class UpdatePriceQuantityController : Controller
         else if (PriceList.Count > 0 & QuantityList.Count > 0) //both price and quantity. WhatToUpdate = 3
         {
             _dc.WhatToUpdate = 3;
+
+            _cleaner.CleanUp();
 
             PriceList.Sort();
             QuantityList.Sort();
