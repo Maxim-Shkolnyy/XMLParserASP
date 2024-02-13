@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Net;
 using System.Xml;
 using xmlParserASP.Entities.Gamma;
@@ -273,7 +274,7 @@ public class UpdatePriceQuantityService
 
                 if (_dc.CurrentTableDbColumnToUpdate == "Price")
                 {
-                    if (decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out var price))
+                    if (decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, CultureInfo.InvariantCulture, out decimal price))
                     {
 
                     }
@@ -288,7 +289,7 @@ public class UpdatePriceQuantityService
 
                 if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
                 {
-                    int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out var quantity);
+                    int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity);
 
                     _dc.XmlModelQuantityList.TryAdd(model, quantity);
                 }
