@@ -362,7 +362,7 @@ public class UpdatePriceQuantityService
             string[] files = reader.ReadToEnd()
                 .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-            //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(f => f.CreationTime).FirstOrDefault();
+            //DirectoryInfo directory = new DirectoryInfo(_dc.SupplierXmlSetting.Path); FileInfo[] files = directory.GetFiles(); FileInfo newestfile = files.OrderByDescending(searchValueinXml => searchValueinXml.CreationTime).FirstOrDefault();
 
             if (files.Length > 0)
             {
@@ -648,7 +648,7 @@ public class UpdatePriceQuantityService
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
             int? dbQtyValue = dbModel.Item4;
-            
+
             try
             {
                 productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == dbModel.Item1);
@@ -672,27 +672,9 @@ public class UpdatePriceQuantityService
                         }
                         _dc.StateMessages.Add(($"manualValue_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to default- {manualValue}. Old-_{dbQtyValue}", "black"));
                     }
-                }
-                else
-                {
-                    #region Retieving xml value
-
-                    //var result = RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int val);
-
-                    if (RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
+                    else
                     {
-                        //if (dbQtyValue != xmlQtyValue)
-                        //{
-                        //    if (xmlQtyValue < 0)
-                        //    {
-                        //        xmlQtyValue = 0;
-                        //    }
-                        //}
-                        
-
-                        #endregion
-
-                        if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+                        if (RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
                         {
                             var minQtylValue = _dc.ProductsSetQuantityWhenMinList
                                 .FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
@@ -718,10 +700,7 @@ public class UpdatePriceQuantityService
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
                                         .Update(x => new NgProduct { StockStatusId = 5 });
                                 }
-
-                                _dc.StateMessages.Add((
-                                    $"setMin_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to min: {setQtylValue}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}",
-                                    "yellow"));
+                                _dc.StateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to min: {setQtylValue}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "yellow"));
                             }
                             else
                             {
@@ -729,15 +708,26 @@ public class UpdatePriceQuantityService
                                 {
                                     WriteQtyToDb(dbQtyValue, xmlQtyValue, dbModel);
                                 }
+                                //else  // uncomment else statement to see all positions, where quantity wsa not updated
+                                //{
+                                //    _dc.StateMessages.Add(($"Quantity not changed_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                                //}
                             }
                         }
-                        else
+                    }
+                }
+                else
+                {
+                    if (RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
+                    {
+                        if (dbQtyValue != xmlQtyValue)
                         {
-                            if (dbQtyValue != xmlQtyValue)
-                            {
-                                WriteQtyToDb(dbQtyValue, xmlQtyValue, dbModel);
-                            }
+                            WriteQtyToDb(dbQtyValue, xmlQtyValue, dbModel);
                         }
+                        //else  // uncomment else statement to see all positions, where quantity wsa not updated
+                        //{
+                        //    _dc.StateMessages.Add(($"Quantity not changed_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                        //}
                     }
                     else
                     {
@@ -804,13 +794,13 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private bool RetrieveXmlValue(string f, int? dbQtyValue, out int xmlQtyValue)
+    private bool RetrieveXmlValue(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue)
     {
-        if (_dc.XmlModelQuantityList.TryGetValue(f, out xmlQtyValue))
+        if (_dc.XmlModelQuantityList.TryGetValue(searchValueinXml, out xmlQtyValue))
         {
             if (dbQtyValue.HasValue && dbQtyValue.Value != xmlQtyValue)
             {
-                xmlQtyValue = Math.Max(0, xmlQtyValue); // Заміна умовної конструкції на Math.Max
+                xmlQtyValue = Math.Max(0, xmlQtyValue);
                 return true;
             }
             return true;
