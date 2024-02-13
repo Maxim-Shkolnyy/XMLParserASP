@@ -219,13 +219,15 @@ public class UpdatePriceQuantityService
 
                     if (_dc.CurrentTableDbColumnToUpdate == "Price")
                     {
-                        if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out decimal price))
+                        if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText.Replace(".", ","), out decimal price))
                         {
-                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT parsed from xml", "red"));
-
-                        }//error here
-
-
+                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
+                        }
+                        if (price < 0.1m)
+                        {
+                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} Price not updated, was 0 in xml", "red"));
+                            continue;
+                        }      
                         _dc.XmlModelPriceList.TryAdd(model, price);
                     }
                     else
@@ -274,13 +276,13 @@ public class UpdatePriceQuantityService
 
                 if (_dc.CurrentTableDbColumnToUpdate == "Price")
                 {
-                    if (decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, CultureInfo.InvariantCulture, out decimal price))
+                    if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText.Replace(".", ","), out decimal price))
                     {
-
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
                     }
                     if (price < 0.1m)
                     {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} Price not updated, was 0 in xml", "red"));
                         continue;
                     }
 
