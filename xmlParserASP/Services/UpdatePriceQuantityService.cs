@@ -241,37 +241,28 @@ public class UpdatePriceQuantityService
         }
         else
         {
+            string? model = null;
+
             foreach (XmlNode item in itemsList)
             {
-                string? model = null;
-
                 if (_dc.SupplierXmlSetting.ParamAttribute == null)
                 {
-                    if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
-                    {
-                        //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
-                        continue;
-                    }
-
                     model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText ?? "";
 
-                    if (String.IsNullOrEmpty(model))
+                    if (string.IsNullOrEmpty(model))
                     {
-                        _dc.StateMessages.Add((
-                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
-                            "red"));
-                    }
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
+                        continue;
+                    }              
                 }
                 else
                 {
                     if (item.Attributes["id"] != null)
                     {
-                        model = item.Attributes["id"]?.Value ?? "";
+                        model = item.Attributes["id"]?.Value;
                         if (String.IsNullOrEmpty(model))
                         {
-                            _dc.StateMessages.Add((
-                                $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml",
-                                "red"));
+                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
                         }
                     }
                     else
@@ -282,12 +273,16 @@ public class UpdatePriceQuantityService
 
                 if (_dc.CurrentTableDbColumnToUpdate == "Price")
                 {
-                    decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out var price);
+                    if (decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out var price))
+                    {
 
-                    if (priceNode == null)
+                    }
+                    if (price < 0.1m)
                     {
                         _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
+                        continue;
                     }
+
                     _dc.XmlModelPriceList.TryAdd(model, price);
                 }
 
@@ -604,7 +599,7 @@ public class UpdatePriceQuantityService
                                             $"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}",
                                             "blue"));
                                     }
-                                    
+
                                 }
                             }
 
