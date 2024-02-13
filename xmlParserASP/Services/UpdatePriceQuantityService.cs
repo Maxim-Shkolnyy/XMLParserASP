@@ -596,11 +596,15 @@ public class UpdatePriceQuantityService
                             {
                                 if (productToUpdate != null)
                                 {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { Price = xmlPrice });
-                                    _dc.StateMessages.Add((
-                                        $"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}",
-                                        "blue"));
+                                    if (xmlPrice != 0)
+                                    {
+                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                            .Update(x => new NgProduct { Price = xmlPrice });
+                                        _dc.StateMessages.Add((
+                                            $"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}",
+                                            "blue"));
+                                    }
+                                    
                                 }
                             }
 
