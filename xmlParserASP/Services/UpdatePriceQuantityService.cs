@@ -171,168 +171,77 @@ public class UpdatePriceQuantityService
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.ProductNode);
 
-        if (_dc.SupplierXmlSetting.MainProductNode != null) //Main node we need to Proforma etc
+        string? model;
+        string priceStr;
+        decimal price;
+
+        foreach (XmlNode item in itemsList)
         {
-            XmlNodeList parentItemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.MainProductNode);
-
-            foreach (XmlNode items in parentItemsList)
+            if (_dc.SupplierXmlSetting.ParamAttribute == null)
             {
-                foreach (XmlNode item in itemsList)
+                model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText ?? "";
+
+                if (string.IsNullOrEmpty(model))
                 {
-                    string? model;
-                    string priceStr;
-                    decimal price;
-
-                    if (_dc.SupplierXmlSetting.ParamAttribute == null)
-                    {
-                        model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText;
-
-                        if (String.IsNullOrEmpty(model))
-                        {
-                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                        }
-                    }
-                    else
-                    {
-                        if (item.Attributes["id"] != null)
-                        {
-                            if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
-                            {
-                                _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                                continue;
-                            }
-
-                            model = item.Attributes["id"]?.Value;
-
-                            if (String.IsNullOrEmpty(model))
-                            {
-                                _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                            }
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (_dc.CurrentTableDbColumnToUpdate == "Price")
-                    {
-                        if (_dc.SuppName == "Nowodvorski") // if xml price field contains dots instead commas
-                        {
-                            priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
-                            if (priceStr.Contains('.'))
-                            {
-                                priceStr = priceStr.Replace(".", ",");
-                            }
-
-                            if (!decimal.TryParse(priceStr, out price))
-                            {
-                                _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out price))
-                            {
-                                _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                            }
-                        }
-
-                        if (price == 0)
-                        {
-                            //uncomment to see all zero prices 
-                            //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
-                            continue;
-                        }
-                        _dc.XmlModelPriceList.TryAdd(model, price);
-                    }
-                    else
-                    {
-                        if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity))
-                        {
-                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)} {_dc.CurrentTableDbColumnToUpdate} NOT parsed from xml", "red"));
-
-                        }
-                        _dc.XmlModelQuantityList.TryAdd(model, quantity);
-                    }
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
+                    continue;
                 }
             }
-        }
-        else
-        {
-            string? model;            
-            string priceStr;
-            decimal price;
-
-            foreach (XmlNode item in itemsList)
+            else
             {
-                if (_dc.SupplierXmlSetting.ParamAttribute == null)
+                if (item.Attributes["id"] != null)
                 {
-                    model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText ?? "";
-
-                    if (string.IsNullOrEmpty(model))
+                    model = item.Attributes["id"]?.Value;
+                    if (String.IsNullOrEmpty(model))
                     {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            if (_dc.CurrentTableDbColumnToUpdate == "Price")
+            {
+                if (_dc.SuppName == "Nowodvorski")
+                {
+                    priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
+                    if (priceStr.Contains('.'))
+                    {
+                        priceStr = priceStr.Replace(".", ",");
+                    }
+
+                    if (!decimal.TryParse(priceStr, out price))
+                    {
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
                         continue;
                     }
                 }
                 else
                 {
-                    if (item.Attributes["id"] != null)
+                    if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out price))
                     {
-                        model = item.Attributes["id"]?.Value;
-                        if (String.IsNullOrEmpty(model))
-                        {
-                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
-                        }
-                    }
-                    else
-                    {
-                        continue;
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
                     }
                 }
 
-                if (_dc.CurrentTableDbColumnToUpdate == "Price")
+                if (price == 0)
                 {
-                    if(_dc.SuppName == "Nowodvorski")
-                    {
-                        priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
-                        if (priceStr.Contains('.'))
-                        {
-                            priceStr = priceStr.Replace(".", ",");
-                        }
-
-                        if (!decimal.TryParse(priceStr, out price))
-                        {
-                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
-                            continue;
-                        }
-                    }
-                    else 
-                    {
-                        if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out price))
-                        {
-                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                        }
-                    } 
-
-                    if (price == 0)
-                    {
-                        //uncomment to see all zero prices 
-                        //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
-                        continue;
-                    }
-
-                    _dc.XmlModelPriceList.TryAdd(model, price);
+                    //uncomment to see all zero prices 
+                    //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
+                    continue;
                 }
 
-                if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
-                {
-                    int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity);
+                _dc.XmlModelPriceList.TryAdd(model, price);
+            }
 
-                    _dc.XmlModelQuantityList.TryAdd(model, quantity);
-                }
+            if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
+            {
+                int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity);
+
+                _dc.XmlModelQuantityList.TryAdd(model, quantity);
             }
         }
     }
@@ -830,7 +739,7 @@ public class UpdatePriceQuantityService
         xmlQtyValue = 0;
         return false;
     }
-    
+
     private static string CutString(string input)
     {
         const int maxLength = 70;
