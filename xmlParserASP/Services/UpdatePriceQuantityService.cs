@@ -162,10 +162,6 @@ public class UpdatePriceQuantityService
     {
         XmlDocument xmlDoc = new();
 
-        string fileExtension = Path.GetExtension(_dc.SupplierXmlSetting.Path);
-        string priceNode = "";
-        string quantityNode = "";
-
         _dc.XmlModelPriceList.Clear();
 
         xmlDoc.Load(_dc.SupplierXmlSetting.Path);
@@ -183,8 +179,8 @@ public class UpdatePriceQuantityService
             {
                 foreach (XmlNode item in itemsList)
                 {
-                    string? model = null;
-                    string priceStr = null;
+                    string? model;
+                    string priceStr;
                     decimal price;
 
                     if (_dc.SupplierXmlSetting.ParamAttribute == null)
@@ -221,14 +217,19 @@ public class UpdatePriceQuantityService
 
                     if (_dc.CurrentTableDbColumnToUpdate == "Price")
                     {
-                        if (_dc.SuppName == "Nowodvorski")
+                        if (_dc.SuppName == "Nowodvorski") // if xml price field contains dots instead commas
                         {
                             priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
-                            if (priceStr.Contains("."))
+                            if (priceStr.Contains('.'))
                             {
-                                priceStr.Replace(".", ",");
+                                priceStr = priceStr.Replace(".", ",");
                             }
-                            decimal.TryParse(priceStr, out price);
+
+                            if (!decimal.TryParse(priceStr, out price))
+                            {
+                                _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                                continue;
+                            }
                         }
                         else
                         {
@@ -238,9 +239,10 @@ public class UpdatePriceQuantityService
                             }
                         }
 
-                        if (price < 0.001m)
+                        if (price == 0)
                         {
-                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} Price not updated, was 0 in xml", "red"));
+                            //uncomment to see all zero prices 
+                            //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
                             continue;
                         }
                         _dc.XmlModelPriceList.TryAdd(model, price);
@@ -259,8 +261,8 @@ public class UpdatePriceQuantityService
         }
         else
         {
-            string? model = null;            
-            string priceStr = null;
+            string? model;            
+            string priceStr;
             decimal price;
 
             foreach (XmlNode item in itemsList)
@@ -296,11 +298,16 @@ public class UpdatePriceQuantityService
                     if(_dc.SuppName == "Nowodvorski")
                     {
                         priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
-                        if (priceStr.Contains("."))
+                        if (priceStr.Contains('.'))
                         {
-                            priceStr.Replace(".", ",");
+                            priceStr = priceStr.Replace(".", ",");
                         }
-                        decimal.TryParse(priceStr, out price);
+
+                        if (!decimal.TryParse(priceStr, out price))
+                        {
+                            _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                            continue;
+                        }
                     }
                     else 
                     {
@@ -310,9 +317,10 @@ public class UpdatePriceQuantityService
                         }
                     } 
 
-                    if (price < 0.001m)
+                    if (price == 0)
                     {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} Price not updated, was 0 in xml", "red"));
+                        //uncomment to see all zero prices 
+                        //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
                         continue;
                     }
 
@@ -325,23 +333,6 @@ public class UpdatePriceQuantityService
 
                     _dc.XmlModelQuantityList.TryAdd(model, quantity);
                 }
-                //else
-                //{
-                //    if (item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode) == null)
-                //    {
-                //        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                //    }
-                //    if (item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode) == null)
-                //    {
-                //        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}  {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                //    }
-
-                //    priceNode = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText ?? "";
-                //    quantityNode = item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText ?? "";
-
-                //    _dc.XmlModelPriceList.TryAdd(model, priceNode);
-                //    _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
-                //}
             }
         }
     }
@@ -564,7 +555,6 @@ public class UpdatePriceQuantityService
 
     #endregion
 
-
     private void UpdatePrices()
     {
         _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
@@ -706,7 +696,7 @@ public class UpdatePriceQuantityService
                     }
                     else
                     {
-                        if (RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
+                        if (RetrieveXmlValueFromList(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
                         {
                             var minQtylValue = _dc.ProductsSetQuantityWhenMinList
                                 .FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
@@ -750,7 +740,7 @@ public class UpdatePriceQuantityService
                 }
                 else
                 {
-                    if (RetrieveXmlValue(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
+                    if (RetrieveXmlValueFromList(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
                     {
                         if (dbQtyValue != xmlQtyValue)
                         {
@@ -826,7 +816,7 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private bool RetrieveXmlValue(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue)
+    private bool RetrieveXmlValueFromList(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue)
     {
         if (_dc.XmlModelQuantityList.TryGetValue(searchValueinXml, out xmlQtyValue))
         {
@@ -837,12 +827,10 @@ public class UpdatePriceQuantityService
             }
             return true;
         }
-        xmlQtyValue = 0; // Значення за замовчуванням, якщо ключ не знайдено
+        xmlQtyValue = 0;
         return false;
     }
-
-
-
+    
     private static string CutString(string input)
     {
         const int maxLength = 70;
