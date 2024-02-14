@@ -203,9 +203,9 @@ public class UpdatePriceQuantityService
                 }
             }
 
-            if (_dc.CurrentTableDbColumnToUpdate == "Price")
+            if (_dc.WhatToUpdate == 1)
             {
-                if (_dc.SuppName == "Nowodvorski")
+                if (_dc.SuppName == "Nowodvorski" || _dc.SuppName == "Vestum")
                 {
                     priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
                     if (priceStr.Contains('.'))
@@ -237,11 +237,56 @@ public class UpdatePriceQuantityService
                 _dc.XmlModelPriceList.TryAdd(model, price);
             }
 
-            if (_dc.CurrentTableDbColumnToUpdate == "Quantity")
+            if (_dc.WhatToUpdate == 2)
             {
-                int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity);
+                if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity))
+                {
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                }
+                else
+                {
+                    _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                }
+            }
 
-                _dc.XmlModelQuantityList.TryAdd(model, quantity);
+            if (_dc.WhatToUpdate == 3 && _dc.XmlModelPriceList.Count == 0)
+            {
+                if (_dc.SuppName == "Nowodvorski" || _dc.SuppName == "Vestum")
+                {
+                    priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
+                    if (priceStr.Contains('.'))
+                    {
+                        priceStr = priceStr.Replace(".", ",");
+                    }
+
+                    if (!decimal.TryParse(priceStr, out price))
+                    {
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                    }
+                }
+                else
+                {
+                    if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out price))
+                    {
+                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
+                    }
+                }
+
+                if (price != 0)
+                {
+                    //uncomment to see all zero prices 
+                    //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
+                    _dc.XmlModelPriceList.TryAdd(model, price);
+                }
+
+                if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity))
+                {
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                }
+                else
+                {
+                    _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                }
             }
         }
     }
