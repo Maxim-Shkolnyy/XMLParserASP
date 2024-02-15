@@ -25,7 +25,7 @@ public class UpdatePriceQuantityService
         _dc = dcS.Instance;
     }
 
-    public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(int settingsId)
+    public async Task<List<(string, string)>> MasterUpdatePriceQty(int settingsId)
     {
         if (_dc.SuppliersList.Count == 0)
         {
@@ -76,7 +76,7 @@ public class UpdatePriceQuantityService
             //todo: END this
 
             _dc.NamesOfProducts =
-                await _dbContextGamma.NgProductDescriptions.Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId))
+                await _dbContextGamma.NgProductDescriptions.Where(p => _dc.Products.Select(id => id.ProductId).Contains(p.ProductId))
                     .Where(n => n.LanguageId ==3)
                     .Select(p => new ProductNamesListModel
                     {
@@ -616,8 +616,20 @@ public class UpdatePriceQuantityService
                 .ToList();
         }
 
-        _dc.ProductsManualSetQuanityList = _dbContextGamma.ProductsManualSetQuanitys.Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
-        _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin.Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
+        if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+        {
+            if (_dc.ProductsManualSetQuanityList.Count > 0)
+            {
+                _dc.ProductsManualSetQuanityList = _dbContextGamma.ProductsManualSetQuanitys
+                    .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
+            }
+
+            if (_dc.ProductsSetQuantityWhenMinList.Count > 0)
+            {
+                _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin
+                    .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
+            }
+        }
 
         ProductMinInfoModel productToUpdate = new();
 

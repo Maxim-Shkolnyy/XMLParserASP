@@ -71,7 +71,7 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _dc.CurrentTableDbColumnToUpdate = "Price";
                     _cleaner.CleanUp();
-                    updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting);
+                    updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
                     commonMessagesList.AddRange(updateAllPrices);
                 }
@@ -92,7 +92,7 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _dc.CurrentTableDbColumnToUpdate = "Quantity";
                     _cleaner.CleanUp();
-                    updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(suppSetting);
+                    updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
                     commonMessagesList.AddRange(updateQuantity);
                 }
@@ -122,7 +122,7 @@ public class UpdatePriceQuantityController : Controller
                     {
                         _dc.CurrentTableDbColumnToUpdate = "Price";
                         _cleaner.CleanUp();
-                        updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i);
+                        updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
                         commonMessagesList.AddRange(updateAllPrices);
                     }
@@ -137,7 +137,7 @@ public class UpdatePriceQuantityController : Controller
                     try
                     {
                         _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                        updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQtyClass(i);
+                        updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
                         commonMessagesList.AddRange(updateQuantity);
                     }
