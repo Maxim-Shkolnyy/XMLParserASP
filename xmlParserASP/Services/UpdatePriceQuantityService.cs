@@ -770,7 +770,7 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private bool RetrieveXmlValueFromList(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue)
+    private bool RetrieveXmlValueFromList(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue) 
     {
         if (_dc.XmlModelQuantityList.TryGetValue(searchValueinXml, out xmlQtyValue))
         {
