@@ -721,14 +721,7 @@ public class UpdatePriceQuantityService
 
         try
         {
-            if (_dc.CurrentTableDbColumnToUpdate == "Price")
-            {
-                _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlValue });
-            }
-            else
-            {
-                _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Quantity = xmlValue, StockStatusId = stockStatusIdToUpdate });
-            }
+            _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Quantity = xmlValue, StockStatusId = stockStatusIdToUpdate });
             return true;
         }
         catch (Exception e)
