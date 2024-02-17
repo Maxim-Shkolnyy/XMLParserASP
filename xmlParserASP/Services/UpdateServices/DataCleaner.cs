@@ -1,8 +1,4 @@
-﻿using xmlParserASP.Entities.Gamma;
-using xmlParserASP.Models;
-
-
-namespace xmlParserASP.Services.UpdateServices;
+﻿namespace xmlParserASP.Services.UpdateServices;
 
 public class DataCleaner
 {

@@ -1,9 +1,6 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.Net;
 using System.Xml;
 using xmlParserASP.Entities.Gamma;
@@ -25,7 +22,7 @@ public class UpdatePriceQuantityService
         _dc = dcS.Instance;
     }
 
-    public async Task<List<(string, string)>> MasterUpdatePriceQtyClass(int settingsId)
+    public async Task<List<(string, string)>> MasterUpdatePriceQty(int settingsId)
     {
         if (_dc.SuppliersList.Count == 0)
         {
@@ -76,7 +73,7 @@ public class UpdatePriceQuantityService
             //todo: END this
 
             _dc.NamesOfProducts =
-                await _dbContextGamma.NgProductDescriptions.Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId))
+                await _dbContextGamma.NgProductDescriptions.Where(p => _dc.Products.Select(id => id.ProductId).Contains(p.ProductId))
                     .Where(n => n.LanguageId ==3)
                     .Select(p => new ProductNamesListModel
                     {
@@ -160,6 +157,10 @@ public class UpdatePriceQuantityService
 
     private void GetXmlValues()
     {
+        if (_dc.WhatToUpdate == 3 & _dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName) & _dc.CurrentTableDbColumnToUpdate == "Quantity")
+        {
+            return; 
+        }
         XmlDocument xmlDoc = new();
 
         _dc.XmlModelPriceList.Clear();
@@ -183,7 +184,7 @@ public class UpdatePriceQuantityService
 
                 if (string.IsNullOrEmpty(model))
                 {
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_{_dc.CurrentTableDbColumnToUpdate}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
                     continue;
                 }
             }
@@ -205,32 +206,22 @@ public class UpdatePriceQuantityService
 
             if (_dc.WhatToUpdate == 1)
             {
-                if (_dc.SuppName == "Nowodvorski" || _dc.SuppName == "Vestum")
+                priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
+                if (priceStr.Contains('.'))
                 {
-                    priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
-                    if (priceStr.Contains('.'))
-                    {
-                        priceStr = priceStr.Replace(".", ",");
-                    }
-
-                    if (!decimal.TryParse(priceStr, out price))
-                    {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
-                        continue;
-                    }
+                    priceStr = priceStr.Replace(".", ",");
                 }
-                else
+
+                if (!decimal.TryParse(priceStr, out price))
                 {
-                    if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out price))
-                    {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                    }
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                    continue;
                 }
 
                 if (price == 0)
                 {
-                    //uncomment to see all zero prices 
-                    //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
+                    //uncomment string below to see all zero prices 
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
                     continue;
                 }
 
@@ -249,33 +240,28 @@ public class UpdatePriceQuantityService
                 }
             }
 
-            if (_dc.WhatToUpdate == 3 && _dc.XmlModelPriceList.Count == 0)
+            if (_dc.WhatToUpdate == 3)
             {
-                if (_dc.SuppName == "Nowodvorski" || _dc.SuppName == "Vestum")
-                {
-                    priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
-                    if (priceStr.Contains('.'))
-                    {
-                        priceStr = priceStr.Replace(".", ",");
-                    }
+                priceStr = item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText?? "";
 
-                    if (!decimal.TryParse(priceStr, out price))
-                    {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
-                    }
+                if (priceStr.Contains('.'))
+                {
+                    priceStr = priceStr.Replace(".", ",");
+                }
+
+                if (!decimal.TryParse(priceStr, out price))
+                {
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                }
+
+                if (price == 0)
+                {
+                    //uncomment string below to see all zero prices 
+                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
+
                 }
                 else
                 {
-                    if (!decimal.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)?.InnerText, out price))
-                    {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} NOT FOUND in xml", "red"));
-                    }
-                }
-
-                if (price != 0)
-                {
-                    //uncomment to see all zero prices 
-                    //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
                     _dc.XmlModelPriceList.TryAdd(model, price);
                 }
 
@@ -512,88 +498,90 @@ public class UpdatePriceQuantityService
     private void UpdatePrices()
     {
         _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
-        _dc.ProductsManualSetPrices = _dbContextGamma.ProductsManualSetPrices.Where(n => _dc.SkusToUpdate.Contains(n.Sku)).ToList();
 
-        _dc.Products = _dbContextGamma.NgProducts
-            .Where(p => _dc.SkusToUpdate.Contains(p.Sku))
-            .Select(m => new ProductMinInfoModel
-            {
-                Sku = m.Sku,
-                Model = m.Model,
-                Price = m.Price,
-                Quantity = m.Quantity
-            })
-            .ToList();
+        //_dc.Products = _dbContextGamma.NgProducts
+        //    .Where(p => _dc.SkusToUpdate.Contains(p.Sku))
+        //    .Select(m => new ProductMinInfoModel
+        //    {
+        //        Sku = m.Sku,
+        //        Model = m.Model,
+        //        Price = m.Price,
+        //        Quantity = m.Quantity
+        //    })
+        //    .ToList();
 
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
             var productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == dbModel.Item1);
-
-            if (_dc.ProductsManualSetPrices.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
+            if (productToUpdate == null)
             {
-                var manualValue = _dc.ProductsManualSetPrices.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
+                continue; 
+            }
 
-                if (dbModel.Item3 != manualValue)  // remove this if statement, to see all manual prices added
+            if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+            {
+                _dc.ProductsManualSetPrices = _dbContextGamma.ProductsManualSetPrices.Where(n => _dc.SkusToUpdate.Contains(n.Sku)).ToList();
+
+                if (_dc.ProductsManualSetPrices.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
                 {
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = manualValue });
+                    var manualValue = _dc.ProductsManualSetPrices.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
 
-                    _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item5}_SetValue:_{manualValue} грн", "black"));
+                    if (dbModel.Item3 != manualValue)  // remove this if statement, to see all manual prices added
+                    {
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = manualValue });
+
+                        _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item5}_SetValue:_{manualValue} грн", "black"));
+                        continue;
+                    }
                 }
             }
-            else
-            {
-                if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice))
-                {
-                    if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
-                    {
-                        xmlPrice = (xmlPrice + (xmlPrice * 0.4m)) * 50m;
-                    }
 
-                    if (dbModel.Item3 != xmlPrice)
+            if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice))
+            {
+                if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+                {
+                    xmlPrice = (xmlPrice + (xmlPrice * 0.4m)) * 50m;
+                }
+
+                if (dbModel.Item3 != xmlPrice)
+                {
+                    try
                     {
-                        try
+                        if (dbModel.Item3 < xmlPrice)
                         {
-                            if (dbModel.Item3 < xmlPrice)
-                            {
-                                if (productToUpdate != null)
+                            
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
+                                    .Update(x => new NgProduct { Price = xmlPrice });
+                                _dc.StateMessages.Add((
+                                    $"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
+                           
+                        }
+                        else
+                        {
+                           
+                                if (xmlPrice != 0)
                                 {
                                     _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
                                         .Update(x => new NgProduct { Price = xmlPrice });
                                     _dc.StateMessages.Add((
-                                        $"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}",
-                                        "purple"));
+                                        $"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
                                 }
-                            }
-                            else
-                            {
-                                if (productToUpdate != null)
-                                {
-                                    if (xmlPrice != 0)
-                                    {
-                                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                            .Update(x => new NgProduct { Price = xmlPrice });
-                                        _dc.StateMessages.Add((
-                                            $"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}",
-                                            "blue"));
-                                    }
-
-                                }
-                            }
-
-                        }
-                        catch (Exception)
-                        {
-                            _dc.StateMessages.Add((
-                                $"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ",
-                                "red"));
+                           
                         }
                     }
-                }
-                else
-                {
-                    _dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
+                    catch (Exception)
+                    {
+                        _dc.StateMessages.Add((
+                            $"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ",
+                            "red"));
+                    }
                 }
             }
+            else
+            {
+                _dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
+            }
+
         }
         _dbContextGamma.SaveChanges();
     }
@@ -616,8 +604,20 @@ public class UpdatePriceQuantityService
                 .ToList();
         }
 
-        _dc.ProductsManualSetQuanityList = _dbContextGamma.ProductsManualSetQuanitys.Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
-        _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin.Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
+        if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+        {
+            if (_dc.ProductsManualSetQuanityList.Count > 0)
+            {
+                _dc.ProductsManualSetQuanityList = _dbContextGamma.ProductsManualSetQuanitys
+                    .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
+            }
+
+            if (_dc.ProductsSetQuantityWhenMinList.Count > 0)
+            {
+                _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin
+                    .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
+            }
+        }
 
         ProductMinInfoModel productToUpdate = new();
 
@@ -637,7 +637,6 @@ public class UpdatePriceQuantityService
 
                         if (manualValue > 0)
                         {
-
                             _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = manualValue });
                             _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
                         }
@@ -725,48 +724,24 @@ public class UpdatePriceQuantityService
 
     private void WriteQtyToDb(int? dbQtyValue, int xmlQtyValue, (string, string, decimal, int, string) dbModel)
     {
+        int stockStatusIdToUpdate = xmlQtyValue > 0 ? 7 : 5;
+
         try
         {
+            _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlQtyValue, StockStatusId = stockStatusIdToUpdate });
+
             if (dbQtyValue < xmlQtyValue)
             {
-                if (xmlQtyValue > 0)
-                {
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlQtyValue });
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
-
-                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity increased. Old - new:_{dbQtyValue}_{xmlQtyValue}", "purple"));
-                }
-                else
-                {
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlQtyValue });
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
-
-                    _dc.StateMessages.Add(($"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity increased. Old - new:_{dbQtyValue}_{xmlQtyValue}", "purple"));
-                }
+                _dc.StateMessages.Add(($"+ {_dc.CurrentTableDbColumnToUpdate}_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "purple"));
             }
             else
             {
-                if (xmlQtyValue > 0)
-                {
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlQtyValue });
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
-
-                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity decreased. Old - new:_{dbQtyValue}_{xmlQtyValue}", "blue"));
-                }
-                else
-                {
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                        .Update(x => new NgProduct { Quantity = xmlQtyValue });
-                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                        .Update(x => new NgProduct { StockStatusId = 5 });
-
-                    _dc.StateMessages.Add(($"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity decreased. Old - new:_{dbQtyValue}_{xmlQtyValue}", "blue"));
-                }
+                _dc.StateMessages.Add(($"- {_dc.CurrentTableDbColumnToUpdate}_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "blue"));
             }
         }
         catch (Exception e)
         {
-            _dc.StateMessages.Add(($"error_Something happened while quantity of {_dc.SuppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item5)} {dbQtyValue}", "red"));
+            _dc.StateMessages.Add(($"error_Something happened while {_dc.CurrentTableDbColumnToUpdate} of {_dc.SuppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item5)} {dbQtyValue}", "red"));
         }
     }
 
