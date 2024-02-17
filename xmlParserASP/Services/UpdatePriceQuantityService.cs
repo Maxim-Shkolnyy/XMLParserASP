@@ -159,7 +159,7 @@ public class UpdatePriceQuantityService
     {
         if (_dc.WhatToUpdate == 3 & _dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName) & _dc.CurrentTableDbColumnToUpdate == "Quantity")
         {
-            return; 
+            return;
         }
         XmlDocument xmlDoc = new();
 
@@ -512,10 +512,11 @@ public class UpdatePriceQuantityService
 
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
-            var productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == dbModel.Item1);
+            string sku = dbModel.Item1;
+            var productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == sku);
             if (productToUpdate == null)
             {
-                continue; 
+                continue;
             }
 
             if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
@@ -524,13 +525,13 @@ public class UpdatePriceQuantityService
 
                 if (_dc.ProductsManualSetPrices.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
                 {
-                    var manualValue = _dc.ProductsManualSetPrices.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockPrice ?? 0;
+                    var manualValue = _dc.ProductsManualSetPrices.FirstOrDefault(p => p.Sku == sku)?.SetInStockPrice ?? 0;
 
-                    if (dbModel.Item3 != manualValue)  // remove this if statement, to see all manual prices added
+                    if (dbModel.Item3 != manualValue)
                     {
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = manualValue });
+                        _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = manualValue });
 
-                        _dc.StateMessages.Add(($"manualPrice_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item5}_SetValue:_{manualValue} грн", "black"));
+                        _dc.StateMessages.Add(($"manualPrice_{sku}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item5}_SetValue:_{manualValue} грн", "black"));
                         continue;
                     }
                 }
@@ -549,37 +550,37 @@ public class UpdatePriceQuantityService
                     {
                         if (dbModel.Item3 < xmlPrice)
                         {
-                            
-                                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                    .Update(x => new NgProduct { Price = xmlPrice });
-                                _dc.StateMessages.Add((
-                                    $"+_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
-                           
+
+                            _dbContextGamma.NgProducts.Where(x => x.Sku == sku)
+                                .Update(x => new NgProduct { Price = xmlPrice });
+                            _dc.StateMessages.Add((
+                                $"+_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
+
                         }
                         else
                         {
-                           
-                                if (xmlPrice != 0)
-                                {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { Price = xmlPrice });
-                                    _dc.StateMessages.Add((
-                                        $"-_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
-                                }
-                           
+
+                            if (xmlPrice != 0)
+                            {
+                                _dbContextGamma.NgProducts.Where(x => x.Sku == sku)
+                                    .Update(x => new NgProduct { Price = xmlPrice });
+                                _dc.StateMessages.Add((
+                                    $"-_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
+                            }
+
                         }
                     }
                     catch (Exception)
                     {
                         _dc.StateMessages.Add((
-                            $"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {dbModel.Item1} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ",
+                            $"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {sku} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ",
                             "red"));
                     }
                 }
             }
             else
             {
-                _dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{dbModel.Item1}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
+                _dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{sku}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
             }
 
         }
@@ -624,68 +625,61 @@ public class UpdatePriceQuantityService
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
             int? dbQtyValue = dbModel.Item4;
+            string sku = dbModel.Item1;
 
             try
             {
-                productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == dbModel.Item1);
+                productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == sku);
 
                 if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                 {
                     if (_dc.ProductsManualSetQuanityList.Any(p => p.Sku == productToUpdate?.Sku)) //ручне встановлення наявності.
                     {
-                        var manualValue = _dc.ProductsManualSetQuanityList.FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetInStockQty ?? 0;
+                        var manualValue = _dc.ProductsManualSetQuanityList.FirstOrDefault(p => p.Sku == sku)?.SetInStockQty ?? 0;
 
-                        if (manualValue > 0)
+                        if (WriteQtyToDb(sku, manualValue))
                         {
-                            _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = manualValue });
-                            _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 7 });
+                            _dc.StateMessages.Add(($"manualValue_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to default- {manualValue}. Old-_{dbQtyValue}", "black"));
                         }
-                        else
-                        {
-                            _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = manualValue });
-                            _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
-                        }
-                        _dc.StateMessages.Add(($"manualValue_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to default- {manualValue}. Old-_{dbQtyValue}", "black"));
                     }
                     else
                     {
                         if (RetrieveXmlValueFromList(dbModel.Item2, dbQtyValue, out int xmlQtyValue))
                         {
                             var minQtylValue = _dc.ProductsSetQuantityWhenMinList
-                                .FirstOrDefault(p => p.Sku == dbModel.Item1)?.MinQuantity ?? 0;
+                                .FirstOrDefault(p => p.Sku == sku)?.MinQuantity ?? 0;
 
                             if (_dc.ProductsSetQuantityWhenMinList.Any(p =>
                                     p.Sku == productToUpdate.Sku && xmlQtyValue < minQtylValue &&
                                     xmlQtyValue > 0)) // ручне встановлення мінімальних залишків
                             {
                                 var setQtylValue = _dc.ProductsSetQuantityWhenMinList
-                                    .FirstOrDefault(p => p.Sku == dbModel.Item1)?.SetQuantity ?? 0;
+                                    .FirstOrDefault(p => p.Sku == sku)?.SetQuantity ?? 0;
 
-                                if (setQtylValue > 0)
+                                if (WriteQtyToDb(sku, xmlQtyValue))
                                 {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { Quantity = xmlQtyValue });
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { StockStatusId = 7 });
+                                    _dc.StateMessages.Add(($"setMin_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to min: {setQtylValue}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "yellow"));
                                 }
-                                else
-                                {
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { Quantity = setQtylValue });
-                                    _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1)
-                                        .Update(x => new NgProduct { StockStatusId = 5 });
-                                }
-                                _dc.StateMessages.Add(($"setMin_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ quantity set to min: {setQtylValue}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "yellow"));
                             }
                             else
                             {
                                 if (dbQtyValue != xmlQtyValue)
                                 {
-                                    WriteToDb(dbQtyValue, xmlQtyValue, dbModel);
+                                    if (WriteQtyToDb(sku, xmlQtyValue))
+                                    {
+                                        if (dbQtyValue < xmlQtyValue)
+                                        {
+                                            _dc.StateMessages.Add(($"+ {_dc.CurrentTableDbColumnToUpdate}_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "purple"));
+                                        }
+                                        else
+                                        {
+                                            _dc.StateMessages.Add(($"- {_dc.CurrentTableDbColumnToUpdate}_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "blue"));
+                                        }
+                                    }
                                 }
                                 //else  // uncomment else statement to see all positions, where quantity wsa not updated
                                 //{
-                                //    _dc.StateMessages.Add(($"Quantity not changed_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                                //    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
                                 //}
                             }
                         }
@@ -697,62 +691,54 @@ public class UpdatePriceQuantityService
                     {
                         if (dbQtyValue != xmlQtyValue)
                         {
-                            WriteToDb(dbQtyValue, xmlQtyValue, dbModel);
+                            WriteQtyToDb(sku, xmlQtyValue);
                         }
                         //else  // uncomment else statement to see all positions, where quantity wsa not updated
                         //{
-                        //    _dc.StateMessages.Add(($"Quantity not changed_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                        //    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
                         //}
                     }
                     else
                     {
-                        xmlQtyValue = 0;
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlQtyValue });
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { StockStatusId = 5 });
-
-                        _dc.StateMessages.Add(($"set-0_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbQtyValue}_{xmlQtyValue}", "brown"));
+                        if (WriteQtyToDb(sku, 0))
+                        {
+                            _dc.StateMessages.Add(($"set-0_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbQtyValue}_{xmlQtyValue}", "brown"));
+                        }
                     }
                 }
             }
             catch (Exception)
             {
-                _dc.StateMessages.Add(($"error_Something happened while quantity of {_dc.SuppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item5)} {dbQtyValue}", "red"));
+                _dc.StateMessages.Add(($"error_Something happened while quantity of {_dc.SuppName}  updated. Data NOT ADD to DB: {sku} {dbModel.Item2} {CutString(dbModel.Item5)} {dbQtyValue}", "red"));
             }
         }
         _dbContextGamma.SaveChanges();
     }
 
-    private void WriteToDb(int? dbValue, int xmlValue, (string, string, decimal, int, string) dbModel)
+    private bool WriteQtyToDb(string sku, int xmlValue) //, (string, string, decimal, int, string) dbModel)
     {
         int stockStatusIdToUpdate = xmlValue > 0 ? 7 : 5;
 
         try
         {
-            if(_dc.CurrentTableDbColumnToUpdate == "Price")
+            if (_dc.CurrentTableDbColumnToUpdate == "Price")
             {
-                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Price = xmlValue});
+                _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlValue });
             }
             else
             {
-                _dbContextGamma.NgProducts.Where(x => x.Sku == dbModel.Item1).Update(x => new NgProduct { Quantity = xmlValue, StockStatusId = stockStatusIdToUpdate });
-            }            
-
-            if (dbValue < xmlValue)
-            {
-                _dc.StateMessages.Add(($"+ {_dc.CurrentTableDbColumnToUpdate}_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbValue}_{xmlValue}", "purple"));
+                _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Quantity = xmlValue, StockStatusId = stockStatusIdToUpdate });
             }
-            else
-            {
-                _dc.StateMessages.Add(($"- {_dc.CurrentTableDbColumnToUpdate}_{dbModel.Item1}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbValue}_{xmlValue}", "blue"));
-            }
+            return true;
         }
         catch (Exception e)
         {
-            _dc.StateMessages.Add(($"error_Something happened while {_dc.CurrentTableDbColumnToUpdate} of {_dc.SuppName}  updated. Data NOT ADD to DB: {dbModel.Item1} {dbModel.Item2} {CutString(dbModel.Item5)} {dbValue}", "red"));
+            _dc.StateMessages.Add(($"error_Something happened while {_dc.CurrentTableDbColumnToUpdate} of {_dc.SuppName}  updated. Data NOT ADD to DB: {sku} {xmlValue}", "red"));
+            return false;
         }
     }
 
-    private bool RetrieveXmlValueFromList(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue) 
+    private bool RetrieveXmlValueFromList(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue)
     {
         if (_dc.XmlModelQuantityList.TryGetValue(searchValueinXml, out xmlQtyValue))
         {
