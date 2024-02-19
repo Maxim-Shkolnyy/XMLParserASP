@@ -184,7 +184,8 @@ public class UpdatePriceQuantityService
 
                 if (string.IsNullOrEmpty(model))
                 {
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_{_dc.CurrentTableDbColumnToUpdate}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
+                    //uncomment to see all nodes, that don`t have model  
+                    //_dc.StateMessages.Add(($"no model in current xml node {_dc.SuppName}_{_dc.SupplierXmlSetting.ModelNode}_{item.InnerText}_{_dc.CurrentTableDbColumnToUpdate}_ NOT FOUND in xml", "red"));  // if xml item doesn`t exist code row 
                     continue;
                 }
             }
@@ -195,7 +196,7 @@ public class UpdatePriceQuantityService
                     model = item.Attributes["id"]?.Value;
                     if (String.IsNullOrEmpty(model))
                     {
-                        _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
+                        _dc.StateMessages.Add(($"error_model {_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)}_ is Empty or Missing in xml", "red"));
                     }
                 }
                 else
@@ -214,14 +215,14 @@ public class UpdatePriceQuantityService
 
                 if (!decimal.TryParse(priceStr, out price))
                 {
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                    _dc.StateMessages.Add(($"error_price {_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
                     continue;
                 }
 
                 if (price == 0)
                 {
                     //uncomment string below to see all zero prices 
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
+                    _dc.StateMessages.Add(($"error_ price {_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
                     continue;
                 }
 
@@ -331,7 +332,6 @@ public class UpdatePriceQuantityService
 
                 if (!string.IsNullOrEmpty(newestFileName))
                 {
-                    // Завантаження найновішого файлу
                     WebClient ftpClient = new();
                     ftpClient.Credentials = new NetworkCredential(ftpUser, ftpPassword);
                     ftpClient.DownloadFile($"ftp://{ftpHost}/{filePath}/{newestFileName}", newestFileName);
@@ -344,7 +344,7 @@ public class UpdatePriceQuantityService
             var worksheet = vb.Worksheet(1);
 
             string? model = "";
-            string? quantity = "";
+            string quantity = "";
             decimal price = 0;
             string? unitsInBox = "";
 
@@ -366,17 +366,17 @@ public class UpdatePriceQuantityService
                     }
                     else
                     {
-                        price = 1000000;
+                        continue;
                     }
 
-                    if (!_dc.XmlModelPriceList.TryAdd(model, price))
-                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                    if (!_dc.XmlModelPriceList.TryAdd(model, price)) _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+
                     continue;
                 }
 
                 if (_dc.WhatToUpdate == 2)
                 {
-                    quantity = row.Cell(quantityColumn).Value.ToString();
+                    quantity = row.Cell(quantityColumn).Value.ToString() ?? "";
 
                     if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
                     {
@@ -406,6 +406,7 @@ public class UpdatePriceQuantityService
                     else
                     {
                         price = 1000000;
+                        _dc.StateMessages.Add(($"Price not found in xml, set 1000000_{_dc.SuppName}_model: {row.Cell(modelColumnNumber)}_value: {row.Cell(priceColumn)}", ""));
                     }
 
                     quantity = row.Cell(quantityColumn).Value.ToString();
