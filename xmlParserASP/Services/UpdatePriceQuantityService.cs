@@ -654,7 +654,7 @@ public class UpdatePriceQuantityService
                                         }
                                     }
                                 }
-                                //else  // uncomment else statement to see all positions, where quantity wsa not updated
+                                //else  // uncomment else statement to see all positions, where Gamma quantity was equal to xml
                                 //{
                                 //    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
                                 //}
@@ -670,10 +670,10 @@ public class UpdatePriceQuantityService
                         {
                             WriteQtyToDb(sku, xmlQtyValue);
                         }
-                        //else  // uncomment else statement to see all positions, where quantity wsa not updated
-                        //{
-                        //    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
-                        //}
+                        else  // uncomment else statement to see all positions, where NOT Gamma quantity was equal to xml
+                        {
+                            _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                        }
                     }
                     else
                     {
