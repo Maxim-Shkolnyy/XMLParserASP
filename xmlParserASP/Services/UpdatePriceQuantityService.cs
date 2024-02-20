@@ -102,11 +102,12 @@ public class UpdatePriceQuantityService
         #endregion
 
 
-        if ((_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K") & _dc.CurrentTableDbColumnToUpdate == "Quantity")
-        {
-            GetGammaQtyXmlValues();
-        }
-        else if (_dc.SuppName == "Kanlux")
+        //if ((_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K") & _dc.CurrentTableDbColumnToUpdate == "Quantity")
+        //{
+        //    GetGammaQtyXmlValues();
+        //}
+        //else 
+        if (_dc.SuppName == "Kanlux")
         {
             if (_dc.CurrentTableDbColumnToUpdate == "Price" & _dc.SupplierXmlSetting.SettingName == "Kanlux_price_XL")
             {
@@ -169,6 +170,25 @@ public class UpdatePriceQuantityService
         string? model;
         string priceStr;
         decimal price;
+        int quantity;
+        List<string> stocksList = new();
+
+        if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+        {
+                List<string?> xPaths = new() {
+                _dc.SupplierXmlSetting.QuantityDbStock1,
+                _dc.SupplierXmlSetting.QuantityDbStock2,
+                _dc.SupplierXmlSetting.QuantityDbStock3,
+                _dc.SupplierXmlSetting.QuantityDbStock4,
+                _dc.SupplierXmlSetting.QuantityDbStock5,
+                _dc.SupplierXmlSetting.QuantityDbStock6,
+                _dc.SupplierXmlSetting.QuantityDbStock7,
+                _dc.SupplierXmlSetting.QuantityDbStock8,
+                _dc.SupplierXmlSetting.QuantityDbStock9 };
+
+                stocksList = xPaths.Where(x => x != null).ToList();
+
+        }
 
         foreach (XmlNode item in itemsList)
         {
@@ -227,14 +247,19 @@ public class UpdatePriceQuantityService
             {
                 if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                 {
-
-
-                    //_dc.XmlModelQuantityList.TryAdd(model, quantity);
+                    if(stocksList.Count > 0)
+                    {
+                        quantity = GetQtyFromCoupleStocks(item, stocksList);
+                        if(quantity != -1234567)
+                        {
+                            _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                        }
+                    }                    
                 }
                 else
                 {
                     if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText,
-                            out int quantity))
+                            out quantity))
                     {
                         _dc.StateMessages.Add((
                             $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct",
@@ -274,14 +299,19 @@ public class UpdatePriceQuantityService
 
                 if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                 {
-
-
-                    //_dc.XmlModelQuantityList.TryAdd(model, quantity);
+                    if (stocksList.Count > 0)
+                    {
+                        quantity = GetQtyFromCoupleStocks(item, stocksList);
+                        if (quantity != -1234567)
+                        {
+                            _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                        }
+                    }
                 }
                 else
                 {
                     if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText,
-                            out int quantity))
+                            out quantity))
                     {
                         _dc.StateMessages.Add((
                             $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct",
@@ -296,6 +326,17 @@ public class UpdatePriceQuantityService
         }
     }
 
+    private int GetQtyFromCoupleStocks(XmlNode xmlNode, List <string> stocksList)
+    {
+        var quantities = stocksList
+                .Select(stocksList => xmlNode.SelectSingleNode(stocksList)?.InnerText)
+                .Select(value => value != null ? (int.TryParse(value, out int result) ? result : 0) : 0)
+                .ToList();
+
+        int stocksSum = quantities != null ? quantities.Sum() : -1234567;
+
+        return stocksSum;
+    }
 
     private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword)
     {
@@ -451,66 +492,66 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private void GetGammaQtyXmlValues()
-    {
-        XmlDocument xmlDoc = new();
+    //private void GetGammaQtyXmlValues()
+    //{
+    //    XmlDocument xmlDoc = new();
 
-        int quantityNode;
-        string model = "";
-        //_dc.XmlModelQuantityList.Clear();
+    //    int quantityNode;
+    //    string model = "";
+    //    //_dc.XmlModelQuantityList.Clear();
 
-        xmlDoc.Load(_dc.SupplierXmlSetting.Path);
+    //    xmlDoc.Load(_dc.SupplierXmlSetting.Path);
 
-        XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.ProductNode);
+    //    XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.ProductNode);
 
-        List<string?> xPaths = new() {
-            _dc.SupplierXmlSetting.QuantityDbStock1,
-            _dc.SupplierXmlSetting.QuantityDbStock2,
-            _dc.SupplierXmlSetting.QuantityDbStock3,
-            _dc.SupplierXmlSetting.QuantityDbStock4,
-            _dc.SupplierXmlSetting.QuantityDbStock5,
-            _dc.SupplierXmlSetting.QuantityDbStock6,
-            _dc.SupplierXmlSetting.QuantityDbStock7,
-            _dc.SupplierXmlSetting.QuantityDbStock8,
-            _dc.SupplierXmlSetting.QuantityDbStock9
-        };
+    //    List<string?> xPaths = new() {
+    //        _dc.SupplierXmlSetting.QuantityDbStock1,
+    //        _dc.SupplierXmlSetting.QuantityDbStock2,
+    //        _dc.SupplierXmlSetting.QuantityDbStock3,
+    //        _dc.SupplierXmlSetting.QuantityDbStock4,
+    //        _dc.SupplierXmlSetting.QuantityDbStock5,
+    //        _dc.SupplierXmlSetting.QuantityDbStock6,
+    //        _dc.SupplierXmlSetting.QuantityDbStock7,
+    //        _dc.SupplierXmlSetting.QuantityDbStock8,
+    //        _dc.SupplierXmlSetting.QuantityDbStock9
+    //    };
 
-        List<string> stocksList = xPaths.Where(x => x != null).ToList();
+    //    List<string> stocksList = xPaths.Where(x => x != null).ToList();
 
-        foreach (XmlNode item in itemsList)
-        {
-            // get model
-            if (_dc.SupplierXmlSetting.ParamAttribute == null)
-            {
-                if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
-                {
-                    continue;
-                }
-                model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText;
-            }
-            else
-            {
-                if (item.Attributes["id"] != null)
-                {
-                    model = item.Attributes["id"]?.Value;
-                }
-                else
-                {
-                    continue;
-                }
-            }
+    //    foreach (XmlNode item in itemsList)
+    //    {
+    //        // get model
+    //        if (_dc.SupplierXmlSetting.ParamAttribute == null)
+    //        {
+    //            if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
+    //            {
+    //                continue;
+    //            }
+    //            model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText;
+    //        }
+    //        else
+    //        {
+    //            if (item.Attributes["id"] != null)
+    //            {
+    //                model = item.Attributes["id"]?.Value;
+    //            }
+    //            else
+    //            {
+    //                continue;
+    //            }
+    //        }
 
-            //get quantities from all stocks
-            var quantities = stocksList
-                .Select(stocksList => item.SelectSingleNode(stocksList)?.InnerText)
-                .Select(value => value != null ? (int.TryParse(value, out int result) ? result : 0) : 0)
-                .ToList();
+    //        //get quantities from all stocks
+    //        var quantities = stocksList
+    //            .Select(stocksList => item.SelectSingleNode(stocksList)?.InnerText)
+    //            .Select(value => value != null ? (int.TryParse(value, out int result) ? result : 0) : 0)
+    //            .ToList();
 
-            quantityNode = quantities.Sum();
+    //        quantityNode = quantities.Sum();
 
-            _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
-        }
-    }
+    //        _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
+    //    }
+    //}
 
     #endregion
 
@@ -560,7 +601,7 @@ public class UpdatePriceQuantityService
                         {
 
                             _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlPrice });
-                            _dc.StateMessages.Add(($"+_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price increased.{CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
+                            _dc.StateMessages.Add(($"+_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price increased. {CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
                         }
                         else
                         {
@@ -568,7 +609,7 @@ public class UpdatePriceQuantityService
                             if (xmlPrice != 0)
                             {
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlPrice });
-                                _dc.StateMessages.Add(($"-_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price decreased.{CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
+                                _dc.StateMessages.Add(($"-_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price decreased. {CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
                             }
                         }
                     }
@@ -680,7 +721,7 @@ public class UpdatePriceQuantityService
                                 }
                                 else  // uncomment else statement to see all positions, where Gamma quantity was equal to xml
                                 {
-                                    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                                    //_dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
                                 }
                             }
                         }
