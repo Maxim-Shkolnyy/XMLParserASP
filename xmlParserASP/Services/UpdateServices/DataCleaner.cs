@@ -10,7 +10,7 @@ public class DataCleaner
         _dc = dcS.Instance;
     }
 
-    public void CleanUp()
+    public void CleanUpAll()
     {
         if (_dc.StateMessages != null)
             _dc.StateMessages.Clear();
@@ -44,6 +44,21 @@ public class DataCleaner
 
         if (_dc.SkusToUpdate.Count > 0)
             _dc.SkusToUpdate.Clear();
+    }
+
+    public void CleanUpOnlyManualMinLisys()
+    {
+        if (_dc.StateMessages != null)
+            _dc.StateMessages.Clear();
+
+        if (_dc.ProductsManualSetPrices != null)
+            _dc.ProductsManualSetPrices.Clear();
+
+        if (_dc.ProductsManualSetQuanityList != null)
+            _dc.ProductsManualSetQuanityList.Clear();
+
+        if (_dc.ProductsSetQuantityWhenMinList != null)
+            _dc.ProductsSetQuantityWhenMinList.Clear();
     }
 }
 

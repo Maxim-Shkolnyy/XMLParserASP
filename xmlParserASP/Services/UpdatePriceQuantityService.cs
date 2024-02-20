@@ -45,7 +45,7 @@ public class UpdatePriceQuantityService
             m.SupplierId == _dc.SupplierXmlSetting.SupplierId))?.SupplierName;
 
 
-        if (_dc.SuppNameThatWasUpdatedList != null && !_dc.SuppNameThatWasUpdatedList.Contains(_dc.SuppName))
+        if (_dc.DbCodeModelPriceList.Count == 0)
         {
             _dc.CurrentSuppProductIDList = await _dbContextGamma.NgProductToSuppliers
         .Where(m => m.SupplierId == _dc.SuppName)
@@ -209,14 +209,14 @@ public class UpdatePriceQuantityService
 
                 if (!decimal.TryParse(priceStr, out price))
                 {
-                    _dc.StateMessages.Add(($"error_price {_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+                    _dc.StateMessages.Add(($"error_price {_dc.SuppName}_{model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
                     continue;
                 }
 
                 if (price == 0)
                 {
                     //uncomment string below to see all zero prices 
-                    _dc.StateMessages.Add(($"error_ price {_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
+                    //_dc.StateMessages.Add(($"error_ price {_dc.SuppName}_{model} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
                     continue;
                 }
 
@@ -654,10 +654,10 @@ public class UpdatePriceQuantityService
                                         }
                                     }
                                 }
-                                //else  // uncomment else statement to see all positions, where Gamma quantity was equal to xml
-                                //{
-                                //    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
-                                //}
+                                else  // uncomment else statement to see all positions, where Gamma quantity was equal to xml
+                                {
+                                    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                                }
                             }
                         }
                     }
@@ -670,10 +670,10 @@ public class UpdatePriceQuantityService
                         {
                             WriteQtyToDb(sku, xmlQtyValue);
                         }
-                        else  // uncomment else statement to see all positions, where NOT Gamma quantity was equal to xml
-                        {
-                            _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
-                        }
+                        //else  // uncomment else statement to see all positions, where NOT Gamma quantity was equal to xml
+                        //{
+                        //    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                        //}
                     }
                     else
                     {

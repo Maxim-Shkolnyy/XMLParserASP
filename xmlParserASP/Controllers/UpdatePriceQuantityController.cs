@@ -56,9 +56,7 @@ public class UpdatePriceQuantityController : Controller
         }
 
         List<(string, string)>? commonMessagesList = new();
-        //_dc.XmlModelPriceList.Clear();
-        //_dc.XmlModelQuantityList.Clear();
-        //_dc.SkusToUpdate.Clear();
+        _dc.SuppNameThatWasUpdatedList.Clear();
         
 
         if (QuantityList.Count == 0) //only prices. WhatToUpdate = 1
@@ -69,16 +67,16 @@ public class UpdatePriceQuantityController : Controller
             {
                 try
                 {
+                    _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Price";
-                    _cleaner.CleanUp();
                     updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
                     commonMessagesList.AddRange(updateAllPrices);
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Price was not updated!!! " + ex.Message);
-                    ViewBag.PriceError = "Price was not updated!!!" + ex.Message;
+                    ModelState.AddModelError("", $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!! " + ex.Message);
+                    ViewBag.PriceError = $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!!" + ex.Message;
                 }
             }
         }
@@ -90,25 +88,24 @@ public class UpdatePriceQuantityController : Controller
             {
                 try
                 {
+                    _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                    _cleaner.CleanUp();
                     updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
                     commonMessagesList.AddRange(updateQuantity);
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Quantity was not updated!!! " + ex.Message);
-                    ViewBag.QuantityError = "Quantity was not updated!!! " + ex.Message;
+                    ModelState.AddModelError("", $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!! " + ex.Message);
+                    ViewBag.QuantityError = $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!! " + ex.Message;
                 }
             }
         }
         else if (PriceList.Count > 0 & QuantityList.Count > 0) //both price and quantity. WhatToUpdate = 3
         {
+            _cleaner.CleanUpAll();
+
             _dc.WhatToUpdate = 3;
-
-            _cleaner.CleanUp();
-
             PriceList.Sort();
             QuantityList.Sort();
 
@@ -120,22 +117,23 @@ public class UpdatePriceQuantityController : Controller
                 {
                     try
                     {
+                        _cleaner.CleanUpAll();
                         _dc.CurrentTableDbColumnToUpdate = "Price";
-                        _cleaner.CleanUp();
                         updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
                         commonMessagesList.AddRange(updateAllPrices);
                     }
                     catch (Exception ex)
                     {
-                        ModelState.AddModelError("", "Price was not updated!!! " + ex.Message);
-                        ViewBag.PriceError = "Price was not updated!!!" + ex.Message;
+                        ModelState.AddModelError("", $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!! " + ex.Message);
+                        ViewBag.PriceError = $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!!" + ex.Message;
                     }
                 }
                 if (QuantityList.Contains(i))
                 {
                     try
                     {
+                        _cleaner.CleanUpOnlyManualMinLisys();
                         _dc.CurrentTableDbColumnToUpdate = "Quantity";
                         updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
@@ -143,8 +141,8 @@ public class UpdatePriceQuantityController : Controller
                     }
                     catch (Exception ex)
                     {
-                        ModelState.AddModelError("", "Quantity was not updated!!! " + ex.Message);
-                        ViewBag.QuantityError = "Quantity was not updated!!! " + ex.Message;
+                        ModelState.AddModelError("", $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!! " + ex.Message);
+                        ViewBag.QuantityError = $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!! " + ex.Message;
                     }
                 }
             }
