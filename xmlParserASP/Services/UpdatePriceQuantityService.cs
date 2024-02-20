@@ -143,7 +143,7 @@ public class UpdatePriceQuantityService
         var stateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
 
         _dc.StateMessages.Clear();
-        
+
         return stateMessages;
     }
 
@@ -225,13 +225,25 @@ public class UpdatePriceQuantityService
 
             if (_dc.WhatToUpdate == 2)
             {
-                if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity))
+                if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                 {
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+
+
+                    //_dc.XmlModelQuantityList.TryAdd(model, quantity);
                 }
                 else
                 {
-                    _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                    if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText,
+                            out int quantity))
+                    {
+                        _dc.StateMessages.Add((
+                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct",
+                            "red"));
+                    }
+                    else
+                    {
+                        _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                    }
                 }
             }
 
@@ -260,13 +272,25 @@ public class UpdatePriceQuantityService
                     _dc.XmlModelPriceList.TryAdd(model, price);
                 }
 
-                if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText, out int quantity))
+                if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                 {
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
+
+
+                    //_dc.XmlModelQuantityList.TryAdd(model, quantity);
                 }
                 else
                 {
-                    _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                    if (!int.TryParse(item.SelectSingleNode(_dc.SupplierXmlSetting.QuantityNode)?.InnerText,
+                            out int quantity))
+                    {
+                        _dc.StateMessages.Add((
+                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct",
+                            "red"));
+                    }
+                    else
+                    {
+                        _dc.XmlModelQuantityList.TryAdd(model, quantity);
+                    }
                 }
             }
         }
@@ -493,7 +517,7 @@ public class UpdatePriceQuantityService
     private void UpdatePrices()
     {
         _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
-        
+
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
             string sku = dbModel.Item1;
