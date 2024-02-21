@@ -59,10 +59,10 @@ public class ProductsManualSetPricesController : BaseController
 
                 // Викликаємо метод базового контролера для обробки рядка Excel
                 // В якості аргументів передаємо дані рядка та функцію мапування (MapExcelRowToEntity)
-                await base.ProcessExcelRow(excelRow, MapExcelRowToEntity);
+                //await base.ProcessExcelRow(excelRow, MapExcelRowToEntity);
             }
         }
-
+        return View();
     }
 
     private MmProductsManualSetPrice MapExcelRowToEntity(string excelRow)
