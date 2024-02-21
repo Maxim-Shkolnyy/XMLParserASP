@@ -138,8 +138,6 @@ public class UpdatePriceQuantityService
         }
 
         _dc.SuppNameThatWasUpdatedList.Add(_dc.SuppName);
-        _dc.StateMessages.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
-
 
         var stateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
 
@@ -719,10 +717,10 @@ public class UpdatePriceQuantityService
                                         }
                                     }
                                 }
-                                else  // uncomment else statement to see all positions, where Gamma quantity was equal to xml
-                                {
-                                    //_dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
-                                }
+                                //else  // uncomment else statement to see all positions, where Gamma quantity was equal to xml
+                                //{
+                                //    _dc.StateMessages.Add(($"Quantity not changed_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Real xml was {xmlQtyValue}. DB was:_{dbQtyValue}", "orange"));
+                                //}
                             }
                         }
                     }
@@ -757,7 +755,7 @@ public class UpdatePriceQuantityService
         _dbContextGamma.SaveChanges();
     }
 
-    private bool WriteQtyToDb(string sku, int xmlValue) //, (string, string, decimal, int, string) dbModel)
+    private bool WriteQtyToDb(string sku, int xmlValue)
     {
         int stockStatusIdToUpdate = xmlValue > 0 ? 7 : 5;
 

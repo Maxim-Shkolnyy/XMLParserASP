@@ -72,6 +72,7 @@ public class UpdatePriceQuantityController : Controller
                     updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
                     commonMessagesList.AddRange(updateAllPrices);
+                    commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                 }
                 catch (Exception ex)
                 {
@@ -93,6 +94,7 @@ public class UpdatePriceQuantityController : Controller
                     updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
                     commonMessagesList.AddRange(updateQuantity);
+                    commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                 }
                 catch (Exception ex)
                 {
@@ -122,6 +124,7 @@ public class UpdatePriceQuantityController : Controller
                         updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
                         commonMessagesList.AddRange(updateAllPrices);
+                        commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                     }
                     catch (Exception ex)
                     {
@@ -138,6 +141,7 @@ public class UpdatePriceQuantityController : Controller
                         updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
                         commonMessagesList.AddRange(updateQuantity);
+                        commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                     }
                     catch (Exception ex)
                     {
