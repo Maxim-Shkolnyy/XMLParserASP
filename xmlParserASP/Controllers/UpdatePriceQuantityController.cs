@@ -11,18 +11,18 @@ namespace xmlParserASP.Controllers;
 public class UpdatePriceQuantityController : Controller
 {
     private readonly GammaContext _db;
-    private readonly MmSupplierXmlSetting _setting;
+    //private readonly MmSupplierXmlSetting _setting;
     private readonly UpdatePriceQuantityService _updatePriceQuantityService;
     private readonly PriceQuantityViewModel _priceQuantityViewModel;
     private readonly List<MmSupplierXmlSetting> _settingsList = new();
-    private List<(string, string)>? updateAllPrices = new();
-    private List<(string, string)>? updateQuantity = new();
+    //private List<(string, string)>? updateAllPrices = new();
+    //private List<(string, string)>? updateQuantity = new();
     private readonly DataContainer _dc;
     private readonly DataCleaner _cleaner;
-    public UpdatePriceQuantityController(GammaContext db, MmSupplierXmlSetting setting, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel, DataContainerSingleton dcS, DataCleaner cleaner)
+    public UpdatePriceQuantityController(GammaContext db, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel, DataContainerSingleton dcS, DataCleaner cleaner) //MmSupplierXmlSetting setting,
     {
         _db = db;
-        _setting = setting;
+        //_setting = setting;
         _updatePriceQuantityService = updatePriceQuantityService;
         _priceQuantityViewModel = priceQuantityViewModel;
         _settingsList = _db.MmSupplierXmlSettings.ToList();
@@ -69,9 +69,9 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Price";
-                    updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
+                    await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
-                    commonMessagesList.AddRange(updateAllPrices);
+                    commonMessagesList.AddRange(_dc.StateMessages);
                     commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                 }
                 catch (Exception ex)
@@ -91,9 +91,9 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                    updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
+                    await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
                     
-                    commonMessagesList.AddRange(updateQuantity);
+                    commonMessagesList.AddRange(_dc.StateMessages);
                     commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                 }
                 catch (Exception ex)
@@ -121,9 +121,9 @@ public class UpdatePriceQuantityController : Controller
                     {
                         _cleaner.CleanUpAll();
                         _dc.CurrentTableDbColumnToUpdate = "Price";
-                        updateAllPrices = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
+                        await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
-                        commonMessagesList.AddRange(updateAllPrices);
+                        commonMessagesList.AddRange(_dc.StateMessages);
                         commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                     }
                     catch (Exception ex)
@@ -138,9 +138,9 @@ public class UpdatePriceQuantityController : Controller
                     {
                         _cleaner.CleanUpOnlyManualMinLisys();
                         _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                        updateQuantity = await _updatePriceQuantityService.MasterUpdatePriceQty(i);
+                        await _updatePriceQuantityService.MasterUpdatePriceQty(i);
                         
-                        commonMessagesList.AddRange(updateQuantity);
+                        commonMessagesList.AddRange(_dc.StateMessages);
                         commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
                     }
                     catch (Exception ex)

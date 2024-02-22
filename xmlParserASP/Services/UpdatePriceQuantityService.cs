@@ -22,7 +22,7 @@ public class UpdatePriceQuantityService
         _dc = dcS.Instance;
     }
 
-    public async Task<List<(string, string)>> MasterUpdatePriceQty(int settingsId)
+    public async Task MasterUpdatePriceQty(int settingsId)
     {
         await GetDataFromDb(settingsId);
 
@@ -58,11 +58,7 @@ public class UpdatePriceQuantityService
 
         _dc.SuppNameThatWasUpdatedList.Add(_dc.SuppName);
 
-        var stateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
-
-        _dc.StateMessages.Clear();
-
-        return stateMessages;
+        _dc.StateMessages = _dc.StateMessages.OrderBy(m => m.Item1).ToList();
     }
 
 
