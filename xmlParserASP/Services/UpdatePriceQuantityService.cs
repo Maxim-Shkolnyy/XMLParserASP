@@ -24,89 +24,8 @@ public class UpdatePriceQuantityService
 
     public async Task<List<(string, string)>> MasterUpdatePriceQty(int settingsId)
     {
-        if (_dc.SuppliersList.Count == 0)
-        {
-            _dc.SuppliersList = _dbContextGamma.MmSuppliers.ToList();
-            _dc.SuppSettingList = _dbContextGamma.MmSupplierXmlSettings.ToList();
-        }
+        await GetDataFromDb(settingsId);
 
-        #region Get current values from DB and add them to new '_dc.DbCodeModelPriceList' on each iteration
-
-        _dc.SupplierXmlSetting = _dc.SuppSettingList
-            .FirstOrDefault(m => m.SupplierXmlSettingId == settingsId);
-
-        if (_dc.SupplierXmlSetting == null)
-        {
-            _dc.StateMessages.Add(("1_Supplier setting was not found in DB", "red"));
-            return _dc.StateMessages;
-        }
-
-        _dc.SuppName = (_dc.SuppliersList.FirstOrDefault(m =>
-            m.SupplierId == _dc.SupplierXmlSetting.SupplierId))?.SupplierName;
-
-
-        if (_dc.DbCodeModelPriceList.Count == 0)
-        {
-            _dc.CurrentSuppProductIDList = await _dbContextGamma.NgProductToSuppliers
-        .Where(m => m.SupplierId == _dc.SuppName)
-        .Select(m => m.ProductId)
-        .ToListAsync();
-
-            if (_dc.CurrentSuppProductIDList == null)
-            {
-                _dc.StateMessages.Add(($"1_Supplier {_dc.SuppName} has no one product in DB", "red"));
-                return _dc.StateMessages;
-            }
-
-
-            _dc.Products = await _dbContextGamma.NgProducts
-                .Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId) && p.Status == true)
-                .Select(m => new ProductMinInfoModel
-                {
-                    ProductId = m.ProductId,
-                    Sku = m.Sku,
-                    Model = m.Model,
-                    Price = m.Price,
-                    Quantity = m.Quantity
-                }).ToListAsync();
-
-            //todo: END this
-
-            _dc.NamesOfProducts =
-                await _dbContextGamma.NgProductDescriptions.Where(p => _dc.Products.Select(id => id.ProductId).Contains(p.ProductId))
-                    .Where(n => n.LanguageId ==3)
-                    .Select(p => new ProductNamesListModel
-                    {
-                        ProductId = p.ProductId,
-                        ProductName = p.Name
-                    }
-                ).ToListAsync();
-
-            foreach (var product in _dc.Products)
-            {
-                try
-                {
-                    decimal priceValue = product.Price;
-                    int qtyValue = product.Quantity;
-                    var productName = _dc.NamesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.ProductName;
-
-                    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, qtyValue, productName));
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error processing field {product.Sku} : {ex.Message}");
-                }
-            }
-        }
-
-        #endregion
-
-
-        //if ((_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K") & _dc.CurrentTableDbColumnToUpdate == "Quantity")
-        //{
-        //    GetGammaQtyXmlValues();
-        //}
-        //else 
         if (_dc.SuppName == "Kanlux")
         {
             if (_dc.CurrentTableDbColumnToUpdate == "Price" & _dc.SupplierXmlSetting.SettingName == "Kanlux_price_XL")
@@ -146,7 +65,78 @@ public class UpdatePriceQuantityService
         return stateMessages;
     }
 
-    #region Get xml and excel values from all suppliers unloads and add it to '_dc.XmlModelPriceList or XmlModelQuantityList'
+
+    private async Task GetDataFromDb (int settingsId)
+    {
+        if (_dc.SuppliersList.Count == 0)
+        {
+            _dc.SuppliersList = _dbContextGamma.MmSuppliers.ToList();
+            _dc.SuppSettingList = _dbContextGamma.MmSupplierXmlSettings.ToList();
+        }
+
+        _dc.SupplierXmlSetting = _dc.SuppSettingList
+            .FirstOrDefault(m => m.SupplierXmlSettingId == settingsId);
+
+        if (_dc.SupplierXmlSetting == null)
+        {
+            _dc.StateMessages.Add(("1_Supplier setting was not found in DB", "red"));
+        }
+
+        _dc.SuppName = (_dc.SuppliersList.FirstOrDefault(m =>
+            m.SupplierId == _dc.SupplierXmlSetting.SupplierId))?.SupplierName;
+
+
+        if (_dc.DbCodeModelPriceList.Count == 0)
+        {
+            _dc.CurrentSuppProductIDList = await _dbContextGamma.NgProductToSuppliers
+        .Where(m => m.SupplierId == _dc.SuppName)
+        .Select(m => m.ProductId)
+        .ToListAsync();
+
+            if (_dc.CurrentSuppProductIDList == null)
+            {
+                _dc.StateMessages.Add(($"1_Supplier {_dc.SuppName} has no one product in DB", "red"));
+            }
+
+            _dc.Products = await _dbContextGamma.NgProducts
+                .Where(p => _dc.CurrentSuppProductIDList.Contains(p.ProductId) && p.Status == true)
+                .Select(m => new ProductMinInfoModel
+                {
+                    ProductId = m.ProductId,
+                    Sku = m.Sku,
+                    Model = m.Model,
+                    Price = m.Price,
+                    Quantity = m.Quantity
+                }).ToListAsync();
+
+            _dc.NamesOfProducts =
+                await _dbContextGamma.NgProductDescriptions.Where(p => _dc.Products.Select(id => id.ProductId).Contains(p.ProductId))
+                    .Where(n => n.LanguageId ==3)
+                    .Select(p => new ProductNamesListModel
+                    {
+                        ProductId = p.ProductId,
+                        ProductName = p.Name
+                    }
+                ).ToListAsync();
+
+            foreach (var product in _dc.Products)
+            {
+                try
+                {
+                    decimal priceValue = product.Price;
+                    int qtyValue = product.Quantity;
+                    var productName = _dc.NamesOfProducts.FirstOrDefault(n => n.ProductId == product.ProductId)?.ProductName;
+
+                    _dc.DbCodeModelPriceList.Add((product.Sku, product.Model, priceValue, qtyValue, productName));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error processing field {product.Sku} : {ex.Message}");
+                }
+            }
+        }
+    }
+
 
     private void GetXmlValues()
     {
@@ -154,14 +144,11 @@ public class UpdatePriceQuantityService
         {
             return;
         }
-        XmlDocument xmlDoc = new();
 
         _dc.XmlModelPriceList.Clear();
 
-        xmlDoc.Load(_dc.SupplierXmlSetting.Path);
-
-        // xmlDoc.LoadXml(_dc.SupplierXmlSetting.Path);
-
+        XmlDocument xmlDoc = new();
+        xmlDoc.Load(_dc.SupplierXmlSetting.Path);  // xmlDoc.LoadXml(_dc.SupplierXmlSetting.Path);
 
         XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.ProductNode);
 
@@ -185,7 +172,6 @@ public class UpdatePriceQuantityService
                 _dc.SupplierXmlSetting.QuantityDbStock9 };
 
                 stocksList = xPaths.Where(x => x != null).ToList();
-
         }
 
         foreach (XmlNode item in itemsList)
@@ -260,8 +246,7 @@ public class UpdatePriceQuantityService
                             out quantity))
                     {
                         _dc.StateMessages.Add((
-                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct",
-                            "red"));
+                            $"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {model} {_dc.CurrentTableDbColumnToUpdate} NOT converted to number correct", "red"));
                     }
                     else
                     {
@@ -288,7 +273,6 @@ public class UpdatePriceQuantityService
                 {
                     //uncomment string below to see all zero prices 
                     _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
-
                 }
                 else
                 {
@@ -324,17 +308,6 @@ public class UpdatePriceQuantityService
         }
     }
 
-    private int GetQtyFromCoupleStocks(XmlNode xmlNode, List <string> stocksList)
-    {
-        var quantities = stocksList
-                .Select(stocksList => xmlNode.SelectSingleNode(stocksList)?.InnerText)
-                .Select(value => value != null ? (int.TryParse(value, out int result) ? result : 0) : 0)
-                .ToList();
-
-        int stocksSum = quantities != null ? quantities.Sum() : -1234567;
-
-        return stocksSum;
-    }
 
     private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword)
     {
@@ -490,68 +463,19 @@ public class UpdatePriceQuantityService
         }
     }
 
-    //private void GetGammaQtyXmlValues()
-    //{
-    //    XmlDocument xmlDoc = new();
 
-    //    int quantityNode;
-    //    string model = "";
-    //    //_dc.XmlModelQuantityList.Clear();
+    private static int GetQtyFromCoupleStocks(XmlNode xmlNode, List<string> stocksList)
+    {
+        var quantities = stocksList
+            .Select(stocksList => xmlNode.SelectSingleNode(stocksList)?.InnerText)
+            .Select(value => value != null ? (int.TryParse(value, out int result) ? result : 0) : 0)
+            .ToList();
 
-    //    xmlDoc.Load(_dc.SupplierXmlSetting.Path);
+        int stocksSum = quantities != null ? quantities.Sum() : -1234567;
 
-    //    XmlNodeList itemsList = xmlDoc.GetElementsByTagName(_dc.SupplierXmlSetting.ProductNode);
+        return stocksSum;
+    }
 
-    //    List<string?> xPaths = new() {
-    //        _dc.SupplierXmlSetting.QuantityDbStock1,
-    //        _dc.SupplierXmlSetting.QuantityDbStock2,
-    //        _dc.SupplierXmlSetting.QuantityDbStock3,
-    //        _dc.SupplierXmlSetting.QuantityDbStock4,
-    //        _dc.SupplierXmlSetting.QuantityDbStock5,
-    //        _dc.SupplierXmlSetting.QuantityDbStock6,
-    //        _dc.SupplierXmlSetting.QuantityDbStock7,
-    //        _dc.SupplierXmlSetting.QuantityDbStock8,
-    //        _dc.SupplierXmlSetting.QuantityDbStock9
-    //    };
-
-    //    List<string> stocksList = xPaths.Where(x => x != null).ToList();
-
-    //    foreach (XmlNode item in itemsList)
-    //    {
-    //        // get model
-    //        if (_dc.SupplierXmlSetting.ParamAttribute == null)
-    //        {
-    //            if (item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode) == null)
-    //            {
-    //                continue;
-    //            }
-    //            model = item.SelectSingleNode(_dc.SupplierXmlSetting.ModelNode)?.InnerText;
-    //        }
-    //        else
-    //        {
-    //            if (item.Attributes["id"] != null)
-    //            {
-    //                model = item.Attributes["id"]?.Value;
-    //            }
-    //            else
-    //            {
-    //                continue;
-    //            }
-    //        }
-
-    //        //get quantities from all stocks
-    //        var quantities = stocksList
-    //            .Select(stocksList => item.SelectSingleNode(stocksList)?.InnerText)
-    //            .Select(value => value != null ? (int.TryParse(value, out int result) ? result : 0) : 0)
-    //            .ToList();
-
-    //        quantityNode = quantities.Sum();
-
-    //        _dc.XmlModelQuantityList.TryAdd(model, quantityNode);
-    //    }
-    //}
-
-    #endregion
 
     private void UpdatePrices()
     {
@@ -764,22 +688,6 @@ public class UpdatePriceQuantityService
         _dbContextGamma.SaveChanges();
     }
 
-    private bool WriteQtyToDb(string sku, int xmlValue)
-    {
-        int stockStatusIdToUpdate = xmlValue > 0 ? 7 : 5;
-
-        try
-        {
-            _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Quantity = xmlValue, StockStatusId = stockStatusIdToUpdate });
-            return true;
-        }
-        catch (Exception e)
-        {
-            _dc.StateMessages.Add(($"error_Something happened while {_dc.CurrentTableDbColumnToUpdate} of {_dc.SuppName}  updated. Data NOT ADD to DB: {sku} {xmlValue}", "red"));
-            return false;
-        }
-    }
-
     private bool RetrieveXmlValueFromList(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue)
     {
         if (_dc.XmlModelQuantityList.TryGetValue(searchValueinXml, out xmlQtyValue))
@@ -804,5 +712,21 @@ public class UpdatePriceQuantityService
             return input.Substring(0, maxLength - 3) + "...";
         }
         return input.PadRight(maxLength);
+    }
+
+    private bool WriteQtyToDb(string sku, int xmlValue)
+    {
+        int stockStatusIdToUpdate = xmlValue > 0 ? 7 : 5;
+
+        try
+        {
+            _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Quantity = xmlValue, StockStatusId = stockStatusIdToUpdate });
+            return true;
+        }
+        catch (Exception e)
+        {
+            _dc.StateMessages.Add(($"error_Something happened while {_dc.CurrentTableDbColumnToUpdate} of {_dc.SuppName}  updated. Data NOT ADD to DB: {sku} {xmlValue}", "red"));
+            return false;
+        }
     }
 }
