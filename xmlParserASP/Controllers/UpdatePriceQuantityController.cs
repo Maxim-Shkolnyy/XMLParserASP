@@ -5,26 +5,19 @@ using xmlParserASP.Models;
 using xmlParserASP.Services;
 using xmlParserASP.Services.UpdateServices;
 
-
 namespace xmlParserASP.Controllers;
 
 public class UpdatePriceQuantityController : Controller
 {
     private readonly GammaContext _db;
-    //private readonly MmSupplierXmlSetting _setting;
     private readonly UpdatePriceQuantityService _updatePriceQuantityService;
-    private readonly PriceQuantityViewModel _priceQuantityViewModel;
     private readonly List<MmSupplierXmlSetting> _settingsList = new();
-    //private List<(string, string)>? updateAllPrices = new();
-    //private List<(string, string)>? updateQuantity = new();
     private readonly DataContainer _dc;
     private readonly DataCleaner _cleaner;
-    public UpdatePriceQuantityController(GammaContext db, UpdatePriceQuantityService updatePriceQuantityService, PriceQuantityViewModel priceQuantityViewModel, DataContainerSingleton dcS, DataCleaner cleaner) //MmSupplierXmlSetting setting,
+    public UpdatePriceQuantityController(GammaContext db, UpdatePriceQuantityService updatePriceQuantityService, DataContainerSingleton dcS, DataCleaner cleaner)
     {
         _db = db;
-        //_setting = setting;
         _updatePriceQuantityService = updatePriceQuantityService;
-        _priceQuantityViewModel = priceQuantityViewModel;
         _settingsList = _db.MmSupplierXmlSettings.ToList();
         _dc = dcS.Instance;
         _cleaner = cleaner;
@@ -69,7 +62,7 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Price";
-                    await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
+                    await _updatePriceQuantityService.Update(suppSetting);
                     
                     commonMessagesList.AddRange(_dc.StateMessages);
                     commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
@@ -91,7 +84,7 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                    await _updatePriceQuantityService.MasterUpdatePriceQty(suppSetting);
+                    await _updatePriceQuantityService.Update(suppSetting);
                     
                     commonMessagesList.AddRange(_dc.StateMessages);
                     commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
@@ -121,7 +114,7 @@ public class UpdatePriceQuantityController : Controller
                     {
                         _cleaner.CleanUpAll();
                         _dc.CurrentTableDbColumnToUpdate = "Price";
-                        await _updatePriceQuantityService.MasterUpdatePriceQty(i);
+                        await _updatePriceQuantityService.Update(i);
                         
                         commonMessagesList.AddRange(_dc.StateMessages);
                         commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
@@ -138,7 +131,7 @@ public class UpdatePriceQuantityController : Controller
                     {
                         _cleaner.CleanUpOnlyManualMinLisys();
                         _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                        await _updatePriceQuantityService.MasterUpdatePriceQty(i);
+                        await _updatePriceQuantityService.Update(i);
                         
                         commonMessagesList.AddRange(_dc.StateMessages);
                         commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));

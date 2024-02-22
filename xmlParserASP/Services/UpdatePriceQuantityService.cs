@@ -22,7 +22,7 @@ public class UpdatePriceQuantityService
         _dc = dcS.Instance;
     }
 
-    public async Task MasterUpdatePriceQty(int settingsId)
+    public async Task Update(int settingsId)
     {
         await GetDataFromDb(settingsId);
 
