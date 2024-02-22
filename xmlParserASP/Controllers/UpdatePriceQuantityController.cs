@@ -62,7 +62,7 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Price";
-                    await _updatePriceQuantityService.Update(suppSetting);
+                    await _updatePriceQuantityService.MasterUpdate(suppSetting);
                     
                     commonMessagesList.AddRange(_dc.StateMessages);
                     commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
@@ -84,7 +84,7 @@ public class UpdatePriceQuantityController : Controller
                 {
                     _cleaner.CleanUpAll();
                     _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                    await _updatePriceQuantityService.Update(suppSetting);
+                    await _updatePriceQuantityService.MasterUpdate(suppSetting);
                     
                     commonMessagesList.AddRange(_dc.StateMessages);
                     commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
@@ -114,7 +114,7 @@ public class UpdatePriceQuantityController : Controller
                     {
                         _cleaner.CleanUpAll();
                         _dc.CurrentTableDbColumnToUpdate = "Price";
-                        await _updatePriceQuantityService.Update(i);
+                        await _updatePriceQuantityService.MasterUpdate(i);
                         
                         commonMessagesList.AddRange(_dc.StateMessages);
                         commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
@@ -131,7 +131,7 @@ public class UpdatePriceQuantityController : Controller
                     {
                         _cleaner.CleanUpOnlyManualMinLisys();
                         _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                        await _updatePriceQuantityService.Update(i);
+                        await _updatePriceQuantityService.MasterUpdate(i);
                         
                         commonMessagesList.AddRange(_dc.StateMessages);
                         commonMessagesList.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} updated successful", "green"));
