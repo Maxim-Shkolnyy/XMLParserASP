@@ -732,6 +732,15 @@ public class UpdatePriceQuantityService
                         if (dbQtyValue != xmlQtyValue)
                         {
                             WriteQtyToDb(sku, xmlQtyValue);
+
+                            if (dbQtyValue < xmlQtyValue)
+                            {
+                                _dc.StateMessages.Add(($"+ {_dc.CurrentTableDbColumnToUpdate}_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "purple"));
+                            }
+                            else
+                            {
+                                _dc.StateMessages.Add(($"- {_dc.CurrentTableDbColumnToUpdate}_{sku}_{dbModel.Item2}_{_dc.SuppName}_{CutString(dbModel.Item5)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "blue"));
+                            }
                         }
                         //else  // uncomment else statement to see all positions, where NOT Gamma quantity was equal to xml
                         //{
