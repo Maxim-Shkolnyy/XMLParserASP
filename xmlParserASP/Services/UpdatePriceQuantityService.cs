@@ -268,7 +268,7 @@ public class UpdatePriceQuantityService
                 if (price == 0)
                 {
                     //uncomment string below to see all zero prices 
-                    _dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
+                    //_dc.StateMessages.Add(($"error_{_dc.SuppName}_{item.SelectSingleNode(_dc.SupplierXmlSetting.PriceNode)} {_dc.CurrentTableDbColumnToUpdate} not updated, was 0 in xml", "red"));
                 }
                 else
                 {
@@ -684,6 +684,7 @@ public class UpdatePriceQuantityService
         _dbContextGamma.SaveChanges();
     }
 
+
     private bool RetrieveXmlValueFromList(string searchValueinXml, int? dbQtyValue, out int xmlQtyValue)
     {
         if (_dc.XmlModelQuantityList.TryGetValue(searchValueinXml, out xmlQtyValue))
@@ -699,6 +700,7 @@ public class UpdatePriceQuantityService
         return false;
     }
 
+
     private static string CutString(string input)
     {
         const int maxLength = 70;
@@ -709,6 +711,7 @@ public class UpdatePriceQuantityService
         }
         return input.PadRight(maxLength);
     }
+
 
     private bool WriteQtyToDb(string sku, int xmlValue)
     {
