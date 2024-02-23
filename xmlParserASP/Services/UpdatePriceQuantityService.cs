@@ -24,7 +24,7 @@ public class UpdatePriceQuantityService
 
     public async Task MasterUpdate(int settingsId)
     {
-        await GetDataFromDb(settingsId);
+        await GetProductsFromDb(settingsId);
 
         if (_dc.SuppName == "Kanlux")
         {
@@ -62,7 +62,7 @@ public class UpdatePriceQuantityService
     }
 
 
-    private async Task GetDataFromDb (int settingsId)
+    private async Task GetProductsFromDb (int settingsId)
     {
         if (_dc.SuppliersList.Count == 0)
         {
