@@ -23,6 +23,10 @@ public class DataContainer
     public List<MmProductsSetQuantityWhenMin>? ProductsSetQuantityWhenMinList { get; set; }
     public List<string>? SuppNameThatWasUpdatedList { get; set; }
     public List<int>? CurrentSuppProductIDList { get; set; }
+    public int FoundItemsInXmlForCurrentSupp { get; set; }
+    public int FoundProductsInDbForCurrentSupp { get; set; }
+    public int ProductsWasChanged { get; set; }
+    public int ProductsWasNotChanged { get; set; }
 
     public List<(string, string, decimal, int, string)> DbCodeModelPriceList = new();
     public List<ProductNamesListModel> NamesOfProducts { get; set; } = new();

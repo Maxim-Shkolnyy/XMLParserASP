@@ -44,6 +44,14 @@ public class DataCleaner
 
         if (_dc.SkusToUpdate.Count > 0)
             _dc.SkusToUpdate.Clear();
+
+        _dc.FoundItemsInXmlForCurrentSupp = 0;
+
+        _dc.FoundProductsInDbForCurrentSupp = 0;
+
+        _dc.ProductsWasChanged = 0;
+
+        _dc.ProductsWasNotChanged = 0;
     }
 
     public void CleanUpOnlyManualMinLisys()
