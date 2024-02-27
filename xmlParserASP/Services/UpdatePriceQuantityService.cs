@@ -551,6 +551,14 @@ public class UpdatePriceQuantityService
                 .ToList();
         }
 
+        if (_dc.WhatToUpdate == 3)
+        {
+            _dc.FoundItemsInXmlForCurrentSupp = 0;
+            _dc.NotFoundItemsInXmlForCurrentSupp = 0;
+            _dc.ProductsWasChanged = 0;
+            _dc.ProductsWasNotChanged = 0;
+        }
+
         if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
         {
             if (_dc.ProductsManualSetQuanityList.Count > 0)

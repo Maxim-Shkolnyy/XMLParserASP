@@ -1,7 +1,6 @@
 ﻿@* @model PriceQuantityViewModel *@
 
 <h1> Result of prices and quantity update</h1>
-@* <h2>Prices</h2> *@
 
 @{
     @if (ViewBag.PriceError != null)
@@ -21,19 +20,7 @@
     {
         <text>No one product was found or updated. Check your settings</text>
     }
-
-    // <style>
-    //     table {
-    //         width: 100%;
-    //         table-layout: fixed;
-    //     }
-
-    //         table th, table td {
-    //             width: 150px;
-    //             word-wrap: break-word;
-    //         }
-    // </style>
-
+    
     <table border="1" style="table-layout: fixed; width: 100%; border-collapse: collapse;">
         <tr>
             <th>SuppName</th>
@@ -55,6 +42,8 @@
             </tr>
         }
     </table>
+
+    <br />
 
     int count = 0;
 
