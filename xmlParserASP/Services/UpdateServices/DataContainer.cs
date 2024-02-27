@@ -24,6 +24,7 @@ public class DataContainer
     public List<string>? SuppNameThatWasUpdatedList { get; set; }
     public List<int>? CurrentSuppProductIDList { get; set; }
     public int FoundItemsInXmlForCurrentSupp { get; set; }
+    public int NotFoundItemsInXmlForCurrentSupp { get; set; }
     public int FoundProductsInDbForCurrentSupp { get; set; }
     public int ProductsWasChanged { get; set; }
     public int ProductsWasNotChanged { get; set; }

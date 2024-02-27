@@ -47,6 +47,8 @@ public class DataCleaner
 
         _dc.FoundItemsInXmlForCurrentSupp = 0;
 
+        _dc.NotFoundItemsInXmlForCurrentSupp = 0;
+
         _dc.FoundProductsInDbForCurrentSupp = 0;
 
         _dc.ProductsWasChanged = 0;

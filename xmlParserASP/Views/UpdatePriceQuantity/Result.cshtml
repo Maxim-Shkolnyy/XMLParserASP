@@ -1,44 +1,70 @@
 ﻿@* @model PriceQuantityViewModel *@
 
 <h1> Result of prices and quantity update</h1>
-<h2>Prices</h2>
+@* <h2>Prices</h2> *@
 
 @{
-   @if (ViewBag.PriceError != null)
-{
-    <div style="color: red">@ViewBag.PriceError</div>
-}
+    @if (ViewBag.PriceError != null)
+    {
+        <div style="color: red">@ViewBag.PriceError</div>
+    }
 
-@if (ViewBag.QuantityError != null)
-{
-    <div style="color: red">@ViewBag.QuantityError</div>
-}
+    @if (ViewBag.QuantityError != null)
+    {
+        <div style="color: red">@ViewBag.QuantityError</div>
+    }
 
+    var stateMessages = ViewBag.UpdateQuantityResult;
+    var totalStateMessages = ViewBag.TotalMessages;
 
-    var prices = ViewBag.UpdatePriceResult;
-    var quantity = ViewBag.UpdateQuantityResult;
+    if (stateMessages == null)
+    {
+        <text>No one product was found or updated. Check your settings</text>
+    }
+
+    // <style>
+    //     table {
+    //         width: 100%;
+    //         table-layout: fixed;
+    //     }
+
+    //         table th, table td {
+    //             width: 150px;
+    //             word-wrap: break-word;
+    //         }
+    // </style>
+
+    <table border="1" style="table-layout: fixed; width: 100%; border-collapse: collapse;">
+        <tr>
+            <th>SuppName</th>
+            <th>What</th>
+            <th>Products in DB</th>
+            <th>Products in XML</th>
+            <th>Not found in XML</th>
+            <th>Products updated</th>
+            <th>Value in DB was correct</th>
+            
+        </tr>
+        @foreach (var message in totalStateMessages)
+        {
+            <tr>
+                @foreach (var part in message.Item1.Split('_'))
+                {
+                    <td>@part</td>
+                }
+            </tr>
+        }
+    </table>
+
     int count = 0;
 
-    if (prices != null)
+    if (stateMessages != null)
     {
-        foreach (var price in prices)
-        {
-            count++;
-            <div style="color: @price.Item2">@count _ @price.Item1</div>
-        }
-    }
-}
-<h2>Quantity</h2>
-
-@{
-    count = 0;
-
-    if (quantity != null)
-    {
-        foreach (var qty in quantity)
+        foreach (var qty in stateMessages)
         {
             count++;
             <div style="color: @qty.Item2">@count _@qty.Item1</div>
         }
     }
+
 }
