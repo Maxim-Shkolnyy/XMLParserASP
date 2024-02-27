@@ -486,24 +486,6 @@ public class UpdatePriceQuantityService
                 continue;
             }
 
-            if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
-            {
-                _dc.ProductsManualSetPrices = _dbContextGamma.ProductsManualSetPrices.Where(n => _dc.SkusToUpdate.Contains(n.Sku)).ToList();
-
-                if (_dc.ProductsManualSetPrices.Any(p => p.Sku == productToUpdate.Sku)) //ручне встановлення наявності.
-                {
-                    var manualValue = _dc.ProductsManualSetPrices.FirstOrDefault(p => p.Sku == sku)?.SetInStockPrice ?? 0;
-
-                    if (dbModel.Item3 != manualValue)
-                    {
-                        _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = manualValue });
-
-                        _dc.StateMessages.Add(($"manualPrice_{sku}_{dbModel.Item2}_{_dc.SuppName}_{dbModel.Item5}_SetValue:_{manualValue} грн", "black"));
-                        continue;
-                    }
-                }
-            }
-
             if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice))
             {
                 if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
