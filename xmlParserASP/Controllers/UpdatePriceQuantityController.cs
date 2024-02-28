@@ -14,6 +14,8 @@ public class UpdatePriceQuantityController : Controller
     private readonly List<MmSupplierXmlSetting> _settingsList = new();
     private readonly DataContainer _dc;
     private readonly DataCleaner _cleaner;
+    List<(string, string)>? commonMessagesList = new();
+    List<(string, string)>? totalResultMessagesList = new();
     public UpdatePriceQuantityController(GammaContext db, UpdatePriceQuantityService updatePriceQuantityService, DataContainerSingleton dcS, DataCleaner cleaner)
     {
         _db = db;
@@ -48,8 +50,7 @@ public class UpdatePriceQuantityController : Controller
             return View("Index", mySettingList);
         }
 
-        List<(string, string)>? commonMessagesList = new();
-        List<(string, string)>? totalResultMessagesList = new();
+        
         _dc.SuppNameThatWasUpdatedList.Clear();
         
 
@@ -65,12 +66,7 @@ public class UpdatePriceQuantityController : Controller
                     _dc.CurrentTableDbColumnToUpdate = "Price";
                     await _updatePriceQuantityService.MasterUpdate(suppSetting);
 
-                    totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
-                                                 $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
-
-                    commonMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate} ok_\n" +
-                                            $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
-                                            $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
+                    FillFirstViewTable();
 
                     commonMessagesList.AddRange(_dc.StateMessages);
                 }
@@ -93,12 +89,7 @@ public class UpdatePriceQuantityController : Controller
                     _dc.CurrentTableDbColumnToUpdate = "Quantity";
                     await _updatePriceQuantityService.MasterUpdate(suppSetting);
 
-                    totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
-                                                 $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
-
-                    commonMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate} ok_\n" +
-                                            $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
-                                            $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
+                    FillFirstViewTable();
 
                     commonMessagesList.AddRange(_dc.StateMessages);
                 }
@@ -129,12 +120,7 @@ public class UpdatePriceQuantityController : Controller
                         _dc.CurrentTableDbColumnToUpdate = "Price";
                         await _updatePriceQuantityService.MasterUpdate(i);
 
-                        totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
-                                                     $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
-
-                        commonMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate} ok_\n" +
-                                                $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
-                                                $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
+                        FillFirstViewTable();
 
                         commonMessagesList.AddRange(_dc.StateMessages);
                     }
@@ -152,12 +138,7 @@ public class UpdatePriceQuantityController : Controller
                         _dc.CurrentTableDbColumnToUpdate = "Quantity";
                         await _updatePriceQuantityService.MasterUpdate(i);
 
-                        totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
-                                                     $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
-
-                        commonMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate} ok_\n" +
-                                                $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
-                                                $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
+                        FillFirstViewTable();
 
                         commonMessagesList.AddRange(_dc.StateMessages);
                     }
@@ -172,5 +153,17 @@ public class UpdatePriceQuantityController : Controller
         ViewBag.UpdateQuantityResult = commonMessagesList;
         ViewBag.TotalMessages = totalResultMessagesList;
         return View();
+    }
+
+    private (List<(string, string)>? commonMessagesList, List<(string, string)>? totalResultMessagesList) FillFirstViewTable()
+    {
+        totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
+                                     $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
+
+        commonMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate} ok_\n" +
+                                $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
+                                $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
+
+        return (totalResultMessagesList, commonMessagesList);
     }
 }
