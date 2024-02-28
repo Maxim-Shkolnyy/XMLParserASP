@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
@@ -6,11 +7,11 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
 
-public class ProductsManualSetQuanitiesController : Controller
+public class ProductsManualSetQuanitiesController : BaseController
 {
     private readonly GammaContext _context;
 
-    public ProductsManualSetQuanitiesController(GammaContext context)
+    public ProductsManualSetQuanitiesController(GammaContext context) : base(context)
     {
         _context = context;
     }
@@ -33,6 +34,70 @@ public class ProductsManualSetQuanitiesController : Controller
 
         return View(products);
     }
+
+
+    public async Task<IActionResult> ExportToExcel()
+    {
+        var prices = await _context.ProductsManualSetQuanitys.ToListAsync();
+        return await ExportToExcel(prices.AsQueryable());
+    }
+
+    // Import action
+    [HttpPost]
+
+    public async Task<IActionResult> ImportFromExcel(IFormFile file)
+    {
+        // Перевіряємо, чи файл був переданий
+        if (file == null || file.Length == 0)
+        {
+            ModelState.AddModelError("File", "Please select a file");
+            return View();
+        }
+
+        using (var workbook = new XLWorkbook(file.OpenReadStream()))
+        {
+            var worksheet = workbook.Worksheet(1);
+            var lastRow = worksheet.LastRowUsed().RowNumber();
+
+            // Виведення інформації про файл у вікно відладки
+            Console.WriteLine($"File Name: {file.FileName}");
+            Console.WriteLine($"Number of Rows: {lastRow}");
+
+            // Ітерація по кожному рядку у листі Excel
+            for (int i = 2; i <= lastRow; i++) // Починаємо з 2, оскільки 1-й рядок зазвичай містить заголовки
+            {
+                var excelRow = worksheet.Row(i);
+
+                // Викликаємо метод базового контролера для обробки рядка Excel
+                // В якості аргументів передаємо дані рядка та функцію мапування (MapExcelRowToEntity)
+                //await base.ProcessExcelRow(excelRow, MapExcelRowToEntity);
+            }
+        }
+        return View();
+    }
+
+    private MmProductsManualSetQuanity MapExcelRowToEntity(string excelRow)
+    {
+        var columns = excelRow.Split(';'); // Припустимо, що дані розділені символом ";"
+
+        if (columns.Length != 4)
+        {
+
+            return null;
+        }
+
+        var entity = new MmProductsManualSetQuanity
+        {
+            Id = int.Parse(columns[0]),
+            Sku = columns[1],
+            SetInStockQty = int.Parse(columns[2]),
+            DateStart = DateTime.Parse(columns[3]),
+            DateEnd = DateTime.Parse(columns[4]),
+        };
+
+        return entity;
+    }
+
 
     // GET: ProductsManualSetQuanities/Details/5
     public async Task<IActionResult> Details(int? id)
