@@ -155,7 +155,7 @@ public class UpdatePriceQuantityController : Controller
         return View();
     }
 
-    private (List<(string, string)>? commonMessagesList, List<(string, string)>? totalResultMessagesList) FillFirstViewTable()
+    private void FillFirstViewTable()
     {
         totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
                                      $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
@@ -164,6 +164,6 @@ public class UpdatePriceQuantityController : Controller
                                 $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
                                 $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
 
-        return (totalResultMessagesList, commonMessagesList);
+        //return (totalResultMessagesList, commonMessagesList);
     }
 }

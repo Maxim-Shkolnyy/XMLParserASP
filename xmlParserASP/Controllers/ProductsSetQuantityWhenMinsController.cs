@@ -70,16 +70,16 @@ public class ProductsSetQuantityWhenMinsController : BaseController
 
         if (columns.Length != 4)
         {
-            
             return null;
         }
 
-        
+        bool isParsed = int.TryParse(columns[2], out int parsedMinQty);
+
         var entity = new MmProductsSetQuantityWhenMin
         {
             Id = int.Parse(columns[0]), 
             Sku = columns[1],
-            MinQuantity = int.Parse(columns[2]),
+            MinQuantity = isParsed ? parsedMinQty : null,
             SetQuantity = int.Parse(columns[3]), 
         };
 

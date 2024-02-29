@@ -8,7 +8,7 @@ public partial class MmProductsSetQuantityWhenMin
     [StringLength(7)]
     public string Sku { get; set; } = null!;
 
-    public int MinQuantity { get; set; }
+    public int? MinQuantity { get; set; }
 
     public int SetQuantity { get; set; }
 }
