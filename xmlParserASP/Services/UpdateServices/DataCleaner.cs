@@ -21,12 +21,6 @@ public class DataCleaner
         if (_dc.XmlModelQuantityList.Count > 0)
             _dc.XmlModelQuantityList.Clear();
 
-        if (_dc.ProductsManualSetPrices != null)
-            _dc.ProductsManualSetPrices.Clear();
-
-        if (_dc.ProductsManualSetQuanityList != null)
-            _dc.ProductsManualSetQuanityList.Clear();
-
         if (_dc.ProductsSetQuantityWhenMinList != null)
             _dc.ProductsSetQuantityWhenMinList.Clear();
 
@@ -60,12 +54,6 @@ public class DataCleaner
     {
         if (_dc.StateMessages != null)
             _dc.StateMessages.Clear();
-
-        if (_dc.ProductsManualSetPrices != null)
-            _dc.ProductsManualSetPrices.Clear();
-
-        if (_dc.ProductsManualSetQuanityList != null)
-            _dc.ProductsManualSetQuanityList.Clear();
 
         if (_dc.ProductsSetQuantityWhenMinList != null)
             _dc.ProductsSetQuantityWhenMinList.Clear();

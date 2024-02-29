@@ -50,7 +50,6 @@ public class UpdatePriceQuantityController : Controller
             return View("Index", mySettingList);
         }
 
-        
         _dc.SuppNameThatWasUpdatedList.Clear();
         
 
