@@ -4832,10 +4832,10 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.Cost)
                 .HasPrecision(15, 4)
                 .HasColumnName("cost");
-            entity.Property(e => e.DateAdded)
+            entity.Property(e => e.DateAdded)       //gf
                 .HasColumnType("datetime")
                 .HasColumnName("date_added");
-            entity.Property(e => e.DateAvailable)
+            entity.Property(e => e.DateAvailable) // ddf
                 .HasDefaultValueSql("'0000-00-00'")
                 .HasColumnType("date")
                 .HasColumnName("date_available");
