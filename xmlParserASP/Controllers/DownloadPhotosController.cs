@@ -28,24 +28,17 @@ public class DownloadPhotosController : Controller
     }
     public IActionResult Index()
     {
-        //var myContext = _dbContext.SupplierXmlSettings;
-
-       // var settingsWithSupplier = _gammaContext.MmSupplierXmlSettings.Where(s => s.SupplierId != null).Include(m => m.SupplierId).ToList();
-
-        //return View(settingsWithSupplier);
-
-        var model = new DownloadPhotosViewModel
+       var model = new DownloadPhotosViewModel
         {
-            //SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.Include(m => m.SupplierId).ToList();
-            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.Include(n => n.SupplierId).ToList()
+            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.ToList()
         };
 
         var stringPath = new List<SelectListItem>
         {
-            new SelectListItem { Text = "Select file folder", Value = "" },
-            new SelectListItem { Text = "D:\\Downloads\\", Value = "D:\\Downloads\\" },
-            new SelectListItem { Text = "C:\\Downloads\\", Value = "C:\\Downloads\\" },
-            new SelectListItem { Text = "D:\\Downloads\\Telegram Desktop\\", Value = "D:\\Downloads\\Telegram Desktop\\" }
+            new() { Text = "Select file folder", Value = "" },
+            new() { Text = "D:\\Downloads\\", Value = "D:\\Downloads\\" },
+            new() { Text = "C:\\Downloads\\", Value = "C:\\Downloads\\" },
+            new() { Text = "D:\\Downloads\\Telegram Desktop\\", Value = "D:\\Downloads\\Telegram Desktop\\" }
         };
         ViewBag.stringPath = stringPath;
         return View(model);
@@ -234,15 +227,11 @@ public class DownloadPhotosController : Controller
     }
 
   
-
-
-
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? xmlFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder) //string? filePath,
     {
         _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
-        string? downloadFolder = _suppSetting.PhotoFolder;
         
         try
         {
@@ -257,22 +246,19 @@ public class DownloadPhotosController : Controller
                 int cannotDownload = 0;
                 int newPhotosAdded = 0;
 
-                string fileFileName = xmlFile.FileName;
+                string fileFileName = excelFile.FileName;
                 string tempFolderPath = Path.GetTempPath();
 
                 string tempFilePath = Path.Combine(tempFolderPath, fileFileName);
 
                 using (var stream = new FileStream(tempFilePath, FileMode.Create))
                 {
-                    await xmlFile.CopyToAsync(stream);
+                    await excelFile.CopyToAsync(stream);
                 }
 
                 string modelColumnName = ModelColumn;
-
                 string photoUrlColumnName = PictureColumn;
-
                 int numberOfSheet = SheetNumber ?? 1;
-                
 
                 using (var workbook = new XLWorkbook(tempFilePath))
                 {

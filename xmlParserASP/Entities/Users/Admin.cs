@@ -1,6 +1,5 @@
-﻿namespace xmlParserASP.Entities.Users
+﻿namespace xmlParserASP.Entities.Users;
+
+public class Admin : IUser
 {
-    public class Admin : IUser
-    {
-    }
 }

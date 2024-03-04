@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace xmlParserASP.Entities.Users
+namespace xmlParserASP.Entities.Users;
+
+public class IUser : IdentityUser   
 {
-    public class IUser : IdentityUser   
-    {
-    }
 }
