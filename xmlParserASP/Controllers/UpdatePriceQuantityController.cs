@@ -156,6 +156,8 @@ public class UpdatePriceQuantityController : Controller
 
     private void FillFirstViewTable()
     {
+        _dc.ProductsWasNotChanged -= _dc.NotFoundItemsInXmlForCurrentSupp; // Calculate values in DB, that was correct
+
         totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
                                      $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
 
