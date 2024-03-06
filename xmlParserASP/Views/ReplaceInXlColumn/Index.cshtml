@@ -1,11 +1,17 @@
 ﻿<h1>Replace strings</h1>
 
-<label>Column number (or 0 to search in all columns)</label>
-<label typeof="int"></label>
 
 <form asp-controller="ReplaceInXlColumn" asp-action="ProcessExcel" method="post" enctype="multipart/form-data">
-    <label for="Choose file">Choose file</label>
-    <input type="file" / name="xlFile">
+    <label for="sheetNumber">Sheet number__</label>
+    <input type="number" id="sheetNumber" name="sheetNumber" min="1" value="1" maxlength="2"> <br /><br />
+    
+    <label for="searchedColumnNumber">Column number </label>
+    <input type="number" id="searchedColumnNumber" name="searchedColumnNumber" min="0" value="0" maxlength="2">
+    <label for="searchedColumnNumber">(0 - all columns)</label><br /><br />
+
+    <label for="ChooseFile">Choose file</label>
+    <input type="file" id="ChooseFile" name="xlFile">
     <button type="submit">Process file</button>
 </form>
+
 

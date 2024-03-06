@@ -40,6 +40,10 @@ public class ReplaceInXlColumnController : Controller
             using (var workbook = new XLWorkbook(tempFilePath))
             {
                 var worksheet = workbook.Worksheet(sheetNumber);
+                var rowsUsed = worksheet.LastRowUsed().RowNumber;
+                var cellsUsed = worksheet.LastCellUsed().Address.ColumnNumber;
+                
+
                 //var firstRowUsed = worksheet.LastCellUsed(searchedColumnNumber);
 
                 //var currentRow = firstRowUsed.RowUsed().RowBelow(); // Skip the header row

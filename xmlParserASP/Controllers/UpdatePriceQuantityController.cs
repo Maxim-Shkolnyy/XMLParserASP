@@ -168,7 +168,5 @@ public class UpdatePriceQuantityController : Controller
         commonMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate} ok_\n" +
                                 $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
                                 $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
-
-        //return (totalResultMessagesList, commonMessagesList);
     }
 }
