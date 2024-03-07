@@ -106,13 +106,14 @@ public class DownloadPhotosController : Controller
                 {
                     modelValue = SanitizeModelValue(modelValue);
 
-                    if (!modelCount.ContainsKey(modelValue))
+                    if (!modelCount.TryGetValue(modelValue, out int value))
                     {
-                        modelCount[modelValue] = 0;
+                        value=0;
+                        modelCount[modelValue] = value;
                         modelPhotoUrls[modelValue] = new HashSet<string>();
                         totalPhotoPassedExists++;
                     }
-                    modelCount[modelValue]++;
+                    modelCount[modelValue]=++value;
                 }
 
                 var originalFileName = Path.GetFileName(photoUrl);

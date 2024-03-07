@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -7,6 +8,8 @@ namespace xmlParserASP.Controllers;
 
 public class ReplaceInXlColumnController : Controller
 {
+    private Dictionary<string, string> _replacementValues = new();
+
     // GET: ReplaceInXlColumnController
     public ActionResult Index()
     {
@@ -27,43 +30,52 @@ public class ReplaceInXlColumnController : Controller
 
         try
         {
-            string searchedFileName = $"{excelFileWhereReplace.FileName}_{DateTime.Now.Ticks}";
-            string replacedMaskFileName = $"{excelFileReplacementMask.FileName}_{DateTime.Now.Ticks}";
-            string tempFolderPath = Path.GetTempPath();
-            string tempSearchedFilePath = Path.Combine(tempFolderPath, searchedFileName);
-            string tempReplacementFilePath = Path.Combine(tempFolderPath, replacedMaskFileName);
+            var replacementWorkbook = new XLWorkbook(excelFileReplacementMask.OpenReadStream());
+            var replacementWorkSheet = replacementWorkbook.Worksheet(replacementSheetNumber);
 
-            using (var stream = new FileStream(tempSearchedFilePath, FileMode.Create))
+            string oldValue, newValue;
+
+            foreach (var row in replacementWorkSheet.RowsUsed())
             {
-                await excelFileReplacementMask.CopyToAsync(stream);
-            }
+                oldValue = row.Cell(oldReplacementColumn)?.Value.ToString() ?? "";
+                newValue = row.Cell(newReplacementColumn)?.Value.ToString() ?? "";
 
-
-            using (var stream = new FileStream(tempReplacementFilePath, FileMode.Create))
-            {
-                await excelFileWhereReplace.CopyToAsync(stream);
-            }
-
-            using (var workbook = new XLWorkbook(tempSearchedFilePath))
-            {
-                //var rowsUsed = worksheet.LastRowUsed()?.RowNumber() ?? 0;
-                //var cellsUsed = worksheet.LastCellUsed()?.Address.ColumnNumber ?? 0;
-                var worksheet = workbook.Worksheet(searchedSheetNumber);
-
-                if (searchedColumn <= 0)
+                if (string.IsNullOrEmpty(oldValue))
                 {
-                    foreach (var column in worksheet.ColumnsUsed())
-                    {
-                        ProcessRowsInColumn(column);
-                    }
+                    continue;
                 }
-                else
+
+                if (!_replacementValues.TryAdd(oldValue, newValue))
                 {
-                    ProcessRowsInColumn(worksheet.Column(searchedColumn));
+                    Console.WriteLine($"Duplicate replacement value {oldValue}, row {row.RowNumber()}");
                 }
             }
 
-            return View("Result");
+
+
+            var workbook = new XLWorkbook(excelFileWhereReplace.OpenReadStream());
+
+            var worksheet = workbook.Worksheet(searchedSheetNumber);
+
+            if (searchedColumn <= 0)
+            {
+                foreach (var column in worksheet.ColumnsUsed())
+                {
+                    ProcessRowsInColumn(column);
+                }
+            }
+            else
+            {
+                ProcessRowsInColumn(worksheet.Column(searchedColumn));
+            }
+
+            var tempFilePath = Path.GetTempFileName();
+            workbook.SaveAs(tempFilePath);
+
+            // Повертаємо відформатований файл Excel клієнту
+            byte[] fileBytes = System.IO.File.ReadAllBytes(tempFilePath);
+            var fileName = Path.GetFileName(excelFileWhereReplace.FileName);
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
         catch (Exception ex)
         {
@@ -72,13 +84,53 @@ public class ReplaceInXlColumnController : Controller
         }
     }
 
+    //public void ProcessRowsInColumn(IXLColumn column)
+    //{
+    //    foreach (var cell in column.CellsUsed())
+    //    {
+    //        var cellValue = cell.Value.ToString();
+
+    //        if(string.IsNullOrEmpty(cellValue)) { continue; }  
+
+    //        foreach (var pair in _replacementValues)
+    //        {
+    //            if (cellValue.Contains(pair.Key))
+    //            {
+    //                cell.Value = cellValue.Replace(pair.Key, pair.Value);
+    //                cell.Style.Fill.BackgroundColor = XLColor.YellowGreen;
+    //            }
+    //        }
+    //    }
+
+    //}
+    
+
     public void ProcessRowsInColumn(IXLColumn column)
     {
         foreach (var cell in column.CellsUsed())
         {
+            var cellValue = cell.Value.ToString();
 
+            if (string.IsNullOrEmpty(cellValue))
+            {
+                continue;
+            }
+
+            foreach (var pair in _replacementValues)
+            {
+                var oldValue = pair.Key;
+                var newValue = pair.Value;
+
+                cellValue = Regex.Replace(cellValue, Regex.Escape(oldValue), newValue);
+
+                if (cellValue != cell.Value.ToString())
+                {
+                    cell.Value = cellValue;
+                    cell.Style.Fill.BackgroundColor = XLColor.YellowGreen;
+                }
+            }
         }
-
     }
+
 
 }
