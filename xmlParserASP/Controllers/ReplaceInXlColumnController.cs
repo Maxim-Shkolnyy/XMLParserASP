@@ -13,13 +13,13 @@ public class ReplaceInXlColumnController : Controller
         return View();
     }
 
-    
+
     // POST: ReplaceInXlColumnController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> ProcessExcel(IFormFile? excelFileWhereReplace, IFormFile? excelFileReplacementMask, int searchedSheetNumber, int replacementSheetNumber, int searchedColumn, int oldReplacementColumn, int newReplacementColumn)
     {
-        if (excelFileWhereReplace == null)
+        if (excelFileWhereReplace == null || excelFileReplacementMask == null)
         {
             ViewBag.Message = "Model, sheet and/or Photo URL column not found in the Excel file.";
             return View("Index");
@@ -27,16 +27,24 @@ public class ReplaceInXlColumnController : Controller
 
         try
         {
-            string fileFileName = excelFileWhereReplace.FileName;
+            string searchedFileName = $"{excelFileWhereReplace.FileName}_{DateTime.Now.Ticks}";
+            string replacedMaskFileName = $"{excelFileReplacementMask.FileName}_{DateTime.Now.Ticks}";
             string tempFolderPath = Path.GetTempPath();
-            string tempFilePath = Path.Combine(tempFolderPath, fileFileName);
+            string tempSearchedFilePath = Path.Combine(tempFolderPath, searchedFileName);
+            string tempReplacementFilePath = Path.Combine(tempFolderPath, replacedMaskFileName);
 
-            using (var stream = new FileStream(tempFilePath, FileMode.Create))
+            using (var stream = new FileStream(tempSearchedFilePath, FileMode.Create))
             {
-               await excelFileWhereReplace.CopyToAsync(stream);
+                await excelFileReplacementMask.CopyToAsync(stream);
             }
 
-            using (var workbook = new XLWorkbook(tempFilePath))
+
+            using (var stream = new FileStream(tempReplacementFilePath, FileMode.Create))
+            {
+                await excelFileWhereReplace.CopyToAsync(stream);
+            }
+
+            using (var workbook = new XLWorkbook(tempSearchedFilePath))
             {
                 //var rowsUsed = worksheet.LastRowUsed()?.RowNumber() ?? 0;
                 //var cellsUsed = worksheet.LastCellUsed()?.Address.ColumnNumber ?? 0;
@@ -68,7 +76,7 @@ public class ReplaceInXlColumnController : Controller
     {
         foreach (var cell in column.CellsUsed())
         {
-            
+
         }
 
     }
