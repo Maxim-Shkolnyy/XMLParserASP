@@ -17,45 +17,60 @@ public class ReplaceInXlColumnController : Controller
     // POST: ReplaceInXlColumnController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult ProcessExcel(IFormFile? excelFile, int searchedColumnNumber, int sheetNumber)
+    public async Task<ActionResult> ProcessExcel(IFormFile? excelFileWhereReplace, IFormFile? excelFileReplacementMask, int searchedSheetNumber, int replacementSheetNumber, int searchedColumn, int oldReplacementColumn, int newReplacementColumn)
     {
-        if (excelFile == null || searchedColumnNumber == null || sheetNumber == null)
+        if (excelFileWhereReplace == null)
         {
             ViewBag.Message = "Model, sheet and/or Photo URL column not found in the Excel file.";
             return View("Index");
         }
+
         try
         {
-            string fileFileName = excelFile.FileName;
-
+            string fileFileName = excelFileWhereReplace.FileName;
             string tempFolderPath = Path.GetTempPath();
-
             string tempFilePath = Path.Combine(tempFolderPath, fileFileName);
 
             using (var stream = new FileStream(tempFilePath, FileMode.Create))
             {
-                excelFile.CopyToAsync(stream);
+               await excelFileWhereReplace.CopyToAsync(stream);
             }
 
             using (var workbook = new XLWorkbook(tempFilePath))
             {
-                var worksheet = workbook.Worksheet(sheetNumber);
-                var rowsUsed = worksheet.LastRowUsed().RowNumber;
-                var cellsUsed = worksheet.LastCellUsed().Address.ColumnNumber;
-                
+                //var rowsUsed = worksheet.LastRowUsed()?.RowNumber() ?? 0;
+                //var cellsUsed = worksheet.LastCellUsed()?.Address.ColumnNumber ?? 0;
+                var worksheet = workbook.Worksheet(searchedSheetNumber);
 
-                //var firstRowUsed = worksheet.LastCellUsed(searchedColumnNumber);
-
-                //var currentRow = firstRowUsed.RowUsed().RowBelow(); // Skip the header row
-
-
-
-                return View("Result");
+                if (searchedColumn <= 0)
+                {
+                    foreach (var column in worksheet.ColumnsUsed())
+                    {
+                        ProcessRowsInColumn(column);
+                    }
+                }
+                else
+                {
+                    ProcessRowsInColumn(worksheet.Column(searchedColumn));
+                }
             }
+
+            return View("Result");
         }
-        catch
+        catch (Exception ex)
         {
-            return RedirectToAction(nameof(Index));
+            ViewBag.Message = "An error occurred while processing the Excel file.";
+            return View("Index");
         }
     }
+
+    public void ProcessRowsInColumn(IXLColumn column)
+    {
+        foreach (var cell in column.CellsUsed())
+        {
+            
+        }
+
+    }
+
 }

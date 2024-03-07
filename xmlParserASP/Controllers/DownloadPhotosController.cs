@@ -17,7 +17,6 @@ namespace xmlParserASP.Controllers;
 
 public class DownloadPhotosController : Controller
 {
-    //private readonly MyDBContext _dbContext;
     private readonly GammaContext _gammaContext;
     private string? suppName;
     private MmSupplierXmlSetting _suppSetting;
