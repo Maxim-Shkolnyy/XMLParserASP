@@ -74,9 +74,8 @@ public class ReplaceInXlColumnController : Controller
                 workbook.SaveAs(tempFilePath);
             }
 
-            // Повертаємо відформатований файл Excel клієнту
             byte[] fileBytes = System.IO.File.ReadAllBytes(tempFilePath);
-            var fileName = Path.GetFileName(excelFileWhereReplace.FileName);
+            var fileName = $"{Path.GetFileNameWithoutExtension(excelFileWhereReplace.FileName)}_replaced.xlsx";
             return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
         finally
