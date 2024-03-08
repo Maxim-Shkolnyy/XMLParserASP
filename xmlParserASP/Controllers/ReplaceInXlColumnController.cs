@@ -28,81 +28,68 @@ public class ReplaceInXlColumnController : Controller
             return View("Index");
         }
 
+        string tempFilePath = Path.GetTempFileName();
+
         try
         {
-            var replacementWorkbook = new XLWorkbook(excelFileReplacementMask.OpenReadStream());
-            var replacementWorkSheet = replacementWorkbook.Worksheet(replacementSheetNumber);
-
-            string oldValue, newValue;
-
-            foreach (var row in replacementWorkSheet.RowsUsed())
+            using (var replacementWorkbook = new XLWorkbook(excelFileReplacementMask.OpenReadStream()))
             {
-                oldValue = row.Cell(oldReplacementColumn)?.Value.ToString() ?? "";
-                newValue = row.Cell(newReplacementColumn)?.Value.ToString() ?? "";
+                var replacementWorkSheet = replacementWorkbook.Worksheet(replacementSheetNumber);
 
-                if (string.IsNullOrEmpty(oldValue))
+                string oldValue, newValue;
+
+                foreach (var row in replacementWorkSheet.RowsUsed())
                 {
-                    continue;
-                }
+                    oldValue = row.Cell(oldReplacementColumn)?.Value.ToString() ?? "";
+                    newValue = row.Cell(newReplacementColumn)?.Value.ToString() ?? "";
 
-                if (!_replacementValues.TryAdd(oldValue, newValue))
-                {
-                    Console.WriteLine($"Duplicate replacement value {oldValue}, row {row.RowNumber()}");
-                }
-            }
+                    if (string.IsNullOrEmpty(oldValue))
+                    {
+                        continue;
+                    }
 
-
-
-            var workbook = new XLWorkbook(excelFileWhereReplace.OpenReadStream());
-
-            var worksheet = workbook.Worksheet(searchedSheetNumber);
-
-            if (searchedColumn <= 0)
-            {
-                foreach (var column in worksheet.ColumnsUsed())
-                {
-                    ProcessRowsInColumn(column);
+                    if (!_replacementValues.TryAdd(oldValue, newValue))
+                    {
+                        Console.WriteLine($"Duplicate replacement value {oldValue}, row {row.RowNumber()}");
+                    }
                 }
             }
-            else
-            {
-                ProcessRowsInColumn(worksheet.Column(searchedColumn));
-            }
 
-            var tempFilePath = Path.GetTempFileName();
-            workbook.SaveAs(tempFilePath);
+            using (var workbook = new XLWorkbook(excelFileWhereReplace.OpenReadStream()))
+            {
+                var worksheet = workbook.Worksheet(searchedSheetNumber);
+
+                if (searchedColumn <= 0)
+                {
+                    foreach (var column in worksheet.ColumnsUsed())
+                    {
+                        ProcessRowsInColumn(column);
+                    }
+                }
+                else
+                {
+                    ProcessRowsInColumn(worksheet.Column(searchedColumn));
+                }
+
+                workbook.SaveAs(tempFilePath);
+            }
 
             // Повертаємо відформатований файл Excel клієнту
             byte[] fileBytes = System.IO.File.ReadAllBytes(tempFilePath);
             var fileName = Path.GetFileName(excelFileWhereReplace.FileName);
             return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
-        catch (Exception ex)
+        finally
         {
-            ViewBag.Message = "An error occurred while processing the Excel file.";
-            return View("Index");
+            if (System.IO.File.Exists(tempFilePath))
+            {
+                System.IO.File.Delete(tempFilePath);
+            }
+
         }
+
+
     }
-
-    //public void ProcessRowsInColumn(IXLColumn column)
-    //{
-    //    foreach (var cell in column.CellsUsed())
-    //    {
-    //        var cellValue = cell.Value.ToString();
-
-    //        if(string.IsNullOrEmpty(cellValue)) { continue; }  
-
-    //        foreach (var pair in _replacementValues)
-    //        {
-    //            if (cellValue.Contains(pair.Key))
-    //            {
-    //                cell.Value = cellValue.Replace(pair.Key, pair.Value);
-    //                cell.Style.Fill.BackgroundColor = XLColor.YellowGreen;
-    //            }
-    //        }
-    //    }
-
-    //}
     
 
     public void ProcessRowsInColumn(IXLColumn column)
