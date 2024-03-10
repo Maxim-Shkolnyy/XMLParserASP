@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Entities.Users;
 
 namespace xmlParserASP.Presistant;
 
-public partial class GammaContext : DbContext
+public partial class GammaContext : IdentityDbContext<MyUser>
 {
     public GammaContext()
     {
@@ -508,10 +511,13 @@ public partial class GammaContext : DbContext
 
     public virtual DbSet<MmProductsSetQuantityWhenMin> ProductsSetQuantityWhenMin { get; set; }
 
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       modelBuilder.Entity<AttributeDescription>(entity =>
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<IdentityUserRole<string>>().HasKey(ur => new { ur.UserId, ur.RoleId });
+        modelBuilder.Entity<AttributeDescription>(entity =>
         {
             entity
                 .HasNoKey()

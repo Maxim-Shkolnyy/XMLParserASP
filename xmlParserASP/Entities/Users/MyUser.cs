@@ -2,6 +2,6 @@
 
 namespace xmlParserASP.Entities.Users;
 
-public class IUser : IdentityUser   
+public class MyUser : IdentityUser   
 {
 }

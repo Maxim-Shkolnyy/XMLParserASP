@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Entities.Users;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
@@ -17,15 +19,16 @@ public class Program
 
         builder.Configuration.AddUserSecrets<Program>();
 
-        //builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("myDbConnectionString")));
-
-        //builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("connectionStringTestGamma")));
+        builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+        builder.Services.AddAuthorizationBuilder();
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         builder.Services.AddAntiforgery(options => { });
+
+        builder.Services.AddIdentityCore<MyUser>()
+            .AddEntityFrameworkStores<GammaContext>()
+            .AddApiEndpoints();     
         
-        builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
-        builder.Services.AddAuthorizationBuilder();
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<MmSupplierXmlSetting>();
@@ -63,7 +66,9 @@ public class Program
         app.UseRouting();
 
         app.UseAuthorization();
-        //app.UseAuthentication();
+        app.UseAuthentication();
+
+        app.MapGet("/", (ClaimsPrincipal user) => $"Hello {user.Identity!.Name}").RequireAuthorization();
 
         app.MapControllerRoute(
             name: "default",
