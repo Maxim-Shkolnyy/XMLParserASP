@@ -584,6 +584,8 @@ public class UpdatePriceQuantityService
                 {
                     if (_dc.ProductsSetQuantityWhenMinList.Any(m => m.Sku == productToUpdate.Sku))
                     {
+                        _dc.ProductQtySetManually++;
+
                         var minQtylValue = _dc.ProductsSetQuantityWhenMinList
                             .FirstOrDefault(p => p.Sku == sku)?.MinQuantity ?? null;
 

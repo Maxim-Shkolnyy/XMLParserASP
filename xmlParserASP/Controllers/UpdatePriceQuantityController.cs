@@ -163,10 +163,10 @@ public class UpdatePriceQuantityController : Controller
         
 
         totalResultMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate}_{_dc.FoundProductsInDbForCurrentSupp}_{_dc.FoundItemsInXmlForCurrentSupp}_{_dc.NotFoundItemsInXmlForCurrentSupp}" +
-                                     $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged} ", "green"));
+                                     $"_{_dc.ProductsWasChanged}_{_dc.ProductsWasNotChanged}_{_dc.ProductQtySetManually} ", "green"));
 
         commonMessagesList.Add(($"{_dc.SuppName}_{_dc.CurrentTableDbColumnToUpdate} ok_\n" +
                                 $"Products in DB_{_dc.FoundProductsInDbForCurrentSupp}_. In XML_{_dc.FoundItemsInXmlForCurrentSupp}_. Not found in XML_{_dc.NotFoundItemsInXmlForCurrentSupp}\n" +
-                                $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged} ", "green"));
+                                $"Products updated_{_dc.ProductsWasChanged}_. Not update, value was correct_{_dc.ProductsWasNotChanged}_ Manually set quantity {_dc.ProductQtySetManually} ", "green"));
     }
 }
