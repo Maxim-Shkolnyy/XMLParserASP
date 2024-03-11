@@ -9,5 +9,6 @@ public class DownloadPhotosViewModel
     public int? ModelColumn { get; set; }
     public int? PictureColumn { get; set;}
     public int? SheetNumber { get; set; }
-    //public bool? Rename { get; set; } = false;
+    public string? LinkPrefix { get; set; }
+    public bool? Rename { get; set; } = false;
 }

@@ -74,7 +74,9 @@ ________________________________________________________________________________
             {
                 <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
             }
-        </select>
+        </select> 
+        <label for="LinkPrefix">_________Add prefix</label>
+        <input type="text" id="LinkPrefix" name="LinkPrefix" value="https://gamma.net.ua/image/" />
         <br /><br />
 
         @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post))
@@ -95,6 +97,7 @@ ________________________________________________________________________________
             <br/>
             <label>Photo pholde path: C:\...\Desktop\</label>
             <input type="text" name="desktopSubFolder" value="Exp\">
+
 
             <div class="form-group">
                 <label>Rename photos?</label>

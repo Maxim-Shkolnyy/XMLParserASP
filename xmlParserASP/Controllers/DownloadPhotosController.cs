@@ -228,7 +228,7 @@ public class DownloadPhotosController : Controller
 
   
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder, string? LinkPrefix) //string? filePath,
     {
         _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
@@ -279,13 +279,17 @@ public class DownloadPhotosController : Controller
                     {
                         var modelValue = currentRow.Cell(modelColumn.ColumnNumber()).Value.ToString();
                         var photoUrl = currentRow.Cell(photoUrlColumn.ColumnNumber()).Value.ToString();
+                        if (LinkPrefix != null)
+                        {
+                            photoUrl = LinkPrefix + photoUrl;
+                        }
 
                         var originalFileName = Path.GetFileNameWithoutExtension(photoUrl);
                         var extension = Path.GetExtension(photoUrl);
                         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        string? currentSupplierFolder = _suppSetting.PhotoFolder ?? "";
                         
-                        var cleanOriginalFileName = DelSpecialSymbols.ToLowerAndSpecialSymbolsToDashes(originalFileName);
+                        
+                        var cleanOriginalFileName = DelSpecialSymbols.SpecialSymbolsToDashes(originalFileName);
 
                         if (!modelCount.ContainsKey(modelValue))
                         {
@@ -306,9 +310,9 @@ public class DownloadPhotosController : Controller
 
                         var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}{extension}";
 
-                        var subFolder = desktopSubFolder ?? "";
+                        
 
-                        var fullFilePath = Path.Combine(desktopPath, subFolder, currentSupplierFolder, imageName);
+                        var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, imageName);
 
                         if (modelPhotoUrls[modelValue].Contains(photoUrl))
                         {
