@@ -75,9 +75,21 @@ ________________________________________________________________________________
                 <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
             }
         </select> 
+        
+        <label for="SelectedCategoryId">Select category</label>
+        <select id="SelectedCategoryId" name="SelectedCategoryId">
+            <option value="">All categories</option>
+                @foreach (var catName in Model.NgCategoryDescriptions)
+                {
+                <option value="@catName.CategoryId">@catName.Name</option>
+                }
+            
+        </select>
+
+        <br /><br />
         <label for="LinkPrefix">_________Add prefix</label>
         <input type="text" id="LinkPrefix" name="LinkPrefix" value="https://gamma.net.ua/image/" />
-        <br /><br />
+        
 
         @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post))
         {
@@ -95,7 +107,7 @@ ________________________________________________________________________________
             <label for="ExcelFile">Select Excel File</label>
             <input type="file" id="xmlFile" name="excelFile" class="form-control" required />
             <br/>
-            <label>Photo pholde path: C:\...\Desktop\</label>
+            <label>Photo folder path: C:\...\Desktop\</label>
             <input type="text" name="desktopSubFolder" value="Exp\">
 
 

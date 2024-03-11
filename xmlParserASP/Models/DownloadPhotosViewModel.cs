@@ -5,6 +5,8 @@ namespace xmlParserASP.Models;
 public class DownloadPhotosViewModel
 {
     public List<MmSupplierXmlSetting>? SupplierXmlSettings { get; set; }
+    public List<NgCategory>? NgCategorys { get; set; }
+    public List<NgCategoryDescription>? NgCategoryDescriptions { get; set; }
     public int SelectedSupplierXmlSettingId { get; set; }
     public int? ModelColumn { get; set; }
     public int? PictureColumn { get; set;}

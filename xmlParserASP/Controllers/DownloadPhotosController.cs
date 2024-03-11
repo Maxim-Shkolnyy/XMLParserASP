@@ -20,19 +20,22 @@ public class DownloadPhotosController : Controller
     private readonly GammaContext _gammaContext;
     private string? suppName;
     private MmSupplierXmlSetting _suppSetting;
+    private DownloadPhotosViewModel _model;
 
     public DownloadPhotosController(GammaContext gammaContext)
     {
         _gammaContext=gammaContext;
+
+        _model = new DownloadPhotosViewModel
+        {
+            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.ToList(),
+            NgCategoryDescriptions = _gammaContext.NgCategoryDescriptions.Where(m => m.LanguageId == 3).ToList(),
+            NgCategorys = _gammaContext.NgCategories.ToList()
+        };
     }
     public IActionResult Index()
     {
-       var model = new DownloadPhotosViewModel
-        {
-            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.ToList()
-        };
-
-        var stringPath = new List<SelectListItem>
+       var stringPath = new List<SelectListItem>
         {
             new() { Text = "Select file folder", Value = "" },
             new() { Text = "D:\\Downloads\\", Value = "D:\\Downloads\\" },
@@ -40,7 +43,7 @@ public class DownloadPhotosController : Controller
             new() { Text = "D:\\Downloads\\Telegram Desktop\\", Value = "D:\\Downloads\\Telegram Desktop\\" }
         };
         ViewBag.stringPath = stringPath;
-        return View(model);
+        return View(_model);
     }
 
 
@@ -228,11 +231,20 @@ public class DownloadPhotosController : Controller
 
   
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder, string? LinkPrefix) //string? filePath,
+    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, int? SelectedCategoryId, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder, string? LinkPrefix) 
     {
         _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
+        List<int> childrenCategories = new();
+
+        if (SelectedCategoryId != null)
+        {
+            childrenCategories = _model.NgCategorys.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToList();
+            childrenCategories.Insert(0, (int)SelectedCategoryId);
+        }
         
+
+
         try
         {
             using (var client = new HttpClient())
