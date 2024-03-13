@@ -48,6 +48,8 @@ public class DataCleaner
         _dc.ProductsWasChanged = 0;
 
         _dc.ProductsWasNotChanged = 0;
+
+        _dc.ProductQtySetManually = 0;
     }
 
     public void CleanUpOnlyManualMinLisys()

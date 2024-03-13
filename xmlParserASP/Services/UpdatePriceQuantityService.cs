@@ -433,7 +433,7 @@ public class UpdatePriceQuantityService
                     continue;
                 }
 
-                if (_dc.WhatToUpdate == 3) 
+                if (_dc.WhatToUpdate == 3)
                 {
                     if (row.Cell(priceColumn).DataType == XLDataType.Number)
                     {
@@ -555,6 +555,8 @@ public class UpdatePriceQuantityService
 
         if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
         {
+            _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
+
             _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin
                 .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
         }
@@ -582,13 +584,15 @@ public class UpdatePriceQuantityService
                 {
                     if (_dc.ProductsSetQuantityWhenMinList.Any(m => m.Sku == productToUpdate.Sku))
                     {
+                        _dc.ProductQtySetManually++;
+
                         var minQtylValue = _dc.ProductsSetQuantityWhenMinList
                             .FirstOrDefault(p => p.Sku == sku)?.MinQuantity ?? null;
 
                         var setQtylValue = _dc.ProductsSetQuantityWhenMinList
                             .FirstOrDefault(p => p.Sku == sku)?.SetQuantity ?? 0;
 
-                        if (minQtylValue == null) //only manually set value
+                        if (minQtylValue == null || minQtylValue == 0) //only manually set value
                         {
                             if (setQtylValue != dbQtyValue)
                             {
@@ -619,20 +623,35 @@ public class UpdatePriceQuantityService
                                             _dc.StateMessages.Add(($"setManual_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}_ quantity set to min: {setQtylValue}. DB was:_{dbQtyValue}", "black"));
                                         }
                                     }
+                                    else
+                                    {
+                                        _dc.ProductsWasNotChanged++;
+                                    }
                                 }
                                 else
                                 {
-                                    if (WriteQtyToDb(sku, xmlQtyValue))
+                                    if (xmlQtyValue != dbQtyValue)
                                     {
-                                        _dc.ProductsWasChanged++;
-                                        if (dbQtyValue < xmlQtyValue)
+                                        if (WriteQtyToDb(sku, xmlQtyValue))
                                         {
-                                            _dc.StateMessages.Add(($"+ {_dc.CurrentTableDbColumnToUpdate}_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}. Manual more then min. Old - new:_{dbQtyValue}_{xmlQtyValue}", "purple"));
+                                            _dc.ProductsWasChanged++;
+                                            if (dbQtyValue < xmlQtyValue)
+                                            {
+                                                _dc.StateMessages.Add((
+                                                    $"+ {_dc.CurrentTableDbColumnToUpdate}_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}. Manual more then min. Old - new:_{dbQtyValue}_{xmlQtyValue}",
+                                                    "purple"));
+                                            }
+                                            else
+                                            {
+                                                _dc.StateMessages.Add((
+                                                    $"- {_dc.CurrentTableDbColumnToUpdate}_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}. Manual more then min. Old - new:_{dbQtyValue}_{xmlQtyValue}",
+                                                    "blue"));
+                                            }
                                         }
-                                        else
-                                        {
-                                            _dc.StateMessages.Add(($"- {_dc.CurrentTableDbColumnToUpdate}_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}. Manual more then min. Old - new:_{dbQtyValue}_{xmlQtyValue}", "blue"));
-                                        }
+                                    }
+                                    else
+                                    {
+                                        _dc.ProductsWasNotChanged++;
                                     }
                                 }
                             }

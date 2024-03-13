@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Xml;
+using System.Linq;
 using xmlParserASP.Models;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -20,19 +21,25 @@ public class DownloadPhotosController : Controller
     private readonly GammaContext _gammaContext;
     private string? suppName;
     private MmSupplierXmlSetting _suppSetting;
+    private DownloadPhotosViewModel _model;
 
     public DownloadPhotosController(GammaContext gammaContext)
     {
         _gammaContext=gammaContext;
+
+        _model = new DownloadPhotosViewModel
+        {
+            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.ToList(),
+            NgCategoryDescriptions = _gammaContext.NgCategoryDescriptions.Where(m => m.LanguageId == 3).ToList(),
+            NgCategorys = _gammaContext.NgCategories.ToList(),
+            NgProducts = _gammaContext.NgProducts.ToList(),
+            NgProductImages = _gammaContext.NgProductImages.ToList(),
+            NgProductToCategories = _gammaContext.NgProductToCategories.ToList(),
+        };
     }
     public IActionResult Index()
     {
-       var model = new DownloadPhotosViewModel
-        {
-            SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.ToList()
-        };
-
-        var stringPath = new List<SelectListItem>
+       var stringPath = new List<SelectListItem>
         {
             new() { Text = "Select file folder", Value = "" },
             new() { Text = "D:\\Downloads\\", Value = "D:\\Downloads\\" },
@@ -40,7 +47,7 @@ public class DownloadPhotosController : Controller
             new() { Text = "D:\\Downloads\\Telegram Desktop\\", Value = "D:\\Downloads\\Telegram Desktop\\" }
         };
         ViewBag.stringPath = stringPath;
-        return View(model);
+        return View(_model);
     }
 
 
@@ -226,13 +233,167 @@ public class DownloadPhotosController : Controller
         return View("DownloadFromXml");
     }
 
-  
+
     [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder) //string? filePath,
+    public async Task<ActionResult> DownloadFromDB(int? selectedSupplierXmlSetting, int? SelectedCategoryId, bool Rename, string? desktopSubFolder, string? LinkPrefix)
+    {
+        List<int> childrenCategories = new();
+
+        if (SelectedCategoryId != null)
+        {
+            childrenCategories = _model.NgCategorys.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToList();
+            childrenCategories.Insert(0, (int)SelectedCategoryId);
+        }
+        else
+        {
+            childrenCategories = _model.NgCategorys.Select(m => m.CategoryId).ToList();
+        }
+
+        List<int> productsIdsOfCurrentCategory = new();
+
+        if (selectedSupplierXmlSetting == null)
+        {
+            productsIdsOfCurrentCategory = _model.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
+        }
+        else
+        {
+            //Todo: done this
+
+            _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+            suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
+
+            productsIdsOfCurrentCategory = _model.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
+        }
+
+
+        var productImages = _model.NgProducts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId)).Select(c => c.Image).ToList();
+        var additionalImages = _model.NgProductImages.Where(n => productsIdsOfCurrentCategory.Contains(n.ProductId)).Select(b => b.Image).ToList();
+        
+        productImages.AddRange(additionalImages);
+
+        if (LinkPrefix != null)
+        {
+            productImages = productImages.Select(s => LinkPrefix  + s).ToList();
+        }
+
+        if (SelectedCategoryId == null)
+        {
+            productImages = productImages.Distinct().ToList();
+        }
+
+        try
+        {
+            using (var client = new HttpClient())
+            {
+                int totalPhotosDownloaded = 0;
+                int totalPhotosResized = 0;
+                int totalPhotoPassedExists = 0;
+                List<KeyValuePair<string, string>> wrongUrl = new();
+                int cannotDownload = 0;
+                int newPhotosAdded = 0;
+
+
+                foreach (var photoUrl in productImages)
+                {
+                    var originalFileName = Path.GetFileNameWithoutExtension(photoUrl);
+                    var extension = Path.GetExtension(photoUrl);
+                    var fileName = Path.GetFileName(photoUrl);
+                    var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                    var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, fileName);
+
+                    using (var response = await client.GetAsync(photoUrl))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            //string? photoFilePath = Path.Combine(_suppSetting.PhotoFolder, imageName) ?? @"D:\\Downloads\img\";
+
+                            using (var photoStream = await response.Content.ReadAsStreamAsync())
+                            {
+                                using (var image = Image.FromStream(photoStream))
+                                {
+                                    photoStream.Seek(0, SeekOrigin.Begin);
+
+                                    if (image.Width > 1000 || image.Height > 1000)
+                                    {
+                                        int newWidth, newHeight;
+
+                                        if (image.Width > image.Height)
+                                        {
+                                            newWidth = 1000;
+                                            newHeight = (int)((float)image.Height / image.Width * newWidth);
+                                        }
+                                        else
+                                        {
+                                            newHeight = 1000;
+                                            newWidth = (int)((float)image.Width / image.Height * newHeight);
+                                        }
+
+                                        using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+                                        {
+                                            resizedImage.Save(fullFilePath, ImageFormat.Jpeg);
+                                            totalPhotosResized++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        using (var fileStream = new FileStream(fullFilePath, FileMode.Create))
+                                        {
+                                            photoStream.Seek(0, SeekOrigin.Begin);
+                                            await photoStream.CopyToAsync(fileStream);
+                                        }
+                                    }
+
+                                    // Add the photo URL to the HashSet for this model
+                                    totalPhotosDownloaded++;
+                                    newPhotosAdded++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            wrongUrl.Add(new KeyValuePair<string, string>("fromDb", photoUrl));
+                            cannotDownload++;
+                        }
+                    }
+
+                }
+
+                if (newPhotosAdded == 0)
+                {
+                    ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
+                }
+                else
+                {
+                    ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Wrong URL, image was not downloaded: {cannotDownload}";
+                    ViewBag.WrongUrl = wrongUrl;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Message = "An error occurred: " + ex.Message;
+        }
+
+        return View("DownloadFromXl");
+    }
+
+
+    [HttpPost]
+    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, int? SelectedCategoryId, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder, string? LinkPrefix) 
     {
         _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
+        List<int> childrenCategories = new();
+
+        if (SelectedCategoryId != null)
+        {
+            childrenCategories = _model.NgCategorys.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToList();
+            childrenCategories.Insert(0, (int)SelectedCategoryId);
+        }
         
+
+
         try
         {
             using (var client = new HttpClient())
@@ -279,13 +440,17 @@ public class DownloadPhotosController : Controller
                     {
                         var modelValue = currentRow.Cell(modelColumn.ColumnNumber()).Value.ToString();
                         var photoUrl = currentRow.Cell(photoUrlColumn.ColumnNumber()).Value.ToString();
+                        if (LinkPrefix != null)
+                        {
+                            photoUrl = LinkPrefix + photoUrl;
+                        }
 
                         var originalFileName = Path.GetFileNameWithoutExtension(photoUrl);
                         var extension = Path.GetExtension(photoUrl);
                         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        string? currentSupplierFolder = _suppSetting.PhotoFolder ?? "";
                         
-                        var cleanOriginalFileName = DelSpecialSymbols.ToLowerAndSpecialSymbolsToDashes(originalFileName);
+                        
+                        var cleanOriginalFileName = DelSpecialSymbols.SpecialSymbolsToDashes(originalFileName);
 
                         if (!modelCount.ContainsKey(modelValue))
                         {
@@ -306,9 +471,9 @@ public class DownloadPhotosController : Controller
 
                         var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}{extension}";
 
-                        var subFolder = desktopSubFolder ?? "";
+                        
 
-                        var fullFilePath = Path.Combine(desktopPath, subFolder, currentSupplierFolder, imageName);
+                        var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, imageName);
 
                         if (modelPhotoUrls[modelValue].Contains(photoUrl))
                         {
@@ -397,7 +562,7 @@ public class DownloadPhotosController : Controller
 
         return View("DownloadFromXl");
     }
-
+    
 
     private string SanitizeModelValue(string modelValue)
     {
