@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace xmlParserASP.Services;
+namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
 
 public static class DelSpecialSymbols
 {
@@ -14,7 +14,7 @@ public static class DelSpecialSymbols
         return result;
     }
 
-    
+
 
     public static string SpecialSymbolsToDashes(string input)
     {

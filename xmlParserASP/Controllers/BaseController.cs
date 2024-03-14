@@ -48,7 +48,6 @@ public class BaseController : Controller
 
                 var content = stream.ToArray();
 
-                // Повернути файл Excel з масивом байтів та типом MIME для відображення в браузері
                 return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{modelName}_{time}.xlsx");
             }
         }

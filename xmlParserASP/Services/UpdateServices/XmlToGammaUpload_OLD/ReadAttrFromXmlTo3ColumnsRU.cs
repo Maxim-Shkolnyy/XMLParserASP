@@ -2,18 +2,18 @@
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
-namespace xmlParserASP.Services;
+namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 
 public class ReadAttrFromXmlTo3ColumnsRU
 {
     private readonly GammaContext _db;
     public ReadAttrFromXmlTo3ColumnsRU(GammaContext db)
     {
-            _db = db;
+        _db = db;
     }
     public void ReadAttrto3ru(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
         XmlDocument doc = new XmlDocument();
         doc.Load(suppSetting.Path);
 

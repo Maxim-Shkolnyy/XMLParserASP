@@ -3,7 +3,7 @@
 
 //using Range = Microsoft.Office.Interop.Excel.Range;
 
-namespace xmlParserASP.Services;
+namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 
 static class ProcessExcel
 {
@@ -26,7 +26,7 @@ static class ProcessExcel
                     rangeToRemove.Delete(XLShiftDeletedCells.ShiftCellsUp);
                 }
             }
-            
+
 
             var rows = worksheet.RowsUsed();
             int rowCount = rows.Count();
@@ -77,7 +77,7 @@ static class ProcessExcel
     {
         using (var workbook = new XLWorkbook(filePath))
         {
-            var worksheet = workbook.Worksheet(1); // Припускається, що ви хочете прочитати з першого аркуша
+            var worksheet = workbook.Worksheet(1);
 
             var range = worksheet.RangeUsed();
 

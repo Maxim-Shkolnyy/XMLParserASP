@@ -3,7 +3,7 @@ using System.Xml;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
-namespace xmlParserASP.Services;
+namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 
 public class WriteRuToXL
 {
@@ -15,7 +15,7 @@ public class WriteRuToXL
 
     public void WriteRuColumnsToXL(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
 
         using (XLWorkbook workbook = new XLWorkbook())
         {
@@ -47,7 +47,6 @@ public class WriteRuToXL
                 productsWorksheet.Cell(1, j + 1).Value = productsColumns[0][j];
             }
 
-            // Получение индексов столбцов EXCEL на основе их имен
             int product_idColumnIndex = GetColumnIndex(productsWorksheet, "product_id");
             int nameRUColumnIndex = GetColumnIndex(productsWorksheet, "name(ru-ru)");
             int nameUAColumnIndex = GetColumnIndex(productsWorksheet, "name(uk-ua)");
@@ -62,23 +61,22 @@ public class WriteRuToXL
             XmlDocument xmlDoc = new();
             xmlDoc.Load(suppSetting.Path);
 
-            // Настройки выгрузки поставщика
 
             XmlNodeList itemsList = xmlDoc.GetElementsByTagName(suppSetting.ProductNode);
 
             XmlNodeList paramListForCount = xmlDoc.GetElementsByTagName("param");
 
-            
+
             int row = 2;
             int startIdFrom = 2255;
 
 
-            // Получение значений из XML и вставка в соответствующие колонки листа Products
+            // Get values from XML and paste to Products sheet
 
             foreach (XmlNode item in itemsList)
             {
                 startIdFrom++;
-                
+
                 string nameUA = item.SelectSingleNode("name")?.InnerText ?? "";
                 string descriptionUA = item.SelectSingleNode("description")?.InnerText ?? "";
 
@@ -87,7 +85,7 @@ public class WriteRuToXL
                 productsWorksheet.Row(row).Height = 15;
                 row++;
             }
-            
+
 
             var rangeProd = productsWorksheet.Range(productsWorksheet.FirstCellUsed().Address.RowNumber + 1,
                 productsWorksheet.FirstCellUsed().Address.ColumnNumber,

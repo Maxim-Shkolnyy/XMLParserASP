@@ -2,7 +2,7 @@
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
-namespace xmlParserASP.Services;
+namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 
 public class ReadAttrFromXmlTo3ColumnsUA
 {
@@ -13,7 +13,7 @@ public class ReadAttrFromXmlTo3ColumnsUA
     }
     public void ReadAttrTo3(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
 
         XmlDocument doc = new XmlDocument();
         doc.Load(suppSetting.Path);
@@ -34,22 +34,23 @@ public class ReadAttrFromXmlTo3ColumnsUA
 
 
         int itemIndex = 0;
-     
-            foreach (XmlNode item in itemsList)
+
+        foreach (XmlNode item in itemsList)
+        {
+            string? modelID;
+
+            if (suppSetting.ParamAttribute == null)
             {
-                string? modelID;
+                modelID = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText;
+            }
+            else
+            {
+                modelID = item.Attributes["id"]?.Value;
+            }
 
-                if (suppSetting.ParamAttribute == null)
-                {
-                    modelID = item.SelectSingleNode(suppSetting.ModelNode)?.InnerText;
-                }
-                else
-                {
-                    modelID = item.Attributes["id"]?.Value;
-                }
-
-
-            XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
+            if (suppSetting.ParamNode != null)
+            {
+                XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
 
                 foreach (XmlNode param in paramList)
                 {
@@ -71,6 +72,8 @@ public class ReadAttrFromXmlTo3ColumnsUA
 
                 itemIndex++;
             }
-            PathModel.SheetAtributes = array;       
+            PathModel.SheetAtributes = array;
+        }
+
     }
 }

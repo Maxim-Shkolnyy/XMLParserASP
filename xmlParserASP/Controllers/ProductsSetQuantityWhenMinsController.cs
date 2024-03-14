@@ -47,18 +47,13 @@ public class ProductsSetQuantityWhenMinsController : BaseController
             var worksheet = workbook.Worksheet(1);
             var lastRow = worksheet.LastRowUsed().RowNumber();
 
-            // Виведення інформації про файл у вікно відладки
             Console.WriteLine($"File Name: {file.FileName}");
             Console.WriteLine($"Number of Rows: {lastRow}");
 
-            // Ітерація по кожному рядку у листі Excel
-            for (int i = 2; i <= lastRow; i++) // Починаємо з 2, оскільки 1-й рядок зазвичай містить заголовки
+            
+            for (int i = 2; i <= lastRow; i++) 
             {
                 var excelRow = worksheet.Row(i);
-
-                // Викликаємо метод базового контролера для обробки рядка Excel
-                // В якості аргументів передаємо дані рядка та функцію мапування (MapExcelRowToEntity)
-                //await base.ProcessExcelRow(excelRow, MapExcelRowToEntity);
             }
         }
         return View();

@@ -11,7 +11,7 @@
 
 //        using (MySqlConnection connection = new MySqlConnection(connectionString))
 //        {
-//            connection.Open(); // Устанавливаем соединение с базой данных.
+//            connection.Open(); 
 
 //            string createTableQuery = @"CREATE TABLE Attributes (
 //                                        attribute_id INT PRIMARY KEY,
