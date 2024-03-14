@@ -16,11 +16,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Configuration.AddUserSecrets<Program>();
-
-        //builder.Services.AddDbContext<MyDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("myDbConnectionString")));
-
-        //builder.Services.AddDbContext<TestGammaDBContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("connectionStringTestGamma")));
-
+        
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         builder.Services.AddAntiforgery(options => { });
         
@@ -43,14 +39,9 @@ public class Program
         builder.Services.AddSingleton<DataContainer>();
         builder.Services.AddSingleton<DataContainerSingleton>();
         builder.Services.AddTransient<DataCleaner>();
-
-
-        //builder.Services.AddLogging(b => b.AddConsole());
-        //builder.Services.AddSingleton<IWebHostEnvironment>(env => HostingEnvironment);
-
+        
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
