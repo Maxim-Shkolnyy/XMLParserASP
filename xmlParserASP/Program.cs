@@ -6,6 +6,7 @@ using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
 using xmlParserASP.Services.UpdateServices;
+using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 
 namespace xmlParserASP;
 
@@ -30,7 +31,6 @@ public class Program
         builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsRU>();
         builder.Services.AddScoped<ReadAttrFromXmlTo3ColumnsUA>();
         builder.Services.AddScoped<UniqNodesInXML>();
-        builder.Services.AddScoped<ReadUniqueCategorys>();
         builder.Services.AddScoped<UpdatePriceQuantityService>();
         builder.Services.AddScoped<UpdatePriceQuantityController>();
         builder.Services.AddScoped<ProcessXMLController>();

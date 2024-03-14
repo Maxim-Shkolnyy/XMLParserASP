@@ -4,19 +4,19 @@ using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using static xmlParserASP.Services.TranslitMethods;
 
-namespace xmlParserASP.Services;
+namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 
 public class WriteToXL
 {
     private readonly GammaContext _db;
-    
+
     public WriteToXL(GammaContext db)
     {
         _db = db;
     }
     public void WriteSheet(int selectedSupplierXmlSetting)
     {
-        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId==selectedSupplierXmlSetting);
+        var suppSetting = _db.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
 
         using (XLWorkbook workbook = new XLWorkbook())
         {
@@ -78,7 +78,7 @@ public class WriteToXL
             int row = 2;
             int? startIdFrom = 1;
 
-            
+
             #region Получение значений из XML и вставка в соответствующие колонки листа Products
 
             foreach (XmlNode item in itemsList)
@@ -108,7 +108,7 @@ public class WriteToXL
 
                 Translitter trn = new();
                 string firstKeyword = trn.Translit(nameUA, TranslitType.Gost).ToLowerInvariant().Replace(",", "-")
-                    .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "").Replace("+", "plus").Replace("%", "-").Replace("°","");
+                    .Replace("--", "-").Replace("---", "-").Replace("\'", "").Replace("\"", "").Replace("+", "plus").Replace("%", "-").Replace("°", "");
                 string secondKeyword = firstKeyword.Replace("--", "-");
                 string seoKeyword = DelSpecialSymbols.ToLowerAndSpecialSymbolsToDashes(secondKeyword);
 
@@ -119,7 +119,7 @@ public class WriteToXL
                 //string supplier_id = "1";
                 var imageAdress = image.Split("/").Last();
                 var imageName = $"catalog/image/{model}-A-{suppSetting.SupplierId}_{imageAdress}";
-               
+
 
                 productsWorksheet.Cell(row, product_idColumnIndex).Value = product_id;
                 productsWorksheet.Cell(row, nameRUColumnIndex).Value = "-";
@@ -143,12 +143,12 @@ public class WriteToXL
                 productsWorksheet.Row(row).Height = 15;
                 row++;
 
-                int? parsedQuantity = int.TryParse(quantity, out int parsedQuantityResult) ? parsedQuantityResult : (int?)null;
-                float? parsedPrice = float.TryParse(price, out float parsedPriceResult) ? parsedPriceResult : (float?)null;
-                int? myCatId = int.TryParse(categoryId, out int parsedMyCatID)? parsedMyCatID : (int?)null;
-                DateTime? parsedDateAdded = DateTime.TryParse(dateAdded, out DateTime parsedDateAddedResult) ? parsedDateAddedResult : (DateTime?)null;
-                DateTime? parsedDateModified = DateTime.TryParse(dateModifiedStr, out DateTime parsedDateModifiedResult) ? parsedDateModifiedResult : (DateTime?)null;
-                DateTime? parsedDateAvailable = DateTime.TryParse(dateAvailable, out DateTime parsedDateAvailableResult) ? parsedDateAvailableResult : (DateTime?)null;
+                int? parsedQuantity = int.TryParse(quantity, out int parsedQuantityResult) ? parsedQuantityResult : null;
+                float? parsedPrice = float.TryParse(price, out float parsedPriceResult) ? parsedPriceResult : null;
+                int? myCatId = int.TryParse(categoryId, out int parsedMyCatID) ? parsedMyCatID : null;
+                DateTime? parsedDateAdded = DateTime.TryParse(dateAdded, out DateTime parsedDateAddedResult) ? parsedDateAddedResult : null;
+                DateTime? parsedDateModified = DateTime.TryParse(dateModifiedStr, out DateTime parsedDateModifiedResult) ? parsedDateModifiedResult : null;
+                DateTime? parsedDateAvailable = DateTime.TryParse(dateAvailable, out DateTime parsedDateAvailableResult) ? parsedDateAvailableResult : null;
 
                 //Product product = new Product
                 //{
@@ -169,7 +169,7 @@ public class WriteToXL
                 //};
 
                 //_db.Products.Add(product);  ??????????????????????? може це було потрібно у старому MyDbContext ????
-                
+
             }
             _db.SaveChanges();
 
@@ -181,102 +181,104 @@ public class WriteToXL
             rangeProd.Sort();
             #endregion
 
-                #region ProductAttributes
-                // write attributes to sheet
-                IXLWorksheet attrWorksheet = workbook.Worksheets.Add("ProductAttributes");
+            #region ProductAttributes
+            // write attributes to sheet
+            IXLWorksheet attrWorksheet = workbook.Worksheets.Add("ProductAttributes");
 
-                var array = PathModel.SheetAtributes;
+            var array = PathModel.SheetAtributes;
 
-                // duplicates in attributes check
+            // duplicates in attributes check
 
-                var uniqueRows = Enumerable.Range(0, array.GetLength(0))
-                    .GroupBy(row => $"{array[row, 0]}-{array[row, 2]}", StringComparer.OrdinalIgnoreCase)
-                    .Select(g => g.First())
-                    .ToArray();
+            var uniqueRows = Enumerable.Range(0, array.GetLength(0))
+                .GroupBy(row => $"{array[row, 0]}-{array[row, 2]}", StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.First())
+                .ToArray();
 
 
-                int numRows = uniqueRows.Length;
-                int numCols = array.GetLength(1);
+            int numRows = uniqueRows.Length;
+            int numCols = array.GetLength(1);
 
-                string[,] newArray = new string[numRows, numCols];
+            string[,] newArray = new string[numRows, numCols];
 
-                for (int i = 0; i < numRows; i++)
+            for (int i = 0; i < numRows; i++)
+            {
+                for (int j = 0; j < numCols; j++)
                 {
-                    for (int j = 0; j < numCols; j++)
-                    {
-                        newArray[i, j] = array[uniqueRows[i], j];
-                    }
+                    newArray[i, j] = array[uniqueRows[i], j];
                 }
-                
+            }
 
 
-                attrWorksheet.SheetView.FreezeRows(1);
-                attrWorksheet.Columns().Style.Alignment.WrapText = false;
-                IXLRow firstAttrRow = attrWorksheet.Row(1);
-                firstAttrRow.Style.Font.Bold = true;
 
-                for (int roww = 0; roww < newArray.GetLength(0); roww++)
+            attrWorksheet.SheetView.FreezeRows(1);
+            attrWorksheet.Columns().Style.Alignment.WrapText = false;
+            IXLRow firstAttrRow = attrWorksheet.Row(1);
+            firstAttrRow.Style.Font.Bold = true;
+
+            for (int roww = 0; roww < newArray.GetLength(0); roww++)
+            {
+                for (int col = 0; col < newArray.GetLength(1); col++)
                 {
-                    for (int col = 0; col < newArray.GetLength(1); col++)
-                    {
-                        attrWorksheet.Cell(roww + 1, col + 1).Value = newArray[roww, col];
-                    }
+                    attrWorksheet.Cell(roww + 1, col + 1).Value = newArray[roww, col];
                 }
+            }
 
-                var rangeAttr = attrWorksheet.Range(attrWorksheet.FirstCellUsed().Address.RowNumber + 1,
-                    attrWorksheet.FirstCellUsed().Address.ColumnNumber,
-                    attrWorksheet.LastCellUsed().Address.RowNumber,
-                    attrWorksheet.LastCellUsed().Address.ColumnNumber);
-                rangeAttr.Sort();
-                #endregion
+            var rangeAttr = attrWorksheet.Range(attrWorksheet.FirstCellUsed().Address.RowNumber + 1,
+                attrWorksheet.FirstCellUsed().Address.ColumnNumber,
+                attrWorksheet.LastCellUsed().Address.RowNumber,
+                attrWorksheet.LastCellUsed().Address.ColumnNumber);
+            rangeAttr.Sort();
+            #endregion
 
-                #region Categories
+            #region Categories
 
-                IXLWorksheet uniqCatSheet = workbook.Worksheets.Add("Categories");
+            IXLWorksheet uniqCatSheet = workbook.Worksheets.Add("Categories");
 
-                uniqCatSheet.SheetView.FreezeRows(1);
-                uniqCatSheet.Columns().Style.Alignment.WrapText = false;
-                IXLRow firstCatRow = uniqCatSheet.Row(1);
-                firstCatRow.Style.Font.Bold = true;
+            uniqCatSheet.SheetView.FreezeRows(1);
+            uniqCatSheet.Columns().Style.Alignment.WrapText = false;
+            IXLRow firstCatRow = uniqCatSheet.Row(1);
+            firstCatRow.Style.Font.Bold = true;
 
-                uniqCatSheet.Cell(1, 1).Value = "Cat ID";
-                uniqCatSheet.Cell(1, 2).Value = "Cat name";
+            uniqCatSheet.Cell(1, 1).Value = "Cat ID";
+            uniqCatSheet.Cell(1, 2).Value = "Cat name";
 
-                XmlNodeList categoryNodes = xmlDoc.SelectNodes("//category");
+            XmlNodeList categoryNodes = xmlDoc.SelectNodes("//category");
 
-                int rowNum = 1;
-                foreach (XmlNode categoryNode in categoryNodes)
-                {
-                    string id = categoryNode.Attributes["id"]?.Value ?? "";
-                    string name = categoryNode.InnerText.Trim();
+            int rowNum = 1;
+            foreach (XmlNode categoryNode in categoryNodes)
+            {
+                string id = categoryNode.Attributes["id"]?.Value ?? "";
+                string name = categoryNode.InnerText.Trim();
 
-                    uniqCatSheet.Cell(rowNum + 1, 1).Value = id;
-                    uniqCatSheet.Cell(rowNum +1, 2).Value = name;
+                uniqCatSheet.Cell(rowNum + 1, 1).Value = id;
+                uniqCatSheet.Cell(rowNum + 1, 2).Value = name;
 
-                    rowNum++;
-                }
-                #endregion
+                rowNum++;
+            }
+            #endregion
 
 
-                #region Adding uniq Attributes to sheets
+            #region Adding uniq Attributes to sheets
 
-                IXLWorksheet uniqAttrSheet = workbook.Worksheets.Add("Attributes");
+            IXLWorksheet uniqAttrSheet = workbook.Worksheets.Add("Attributes");
 
-                uniqAttrSheet.SheetView.FreezeRows(1);
-                uniqAttrSheet.Columns().Style.Alignment.WrapText = false;
-                IXLRow firstAtrRow = uniqAttrSheet.Row(1);
-                firstAtrRow.Style.Font.Bold = true;
+            uniqAttrSheet.SheetView.FreezeRows(1);
+            uniqAttrSheet.Columns().Style.Alignment.WrapText = false;
+            IXLRow firstAtrRow = uniqAttrSheet.Row(1);
+            firstAtrRow.Style.Font.Bold = true;
 
-                int rowAttrib = 2;
+            int rowAttrib = 2;
 
-                uniqAttrSheet.Cell(1, 1).Value = "Attr ID";
-                uniqAttrSheet.Cell(1, 2).Value = "Attribute name";
+            uniqAttrSheet.Cell(1, 1).Value = "Attr ID";
+            uniqAttrSheet.Cell(1, 2).Value = "Attribute name";
 
-                var paramNames = new HashSet<string>();
-                var paramIndex = 1;
-                var paramId = 1;
+            var paramNames = new HashSet<string>();
+            var paramIndex = 1;
+            var paramId = 1;
 
-                foreach (XmlNode item in itemsList)
+            foreach (XmlNode item in itemsList)
+            {
+                if (suppSetting.ParamNode != null)
                 {
                     XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
 
@@ -292,73 +294,75 @@ public class WriteToXL
                             // Output the param name to Excel worksheet
                             uniqAttrSheet.Cell(paramIndex + 1, 1).Value = paramId;
                             uniqAttrSheet.Cell(paramIndex + 1, 2).Value = paramName;
-                            
+
                             paramIndex++;
                             paramId++;
                         }
                     }
-
-                    //itemIndex++;
                 }
 
 
-                //var paramValues = new HashSet<string>();
-                //var paramIndex = 1;
-                //foreach (XmlNode item in itemsList)
-                //{
-                //    XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
-
-                //    foreach (XmlNode param in paramList)
-                //    {
-                //        string paramValue = param.InnerText;
-
-                //        // Add the param value to the HashSet if it doesn't already exist
-                //        if (!paramValues.Contains(paramValue))
-                //        {
-                //            paramValues.Add(paramValue);
-
-                //            // Output the param value to Excel worksheet
-                //            uniqAttrSheet.Cell(paramIndex + 1, 1).Value = paramValue;
-                //            paramIndex++;
-                //        }
-                //    }
-
-                //   // itemIndex++;
-                //}
+                //itemIndex++;
+            }
 
 
-                //foreach (var attr in suppSetting.UniqueXMLNodes)
-                //{
-                //    uniqAttrSheet.Cell(rowAttrib + 1, 2).Value = attr;
-                //    rowAttrib++;
-                //}
-                #endregion
+            //var paramValues = new HashSet<string>();
+            //var paramIndex = 1;
+            //foreach (XmlNode item in itemsList)
+            //{
+            //    XmlNodeList paramList = item.SelectNodes(suppSetting.ParamNode);
 
-                #region Unique nodes
+            //    foreach (XmlNode param in paramList)
+            //    {
+            //        string paramValue = param.InnerText;
 
-                IXLWorksheet uniqueAttrSheet = workbook.Worksheets.Add("Unique nodes");
+            //        // Add the param value to the HashSet if it doesn't already exist
+            //        if (!paramValues.Contains(paramValue))
+            //        {
+            //            paramValues.Add(paramValue);
 
-                uniqueAttrSheet.SheetView.FreezeRows(1);
-                uniqueAttrSheet.Columns().Style.Alignment.WrapText = false;
-                IXLRow firstUAtrRow = uniqueAttrSheet.Row(1);
-                firstUAtrRow.Style.Font.Bold = true;
+            //            // Output the param value to Excel worksheet
+            //            uniqAttrSheet.Cell(paramIndex + 1, 1).Value = paramValue;
+            //            paramIndex++;
+            //        }
+            //    }
 
-                ////int? categ = PathModel.UniqXMLCategorys.Count;
-                int rowAttr = 2;
+            //   // itemIndex++;
+            //}
 
-                uniqueAttrSheet.Cell(1, 2).Value = "Unique nodes";
 
-                foreach (var attr in PathModel.UniqueXMLNodes)
-                {
-                    uniqueAttrSheet.Cell(rowAttr + 1, 2).Value = attr;
-                    rowAttr++;
-                }
-                #endregion
+            //foreach (var attr in suppSetting.UniqueXMLNodes)
+            //{
+            //    uniqAttrSheet.Cell(rowAttrib + 1, 2).Value = attr;
+            //    rowAttrib++;
+            //}
+            #endregion
 
-                string currentTime = DateTime.Now.ToString();
-                string dateCleaned = currentTime.Replace(":", "-").Replace(" ", "_");
+            #region Unique nodes
 
-            workbook.SaveAs(@$"D:\Downloads\{suppSetting.SettingName}_{dateCleaned}.xlsx");            
+            IXLWorksheet uniqueAttrSheet = workbook.Worksheets.Add("Unique nodes");
+
+            uniqueAttrSheet.SheetView.FreezeRows(1);
+            uniqueAttrSheet.Columns().Style.Alignment.WrapText = false;
+            IXLRow firstUAtrRow = uniqueAttrSheet.Row(1);
+            firstUAtrRow.Style.Font.Bold = true;
+
+            ////int? categ = PathModel.UniqXMLCategorys.Count;
+            int rowAttr = 2;
+
+            uniqueAttrSheet.Cell(1, 2).Value = "Unique nodes";
+
+            foreach (var attr in PathModel.UniqueXMLNodes)
+            {
+                uniqueAttrSheet.Cell(rowAttr + 1, 2).Value = attr;
+                rowAttr++;
+            }
+            #endregion
+
+            string currentTime = DateTime.Now.ToString();
+            string dateCleaned = currentTime.Replace(":", "-").Replace(" ", "_");
+
+            workbook.SaveAs(@$"D:\Downloads\{suppSetting.SettingName}_{dateCleaned}.xlsx");
         }
     }
 
