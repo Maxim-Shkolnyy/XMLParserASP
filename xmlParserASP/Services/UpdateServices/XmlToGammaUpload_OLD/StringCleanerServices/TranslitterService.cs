@@ -1,4 +1,4 @@
-﻿namespace xmlParserASP.Services;
+﻿namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
 
 public class TranslitMethods
 {
@@ -13,9 +13,9 @@ public class TranslitMethods
             for (var i = 0; i < source.Length; i++)
             {
                 result = result +
-                         (TranslitSymbols.FirstOrDefault(x => x.SymbolRus == source[i].ToString() && x.TranslitType==type) == null
+                         (TranslitSymbols.FirstOrDefault(x => x.SymbolRus == source[i].ToString() && x.TranslitType == type) == null
                              ? source[i].ToString()
-                             : TranslitSymbols.First(x => x.SymbolRus == source[i].ToString() && x.TranslitType==type).SymbolEng);
+                             : TranslitSymbols.First(x => x.SymbolRus == source[i].ToString() && x.TranslitType == type).SymbolEng);
             }
 
             return result;
@@ -24,7 +24,7 @@ public class TranslitMethods
         // Конструктор - При создании заполняем справочники сопоставлений
         public Translitter()
         {
-            this.TranslitSymbols = new List<TranslitSymbol>();
+            TranslitSymbols = new List<TranslitSymbol>();
             var gost = "а:a,б:b,в:v,г:g,д:d,е:e,є:ye,ё:jo,ж:zh,з:z,и:i,і:i,ї:ji,й:jj,к:k,л:l,м:m,н:n,о:o,п:p,р:r,с:s,т:t,у:u,ф:f,х:kh,ц:c,ч:ch,ш:sh,щ:shh,ъ:,ы:y,ь:,э:eh,ю:ju,я:ja, :-,/:-,|:-,?:-,\\:-,.:-,(:-,):-,%:-";
             var iso = "а:a,б:b,в:v,г:g,д:d,е:e,є:ye,ё:yo,ж:zh,з:z,и:i,і:i,ї:yi,й:j,к:k,л:l,м:m,н:n,о:o,п:p,р:r,с:s,т:t,у:u,ф:f,х:h,ц:c,ч:ch,ш:sh,щ:shh,ъ:,ы:y,ь:,э:e,ю:yu,я:ya, :-,/:-,|:-,?:-,\\:-,.:-,(:-,):-,%:-";
 
@@ -32,13 +32,13 @@ public class TranslitMethods
             foreach (string item in gost.Split(","))
             {
                 string[] symbols = item.Split(":");
-                this.TranslitSymbols.Add(new TranslitSymbol
+                TranslitSymbols.Add(new TranslitSymbol
                 {
                     TranslitType = TranslitType.Gost,
                     SymbolRus = symbols[0].ToLower(),
                     SymbolEng = symbols[1].ToLower()
                 });
-                this.TranslitSymbols.Add(new TranslitSymbol
+                TranslitSymbols.Add(new TranslitSymbol
                 {
                     TranslitType = TranslitType.Gost,
                     SymbolRus = symbols[0].ToUpper(),
@@ -50,13 +50,13 @@ public class TranslitMethods
             foreach (string item in iso.Split(","))
             {
                 string[] symbols = item.Split(":");
-                this.TranslitSymbols.Add(new TranslitSymbol
+                TranslitSymbols.Add(new TranslitSymbol
                 {
                     TranslitType = TranslitType.Iso,
                     SymbolRus = symbols[0].ToLower(),
                     SymbolEng = symbols[1].ToLower()
                 });
-                this.TranslitSymbols.Add(new TranslitSymbol
+                TranslitSymbols.Add(new TranslitSymbol
                 {
                     TranslitType = TranslitType.Iso,
                     SymbolRus = symbols[0].ToUpper(),

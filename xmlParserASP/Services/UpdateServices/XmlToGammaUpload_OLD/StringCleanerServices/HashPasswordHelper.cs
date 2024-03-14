@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace xmlParserASP.Services;
+namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
 
 public static class HashPasswordHelper
 {

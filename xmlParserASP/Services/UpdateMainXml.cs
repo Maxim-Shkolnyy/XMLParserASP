@@ -1,6 +1,8 @@
 ﻿using xmlParserASP.Presistant;
 using System.Net;
+using System.Xml.Serialization;
 using FluentFTP;
+using xmlParserASP.Models;
 
 namespace xmlParserASP.Services;
 
@@ -22,39 +24,39 @@ public class UpdateMainXml
 
     public void UpdateGammaXml()
     {
-        //    var query = from product in _dbContextGamma.NgProducts
-        //        join prodName in _dbContextGamma.NgProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
-        //        join prodCat in _dbContextGamma.NgProductToCategories.
-        //                GroupBy(pc => pc.ProductId).Select(g => new { ProductId = g.Key, GroupId = g.FirstOrDefault().CategoryId })
+        var query = from product in _dbContextGamma.NgProducts
+                    join prodName in _dbContextGamma.NgProductDescriptions.Where(p => p.LanguageId == 4) on product.ProductId equals prodName.ProductId
+                    join prodCat in _dbContextGamma.NgProductToCategories.
+                            GroupBy(pc => pc.ProductId).Select(g => new { ProductId = g.Key, GroupId = g.FirstOrDefault().CategoryId })
 
-        //            on product.ProductId equals prodCat.ProductId
+                        on product.ProductId equals prodCat.ProductId
 
-        //        select new Mm_ProductToXml
-        //        {
-        //            Sku = product.Sku,
-        //            Quantity = product.Quantity,
-        //            Price = product.Price,
-        //            Name = prodName.Name,
-        //            Category = prodCat.GroupId  
-        //        };
+                    select new ProductMinInfoModel
+                    {
+                        Sku = product.Sku,
+                        Quantity = product.Quantity,
+                        Price = product.Price,
+                        Name = prodName.Name,
+                        Category = prodCat.GroupId
+                    };
 
 
-        //    List<ProductToXml> products = query.ToList();
+        List<ProductMinInfoModel> products = query.ToList();
 
-        //    var xmlSerializer = new XmlSerializer(typeof(List<Mm_ProductToXml>));
+        var xmlSerializer = new XmlSerializer(typeof(List<ProductMinInfoModel>));
 
-        //    var localFile = Path.Combine(_localFilePath, _fileName);
+        var localFile = Path.Combine(_localFilePath, _fileName);
 
-        //    using (FileStream stream = new(localFile, FileMode.Create))
-        //    {
-        //        xmlSerializer.Serialize(stream, query.ToList());
-        //        //stream.Seek(0, SeekOrigin.Begin);
-        //    }
-
-        //    FTPUpload();
+        using (FileStream stream = new(localFile, FileMode.Create))
+        {
+            xmlSerializer.Serialize(stream, query.ToList());
+            //stream.Seek(0, SeekOrigin.Begin);
         }
 
-        private void FTPUpload()
+        FTPUpload();
+    }
+
+    private void FTPUpload()
     {
         int attempts = 0;
         try
@@ -106,13 +108,6 @@ public class UpdateMainXml
             {
                 Console.WriteLine($"3 unsuccessful attempts to connect to ftp server: {ex.ToString()}");
             }
-
         }
     }
-
-    public void UpdateSuppliersXml()
-    {
-
-    }
-
 }

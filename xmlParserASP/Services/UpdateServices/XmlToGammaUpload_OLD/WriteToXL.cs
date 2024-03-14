@@ -2,7 +2,8 @@
 using ClosedXML.Excel;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
-using static xmlParserASP.Services.TranslitMethods;
+using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
+using static xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices.TranslitMethods;
 
 namespace xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 
