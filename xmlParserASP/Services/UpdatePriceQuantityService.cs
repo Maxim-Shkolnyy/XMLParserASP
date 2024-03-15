@@ -314,6 +314,7 @@ public class UpdatePriceQuantityService
 
     private void GetExcelValues(string ftpHost, string ftpUser, string ftpPassword)
     {
+        _dc.XmlModelPriceList.Clear();
         string? remoteFilePath = _dc.SupplierXmlSetting.Path;
         if (remoteFilePath == null)
         {
@@ -327,10 +328,6 @@ public class UpdatePriceQuantityService
             return;
         }
 
-        string? modelColumnNumber = _dc.SupplierXmlSetting.ModelXlColumn;
-        string? priceColumn = _dc.SupplierXmlSetting.PricePictureXlColumn;
-
-        string? quantityColumn = _dc.SupplierXmlSetting.QuantityXlColumn;
         string? boxColumn = _dc.SupplierXmlSetting.QtyInBoxColumnNumber;
         string localFilePath = Path.GetTempFileName();
         localFilePath = Path.ChangeExtension(localFilePath, "xlsx");
@@ -372,23 +369,45 @@ public class UpdatePriceQuantityService
             }
         }
 
-        try
+        string? modelColumn = _dc.SupplierXmlSetting.ModelXlColumn;
+        if (string.IsNullOrEmpty(modelColumn))
         {
+            _dc.StateMessages.Add(($"{_dc.SuppName} model colunm not set. No one product found", "red"));
+            return;
+        }
 
-            using (var vb = new XLWorkbook(localFilePath))
+        string? priceColumn = _dc.SupplierXmlSetting.PricePictureXlColumn;
+        if (_dc.WhatToUpdate == 1 & string.IsNullOrEmpty(priceColumn))
+        {
+            _dc.StateMessages.Add(($"{_dc.SuppName} price colunm not set. No one product price was updated", "red"));
+            return;
+        }
+
+        string? quantityColumn = _dc.SupplierXmlSetting.QuantityXlColumn;
+        if (_dc.WhatToUpdate == 2 & string.IsNullOrEmpty(quantityColumn))
+        {
+            _dc.StateMessages.Add(($"{_dc.SuppName} quantity colunm not set. No one product quantity was updated", "red"));
+            return;
+        }
+
+
+        using (var vb = new XLWorkbook(localFilePath))
+        {
+            var worksheet = vb.Worksheet(1);
+
+            string? model = "";
+            string? quantity = "";
+            decimal price = 0;
+            string? unitsInBox = "";
+
+            _dc.XmlModelQuantityList.Clear();
+
+            foreach (var row in worksheet.RowsUsed())
             {
-                var worksheet = vb.Worksheet(1);
-
-                string? model = "";
-                string? quantity = "";
-                decimal price = 0;
-                string? unitsInBox = "";
-
-                _dc.XmlModelQuantityList.Clear();
-
-                foreach (var row in worksheet.RowsUsed())
+                try
                 {
-                    model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
+                    model = row.Cell(modelColumn).Value.ToString() ?? "";
+
                     if (string.IsNullOrEmpty(model))
                     {
                         continue;
@@ -405,9 +424,10 @@ public class UpdatePriceQuantityService
                             continue;
                         }
 
+
                         if (!_dc.XmlModelPriceList.TryAdd(model, price))
                         {
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                            _dc.StateMessages.Add(($"Error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                         }
                         continue;
                     }
@@ -415,6 +435,11 @@ public class UpdatePriceQuantityService
                     if (_dc.WhatToUpdate == 2)
                     {
                         quantity = row.Cell(quantityColumn).Value.ToString() ?? "";
+                        if (string.IsNullOrEmpty(quantity))
+                        {
+                            //_dc.StateMessages.Add(($"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} value not found in excel for product model {model}", "red"));
+                            continue;
+                        }
 
                         if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
                         {
@@ -427,28 +452,37 @@ public class UpdatePriceQuantityService
                             }
                         }
 
-                        int.TryParse(quantity, out var qty);
-
-                        if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
+                        if (int.TryParse(quantity, out var qty))
                         {
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                            if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
+                            {
+                                _dc.StateMessages.Add(($"error. Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                            }
                         }
+
                         continue;
                     }
 
                     if (_dc.WhatToUpdate == 3)
                     {
-                        if (row.Cell(priceColumn).DataType == XLDataType.Number)
+                        if (!string.IsNullOrEmpty(priceColumn) & row.Cell(priceColumn).DataType == XLDataType.Number)
                         {
                             price = row.Cell(priceColumn).GetValue<decimal>();
+
+                            if (!_dc.XmlModelPriceList.TryAdd(model, price))
+                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
                         }
                         else
                         {
-                            price = 1000000;
-                            _dc.StateMessages.Add(($"Price not found in xml, set 1000000_{_dc.SuppName}_model: {row.Cell(modelColumnNumber)}_value: {row.Cell(priceColumn)}", ""));
+                            //_dc.StateMessages.Add(($"Price not found in xml, set 1000000_{_dc.SuppName}_model: {row.Cell(modelColumn)}_value: {row.Cell(priceColumn)}", ""));
                         }
 
-                        quantity = row.Cell(quantityColumn).Value.ToString() ?? "";
+
+                        if (!string.IsNullOrEmpty(quantityColumn))
+                        {
+                            quantity = row.Cell(quantityColumn).Value.ToString() ?? "";
+                        }
+
 
                         if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
                         {
@@ -460,20 +494,18 @@ public class UpdatePriceQuantityService
                             }
                         }
 
-                        int.TryParse(quantity, out var qty);
-
-                        if (!_dc.XmlModelPriceList.TryAdd(model, price))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-
-                        if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
-                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        if (int.TryParse(quantity, out var qty))
+                        {
+                            if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
+                                _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    _dc.StateMessages.Add(($"Error {ex.Message}-+-{ex.StackTrace}-+-{ex.Source}-+-{ex.InnerException}_{_dc.SuppName}_model: {row.Cell(modelColumn)}_value: {row.Cell(priceColumn)}", ""));
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            _dc.StateMessages.Add(($"Error {ex.Message}_{_dc.SuppName}_model: {row.Cell(modelColumnNumber)}_value: {row.Cell(priceColumn)}", ""));
         }
     }
 
@@ -661,6 +693,22 @@ public class UpdatePriceQuantityService
                                     {
                                         _dc.ProductsWasNotChanged++;
                                     }
+                                }
+                            }
+                            else
+                            {
+                                _dc.NotFoundItemsInXmlForCurrentSupp++;
+                                if (dbQtyValue != 0)
+                                {
+                                    if (WriteQtyToDb(sku, 0))
+                                    {
+                                        _dc.ProductsWasChanged++;
+                                        _dc.StateMessages.Add(($"set-0_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}_ NOT FOUND in XML. Set - 0. Old - new:_{dbQtyValue}_{xmlQtyValue}", "brown"));
+                                    }
+                                }
+                                else
+                                {
+                                    _dc.ProductsWasNotChanged++;
                                 }
                             }
                         }
