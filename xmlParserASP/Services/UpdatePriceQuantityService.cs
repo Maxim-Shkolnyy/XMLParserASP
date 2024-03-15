@@ -372,100 +372,108 @@ public class UpdatePriceQuantityService
             }
         }
 
-        using (var vb = new XLWorkbook(localFilePath))
+        try
         {
-            var worksheet = vb.Worksheet(1);
 
-            string? model = "";
-            string quantity = "";
-            decimal price = 0;
-            string? unitsInBox = "";
-
-            _dc.XmlModelQuantityList.Clear();
-
-            foreach (var row in worksheet.RowsUsed())
+            using (var vb = new XLWorkbook(localFilePath))
             {
-                model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
-                if (string.IsNullOrEmpty(model))
-                {
-                    continue;
-                }
+                var worksheet = vb.Worksheet(1);
 
-                if (_dc.WhatToUpdate == 1)
+                string? model = "";
+                string? quantity = "";
+                decimal price = 0;
+                string? unitsInBox = "";
+
+                _dc.XmlModelQuantityList.Clear();
+
+                foreach (var row in worksheet.RowsUsed())
                 {
-                    if (row.Cell(priceColumn).DataType == XLDataType.Number)
-                    {
-                        price = row.Cell(priceColumn).GetValue<decimal>();
-                    }
-                    else
+                    model = row.Cell(modelColumnNumber).Value.ToString() ?? "";
+                    if (string.IsNullOrEmpty(model))
                     {
                         continue;
                     }
 
-                    if (!_dc.XmlModelPriceList.TryAdd(model, price))
+                    if (_dc.WhatToUpdate == 1)
                     {
-                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                    }
-                    continue;
-                }
-
-                if (_dc.WhatToUpdate == 2)
-                {
-                    quantity = row.Cell(quantityColumn).Value.ToString() ?? "";
-
-                    if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
-                    {
-                        unitsInBox = row.Cell(boxColumn).Value.ToString();
-
-
-                        if (quantity.Contains('>') & quantity.Contains("ящик"))
+                        if (row.Cell(priceColumn).DataType == XLDataType.Number)
                         {
-                            quantity = unitsInBox;
+                            price = row.Cell(priceColumn).GetValue<decimal>();
                         }
-                    }
-
-                    int.TryParse(quantity, out var qty);
-
-                    if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
-                    {
-                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
-                    }
-                    continue;
-                }
-
-                if (_dc.WhatToUpdate == 3)
-                {
-                    if (row.Cell(priceColumn).DataType == XLDataType.Number)
-                    {
-                        price = row.Cell(priceColumn).GetValue<decimal>();
-                    }
-                    else
-                    {
-                        price = 1000000;
-                        _dc.StateMessages.Add(($"Price not found in xml, set 1000000_{_dc.SuppName}_model: {row.Cell(modelColumnNumber)}_value: {row.Cell(priceColumn)}", ""));
-                    }
-
-                    quantity = row.Cell(quantityColumn).Value.ToString();
-
-                    if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
-                    {
-                        unitsInBox = row.Cell(boxColumn).Value.ToString();
-
-                        if (quantity.Contains('>') & quantity.Contains("ящик"))
+                        else
                         {
-                            quantity = unitsInBox;
+                            continue;
                         }
+
+                        if (!_dc.XmlModelPriceList.TryAdd(model, price))
+                        {
+                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        }
+                        continue;
                     }
 
-                    int.TryParse(quantity, out var qty);
+                    if (_dc.WhatToUpdate == 2)
+                    {
+                        quantity = row.Cell(quantityColumn).Value.ToString() ?? "";
 
-                    if (!_dc.XmlModelPriceList.TryAdd(model, price))
-                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
+                        {
+                            unitsInBox = row.Cell(boxColumn).Value.ToString();
 
-                    if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
-                        _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+
+                            if (quantity.Contains('>') & quantity.Contains("ящик"))
+                            {
+                                quantity = unitsInBox;
+                            }
+                        }
+
+                        int.TryParse(quantity, out var qty);
+
+                        if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
+                        {
+                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                        }
+                        continue;
+                    }
+
+                    if (_dc.WhatToUpdate == 3)
+                    {
+                        if (row.Cell(priceColumn).DataType == XLDataType.Number)
+                        {
+                            price = row.Cell(priceColumn).GetValue<decimal>();
+                        }
+                        else
+                        {
+                            price = 1000000;
+                            _dc.StateMessages.Add(($"Price not found in xml, set 1000000_{_dc.SuppName}_model: {row.Cell(modelColumnNumber)}_value: {row.Cell(priceColumn)}", ""));
+                        }
+
+                        quantity = row.Cell(quantityColumn).Value.ToString() ?? "";
+
+                        if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
+                        {
+                            unitsInBox = row.Cell(boxColumn).Value.ToString();
+
+                            if (quantity.Contains('>') & quantity.Contains("ящик"))
+                            {
+                                quantity = unitsInBox;
+                            }
+                        }
+
+                        int.TryParse(quantity, out var qty);
+
+                        if (!_dc.XmlModelPriceList.TryAdd(model, price))
+                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+
+                        if (!_dc.XmlModelQuantityList.TryAdd(model, qty))
+                            _dc.StateMessages.Add(($"error_Duplicate model in excel file {_dc.SuppName} {model}", "red"));
+                    }
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            _dc.StateMessages.Add(($"Error {ex.Message}_{_dc.SuppName}_model: {row.Cell(modelColumnNumber)}_value: {row.Cell(priceColumn)}", ""));
         }
     }
 
@@ -522,10 +530,10 @@ public class UpdatePriceQuantityService
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         _dc.StateMessages.Add((
-                            $"error_Error occurred while price of {_dc.SuppName}  updated. DB data: {sku} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ", "red"));
+                            $"Error {e.Message} occurred while price of {_dc.SuppName}  updated. DB data: {sku} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ", "red"));
                     }
                 }
                 else
@@ -793,7 +801,7 @@ public class UpdatePriceQuantityService
         }
         catch (Exception e)
         {
-            _dc.StateMessages.Add(($"error_Something happened while {_dc.CurrentTableDbColumnToUpdate} of {_dc.SuppName}  updated. Data NOT ADD to DB: {sku} {xmlValue}", "red"));
+            _dc.StateMessages.Add(($"Error {e.Message} while {_dc.CurrentTableDbColumnToUpdate} of {_dc.SuppName}  updated. Data NOT ADD to DB: {sku} {xmlValue}", "red"));
             return false;
         }
     }
