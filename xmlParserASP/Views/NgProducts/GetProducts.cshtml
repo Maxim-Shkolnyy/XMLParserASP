@@ -8,6 +8,9 @@
     <thead>
         <tr>
             <th>
+                Count
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Model)
             </th>
             <th>
@@ -47,9 +50,16 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            int count = 0;
+        }
         @foreach (var item in Model)
         {
+            count++;
             <tr>
+                <td>
+                    @count
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Model)
                 </td>
