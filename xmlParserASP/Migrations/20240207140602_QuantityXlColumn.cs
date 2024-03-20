@@ -1,8 +1,4 @@
-﻿using System;
-using DocumentFormat.OpenXml.CustomXmlSchemaReferences;
-using Microsoft.EntityFrameworkCore.Migrations;
-using MySql.Data.MySqlClient.X.XDevAPI.Common;
-using MySql.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 

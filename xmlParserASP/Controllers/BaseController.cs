@@ -1,7 +1,5 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;

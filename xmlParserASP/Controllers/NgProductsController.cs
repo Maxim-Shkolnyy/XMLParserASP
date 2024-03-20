@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
@@ -14,57 +9,54 @@ namespace xmlParserASP.Controllers;
 public class NgProductsController : Controller
 {
     private readonly GammaContext _context;
-    private readonly DownloadPhotosViewModel _model;
     private MmSupplierXmlSetting _suppSetting;
-    private string? suppName;
+    private string? _suppName;
 
     public NgProductsController(GammaContext context)
     {
         _context = context;
     }
 
-    // GET: NgProducts
     public async Task<IActionResult> Index()
     {
         return View(await _context.NgCategoryDescriptions.Where(m => m.LanguageId == 3).ToListAsync());
     }
 
     [HttpPost]
-    public async Task<IActionResult> GetProducts(int? selectedSupplierXmlSetting, int? SelectedCategoryId, bool Rename, string? desktopSubFolder, string? LinkPrefix)
+    public async Task<IActionResult> GetProducts(int? SelectedCategoryId, bool Rename, string? desktopSubFolder, string? LinkPrefix)
     {
         List<int> childrenCategories = new();
 
         if (SelectedCategoryId != null)
         {
-            childrenCategories = _model.NgCategorys.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToList();
+            childrenCategories = _context.NgCategories.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToList();
             childrenCategories.Insert(0, (int)SelectedCategoryId);
         }
         else
         {
-            childrenCategories = _model.NgCategorys.Select(m => m.CategoryId).ToList();
+            childrenCategories = _context.NgCategories.Select(m => m.CategoryId).ToList();
         }
 
         List<int> productsIdsOfCurrentCategory = new();
 
-        if (selectedSupplierXmlSetting == null)
-        {
-            productsIdsOfCurrentCategory = _model.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
-        }
-        else
-        {
-            //Todo: get all products
+        //if (selectedSupplierXmlSetting == null)
+        //{
+        //    //Todo: get all products
+        //    productsIdsOfCurrentCategory = _context.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
+        //}
+        //else
+        //{
+            //_suppSetting = await _context.MmSupplierXmlSettings.FirstOrDefaultAsync(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+            //_suppName = await _context.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefaultAsync();
 
-            _suppSetting = await _context.MmSupplierXmlSettings.FirstOrDefaultAsync(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
-            suppName = await _context.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefaultAsync();
-
-            productsIdsOfCurrentCategory = _model.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
+            productsIdsOfCurrentCategory = _context.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
 
             var selectedProducts = await _context.NgProducts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId)).ToListAsync();
 
             return View(selectedProducts);
-        }
+        //}
 
-        return View(new EmptyResult()); // Повернення за замовчуванням, якщо умови не виконуються
+        //return View(new EmptyResult());
     }
 
 

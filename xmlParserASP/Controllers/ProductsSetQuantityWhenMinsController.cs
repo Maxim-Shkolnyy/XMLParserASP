@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
-using xmlParserASP.Migrations;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;

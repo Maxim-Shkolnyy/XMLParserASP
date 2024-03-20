@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Xml;
 using xmlParserASP.Entities.Gamma;

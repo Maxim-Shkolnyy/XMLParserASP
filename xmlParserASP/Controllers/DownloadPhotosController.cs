@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Xml;
-using System.Linq;
 using xmlParserASP.Models;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -8,7 +7,6 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
