@@ -1,4 +1,4 @@
-﻿@model IEnumerable<xmlParserASP.Entities.Gamma.NgProduct>
+﻿@model IEnumerable<ProductMinInfoModel>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -20,31 +20,7 @@
                 @Html.DisplayNameFor(model => model.Quantity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ManufacturerId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateAvailable)
-            </th>      
-            <th>
-                @Html.DisplayNameFor(model => model.SortOrder)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Viewed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateAdded)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateModified)
             </th>
             <th></th>
         </tr>
@@ -70,32 +46,8 @@
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Image)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ManufacturerId)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateAvailable)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SortOrder)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Viewed)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateAdded)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateModified)
-                </td>                
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> <br />
                     <a asp-action="Details" asp-route-id="@item.ProductId">Details</a><br />

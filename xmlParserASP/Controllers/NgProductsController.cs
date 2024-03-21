@@ -23,7 +23,7 @@ public class NgProductsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> GetProducts(int? SelectedCategoryId, bool Rename, string? desktopSubFolder, string? LinkPrefix)
+    public async Task<IActionResult> GetProducts(int? SelectedCategoryId)
     {
         List<int> childrenCategories = new();
 
@@ -51,7 +51,14 @@ public class NgProductsController : Controller
 
             productsIdsOfCurrentCategory = _context.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
 
-            var selectedProducts = await _context.NgProducts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId)).ToListAsync();
+            var selectedProducts = await _context.NgProducts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId)).Select(n => new
+                ProductMinInfoModel
+                {
+                    Model = n.Model, 
+                    Sku = n.Sku, 
+                    Quantity = n.Quantity, 
+                    Price = n.Price
+                } ).ToListAsync();
 
             return View(selectedProducts);
         //}
