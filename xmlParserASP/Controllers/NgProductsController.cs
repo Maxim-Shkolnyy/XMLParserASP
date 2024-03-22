@@ -29,12 +29,12 @@ public class NgProductsController : Controller
 
         if (SelectedCategoryId != null)
         {
-            childrenCategories = _context.NgCategories.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToList();
+            childrenCategories = await _context.NgCategories.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToListAsync();
             childrenCategories.Insert(0, (int)SelectedCategoryId);
         }
         else
         {
-            childrenCategories = _context.NgCategories.Select(m => m.CategoryId).ToList();
+            childrenCategories = await _context.NgCategories.Select(m => m.CategoryId).ToListAsync();
         }
 
         List<int> productsIdsOfCurrentCategory = new();
@@ -49,16 +49,36 @@ public class NgProductsController : Controller
             //_suppSetting = await _context.MmSupplierXmlSettings.FirstOrDefaultAsync(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
             //_suppName = await _context.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefaultAsync();
 
-            productsIdsOfCurrentCategory = _context.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToList();
+            productsIdsOfCurrentCategory =await _context.NgProductToCategories.Where(m => childrenCategories.Contains(m.CategoryId)).Select(c => c.ProductId).ToListAsync();
 
             var selectedProducts = await _context.NgProducts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId)).Select(n => new
                 ProductMinInfoModel
                 {
+                    ProductId = n.ProductId,
                     Model = n.Model, 
                     Sku = n.Sku, 
                     Quantity = n.Quantity, 
                     Price = n.Price
                 } ).ToListAsync();
+
+            var specials = await _context.NgProductSpecials.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId))
+                .Select(n => new
+                {
+                    n.ProductId,
+                    n.Price
+                }).ToListAsync();
+            var discounts = await _context.NgProductDiscounts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId))
+                .Select(m => new
+                {
+                    m.ProductId,
+                    m.Price
+                })
+                .ToListAsync();
+
+            //if(selectedProducts.Contains(specials.ProductId)
+            //{
+
+            //}
 
             return View(selectedProducts);
         //}
