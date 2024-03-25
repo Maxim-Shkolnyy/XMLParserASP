@@ -8,7 +8,7 @@
 }
 
 @{
-    var sortedSetteings = Model.SupplierXmlSettings.OrderBy(s => s.SettingName).ToList();
+    var sortedSetteings = Model.SupplierXmlSettings.OrderBy(s => s.SupplierId).ToList();
 }
 
 <form asp-controller="UpdatePriceQuantity" asp-action="Result" asp-method="post">

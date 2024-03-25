@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Presentation;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Net;
@@ -321,11 +322,12 @@ public class UpdatePriceQuantityService
             return;
         }
 
-        if (_dc.CurrentTableDbColumnToUpdate == "Quantity" &
-            _dc.WhatToUpdate == 3 & _dc.XmlModelQuantityList.Count > 0)
-        {
-            return;
-        }
+        //TODO Done check when path to file is the same for price and quantity and price and quantity exists in this file
+        //if (_dc.CurrentTableDbColumnToUpdate == "Quantity" &
+        //    _dc.WhatToUpdate == 3 & _dc.XmlModelQuantityList.Count > 0 & _dc.SupplierXmlSetting.Path == PreviousDownloadedValuesFromCurrentFile)
+        //{
+        //    return;
+        //}
 
         string? boxColumn = _dc.SupplierXmlSetting.QtyInBoxColumnNumber;
         string localFilePath = Path.GetTempFileName();
@@ -371,21 +373,21 @@ public class UpdatePriceQuantityService
         string? modelColumn = _dc.SupplierXmlSetting.ModelXlColumn;
         if (string.IsNullOrEmpty(modelColumn))
         {
-            _dc.StateMessages.Add(($"{_dc.SuppName} model colunm not set. No one product found", "red"));
+            _dc.StateMessages.Add(($"{_dc.SuppName} model column not set. No one product found", "red"));
             return;
         }
 
         string? priceColumn = _dc.SupplierXmlSetting.PricePictureXlColumn;
         if (_dc.WhatToUpdate == 1 & string.IsNullOrEmpty(priceColumn))
         {
-            _dc.StateMessages.Add(($"{_dc.SuppName} price colunm not set. No one product price was updated", "red"));
+            _dc.StateMessages.Add(($"{_dc.SuppName} price column not set. No one product price was updated", "red"));
             return;
         }
 
         string? quantityColumn = _dc.SupplierXmlSetting.QuantityXlColumn;
         if (_dc.WhatToUpdate == 2 & string.IsNullOrEmpty(quantityColumn))
         {
-            _dc.StateMessages.Add(($"{_dc.SuppName} quantity colunm not set. No one product quantity was updated", "red"));
+            _dc.StateMessages.Add(($"{_dc.SuppName} quantity column not set. No one product quantity was updated", "red"));
             return;
         }
 
@@ -464,7 +466,11 @@ public class UpdatePriceQuantityService
 
                     if (_dc.WhatToUpdate == 3)
                     {
-                        if (!string.IsNullOrEmpty(priceColumn) & row.Cell(priceColumn).DataType == XLDataType.Number)
+                        priceColumn = _dc.SupplierXmlSetting.PricePictureXlColumn;
+
+                        quantityColumn = _dc.SupplierXmlSetting.QuantityXlColumn;
+
+                        if (!string.IsNullOrEmpty(priceColumn) && row.Cell(priceColumn).DataType == XLDataType.Number)
                         {
                             price = row.Cell(priceColumn).GetValue<decimal>();
 
@@ -475,6 +481,7 @@ public class UpdatePriceQuantityService
                         {
                             //_dc.StateMessages.Add(($"Price not found in xml, set 1000000_{_dc.SuppName}_model: {row.Cell(modelColumn)}_value: {row.Cell(priceColumn)}", ""));
                         }
+
 
 
                         if (!string.IsNullOrEmpty(quantityColumn))

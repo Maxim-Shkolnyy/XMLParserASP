@@ -20,7 +20,7 @@ public class UpdatePriceQuantityController : Controller
     {
         _db = db;
         _updatePriceQuantityService = updatePriceQuantityService;
-        _settingsList = _db.MmSupplierXmlSettings.ToList();
+        _settingsList = _db.MmSupplierXmlSettings.OrderBy(m => m.SupplierId).ToList();
         _dc = dcS.Instance;
         _cleaner = cleaner;
 
@@ -42,7 +42,7 @@ public class UpdatePriceQuantityController : Controller
         {
             var mySettingList = new PriceQuantityViewModel
             {
-                SupplierXmlSettings = _db.MmSupplierXmlSettings.ToList()
+                SupplierXmlSettings = _db.MmSupplierXmlSettings.OrderBy(m => m.SupplierId).ToList()
             };
 
             ViewBag.SelectSupSetting = "Choose supplier first";
@@ -104,20 +104,18 @@ public class UpdatePriceQuantityController : Controller
             _cleaner.CleanUpAll();
 
             _dc.WhatToUpdate = 3;
-            PriceList.Sort();
-            QuantityList.Sort();
+           
+            var idList = _settingsList.Select(m => m.SupplierXmlSettingId).ToList();
 
-            int maxId = _settingsList.Select(m => m.SupplierXmlSettingId).ToList().Max();
-
-            for (int i = 1; i < maxId + 1; i++)
+            foreach (var id in idList)
             {
-                if (PriceList.Contains(i))
+                if (PriceList.Contains(id))
                 {
                     try
                     {
                         _cleaner.CleanUpAll();
                         _dc.CurrentTableDbColumnToUpdate = "Price";
-                        await _updatePriceQuantityService.MasterUpdate(i);
+                        await _updatePriceQuantityService.MasterUpdate(id);
 
                         FillFirstViewTable();
 
@@ -129,13 +127,13 @@ public class UpdatePriceQuantityController : Controller
                         ViewBag.PriceError = $"{_dc.SuppName} {_dc.CurrentTableDbColumnToUpdate} was not updated!!!" + ex.Message;
                     }
                 }
-                if (QuantityList.Contains(i))
+                if (QuantityList.Contains(id))
                 {
                     try
                     {
                         _cleaner.CleanUpOnlyManualMinLisys();
                         _dc.CurrentTableDbColumnToUpdate = "Quantity";
-                        await _updatePriceQuantityService.MasterUpdate(i);
+                        await _updatePriceQuantityService.MasterUpdate(id);
 
                         FillFirstViewTable();
 
