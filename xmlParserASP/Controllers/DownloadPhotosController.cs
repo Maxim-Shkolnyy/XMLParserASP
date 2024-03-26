@@ -272,7 +272,7 @@ public class DownloadPhotosController : Controller
             ViewBag.Message = "An error occurred: " + ex.Message;
         }
 
-        return View("DownloadFromXml");
+        return View("DownloadPhotosResult", _resultModel);
     }
 
 
@@ -458,7 +458,7 @@ public class DownloadPhotosController : Controller
             ViewBag.Message = "An error occurred: " + ex.Message;
         }
 
-        return View("DownloadFromXl");
+        return View("DownloadPhotosResult", _resultModel);
     }
     
 

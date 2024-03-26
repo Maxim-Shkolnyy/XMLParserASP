@@ -37,7 +37,7 @@ namespace xmlParserASP.Services
 
                         if (File.Exists(fullFilePath))
                         {
-                            _resultModel.totalPhotoPassedExists++;
+                            _resultModel.TotalPhotoPassedExists++;
                             continue;
                         }
 
@@ -73,7 +73,7 @@ namespace xmlParserASP.Services
                                                 using (var resizedImage = new Bitmap(image, newWidth, newHeight))
                                                 {
                                                     resizedImage.Save(fullFilePath, ImageFormat.Jpeg);
-                                                    _resultModel.totalPhotosResized++;
+                                                    _resultModel.TotalPhotosResized++;
                                                 }
                                             }
                                             else
@@ -95,26 +95,26 @@ namespace xmlParserASP.Services
                                         }
 
                                         // Add the photo URL to the HashSet for this model
-                                        _resultModel.totalPhotosDownloaded++;
-                                        _resultModel.newPhotosAdded++;
+                                        _resultModel.TotalPhotosDownloaded++;
+                                        _resultModel.NewPhotosAdded++;
                                     }
                                 }
                             }
                             else
                             {
                                 _resultModel.wrongUrl.Add(new KeyValuePair<string, string>("fromDb", photoUrl));
-                                _resultModel.cannotDownload++;
+                                _resultModel.CannotDownload++;
                             }
                         }
                     }
 
-                    if (_resultModel.newPhotosAdded == 0)
+                    if (_resultModel.NewPhotosAdded == 0)
                     {
                         _resultModel.ResultMessages.Add("No new photos added. All photos already exist in the destination folder.");
                     }
                     else
                     {
-                        _resultModel.ResultMessages.Add($"Total photos downloaded: {_resultModel.totalPhotosDownloaded}. Total photos resized: {_resultModel.totalPhotosResized}. Photos passed because exists {_resultModel.totalPhotoPassedExists}. Wrong URL, image was not downloaded: {_resultModel.cannotDownload}");
+                        _resultModel.ResultMessages.Add($"Total photos downloaded: {_resultModel.TotalPhotosDownloaded}. Total photos resized: {_resultModel.TotalPhotosResized}. Photos passed because exists {_resultModel.TotalPhotoPassedExists}. Wrong URL, image was not downloaded: {_resultModel.CannotDownload}");
                         //ViewBag.WrongUrl = _resultModel.wrongUrl;
                     }
                 }

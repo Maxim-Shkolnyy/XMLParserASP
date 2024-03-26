@@ -4,30 +4,39 @@
 
 @if (Model.ResultMessages != null)
 {
-    <div class="alert alert-success">
-        @foreach (var message in Model.ResultMessages)
-        {
-            <text>@message</text><br />
-        }
-    </div>
+    if (Model.ResultMessages.Count > 0)
+    {
+        <div class="alert alert-success">
+            @foreach (var message in Model.ResultMessages)
+            {
+                <text>@message</text>
+
+                <br />
+            }
+        </div>
+    }
+
 }
 
-@if (Model.wrongUrl.Count > 0)
+@if (Model.ResultMessages != null)
 {
-    <text>Wrong links:</text>
+    if (Model.ResultMessages.Count > 0)
+    {
+        <text>Wrong links:</text>
 
-    <table class="wrong">
-        <tr>
-            <th>Model</th>
-            <th>URL</th>
-        </tr>
-
-        @foreach (var kvp in Model.wrongUrl)
-        {
+        <table class="wrong">
             <tr>
-                <td>@kvp.Key</td>
-                <td>@kvp.Value</td>
+                <th>Model</th>
+                <th>URL</th>
             </tr>
-        }
-    </table>
+
+            @foreach (var kvp in Model.wrongUrl)
+            {
+                <tr>
+                    <td>@kvp.Key</td>
+                    <td>@kvp.Value</td>
+                </tr>
+            }
+        </table>
+    }
 }
