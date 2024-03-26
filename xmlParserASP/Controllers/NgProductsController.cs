@@ -6,13 +6,13 @@ using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
 
-public class NgProductsController : Controller
+public class NgProductsController : BaseController
 {
     private readonly GammaContext _context;
     private MmSupplierXmlSetting _suppSetting;
     private string? _suppName;
 
-    public NgProductsController(GammaContext context)
+    public NgProductsController(GammaContext context) : base(context)
     {
         _context = context;
     }
@@ -20,6 +20,12 @@ public class NgProductsController : Controller
     public async Task<IActionResult> Index()
     {
         return View(await _context.NgCategoryDescriptions.Where(m => m.LanguageId == 3).ToListAsync());
+    }
+
+    public async Task<IActionResult> ExportToExcel()
+    {
+        var prices = await _context.NgProducts.ToListAsync();
+        return await ExportToExcel(prices.AsQueryable());
     }
 
     [HttpPost]

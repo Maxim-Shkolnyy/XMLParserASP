@@ -6,10 +6,10 @@ namespace xmlParserASP.Controllers;
 
 public class BaseController : Controller
 {
-    private readonly GammaContext _db;
-    public BaseController(GammaContext db)
+    private readonly GammaContext _context;
+    public BaseController(GammaContext context)
     {
-        _db = db;
+        _context = context;
     }
     protected async Task<IActionResult> ExportToExcel<T>(IQueryable<T> data)
     {
@@ -24,6 +24,11 @@ public class BaseController : Controller
             var properties = typeof(T).GetProperties();
 
             var headerRow = worksheet.Row(currentRow);
+
+            worksheet.Row(1).Style.Font.Bold = true;
+            worksheet.SheetView.FreezeRows(1);
+            worksheet.Row(2).Style.Fill.BackgroundColor = XLColor.Yellow;
+
             for (int i = 0; i < properties.Length; i++)
             {
                 headerRow.Cell(i + 1).Value = properties[i].Name;
@@ -67,7 +72,7 @@ public class BaseController : Controller
                 if (entity != null)
                 {
                     var keyPropertyValue = worksheet.Cell(i, 1).Value.ToString(); // Assuming the first cell contains the key property value
-                    var existingEntity = await _db.FindAsync<T>(keyPropertyValue);
+                    var existingEntity = await _context.FindAsync<T>(keyPropertyValue);
 
 
                     // Find the existing entity by its key property value
@@ -92,7 +97,7 @@ public class BaseController : Controller
                     }
                 }
             }
-            await _db.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
         return RedirectToAction("Index");
     }
