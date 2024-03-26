@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
+using xmlParserASP.Services;
 using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
 //using Windows.Storage.Pickers;
 
@@ -20,10 +21,14 @@ public class DownloadPhotosController : Controller
     private string? suppName;
     private MmSupplierXmlSetting _suppSetting;
     private DownloadPhotosViewModel _model;
+    private DownloadPhotosService _downloadPhotosService;
+    private DownloadPhotosResultModel _resultModel;
 
-    public DownloadPhotosController(GammaContext gammaContext)
+    public DownloadPhotosController(GammaContext gammaContext, DownloadPhotosService downloadPhotosService, DownloadPhotosResultModel resultModel)
     {
         _gammaContext=gammaContext;
+        _downloadPhotosService=downloadPhotosService;
+        _resultModel=resultModel;
 
         _model = new DownloadPhotosViewModel
         {
@@ -37,15 +42,7 @@ public class DownloadPhotosController : Controller
     }
     public IActionResult Index()
     {
-       var stringPath = new List<SelectListItem>
-        {
-            new() { Text = "Select file folder", Value = "" },
-            new() { Text = "D:\\Downloads\\", Value = "D:\\Downloads\\" },
-            new() { Text = "C:\\Downloads\\", Value = "C:\\Downloads\\" },
-            new() { Text = "D:\\Downloads\\Telegram Desktop\\", Value = "D:\\Downloads\\Telegram Desktop\\" }
-        };
-        ViewBag.stringPath = stringPath;
-        return View(_model);
+       return View(_model);
     }
 
 
@@ -81,7 +78,7 @@ public class DownloadPhotosController : Controller
         }
 
 
-        var productImages = _model.NgProducts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId)).Select(c => c.Image).ToList();
+        List<string>? productImages = _model.NgProducts.Where(m => productsIdsOfCurrentCategory.Contains(m.ProductId)).Select(c => c.Image).ToList();
         var additionalImages = _model.NgProductImages.Where(n => productsIdsOfCurrentCategory.Contains(n.ProductId)).Select(b => b.Image).ToList();
 
         productImages.AddRange(additionalImages);
@@ -96,101 +93,9 @@ public class DownloadPhotosController : Controller
             productImages = productImages.Distinct().ToList();
         }
 
-        try
-        {
-            //todo Extract getting photos and resizing into a separate method for all post methods.
-            using (var client = new HttpClient())
-            {
-                int totalPhotosDownloaded = 0;
-                int totalPhotosResized = 0;
-                int totalPhotoPassedExists = 0;
-                List<KeyValuePair<string, string>> wrongUrl = new();
-                int cannotDownload = 0;
-                int newPhotosAdded = 0;
+        _resultModel = await _downloadPhotosService.DownloadPhotos(productImages, desktopSubFolder, true);  //TODO choose if resize (last parameter) from UI
 
-
-                foreach (var photoUrl in productImages)
-                {
-                    var originalFileName = Path.GetFileNameWithoutExtension(photoUrl);
-                    var extension = Path.GetExtension(photoUrl);
-                    var fileName = Path.GetFileName(photoUrl);
-                    var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-                    var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, fileName);
-
-                    using (var response = await client.GetAsync(photoUrl))
-                    {
-                        if (response.IsSuccessStatusCode)
-                        {
-                            //string? photoFilePath = Path.Combine(_suppSetting.PhotoFolder, imageName) ?? @"D:\\Downloads\img\";
-
-                            using (var photoStream = await response.Content.ReadAsStreamAsync())
-                            {
-                                using (var image = Image.FromStream(photoStream))
-                                {
-                                    photoStream.Seek(0, SeekOrigin.Begin);
-
-                                    if (image.Width > 1000 || image.Height > 1000)
-                                    {
-                                        int newWidth, newHeight;
-
-                                        if (image.Width > image.Height)
-                                        {
-                                            newWidth = 1000;
-                                            newHeight = (int)((float)image.Height / image.Width * newWidth);
-                                        }
-                                        else
-                                        {
-                                            newHeight = 1000;
-                                            newWidth = (int)((float)image.Width / image.Height * newHeight);
-                                        }
-
-                                        using (var resizedImage = new Bitmap(image, newWidth, newHeight))
-                                        {
-                                            resizedImage.Save(fullFilePath, ImageFormat.Jpeg);
-                                            totalPhotosResized++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        using (var fileStream = new FileStream(fullFilePath, FileMode.Create))
-                                        {
-                                            photoStream.Seek(0, SeekOrigin.Begin);
-                                            await photoStream.CopyToAsync(fileStream);
-                                        }
-                                    }
-
-                                    // Add the photo URL to the HashSet for this model
-                                    totalPhotosDownloaded++;
-                                    newPhotosAdded++;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            wrongUrl.Add(new KeyValuePair<string, string>("fromDb", photoUrl));
-                            cannotDownload++;
-                        }
-                    }
-                }
-
-                if (newPhotosAdded == 0)
-                {
-                    ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
-                }
-                else
-                {
-                    ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Wrong URL, image was not downloaded: {cannotDownload}";
-                    ViewBag.WrongUrl = wrongUrl;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            ViewBag.Message = "An error occurred: " + ex.Message;
-        }
-
-        return View("DownloadFromXl");
+        return View("DownloadPhotosResult", _resultModel);
     }
 
 
@@ -285,13 +190,12 @@ public class DownloadPhotosController : Controller
                     if (System.IO.File.Exists(filePath))
                     {
                         totalPhotoPassedExists++;
-                        //return;
                     }
 
                     if (modelPhotoUrls[modelValue].Contains(photoUrl))
                     {
                         totalPhotoPassedExists++;
-                        //return;
+                        //continue;
                     }
 
                     using (var client = new HttpClient())

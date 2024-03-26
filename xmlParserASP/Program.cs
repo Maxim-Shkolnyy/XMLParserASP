@@ -39,7 +39,9 @@ public class Program
         builder.Services.AddSingleton<DataContainer>();
         builder.Services.AddSingleton<DataContainerSingleton>();
         builder.Services.AddTransient<DataCleaner>();
-        
+        builder.Services.AddTransient<DownloadPhotosResultModel>();
+        builder.Services.AddTransient<DownloadPhotosService>();
+
         var app = builder.Build();
 
         if (!app.Environment.IsDevelopment())

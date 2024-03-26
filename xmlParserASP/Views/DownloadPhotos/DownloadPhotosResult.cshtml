@@ -1,0 +1,33 @@
+﻿@model DownloadPhotosResultModel
+
+<h2>Photos from excel downloaded successfully </h2>
+
+@if (Model.ResultMessages != null)
+{
+    <div class="alert alert-success">
+        @foreach (var message in Model.ResultMessages)
+        {
+            <text>@message</text><br />
+        }
+    </div>
+}
+
+@if (Model.wrongUrl.Count > 0)
+{
+    <text>Wrong links:</text>
+
+    <table class="wrong">
+        <tr>
+            <th>Model</th>
+            <th>URL</th>
+        </tr>
+
+        @foreach (var kvp in Model.wrongUrl)
+        {
+            <tr>
+                <td>@kvp.Key</td>
+                <td>@kvp.Value</td>
+            </tr>
+        }
+    </table>
+}
