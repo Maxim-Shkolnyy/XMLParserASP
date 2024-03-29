@@ -59,6 +59,8 @@ public class DataCleaner
 
         if (_dc.ProductsSetQuantityWhenMinList != null)
             _dc.ProductsSetQuantityWhenMinList.Clear();
+
+        _dc.ProductQtySetManually = 0;
     }
 }
 
