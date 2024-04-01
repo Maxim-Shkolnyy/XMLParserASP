@@ -535,11 +535,9 @@ public class UpdatePriceQuantityService
 
         if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
         {
-            var drfg = _dc.Products.Where(m => _dc.SkusToUpdate.Contains(m.Sku)).Select(n => n.ProductId);
-            _dc.ProductQtySetManually = _dbContextGamma.NgProductDiscounts
-    .Where(m => m.Quantity == 1 && drfg.Contains(m.ProductId))
-    .Count();
+            var pricesSetManually = _dc.Products.Where(m => _dc.SkusToUpdate.Contains(m.Sku)).Select(n => n.ProductId);
 
+            _dc.ProductQtySetManually = _dbContextGamma.NgProductDiscounts.Where(m => m.Quantity == 1 && pricesSetManually.Contains(m.ProductId)).Count();
         }
 
         foreach (var dbModel in _dc.DbCodeModelPriceList)
