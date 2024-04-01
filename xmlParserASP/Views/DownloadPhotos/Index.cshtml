@@ -6,66 +6,6 @@
 
 <h1>Download supplier images</h1>
 
-<h2>Download from xml</h2>
-
-<br />
-<form asp-action="DownloadFromXml" method="post">
-    <label for="selectedSupplierXmlSetting">Select supplier</label>
-    <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting" required>
-        <option value="">-- Select --</option>
-        @foreach (var setting in Model.SupplierXmlSettings)
-        {
-            <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
-        }
-    </select>
-    <br /><br />
-
-    @using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post))
-    {
-        <div class="form-group">
-            <label>Rename photos?</label>
-            <div>
-                <label>
-                    <input type="radio" name="renamePhotos" value="true" /> Yes
-                </label>
-                <label>
-                    <input type="radio" name="renamePhotos" value="false" checked /> No
-                </label>
-            </div>
-        </div>
-
-        <div id="renameBlock" style="display: none;">
-            Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
-            <table width="70%">
-                <thead>
-                <tr>
-                    <th>Prefix:</th>
-                    <th>Main Part:</th>
-                    <th>Suffix:</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><input type="text" id="prefix" name="prefix" class="form-control" /></td>
-                    <td><input type="text" id="mainPart" name="mainPart" class="form-control" /></td>
-                    <td><input type="text" id="suffix" name="suffix" class="form-control" /></td>
-                </tr>
-                </tbody>
-            </table>
-
-        </div>
-        <br />
-        <button type="submit" class="btn btn-primary">Download photos from xml</button>
-    }
-</form>
-
-
-
-__________________________________________________________________________________________________________
-<br />
-<br />
-
-
 <h2>Download from database</h2>
 <br />
 <p>
@@ -102,22 +42,22 @@ ________________________________________________________________________________
         <input type="checkbox" asp-for="Rename" unchecked> *@
            
             <label>Photo folder path: C:\...\Desktop\</label>
-            <input type="text" name="desktopSubFolder" value="Exp\">
+            <input type="text" name="desktopSubFolder" value="Exp\"> <br />
 
 
             <div class="form-group">
                 <label>Rename photos?</label>
                 <div>
                     <label>
-                        <input type="radio" name="renameXlPhotos" value="true" /> Yes
+                        <input type="radio" name="renameDbPhotos" value="true" /> Yes
                     </label>
                     <label>
-                        <input type="radio" name="renameXlPhotos" value="false" checked /> No
+                        <input type="radio" name="renameDbPhotos" value="false" checked /> No
                     </label>
                 </div>
             </div>
 
-            <div id="renameXlBlock" style="display: none;">
+            <div id="renameDbBlock" style="display: none;">
                 Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
                 <table width="70%">
                     <thead>
@@ -158,16 +98,6 @@ ________________________________________________________________________________
 <p>
     <form asp-action="DownloadFromXL" method="post" enctype="multipart/form-data">
         
-        <label for="selectedSupplierXmlSetting">Select supplier</label>
-        <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting" required>
-            <option value="">-- Select --</option>
-            @foreach (var setting in Model.SupplierXmlSettings)
-            {
-                <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
-            }
-        </select>
-
-        <br /><br />
         <label for="LinkPrefix">Add prefix</label>
         <input type="text" id="LinkPrefix" name="LinkPrefix" value="https://gamma.net.ua/image/" />
 
@@ -175,9 +105,6 @@ ________________________________________________________________________________
 
         @using (Html.BeginForm("DownloadFromXL", "DownloadPhotos", FormMethod.Post))
         {
-
-            <label for="ModelColumn">Model column</label>
-            <input type="text" asp-for="ModelColumn" value="sku">
             <label for="PictureColumn">Picture column</label>
             <input type="text" asp-for="PictureColumn" value="image_name">
             <label for="SheetNumber">Sheet number</label>
@@ -190,7 +117,7 @@ ________________________________________________________________________________
             <input type="file" id="xmlFile" name="excelFile" class="form-control" required />
             <br/>
             <label>Photo folder path: C:\...\Desktop\</label>
-            <input type="text" name="desktopSubFolder" value="Exp\">
+            <input type="text" name="desktopSubFolder" value="Exp\"><br />
 
 
             <div class="form-group">
@@ -206,6 +133,19 @@ ________________________________________________________________________________
             </div>
 
             <div id="renameXlBlock" style="display: none;">
+
+                <label for="selectedSupplierXmlSetting">Select supplier</label>
+                <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting" >
+                    <option value="">-- Select --</option>
+                    @foreach (var setting in Model.SupplierXmlSettings)
+                    {
+                        <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
+                    }
+                </select>
+
+                <label for="ModelColumn">Model column</label>
+                <input type="text" asp-for="ModelColumn" value="sku"> <br />
+
                 Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
                 <table width="70%">
                     <thead>
@@ -231,9 +171,81 @@ ________________________________________________________________________________
     </form>
 </p>
 
+__________________________________________________________________________________________________________
+<br />
+<br />
+
+<h2>Download from xml</h2>
+
+<br />
+<form asp-action="DownloadFromXml" method="post">
+    <label for="selectedSupplierXmlSetting">Select supplier</label>
+    <select id="selectedSupplierXmlSetting" name="selectedSupplierXmlSetting" required>
+        <option value="">-- Select --</option>
+        @foreach (var setting in Model.SupplierXmlSettings)
+        {
+            <option value="@setting.SupplierXmlSettingId">@setting.SettingName</option>
+        }
+    </select>
+    <br /><br />
+
+    @using (Html.BeginForm("Index", "DownloadPhotos", FormMethod.Post))
+    {
+        <div class="form-group">
+            <label>Rename photos?</label>
+            <div>
+                <label>
+                    <input type="radio" name="renamePhotos" value="true" /> Yes
+                </label>
+                <label>
+                    <input type="radio" name="renamePhotos" value="false" checked /> No
+                </label>
+            </div>
+        </div>
+
+        <div id="renameBlock" style="display: none;">
+            Rename if fields is empty will set like: <b>Model-A-SupplierName_OriginalFileName.jpg</b><br /><br />
+            <table width="70%">
+                <thead>
+                    <tr>
+                        <th>Prefix:</th>
+                        <th>Main Part:</th>
+                        <th>Suffix:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" id="prefix" name="prefix" class="form-control" /></td>
+                        <td><input type="text" id="mainPart" name="mainPart" class="form-control" /></td>
+                        <td><input type="text" id="suffix" name="suffix" class="form-control" /></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Download photos from xml</button>
+    }
+</form>
+
 
 
 @section scripts {
+
+
+    <script>
+        $(document).ready(function () {
+            $('input[name="renameDbPhotos"]').on('change', function () {
+                var selectedValue = $(this).val();
+                if (selectedValue === "true") {
+                    $('#renameDbBlock').show();
+                } else {
+                    $('#renameDbBlock').hide();
+                }
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function () {
             $('input[name="renamePhotos"]').on('change', function () {
@@ -246,6 +258,7 @@ ________________________________________________________________________________
             });
         });
     </script>
+
     <script>
         $(document).ready(function () {
             $('input[name="renameXlPhotos"]').on('change', function () {
@@ -281,14 +294,14 @@ ________________________________________________________________________________
     label.innerHTML = "Selected Photo Folder: " + folderName;
     });
     </script>
-    *@
+    
 
-@* <div class="form-group">
+ <div class="form-group">
     <label for="filePath" class="control-label">Choose folder:</label>
     <select name="filePath" class="form-control" asp-items="@ViewBag.stringPath">
     </select>
-    </div> *@
-@*     <label for="ModelColumn">Model column</label>
+    </div> 
+     <label for="ModelColumn">Model column</label>
     <input type="text" asp-for="ModelColumn" value="sku">
     <label for="PictureColumn">Picture column</label>
     <input type="text" asp-for="PictureColumn" value="image_name">

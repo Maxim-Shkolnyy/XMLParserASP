@@ -11,6 +11,7 @@ using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
 using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
+using MySqlX.XDevAPI.Common;
 //using Windows.Storage.Pickers;
 
 namespace xmlParserASP.Controllers;
@@ -42,7 +43,7 @@ public class DownloadPhotosController : Controller
     }
     public IActionResult Index()
     {
-       return View(_model);
+        return View(_model);
     }
 
 
@@ -69,7 +70,7 @@ public class DownloadPhotosController : Controller
         }
         else
         {
-            //Todo: get all products
+            //Todo: get products only for current supplier. Implement select supplier in view
 
             _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
             suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
@@ -93,9 +94,243 @@ public class DownloadPhotosController : Controller
             productImages = productImages.Distinct().ToList();
         }
 
-        _resultModel = await _downloadPhotosService.DownloadPhotos(productImages, desktopSubFolder, true);  //TODO choose if resize (last parameter) from UI
+        _resultModel = await _downloadPhotosService.DownloadPhotos(productImages, desktopSubFolder, true);  // TODO: choose if resize (last parameter) from UI
 
         return View("DownloadPhotosResult", _resultModel);
+    }
+
+
+
+    [HttpPost]
+    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder, string? LinkPrefix)
+    {
+        if (excelFile == null || PictureColumn == null || SheetNumber == null)
+        {
+            return BadRequest("One or more required parameters are missing.");
+        }
+
+        if (selectedSupplierXmlSetting != null)
+        {
+            _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
+            suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
+        }
+
+        var imageUrlList = new List<(string, string)>();
+        var noModelImageUrlList = new List<string>();
+
+        using (var stream = excelFile.OpenReadStream())
+        {
+            using (var workbook = new XLWorkbook(stream))
+            {
+                var worksheet = workbook.Worksheet((int)SheetNumber);
+                var firstRowUsed = worksheet.FirstRowUsed();
+                var modelColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == ModelColumn)?.WorksheetColumn()?.ColumnNumber() ?? -1;
+                var photoUrlColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == PictureColumn)?.WorksheetColumn().ColumnNumber() ?? 1;
+                var rowsUsed = worksheet.RowsUsed();
+                string modelValue = "";
+                string photoUrl = "";
+                
+
+                if (modelColumn == -1)
+                {
+                    foreach (var row in rowsUsed)
+                    {
+                        photoUrl = row.Cell(photoUrlColumn).Value.ToString() ?? "";
+                        if (!String.IsNullOrEmpty(photoUrl))
+                        {
+                            noModelImageUrlList.Add(photoUrl);
+                        }
+                    }
+                }
+                else //TODO: if Model was set and need rename image
+                {
+                    foreach (var row in rowsUsed)
+                    {
+                        modelValue = row.Cell(modelColumn).Value.ToString() ?? "";
+                        photoUrl = row.Cell(photoUrlColumn).Value.ToString() ?? "";
+                        if (!String.IsNullOrEmpty(photoUrl))
+                        {
+                            imageUrlList.Add((modelValue, photoUrl));
+                        }
+                    }
+                }
+            }
+        }
+
+        if (LinkPrefix != null)
+        {
+            noModelImageUrlList = noModelImageUrlList.Select(s => LinkPrefix  + s).ToList();
+        }
+
+        _resultModel = await _downloadPhotosService.DownloadPhotos(noModelImageUrlList, desktopSubFolder, true);  // TODO: choose if resize (last parameter) from UI
+
+        return View("DownloadPhotosResult", _resultModel);
+
+        //try
+        //{
+        //    using (var client = new HttpClient())
+        //    {
+        //        var modelCount = new Dictionary<string, int>();
+        //        var modelPhotoUrls = new Dictionary<string, HashSet<string>>();
+        //        int totalPhotosDownloaded = 0;
+        //        int totalPhotosResized = 0;
+        //        int totalPhotoPassedExists = 0;
+        //        List<KeyValuePair<string, string>> wrongUrl = new();
+        //        int cannotDownload = 0;
+        //        int newPhotosAdded = 0;
+
+        //        string fileFileName = excelFile.FileName;
+        //        string tempFolderPath = Path.GetTempPath();
+
+        //        string tempFilePath = Path.Combine(tempFolderPath, fileFileName);
+
+        //        using (var stream = new FileStream(tempFilePath, FileMode.Create))
+        //        {
+        //            await excelFile.CopyToAsync(stream);
+        //        }
+
+        //        int numberOfSheet = SheetNumber ?? 1;
+
+        //        using (var workbook = new XLWorkbook(tempFilePath))
+        //        {
+        //            var worksheet = workbook.Worksheet(numberOfSheet);
+        //            var firstRowUsed = worksheet.FirstRowUsed();
+        //            var modelColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == ModelColumn)?.WorksheetColumn();
+        //            var photoUrlColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == PictureColumn)?.WorksheetColumn();
+
+        //            if (photoUrlColumn == null || worksheet == null)
+        //            {
+        //                ViewBag.Message = "Model, sheet and/or Photo URL column not found in the Excel file.";
+        //                return View("Index");
+        //            }
+
+        //            var currentRow = firstRowUsed.RowUsed().RowBelow(); // Skip the header row
+
+        //            while (!currentRow.Cell(modelColumn.ColumnNumber()).IsEmpty())
+        //            {
+        //                var modelValue = currentRow.Cell(modelColumn.ColumnNumber()).Value.ToString();
+        //                var photoUrl = currentRow.Cell(photoUrlColumn.ColumnNumber()).Value.ToString();
+        //                if (LinkPrefix != null)
+        //                {
+        //                    photoUrl = LinkPrefix + photoUrl;
+        //                }
+
+        //                var originalFileName = Path.GetFileNameWithoutExtension(photoUrl);
+        //                var extension = Path.GetExtension(photoUrl);
+        //                var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+
+        //                var cleanOriginalFileName = DelSpecialSymbols.SpecialSymbolsToDashes(originalFileName);
+
+        //                if (!modelCount.ContainsKey(modelValue))
+        //                {
+        //                    modelCount[modelValue] = 0;
+        //                    modelPhotoUrls[modelValue] = new HashSet<string>(); // Initialize the HashSet for photo URLs                            
+        //                }
+        //                else
+        //                {
+        //                    totalPhotoPassedExists++;
+        //                }
+
+        //                modelCount[modelValue]++;
+
+        //                // Get the count value for the model
+        //                var count = modelCount[modelValue];
+
+        //                var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
+
+        //                var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}{extension}";
+
+
+
+        //                var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, imageName);
+
+        //                if (modelPhotoUrls[modelValue].Contains(photoUrl))
+        //                {
+        //                    totalPhotoPassedExists++;
+        //                    currentRow = currentRow.RowBelow();
+        //                    continue;
+        //                }
+
+        //                using (var response = await client.GetAsync(photoUrl))
+        //                {
+        //                    if (response.IsSuccessStatusCode)
+        //                    {
+        //                        //string? photoFilePath = Path.Combine(_suppSetting.PhotoFolder, imageName) ?? @"D:\\Downloads\img\";
+
+        //                        using (var photoStream = await response.Content.ReadAsStreamAsync())
+        //                        {
+        //                            using (var image = Image.FromStream(photoStream))
+        //                            {
+        //                                photoStream.Seek(0, SeekOrigin.Begin);
+
+        //                                if (image.Width > 1000 || image.Height > 1000)
+        //                                {
+        //                                    int newWidth, newHeight;
+
+        //                                    if (image.Width > image.Height)
+        //                                    {
+        //                                        newWidth = 1000;
+        //                                        newHeight = (int)((float)image.Height / image.Width * newWidth);
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        newHeight = 1000;
+        //                                        newWidth = (int)((float)image.Width / image.Height * newHeight);
+        //                                    }
+
+        //                                    using (var resizedImage = new Bitmap(image, newWidth, newHeight))
+        //                                    {
+        //                                        resizedImage.Save(fullFilePath, ImageFormat.Jpeg);
+        //                                        totalPhotosResized++;
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    using (var fileStream = new FileStream(fullFilePath, FileMode.Create))
+        //                                    {
+        //                                        photoStream.Seek(0, SeekOrigin.Begin);
+        //                                        await photoStream.CopyToAsync(fileStream);
+        //                                    }
+        //                                }
+
+        //                                // Add the photo URL to the HashSet for this model
+        //                                modelPhotoUrls[modelValue].Add(photoUrl);
+        //                                totalPhotosDownloaded++;
+        //                                newPhotosAdded++;
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        wrongUrl.Add(new KeyValuePair<string, string>(modelValue, photoUrl));
+        //                        cannotDownload++;
+        //                    }
+        //                }
+
+        //                // Move to the next row
+        //                currentRow = currentRow.RowBelow();
+        //            }
+        //        }
+
+        //        if (newPhotosAdded == 0)
+        //        {
+        //            ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
+        //        }
+        //        else
+        //        {
+        //            ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Wrong URL, image was not downloaded: {cannotDownload}";
+        //            ViewBag.WrongUrl = wrongUrl;
+        //        }
+        //        System.IO.File.Delete(tempFilePath);
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    ViewBag.Message = "An error occurred: " + ex.Message;
+        //}
+
+        //return View("DownloadPhotosResult", _resultModel);
     }
 
 
@@ -263,7 +498,7 @@ public class DownloadPhotosController : Controller
                     }
                 }
             }
-            
+
             ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Can't download. Wrong URL: {imgNameCannotDownload}";
             ViewBag.WrongUrl = wrongUrl;
         }
@@ -275,192 +510,6 @@ public class DownloadPhotosController : Controller
         return View("DownloadPhotosResult", _resultModel);
     }
 
-
-   
-
-
-    [HttpPost]
-    public async Task<ActionResult> DownloadFromXL(IFormFile? excelFile, int? selectedSupplierXmlSetting, int? SelectedCategoryId, string? ModelColumn, string? PictureColumn, int? SheetNumber, bool Rename, string? desktopSubFolder, string? LinkPrefix) 
-    {
-        _suppSetting = _gammaContext.MmSupplierXmlSettings.FirstOrDefault(s => s.SupplierXmlSettingId == selectedSupplierXmlSetting);
-        suppName = _gammaContext.MmSuppliers.Where(m => m.SupplierId == _suppSetting.SupplierId).Select(n => n.SupplierName).FirstOrDefault();
-        List<int> childrenCategories = new();
-
-        if (SelectedCategoryId != null)
-        {
-            childrenCategories = _model.NgCategorys.Where(m => m.ParentId == SelectedCategoryId).Select(n => n.CategoryId).ToList();
-            childrenCategories.Insert(0, (int)SelectedCategoryId);
-        }
-
-        try
-        {
-            using (var client = new HttpClient())
-            {
-                var modelCount = new Dictionary<string, int>();
-                var modelPhotoUrls = new Dictionary<string, HashSet<string>>();
-                int totalPhotosDownloaded = 0;
-                int totalPhotosResized = 0;
-                int totalPhotoPassedExists = 0;
-                List<KeyValuePair<string, string>> wrongUrl = new();
-                int cannotDownload = 0;
-                int newPhotosAdded = 0;
-
-                string fileFileName = excelFile.FileName;
-                string tempFolderPath = Path.GetTempPath();
-
-                string tempFilePath = Path.Combine(tempFolderPath, fileFileName);
-
-                using (var stream = new FileStream(tempFilePath, FileMode.Create))
-                {
-                    await excelFile.CopyToAsync(stream);
-                }
-
-                string modelColumnName = ModelColumn;
-                string photoUrlColumnName = PictureColumn;
-                int numberOfSheet = SheetNumber ?? 1;
-
-                using (var workbook = new XLWorkbook(tempFilePath))
-                {
-                    var worksheet = workbook.Worksheet(numberOfSheet);
-                    var firstRowUsed = worksheet.FirstRowUsed();
-                    var modelColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == modelColumnName)?.WorksheetColumn();
-                    var photoUrlColumn = firstRowUsed.CellsUsed().FirstOrDefault(c => c.Value.ToString() == photoUrlColumnName)?.WorksheetColumn();
-
-                    if (modelColumn == null || photoUrlColumn == null || worksheet == null)
-                    {
-                        ViewBag.Message = "Model, sheet and/or Photo URL column not found in the Excel file.";
-                        return View("Index");
-                    }
-
-                    var currentRow = firstRowUsed.RowUsed().RowBelow(); // Skip the header row
-
-                    while (!currentRow.Cell(modelColumn.ColumnNumber()).IsEmpty())
-                    {
-                        var modelValue = currentRow.Cell(modelColumn.ColumnNumber()).Value.ToString();
-                        var photoUrl = currentRow.Cell(photoUrlColumn.ColumnNumber()).Value.ToString();
-                        if (LinkPrefix != null)
-                        {
-                            photoUrl = LinkPrefix + photoUrl;
-                        }
-
-                        var originalFileName = Path.GetFileNameWithoutExtension(photoUrl);
-                        var extension = Path.GetExtension(photoUrl);
-                        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        
-                        
-                        var cleanOriginalFileName = DelSpecialSymbols.SpecialSymbolsToDashes(originalFileName);
-
-                        if (!modelCount.ContainsKey(modelValue))
-                        {
-                            modelCount[modelValue] = 0;
-                            modelPhotoUrls[modelValue] = new HashSet<string>(); // Initialize the HashSet for photo URLs                            
-                        }
-                        else
-                        {
-                            totalPhotoPassedExists++;
-                        }
-
-                        modelCount[modelValue]++;
-
-                        // Get the count value for the model
-                        var count = modelCount[modelValue];
-
-                        var alphabeticCharacter = ((char)('A' + count - 1)).ToString();
-
-                        var imageName = $"{modelValue}-{alphabeticCharacter}-{suppName}_{cleanOriginalFileName}{extension}";
-
-                        
-
-                        var fullFilePath = Path.Combine(desktopPath, desktopSubFolder, imageName);
-
-                        if (modelPhotoUrls[modelValue].Contains(photoUrl))
-                        {
-                            totalPhotoPassedExists++;
-                            currentRow = currentRow.RowBelow();
-                            continue;
-                        }
-
-                        using (var response = await client.GetAsync(photoUrl))
-                        {
-                            if (response.IsSuccessStatusCode)
-                            {
-                                //string? photoFilePath = Path.Combine(_suppSetting.PhotoFolder, imageName) ?? @"D:\\Downloads\img\";
-
-                                using (var photoStream = await response.Content.ReadAsStreamAsync())
-                                {
-                                    using (var image = Image.FromStream(photoStream))
-                                    {
-                                        photoStream.Seek(0, SeekOrigin.Begin);
-
-                                        if (image.Width > 1000 || image.Height > 1000)
-                                        {
-                                            int newWidth, newHeight;
-                                           
-                                            if (image.Width > image.Height)
-                                            {
-                                                newWidth = 1000;
-                                                newHeight = (int)((float)image.Height / image.Width * newWidth);
-                                            }
-                                            else
-                                            {
-                                                newHeight = 1000;
-                                                newWidth = (int)((float)image.Width / image.Height * newHeight);
-                                            }
-
-                                            using (var resizedImage = new Bitmap(image, newWidth, newHeight))
-                                            {
-                                                resizedImage.Save(fullFilePath, ImageFormat.Jpeg);
-                                                totalPhotosResized++;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            using (var fileStream = new FileStream(fullFilePath, FileMode.Create))
-                                            {
-                                                photoStream.Seek(0, SeekOrigin.Begin);
-                                                await photoStream.CopyToAsync(fileStream);
-                                            }
-                                        }
-
-                                        // Add the photo URL to the HashSet for this model
-                                        modelPhotoUrls[modelValue].Add(photoUrl);
-                                        totalPhotosDownloaded++;
-                                        newPhotosAdded++;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                wrongUrl.Add(new KeyValuePair<string, string>(modelValue, photoUrl));
-                                cannotDownload++;
-                            }
-                        }
-
-                        // Move to the next row
-                        currentRow = currentRow.RowBelow();
-                    }
-                }
-
-                if (newPhotosAdded == 0)
-                {
-                    ViewBag.Message = "No new photos added. All photos already exist in the destination folder.";
-                }
-                else
-                {
-                    ViewBag.Message = $"Total photos downloaded: {totalPhotosDownloaded}. Total photos resized: {totalPhotosResized}. Photos passed because exists {totalPhotoPassedExists}. Wrong URL, image was not downloaded: {cannotDownload}";
-                    ViewBag.WrongUrl = wrongUrl;
-                }
-                System.IO.File.Delete(tempFilePath);
-            }
-        }
-        catch (Exception ex)
-        {
-            ViewBag.Message = "An error occurred: " + ex.Message;
-        }
-
-        return View("DownloadPhotosResult", _resultModel);
-    }
-    
 
     private string SanitizeModelValue(string modelValue)
     {
