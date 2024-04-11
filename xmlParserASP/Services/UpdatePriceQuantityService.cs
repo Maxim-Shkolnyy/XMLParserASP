@@ -565,6 +565,7 @@ public class UpdatePriceQuantityService
                         {
                             _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlPrice });
                             _dc.StateMessages.Add(($"+_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price increased. {CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
+                            
                         }
                         else
                         {
@@ -574,6 +575,7 @@ public class UpdatePriceQuantityService
                                 _dc.StateMessages.Add(($"-_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price decreased. {CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
                             }
                         }
+                        _dc.ProductsWasChanged++;
                     }
                     catch (Exception e)
                     {
