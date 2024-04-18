@@ -1,0 +1,32 @@
+﻿<h1>Взяти дані з сайту за посиланнями з файлу ексель</h1>
+
+<br />
+<br />
+<form asp-controller="GetDataFromSite" asp-action="ProcessExcel" method="post" enctype="multipart/form-data">
+   
+    
+    
+    <label for="sheetNumber">Sheet number______________</label>
+    <input type="number" id="sheetNumber" name="sheetNumber" min="1" value="1" maxlength="2"> <br /><br />
+
+    <label for="skuColumn">Колонка з кодом товарів (не обов'язково заповнювати, можна залишити 0)</label>
+    <input type="number" id="skuColumn" name="skuColumn" min="0" value="0" maxlength="2">
+    <label for="skuColumn"></label> <br /><br />
+    
+    <label for="linksColumn">Номер колонки з посиланнями на сторінки сайту, які треба обробити</label>
+    <input type="number" id="linksColumn" name="linksColumn" min="1" value="2" maxlength="2">
+    <label for="linksColumn"></label>
+    <br /><br />
+
+    <label for="tag">Тег, який треба отримати</label>
+    <input id="tag" name="tag" >
+    <label for="tag"></label>
+    <br /><br />
+
+    <label for="excelFile">Оберіть файл</label>
+    <input type="file" id="excelFile" name="excelFile" required>
+    <button class="btn-danger" type="submit">Отримати дані з сайту</button>
+
+</form>
+
+

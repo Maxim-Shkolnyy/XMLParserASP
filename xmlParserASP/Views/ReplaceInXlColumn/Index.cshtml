@@ -1,7 +1,10 @@
 ﻿<h1>Replace strings</h1>
+<h2>Файл у якому треба зробити заміну</h2>
 
 
 <form asp-controller="ReplaceInXlColumn" asp-action="ProcessExcel" method="post" enctype="multipart/form-data">
+    <label for="excelFileWhereReplace">Choose processed file</label>
+    <input type="file" id="excelFileWhereReplace" name="excelFileWhereReplace" required> <br /><br />
     <label for="searchedSheetNumber">Sheet number__</label>
     <input type="number" id="searchedSheetNumber" name="searchedSheetNumber" min="1" value="1" maxlength="2"> <br /><br />
     
@@ -9,14 +12,20 @@
     <input type="number" id="searchedColumnNumber" name="searchedColumn" min="0" value="0" maxlength="2">
     <label for="searchedColumnNumber">(0 - all columns).  </label>
 
-    <label for="excelFileWhereReplace">Choose processed file</label>
-    <input type="file" id="excelFileWhereReplace" name="excelFileWhereReplace" required>
+    
     
     <br /><br />
     ___________________________________________________________________________________
     <br /><br />
+
+
+    <h2>Файл з колонками старих значень, та значень на які треба їх замінити</h2>
+    <br /><br />
+
+    <label for="excelFileReplacementMask">Choose replacement mask file</label>
+    <input type="file" id="excelFileReplacementMask" name="excelFileReplacementMask" required>
     
-    
+
     <label for="replacementSheetNumber">Sheet number______________</label>
     <input type="number" id="replacementSheetNumber" name="replacementSheetNumber" min="1" value="1" maxlength="2"> <br /><br />
 
@@ -29,10 +38,7 @@
     <label for="newReplacementColumn"></label>
     <br /><br />
 
-    <label for="excelFileReplacementMask">Choose replacement mask file</label>
-    <input type="file" id="excelFileReplacementMask" name="excelFileReplacementMask" required>
-    <button type="submit">Process file</button>
-
+    <button class="btn-danger" type="submit">Зробити заміну</button> <br /><br />
 </form>
 
 
