@@ -60,18 +60,17 @@ public class GetDataFromSiteController : Controller
 
                     string linkElement = "";
 
-                    //var linkElement = doc.DocumentNode.SelectSingleNode($"//div[@id= '{tag}']").InnerText;
                     if (doc != null)
                     {
                         var linkElementNode = doc.DocumentNode.SelectSingleNode($"//div[contains(@class, '{tag}')]");
 
                         if (linkElementNode != null)
                         {
-                             linkElement = linkElementNode.InnerText;
+                             linkElement = linkElementNode.InnerText.Trim();
                         }
                         else
                         {
-                            row.Cell(newColumnNumber).Style.Fill.BackgroundColor= XLColor.YaleBlue;
+                            row.Cell(newColumnNumber).Style.Fill.BackgroundColor= XLColor.YellowGreen;
                         }
                     }
                     else
