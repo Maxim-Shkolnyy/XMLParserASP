@@ -81,14 +81,7 @@ public class GetDataFromSiteController : Controller
 
                         row.Cell(newColumnNumber).Value = linkElement;
                     }
-
-
-
-                    //_replacementValues.Add((sku, link));
                 }
-
-
-
 
                 workbook.SaveAs(tempFilePath);
 
@@ -107,30 +100,76 @@ public class GetDataFromSiteController : Controller
     }
 
 
-    //public void ProcessRowsInColumn(IXLColumn column)
-    //{
-    //    foreach (var cell in column.CellsUsed())
-    //    {
-    //        var cellValue = cell.Value.ToString();
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> ProcessMyExcelAsync(IFormFile? excelFile, int sheetNumber, int skuColumn, int linksColumn, string tag)
+    {
+        if (excelFile == null)
+        {
+            ViewBag.Message = "Model, sheet and/or Photo URL column not found in the Excel file.";
+            return View("Index");
+        }
 
-    //        if (string.IsNullOrEmpty(cellValue))
-    //        {
-    //            continue;
-    //        }
+        string tempFilePath = Path.GetTempFileName();
 
-    //        foreach (var pair in _replacementValues)
-    //        {
-    //            var oldValue = pair.Key;
-    //            var newValue = pair.Value;
+        try
+        {
+            using (var workbook = new XLWorkbook(excelFile.OpenReadStream()))
+            {
+                var workSheet = workbook.Worksheet(sheetNumber);
 
-    //            cellValue = Regex.Replace(cellValue, Regex.Escape(oldValue), newValue);
+                int newColumnNumber = workSheet.LastColumnUsed().InsertColumnsAfter(1).First().ColumnNumber();
 
-    //            if (cellValue != cell.Value.ToString())
-    //            {
-    //                cell.Value = cellValue;
-    //                cell.Style.Fill.BackgroundColor = XLColor.YellowGreen;
-    //            }
-    //        }
-    //    }
-    //}
+                string sku, link;
+
+                await Task.WhenAll(workSheet.RowsUsed().Select(async row =>
+                {
+                    link = row.Cell(linksColumn)?.Value.ToString() ?? "";
+                    var hyperlink = row.Cell(linksColumn).GetHyperlink;
+
+                    if (!Uri.IsWellFormedUriString(link, UriKind.Absolute))
+                    {
+                        return;
+                    }
+
+                    HtmlWeb web = new HtmlWeb();
+                    HtmlDocument doc = await web.LoadFromWebAsync(link); // Use asynchronous web loading
+
+                    string linkElement = "";
+                    if (doc != null)
+                    {
+                        var linkElementNode = doc.DocumentNode.SelectSingleNode($"//div[contains(@class, '{tag}')]");
+
+                        if (linkElementNode != null)
+                        {
+                            linkElement = linkElementNode.InnerText.Trim();
+                        }
+                        else
+                        {
+                            row.Cell(newColumnNumber).Style.Fill.BackgroundColor = XLColor.Red;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(linkElement))
+                    {
+                        row.Cell(newColumnNumber).Value = linkElement;
+                    }
+                }));
+
+                workbook.SaveAs(tempFilePath);
+
+                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(tempFilePath);
+                var fileName = $"{Path.GetFileNameWithoutExtension(excelFile.FileName)}_replaced.xlsx";
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+        }
+        finally
+        {
+            if (System.IO.File.Exists(tempFilePath))
+            {
+                System.IO.File.Delete(tempFilePath);
+            }
+        }
+    }
+
 }
