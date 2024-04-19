@@ -45,10 +45,7 @@ public class GetDataFromSiteController : Controller
                     link = row.Cell(linksColumn)?.Value.ToString() ?? "";
                     var hyperlink = row.Cell(linksColumn).GetHyperlink;                     
                     
-                    if (!row.Cell(linksColumn).HasHyperlink)
-                    {
-                        continue;
-                    }
+                    
 
                     if (!Uri.IsWellFormedUriString(link, UriKind.Absolute))
                     {
@@ -67,10 +64,11 @@ public class GetDataFromSiteController : Controller
                         if (linkElementNode != null)
                         {
                              linkElement = linkElementNode.InnerText.Trim();
+
                         }
                         else
                         {
-                            row.Cell(newColumnNumber).Style.Fill.BackgroundColor= XLColor.YellowGreen;
+                            row.Cell(newColumnNumber).Style.Fill.BackgroundColor= XLColor.Red;
                         }
                     }
                     else
