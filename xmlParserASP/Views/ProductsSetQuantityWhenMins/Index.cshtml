@@ -4,18 +4,18 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Встановлення мінімальних залишків</h1>
 
 <p>
-    <a asp-action="ExportToExcel" class="btn btn-primary">Export to Excel</a> |
-    <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data">
+    <a asp-action="Експортувати все у excel файл" class="btn btn-primary">Export to Excel</a> 
+    @* <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data">
         <input type="file" name="file" class="btn btn-primary" />
         <button type="submit" class="btn btn-primary">Import from Excel</button>
-    </form>
+    </form> *@
 </p>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Створити новий запис</a>
 </p>
 <table class="table">
     <thead>
