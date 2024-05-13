@@ -1,6 +1,6 @@
 ﻿@model xmlParserASP.Models.PriceQuantityViewModel
 
-<h1>Update price and quantity</h1>
+<h1>Оновити ціни та залишки</h1>
 
 @if (ViewBag.SelectSupSetting != null)
 {
@@ -15,9 +15,9 @@
     <table class="priceQuantityTable">
         <thead>
             <tr>
-                <th>Supplier setting</th>
-                <th>Price</th>
-                <th>Quantity</th>
+                <th>Постачальник</th>
+                <th>Ціна</th>
+                <th>Залишки</th>
             </tr>
         </thead>
         <tbody>
@@ -89,40 +89,21 @@
         </tfoot>
     </table>
     <br /><br />
-    <button type="submit" class="btn btn-primary">Update price and quantity</button>
+    <button type="submit" class="btn btn-primary">Запустити оновлення</button>
 </form>
 
 <script>
     function selectAll(listName) {
         var checkboxes = document.getElementsByName(listName);
-        checkboxes.forEach(function (checkbox) {
+        checkboxes.forEach((checkbox) => {
             checkbox.checked = true;
         });
     }
 
     function deselectAll(listName) {
         var checkboxes = document.getElementsByName(listName);
-        checkboxes.forEach(function (checkbox) {
+        checkboxes.forEach((checkbox) => {
             checkbox.checked = false;
         });
     }
 </script>
-
-
-@* <script>
-
-    var checkboxes = document.getElementsByName('SettingList');
-
-    function selectAll() {
-
-        checkboxes.forEach(function (checkbox) {
-            checkbox.checked = true;
-        });
-    }
-
-    function deselectAll() {
-        checkboxes.forEach(function (checkbox) {
-            checkbox.checked = false;
-        });
-    }
-</script> *@
