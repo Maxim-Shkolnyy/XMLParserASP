@@ -2,6 +2,7 @@
 
 namespace xmlParserASP.Entities.Users;
 
-public class IUser : IdentityUser   
+public class User : IdentityUser   
 {
+    public string Initials { get; set; }
 }

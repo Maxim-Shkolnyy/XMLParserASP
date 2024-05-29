@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Entities.Users;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
@@ -20,9 +21,12 @@ public class Program
         
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         builder.Services.AddAntiforgery(options => { });
-        
-        builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
-        builder.Services.AddAuthorizationBuilder();
+
+        builder.Services.AddAuthorization();
+        builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+        builder.Services.AddIdentity<User, IdentityRole>()
+            .AddEntityFrameworkStores<GammaContext>()
+            .AddDefaultTokenProviders();
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<MmSupplierXmlSetting>();
@@ -55,8 +59,9 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
-        //app.UseAuthentication();
+ 
 
         app.MapControllerRoute(
             name: "default",

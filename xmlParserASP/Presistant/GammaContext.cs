@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using xmlParserASP.Entities.Gamma;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using xmlParserASP.Entities.Users;
 
 namespace xmlParserASP.Presistant;
 
-public partial class GammaContext : DbContext
+public partial class GammaContext : IdentityDbContext<User>
 {
     public GammaContext()
     {
