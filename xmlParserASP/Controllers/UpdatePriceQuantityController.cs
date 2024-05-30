@@ -27,7 +27,7 @@ public class UpdatePriceQuantityController : Controller
     }
     public IActionResult Index()
     {
-        var settingList = new PriceQuantityViewModel
+        var settingList = new Models.ViewModels.PriceQuantityViewModel
         {
             SupplierXmlSettings = _settingsList
         };
@@ -40,7 +40,7 @@ public class UpdatePriceQuantityController : Controller
     {
         if (!ModelState.IsValid || PriceList.Count + QuantityList.Count == 0)
         {
-            var mySettingList = new PriceQuantityViewModel
+            var mySettingList = new Models.ViewModels.PriceQuantityViewModel
             {
                 SupplierXmlSettings = _db.MmSupplierXmlSettings.OrderBy(m => m.SupplierId).ToList()
             };

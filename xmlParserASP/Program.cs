@@ -13,6 +13,7 @@ using xmlParserASP.Services;
 using xmlParserASP.Services.UpdateServices;
 using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 using System.Text;
+using xmlParserASP.Models.ViewModels;
 
 namespace xmlParserASP;
 
@@ -59,7 +60,10 @@ public class Program
             .AddPolicy("RequireUserRole", policy => policy.RequireRole("User"))
             .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
 
-        builder.Services.AddIdentity<User, IdentityRole>()
+        builder.Services.AddIdentity<User, IdentityRole>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = true;
+        })
             .AddEntityFrameworkStores<GammaContext>()
             .AddDefaultTokenProviders();
 
@@ -77,7 +81,7 @@ public class Program
             options.Lockout.AllowedForNewUsers = true;
 
             options.User.AllowedUserNameCharacters =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
             options.User.RequireUniqueEmail = false;
         });
 
@@ -128,7 +132,8 @@ public class Program
 
         app.MapControllerRoute(
             name: "default",
-        pattern: "{controller=UpdatePriceQuantity}/{action=Index}/{id?}");
+        //pattern: "{controller=UpdatePriceQuantity}/{action=Index}/{id?}");
+       pattern: "{controller=Account}/{action=Login}/{id?}");
 
         app.Run();
     }

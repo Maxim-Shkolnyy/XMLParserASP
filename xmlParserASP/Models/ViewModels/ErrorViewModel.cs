@@ -1,4 +1,4 @@
-namespace xmlParserASP.Models;
+namespace xmlParserASP.Models.ViewModels;
 
 public class ErrorViewModel
 {

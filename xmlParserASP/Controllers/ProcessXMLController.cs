@@ -25,7 +25,7 @@ public class ProcessXMLController : Controller
     }
     public IActionResult Index()
     {
-        var model = new DownloadPhotosViewModel
+        var model = new Models.ViewModels.DownloadPhotosViewModel
         {
             SupplierXmlSettings = _gammaContext.MmSupplierXmlSettings.ToList()
         };

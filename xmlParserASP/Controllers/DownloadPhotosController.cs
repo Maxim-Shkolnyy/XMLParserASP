@@ -12,6 +12,7 @@ using xmlParserASP.Presistant;
 using xmlParserASP.Services;
 using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD.StringCleanerServices;
 using MySqlX.XDevAPI.Common;
+using xmlParserASP.Models.ViewModels;
 //using Windows.Storage.Pickers;
 
 namespace xmlParserASP.Controllers;

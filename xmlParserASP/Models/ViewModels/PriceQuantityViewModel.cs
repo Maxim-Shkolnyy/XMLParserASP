@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using xmlParserASP.Entities.Gamma;
 
-namespace xmlParserASP.Models;
+namespace xmlParserASP.Models.ViewModels;
 
 public class PriceQuantityViewModel
 {
@@ -16,4 +16,4 @@ public class PriceQuantityViewModel
     public List<int>? QuantityList { get; set; }
     public bool IsChecked { get; set; }
     public string? ErrorMessage { get; set; }
-} 
+}
