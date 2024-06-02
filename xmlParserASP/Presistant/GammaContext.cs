@@ -6,7 +6,7 @@ using xmlParserASP.Entities.Users;
 
 namespace xmlParserASP.Presistant;
 
-public partial class GammaContext : IdentityDbContext<User>
+public partial class GammaContext : IdentityDbContext
 {
     public GammaContext()
     {
