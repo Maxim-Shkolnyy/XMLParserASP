@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using xmlParserASP.Entities.Gamma;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using xmlParserASP.Entities.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace xmlParserASP.Presistant;
 
@@ -511,7 +511,12 @@ public partial class GammaContext : IdentityDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       modelBuilder.Entity<AttributeDescription>(entity =>
+        modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
+        modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+        modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
+
+
+        modelBuilder.Entity<AttributeDescription>(entity =>
         {
             entity
                 .HasNoKey()
