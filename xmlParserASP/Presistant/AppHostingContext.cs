@@ -6,6 +6,10 @@ namespace xmlParserASP.Presistant
 {
     public class AppHostingContext : IdentityDbContext
     {
+        public AppHostingContext(DbContextOptions<AppHostingContext> contextOptions) : base(contextOptions)
+        {
+            
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
