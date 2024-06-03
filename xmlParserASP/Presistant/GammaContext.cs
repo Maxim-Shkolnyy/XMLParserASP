@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace xmlParserASP.Presistant;
 
-public partial class GammaContext : IdentityDbContext
+public partial class GammaContext : DbContext
 {
     public GammaContext()
     {
@@ -511,9 +511,9 @@ public partial class GammaContext : IdentityDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
-        modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
-        modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
+        //modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
+        //modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+        //modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
 
 
         modelBuilder.Entity<AttributeDescription>(entity =>

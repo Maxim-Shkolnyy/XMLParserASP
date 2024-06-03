@@ -26,6 +26,7 @@ public class Program
         builder.Configuration.AddUserSecrets<Program>();
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
+        builder.Services.AddDbContext<AppHostingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
         builder.Services.AddAntiforgery(options => { });
 
         builder.Services.AddAuthentication(options =>
@@ -64,7 +65,7 @@ public class Program
         {
             options.SignIn.RequireConfirmedAccount = true;
         })
-            .AddEntityFrameworkStores<GammaContext>()
+            .AddEntityFrameworkStores<AppHostingContext>()
             .AddDefaultTokenProviders();
 
         builder.Services.Configure<IdentityOptions>(options =>
