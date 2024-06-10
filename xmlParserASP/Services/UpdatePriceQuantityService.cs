@@ -1,6 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Presentation;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Net;
