@@ -607,13 +607,15 @@ public class UpdatePriceQuantityService
             _dc.ProductsWasNotChanged = 0;
         }
 
-        if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
-        {
-            _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
+        //if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+        //{
+        //    _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
 
-            _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin
-                .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();
-        }
+        //    _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin
+        //        .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();            
+        //}
+
+        _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin.Where(m => _dc.DbCodeModelPriceList.Select(s => s.Item1).Contains(m.Sku)).ToList();
 
         ProductMinInfoModel productToUpdate = new();
 
@@ -636,7 +638,7 @@ public class UpdatePriceQuantityService
 
                 if (_dc.ProductsSetQuantityWhenMinList.Any(m => m.Sku == productToUpdate.Sku))
                 {
-                    UpdateManualValuesInDb(sku, model, dbQtyValue, xmlQtyValue, productName);
+                    UpdateManualValuesInDb(sku, model, dbQtyValue, productName);
                 }
                 else
                 {
@@ -691,7 +693,7 @@ public class UpdatePriceQuantityService
         _dbContextGamma.SaveChanges();
     }
 
-    private void UpdateManualValuesInDb(string sku, string model, int? dbQtyValue, int xmlQtyValue, string productName)
+    private void UpdateManualValuesInDb(string sku, string model, int? dbQtyValue, string productName)
     {
         _dc.ProductQtySetManually++;
 
@@ -718,7 +720,7 @@ public class UpdatePriceQuantityService
         }
         else
         {
-            if (RetrieveXmlValueFromList(model, dbQtyValue, out xmlQtyValue))
+            if (RetrieveXmlValueFromList(model, dbQtyValue, out int xmlQtyValue))
             {
                 _dc.FoundItemsInXmlForCurrentSupp++;
 
@@ -729,7 +731,7 @@ public class UpdatePriceQuantityService
                         if (WriteQtyToDb(sku, setQtylValue))
                         {
                             _dc.ProductsWasChanged++;
-                            _dc.StateMessages.Add(($"setManual_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}_ quantity set to min: {setQtylValue}. DB was:_{dbQtyValue}", "black"));
+                            _dc.StateMessages.Add(($"setManual_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}_ quantity set to min: {setQtylValue}. XML was:_{xmlQtyValue} DB was:_{dbQtyValue}", "black"));
                         }
                     }
                     else
