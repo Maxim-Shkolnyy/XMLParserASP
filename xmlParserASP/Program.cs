@@ -14,6 +14,7 @@ using xmlParserASP.Services.UpdateServices;
 using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 using System.Text;
 using xmlParserASP.Models.ViewModels;
+using Microsoft.Data.SqlClient;
 
 namespace xmlParserASP;
 
@@ -21,6 +22,23 @@ public class Program
 {
     public static void Main(string[] args)
     {
+
+        string connectionString = "Server=db5618.databaseasp.net; Database=db5618; User Id=db5618; Password=rA?57_xX=Y3q; Encrypt=False; MultipleActiveResultSets=True;";
+
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            try
+            {
+                connection.Open();
+                Console.WriteLine("Connection Successful!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Connection Failed: {ex.Message}");
+            }
+        }
+
+
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Configuration.AddUserSecrets<Program>();
@@ -28,25 +46,24 @@ public class Program
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         builder.Services.AddDbContext<AppHostingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
         builder.Services.AddAntiforgery(options => { });
-
         builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
+        options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
+    })
+    .AddJwtBearer(IdentityConstants.BearerScheme, options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
-            options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
-        })
-        .AddJwtBearer(IdentityConstants.BearerScheme, options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-            };
-        });
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
 
         // Configure Authorization
         builder.Services.AddAuthorization(options =>
