@@ -605,15 +605,7 @@ public class UpdatePriceQuantityService
             _dc.NotFoundItemsInXmlForCurrentSupp = 0;
             _dc.ProductsWasChanged = 0;
             _dc.ProductsWasNotChanged = 0;
-        }
-
-        //if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
-        //{
-        //    _dc.SkusToUpdate = _dc.DbCodeModelPriceList.Select(s => s.Item1).ToList();
-
-        //    _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin
-        //        .Where(m => _dc.SkusToUpdate.Contains(m.Sku)).ToList();            
-        //}
+        }       
 
         _dc.ProductsSetQuantityWhenMinList = _dbContextGamma.ProductsSetQuantityWhenMin.Where(m => _dc.DbCodeModelPriceList.Select(s => s.Item1).Contains(m.Sku)).ToList();
 
@@ -703,7 +695,7 @@ public class UpdatePriceQuantityService
         var setQtylValue = _dc.ProductsSetQuantityWhenMinList
             .FirstOrDefault(p => p.Sku == sku)?.SetQuantity ?? 0;
 
-        if (minQtylValue == null) //only manually set value
+        if (minQtylValue == null) // manually set quantity whithout conditions
         {
             if (setQtylValue != dbQtyValue)
             {
