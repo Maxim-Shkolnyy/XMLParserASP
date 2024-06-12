@@ -23,7 +23,7 @@ public class Program
     public static void Main(string[] args)
     {
 
-        string connectionString = "Server=db5618.databaseasp.net; Database=db5618; User Id=db5618; Password=rA?57_xX=Y3q; Encrypt=False; MultipleActiveResultSets=True;";
+        string connectionString = "Server=db5618.public.databaseasp.net;Database=db5618;User Id=db5618;Password=rA?57_xX=Y3q;Encrypt=False;MultipleActiveResultSets=True;";
 
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
