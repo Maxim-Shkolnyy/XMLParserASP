@@ -169,6 +169,16 @@
                 <span asp-validation-for="QtyInBoxColumnNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ExchangeRate" class="control-label"></label>
+                <input asp-for="ExchangeRate" class="form-control" />
+                <span asp-validation-for="ExchangeRate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Markup" class="control-label"></label>
+                <input asp-for="Markup" class="form-control" />
+                <span asp-validation-for="Markup" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -179,6 +189,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

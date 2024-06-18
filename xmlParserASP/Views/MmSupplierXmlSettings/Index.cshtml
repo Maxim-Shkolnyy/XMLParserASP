@@ -105,11 +105,17 @@
             <th>
                 @Html.DisplayNameFor(model => model.QtyInBoxColumnNumber)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExchangeRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Markup)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.OrderBy(m => m.SettingName)) {
+@foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.SettingName)
@@ -203,6 +209,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.QtyInBoxColumnNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExchangeRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Markup)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.SupplierXmlSettingId">Edit</a> |

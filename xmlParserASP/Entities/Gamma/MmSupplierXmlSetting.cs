@@ -68,4 +68,8 @@ public partial class MmSupplierXmlSetting
     public string? ParamAttrNode { get; set; }
 
     public string? QtyInBoxColumnNumber { get; set; }
+
+    public float? ExchangeRate { get; set; }
+
+    public float? Markup { get; set; }
 }
