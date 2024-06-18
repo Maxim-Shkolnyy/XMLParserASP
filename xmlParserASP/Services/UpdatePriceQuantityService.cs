@@ -556,6 +556,14 @@ public class UpdatePriceQuantityService
                     xmlPrice = Math.Round((xmlPrice + (xmlPrice * 0.35m)) * 41m, 2);
                 }
 
+                if(_dc.SupplierXmlSetting.Markup != null && _dc.SupplierXmlSetting.ExchangeRate != null)
+                {
+                    var markup = _dc.SupplierXmlSetting.Markup;
+                    var exchangeRate = _dc.SupplierXmlSetting.ExchangeRate;
+
+                    xmlPrice = Math.Round((decimal)((xmlPrice + (xmlPrice * markup)) * exchangeRate), 2);
+                }
+
                 if (dbModel.Item3 != xmlPrice)
                 {
                     try

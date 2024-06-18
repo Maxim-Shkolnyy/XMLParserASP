@@ -69,7 +69,7 @@ public partial class MmSupplierXmlSetting
 
     public string? QtyInBoxColumnNumber { get; set; }
 
-    public float? ExchangeRate { get; set; }
+    public decimal? ExchangeRate { get; set; }
 
-    public float? Markup { get; set; }
+    public decimal? Markup { get; set; }
 }

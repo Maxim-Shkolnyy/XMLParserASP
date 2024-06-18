@@ -50,6 +50,10 @@ public class DataCleaner
         _dc.ProductsWasNotChanged = 0;
 
         _dc.ProductQtySetManually = 0;
+
+        _dc.ExchangeRate = null;
+
+        _dc.Markup = null;
     }
 
     public void CleanUpOnlyManualMinLisys()
@@ -61,6 +65,9 @@ public class DataCleaner
             _dc.ProductsSetQuantityWhenMinList.Clear();
 
         _dc.ProductQtySetManually = 0;
+
+        //_dc.ExchangeRate = null;
+        //_dc.Markup = null;
     }
 }
 
