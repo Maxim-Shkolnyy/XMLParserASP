@@ -15,6 +15,7 @@ using xmlParserASP.Services.UpdateServices.XmlToGammaUpload_OLD;
 using System.Text;
 using xmlParserASP.Models.ViewModels;
 using Microsoft.Data.SqlClient;
+using System.Configuration;
 
 namespace xmlParserASP;
 
@@ -23,7 +24,7 @@ public class Program
     public static void Main(string[] args)
     {
 
-        string connectionString = "Server=db5618.public.databaseasp.net;Database=db5618;User Id=db5618;Password=rA?57_xX=Y3q;Encrypt=False;MultipleActiveResultSets=True;";
+        string connectionString = "Server=db5618.public.databaseasp.net;Database=db5618;User Id=db5618;Password=4yMqD23rT;Encrypt=False;MultipleActiveResultSets=True;";
 
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -45,6 +46,8 @@ public class Program
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         builder.Services.AddDbContext<AppHostingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
+        var connectionString1 = builder.Configuration.GetConnectionString("AppHostingConnection");
+
         builder.Services.AddAntiforgery(options => { });
         builder.Services.AddAuthentication(options =>
     {
