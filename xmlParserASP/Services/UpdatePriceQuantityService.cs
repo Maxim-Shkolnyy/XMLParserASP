@@ -553,7 +553,7 @@ public class UpdatePriceQuantityService
                 _dc.FoundItemsInXmlForCurrentSupp++;
                 if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
                 {
-                    xmlPrice = (xmlPrice + (xmlPrice * 0.35m)) * 41m;
+                    xmlPrice = Math.Round((xmlPrice + (xmlPrice * 0.35m)) * 41m, 2);
                 }
 
                 if (dbModel.Item3 != xmlPrice)
