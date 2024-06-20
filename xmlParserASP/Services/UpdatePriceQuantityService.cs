@@ -539,6 +539,9 @@ public class UpdatePriceQuantityService
             _dc.ProductQtySetManually = _dbContextGamma.NgProductDiscounts.Where(m => m.Quantity == 1 && pricesSetManually.Contains(m.ProductId)).Count();
         }
 
+        decimal markup = _dc.SupplierXmlSetting.Markup;
+        decimal exchangeRate = _dc.SupplierXmlSetting.ExchangeRate;
+
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
             string sku = dbModel.Item1;
@@ -551,17 +554,10 @@ public class UpdatePriceQuantityService
             if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice))
             {
                 _dc.FoundItemsInXmlForCurrentSupp++;
-                if (_dc.SuppName == "Gamma" || _dc.SuppName == "Gamma-K")
+                
+                if (markup > 0 || exchangeRate > 1)
                 {
-                    xmlPrice = Math.Round((xmlPrice + (xmlPrice * 0.35m)) * 41m, 2);
-                }
-
-                if(_dc.SupplierXmlSetting.Markup != null && _dc.SupplierXmlSetting.ExchangeRate != null)
-                {
-                    var markup = _dc.SupplierXmlSetting.Markup;
-                    var exchangeRate = _dc.SupplierXmlSetting.ExchangeRate;
-
-                    xmlPrice = Math.Round((decimal)((xmlPrice + (xmlPrice * markup)) * exchangeRate), 2);
+                    xmlPrice = Math.Round((xmlPrice + (xmlPrice * markup)) * exchangeRate, 2);
                 }
 
                 if (dbModel.Item3 != xmlPrice)

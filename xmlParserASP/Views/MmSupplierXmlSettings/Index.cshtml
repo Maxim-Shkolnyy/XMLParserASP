@@ -106,16 +106,16 @@
                 @Html.DisplayNameFor(model => model.QtyInBoxColumnNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ExchangeRate)
+                Курс
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Markup)
+                Націнка
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.OrderBy(m => m.SettingName)) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.SettingName)
