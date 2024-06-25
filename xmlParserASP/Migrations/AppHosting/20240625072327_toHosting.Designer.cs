@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -11,9 +12,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.AppHosting
 {
     [DbContext(typeof(AppHostingContext))]
-    partial class AppHostingContextModelSnapshot : ModelSnapshot
+    [Migration("20240625072327_toHosting")]
+    partial class toHosting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

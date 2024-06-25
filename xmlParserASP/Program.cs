@@ -23,19 +23,20 @@ public class Program
 {
     public static void Main(string[] args)
     {
-
-        string connectionString = "Server=db5983.public.databaseasp.net;Database=db5983;User Id=db5983;Password=Ta83LeZr5;Encrypt=False;MultipleActiveResultSets=True;";
-
-        using (SqlConnection connection = new SqlConnection(connectionString))
         {
-            try
+            string connectionString = "Server=db5983.public.databaseasp.net;Database=db5983;User Id=db5983;Password=Ta83LeZr5;Encrypt=False;MultipleActiveResultSets=True;";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                Console.WriteLine("Connection Successful!");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Connection Failed: {ex.Message}");
+                try
+                {
+                    connection.Open();
+                    Console.WriteLine("Connection Successful!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Connection Failed: {ex.Message}");
+                }
             }
         }
 
@@ -45,7 +46,11 @@ public class Program
         builder.Configuration.AddUserSecrets<Program>();
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
-        builder.Services.AddDbContext<AppHostingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
+        //builder.Services.AddDbContext<AppHostingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
+        builder.Services.AddDbContext<AppHostingContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection"))
+           .EnableSensitiveDataLogging()
+           .LogTo(Console.WriteLine, LogLevel.Information));
         var connectionString1 = builder.Configuration.GetConnectionString("AppHostingConnection");
 
         //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
