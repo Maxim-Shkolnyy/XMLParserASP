@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
@@ -18,7 +19,33 @@ public class ProductsSetQuantityWhenMinsController : BaseController
     // GET: ProductsSetQuantityWhenMins
     public async Task<IActionResult> Index()
     {
-        return _context.ProductsSetQuantityWhenMin != null ? 
+        var productNames = _context.NgProductDescriptions.Where(p => p.LanguageId == 4).Select(p => p.Name).ToListAsync();
+
+        //var jl = _context.ProductsSetQuantityWhenMin.Join(_context.NgProducts, 
+        //    psq => psq.Sku,
+        //    prod => prod.Sku,
+        //    (psq, prod) =>
+        //    {
+        //        psq, prod.ProductId
+        //    })
+
+        var result = await _context.ProductsSetQuantityWhenMin
+    .Join(_context.NgProducts,
+          psq => psq.Sku,                   // Порівнюємо поле Sku у таблиці ProductsSetQuantityWhenMin
+          np => np.Sku,                     // Порівнюємо поле Sku у таблиці NgProduct
+          (psq, np) => new { psq, np.ProductId })  // Створюємо анонімний об'єкт, що містить psq і ProductId
+    .Join(_context.NgProductDescriptions,
+          np2 => np2.ProductId,             // Порівнюємо поле ProductId з результату першого JOIN
+          npd => npd.ProductId,             // Порівнюємо поле ProductId у таблиці NgProductDescription
+          (np2, npd) => new ProductSetQtyWhenMinWithNameViewModel
+          {
+              ProductSetQtyWhenMinWithNameViewModel  = np2.psq,  // Зберігаємо об'єкт psq у новий об'єкт
+              ProductName = npd.Name                // Зберігаємо поле Name з NgProductDescription
+          })
+    .ToListAsync();
+
+
+        return result != null ? 
             View(await _context.ProductsSetQuantityWhenMin.ToListAsync()) :
             Problem("Entity set 'GammaContext.ProductsSetQuantityWhenMin'  is null.");
     }
