@@ -38,7 +38,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -60,7 +60,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleClaims");
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -112,7 +112,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -134,7 +134,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserClaims");
+                    b.ToTable("UserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -153,7 +153,7 @@ namespace xmlParserASP.Migrations.AppHosting
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserLogins");
+                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -164,7 +164,7 @@ namespace xmlParserASP.Migrations.AppHosting
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -183,7 +183,7 @@ namespace xmlParserASP.Migrations.AppHosting
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserTokens");
+                    b.ToTable("UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.AppHosting.MmProductsManualSetPrice", b =>
@@ -210,7 +210,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductsManualSetPrices");
+                    b.ToTable("ProductsManualSetPrices", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.AppHosting.MmProductsManualSetQuanity", b =>
@@ -237,7 +237,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductsManualSetQuanitys");
+                    b.ToTable("ProductsManualSetQuanitys", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.AppHosting.MmProductsSetQuantityWhenMin", b =>
@@ -261,7 +261,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductsSetQuantityWhenMin");
+                    b.ToTable("ProductsSetQuantityWhenMin", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.AppHosting.MmSupplier", b =>
@@ -279,7 +279,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("MmSuppliers");
+                    b.ToTable("MmSuppliers", (string)null);
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.AppHosting.MmSupplierXmlSetting", b =>
@@ -395,7 +395,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("SupplierXmlSettingId");
 
-                    b.ToTable("MmSupplierXmlSettings");
+                    b.ToTable("MmSupplierXmlSettings", (string)null);
                 });
 #pragma warning restore 612, 618
         }

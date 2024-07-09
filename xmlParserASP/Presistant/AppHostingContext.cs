@@ -14,9 +14,9 @@ namespace xmlParserASP.Presistant
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseSqlServer("YourConnectionString")
-                .LogTo(Console.WriteLine, LogLevel.Information);
+            //optionsBuilder
+            //    .UseSqlServer("AppHostingConnection")
+            //    .LogTo(Console.WriteLine, LogLevel.Information);
         }
 
         public virtual DbSet<MmSupplier> MmSuppliers { get; set; }

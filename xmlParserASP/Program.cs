@@ -23,15 +23,20 @@ public class Program
 {
     public static void Main(string[] args)
     {
+
+        var builder = WebApplication.CreateBuilder(args);
         {
+
+            var connectionString1 = builder.Configuration.GetConnectionString("AppHostingConnection");
+
             string connectionString = "Server=db5983.public.databaseasp.net;Database=db5983;User Id=db5983;Password=Ta83LeZr5;Encrypt=False;MultipleActiveResultSets=True;";
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString1))
             {
                 try
                 {
                     connection.Open();
-                    Console.WriteLine("Connection Successful!");
+                    Console.WriteLine("My Max ---- Connection Successful!");
                 }
                 catch (Exception ex)
                 {
@@ -41,21 +46,21 @@ public class Program
         }
 
 
-        var builder = WebApplication.CreateBuilder(args);
+        
 
         builder.Configuration.AddUserSecrets<Program>();
 
         builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         //builder.Services.AddDbContext<AppHostingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
         builder.Services.AddDbContext<AppHostingContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection"))
+           options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection"))
            .EnableSensitiveDataLogging()
            .LogTo(Console.WriteLine, LogLevel.Information));
-        var connectionString1 = builder.Configuration.GetConnectionString("AppHostingConnection");
+        
 
         //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<xmlParserASP.Entities.Users.User>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<AppHostingContext>();
 
         builder.Services.AddControllersWithViews();
