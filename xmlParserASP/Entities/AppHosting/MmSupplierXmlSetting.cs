@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 namespace xmlParserASP.Entities.AppHosting;
 
 public partial class MmSupplierXmlSetting
 {
-    [Key]
     public int SupplierXmlSettingId { get; set; }
 
     public string SettingName { get; set; } = null!;
@@ -41,23 +41,22 @@ public partial class MmSupplierXmlSetting
 
     public string? QuantityNode { get; set; }
 
-    [StringLength(20)]
     public string? QuantityDbStock1 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock2 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock3 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock4 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock5 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock6 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock7 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock8 { get; set; }
-    [StringLength(20)]
+
     public string? QuantityDbStock9 { get; set; }
 
     public string? QuantityLongTermNode { get; set; }

@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 namespace xmlParserASP.Entities.AppHosting;
 
 public partial class MmSupplier
 {
-    [Key]
     public int SupplierId { get; set; }
 
-    [StringLength(20)]
     public string SupplierName { get; set; } = null!;
 }
