@@ -17,7 +17,7 @@ namespace xmlParserASP.Presistant
         //    //optionsBuilder
         //    //    .UseSqlServer("AppHostingConnection")
         //    //    .LogTo(Console.WriteLine, LogLevel.Information);
-        //}
+        //} 
 
         public virtual DbSet<MmSupplier> MmSuppliers { get; set; }
 
