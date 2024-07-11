@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xmlParserASP.Presistant;
 
@@ -11,9 +12,11 @@ using xmlParserASP.Presistant;
 namespace xmlParserASP.Migrations.AppHosting
 {
     [DbContext(typeof(AppHostingContext))]
-    partial class AppHostingContextModelSnapshot : ModelSnapshot
+    [Migration("20240625072327_toHosting")]
+    partial class toHosting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityRole");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -60,7 +63,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityRoleClaim<string>");
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -112,7 +115,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUser");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -134,7 +137,7 @@ namespace xmlParserASP.Migrations.AppHosting
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUserClaim<string>");
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -153,7 +156,7 @@ namespace xmlParserASP.Migrations.AppHosting
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("IdentityUserLogin<string>");
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -164,7 +167,7 @@ namespace xmlParserASP.Migrations.AppHosting
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("IdentityUserRole<string>");
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -183,7 +186,7 @@ namespace xmlParserASP.Migrations.AppHosting
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("IdentityUserToken<string>");
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("xmlParserASP.Entities.AppHosting.MmProductsManualSetPrice", b =>

@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
+using Microsoft.AspNetCore.Authorization;
 
 namespace xmlParserASP.Controllers;
 
+[Authorize]
 public class NgProductsController : BaseController
 {
     private readonly GammaContext _context;

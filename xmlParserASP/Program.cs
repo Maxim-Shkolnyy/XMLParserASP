@@ -22,7 +22,24 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args); 
+
+        string connectionString = "Server=db5618.public.databaseasp.net;Database=db5618;User Id=db5618;Password=rA?57_xX=Y3q;Encrypt=False;MultipleActiveResultSets=True;";
+
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            try
+            {
+                connection.Open();
+                Console.WriteLine("Connection Successful!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Connection Failed: {ex.Message}");
+            }
+        }
+
+
+        var builder = WebApplication.CreateBuilder(args);
 
         builder.Configuration.AddUserSecrets<Program>();
 
@@ -48,13 +65,19 @@ public class Program
         };
     });
 
+        // Configure Authorization
         builder.Services.AddAuthorization(options =>
         {
+            // Add policies for User and Admin roles
             options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
             options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
         });
 
-        
+        // Alternatively, you can use AddAuthorizationBuilder
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("RequireUserRole", policy => policy.RequireRole("User"))
+            .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+
         builder.Services.AddIdentity<User, IdentityRole>(options =>
         {
             options.SignIn.RequireConfirmedAccount = true;
@@ -62,20 +85,26 @@ public class Program
             .AddEntityFrameworkStores<AppHostingContext>()
             .AddDefaultTokenProviders();
 
+        builder.Services.AddControllersWithViews();
+
+        // Configure Identity options
         builder.Services.Configure<IdentityOptions>(options =>
         {
+            // Password settings
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
             options.Password.RequiredLength = 6;
             options.Password.RequiredUniqueChars = 1;
 
+            // Lockout settings
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             options.Lockout.MaxFailedAccessAttempts = 5;
             options.Lockout.AllowedForNewUsers = true;
 
+            // User settings
             options.User.AllowedUserNameCharacters =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             options.User.RequireUniqueEmail = false;
         });
 
@@ -84,10 +113,78 @@ public class Program
             options.Cookie.HttpOnly = true;
             options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-            options.LoginPath = "/Identity/Account/Login";
-            options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            options.LoginPath = "/Account/Login";
+            //options.AccessDeniedPath = "/Account/AccessDenied";
             options.SlidingExpiration = true;
         });
+
+        //    builder.Services.AddAntiforgery(options => { });
+        //    builder.Services.AddAuthentication(options =>
+        //{
+        //    options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
+        //    options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
+        //})
+        //.AddJwtBearer(IdentityConstants.BearerScheme, options =>
+        //{
+        //    options.TokenValidationParameters = new TokenValidationParameters
+        //    {
+        //        ValidateIssuer = true,
+        //        ValidateAudience = true,
+        //        ValidateLifetime = true,
+        //        ValidateIssuerSigningKey = true,
+        //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        //        ValidAudience = builder.Configuration["Jwt:Audience"],
+        //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        //    };
+        //});
+
+        //    // Configure Authorization
+        //    builder.Services.AddAuthorization(options =>
+        //    {
+        //        // Add policies for User and Admin roles
+        //        options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+        //        options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+        //    });
+
+        //    // Alternatively, you can use AddAuthorizationBuilder
+        //    builder.Services.AddAuthorizationBuilder()
+        //        .AddPolicy("RequireUserRole", policy => policy.RequireRole("User"))
+        //        .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+
+        //    builder.Services.AddIdentity<User, IdentityRole>(options =>
+        //    {
+        //        options.SignIn.RequireConfirmedAccount = true;
+        //    })
+        //        .AddEntityFrameworkStores<AppHostingContext>()
+        //        .AddDefaultTokenProviders();
+
+        //    builder.Services.Configure<IdentityOptions>(options =>
+        //    {
+        //        options.Password.RequireDigit = true;
+        //        options.Password.RequireLowercase = true;
+        //        options.Password.RequireNonAlphanumeric = true;
+        //        options.Password.RequireUppercase = true;
+        //        options.Password.RequiredLength = 6;
+        //        options.Password.RequiredUniqueChars = 1;
+
+        //        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        //        options.Lockout.MaxFailedAccessAttempts = 5;
+        //        options.Lockout.AllowedForNewUsers = true;
+
+        //        options.User.AllowedUserNameCharacters =
+        //        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
+        //        options.User.RequireUniqueEmail = false;
+        //    });
+
+        //    builder.Services.ConfigureApplicationCookie(options =>
+        //    {
+        //        options.Cookie.HttpOnly = true;
+        //        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+        //        options.LoginPath = "/Identity/Account/Login";
+        //        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+        //        options.SlidingExpiration = true;
+        //});
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<MmSupplierXmlSetting>();
