@@ -24,51 +24,57 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Configuration.AddUserSecrets<Program>();
+        builder.Configuration.AddUserSecrets<Program>();        
+
+        builder.Services.AddAntiforgery(options => { });
+
+        builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+
+        builder.Services.AddAuthorizationBuilder();
 
         builder.Services.AddDbContext<GammaContext>(options =>
             options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
         builder.Services.AddDbContext<AppHostingContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
 
-        builder.Services.AddAntiforgery(options => { });
+        builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AppHostingContext>().Add;
 
-        builder.Services.AddIdentity<User, IdentityRole>(options =>
-        {
-            options.SignIn.RequireConfirmedAccount = true;
-        })
-        .AddEntityFrameworkStores<AppHostingContext>()
-        .AddDefaultTokenProviders();
+        //builder.Services.AddIdentity<User, IdentityRole>(options =>
+        //{
+        //    options.SignIn.RequireConfirmedAccount = true;
+        //})
+        //.AddEntityFrameworkStores<AppHostingContext>()
+        //.AddDefaultTokenProviders();
 
-        builder.Services.Configure<IdentityOptions>(options =>
-        {
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequiredLength = 6;
-            options.Password.RequiredUniqueChars = 1;
+        //builder.Services.Configure<IdentityOptions>(options =>
+        //{
+        //    options.Password.RequireDigit = true;
+        //    options.Password.RequireLowercase = true;
+        //    options.Password.RequireUppercase = true;
+        //    options.Password.RequiredLength = 6;
+        //    options.Password.RequiredUniqueChars = 1;
 
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-            options.Lockout.MaxFailedAccessAttempts = 5;
-            options.Lockout.AllowedForNewUsers = true;
+        //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        //    options.Lockout.MaxFailedAccessAttempts = 5;
+        //    options.Lockout.AllowedForNewUsers = true;
 
-            options.User.AllowedUserNameCharacters =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
-            options.User.RequireUniqueEmail = false;
-        });
+        //    options.User.AllowedUserNameCharacters =
+        //    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
+        //    options.User.RequireUniqueEmail = false;
+        //});
 
-        builder.Services.ConfigureApplicationCookie(options =>
-        {
-            options.Cookie.HttpOnly = true;
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(60); 
+        //builder.Services.ConfigureApplicationCookie(options =>
+        //{
+        //    options.Cookie.HttpOnly = true;
+        //    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); 
 
-            options.LoginPath = "/Identity/Account/Login";
-            options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-            options.SlidingExpiration = true;
-            
-            // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Обязательно использовать защищенные куки
-            // options.Cookie.SameSite = SameSiteMode.Strict; // Конфигурация политики SameSite
-        });
+        //    options.LoginPath = "/Identity/Account/Login";
+        //    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+        //    options.SlidingExpiration = true;
+
+        //    // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Обязательно использовать защищенные куки
+        //    // options.Cookie.SameSite = SameSiteMode.Strict; // Конфигурация политики SameSite
+        //});
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<MmSupplierXmlSetting>();
