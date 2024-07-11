@@ -22,24 +22,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-
-        string connectionString = "Server=db5618.public.databaseasp.net;Database=db5618;User Id=db5618;Password=rA?57_xX=Y3q;Encrypt=False;MultipleActiveResultSets=True;";
-
-        using (SqlConnection connection = new SqlConnection(connectionString))
-        {
-            try
-            {
-                connection.Open();
-                Console.WriteLine("Connection Successful!");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Connection Failed: {ex.Message}");
-            }
-        }
-
-
-        var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args); 
 
         builder.Configuration.AddUserSecrets<Program>();
 
@@ -65,19 +48,13 @@ public class Program
         };
     });
 
-        // Configure Authorization
         builder.Services.AddAuthorization(options =>
         {
-            // Add policies for User and Admin roles
             options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
             options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
         });
 
-        // Alternatively, you can use AddAuthorizationBuilder
-        builder.Services.AddAuthorizationBuilder()
-            .AddPolicy("RequireUserRole", policy => policy.RequireRole("User"))
-            .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
-
+        
         builder.Services.AddIdentity<User, IdentityRole>(options =>
         {
             options.SignIn.RequireConfirmedAccount = true;
@@ -89,7 +66,6 @@ public class Program
         {
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
-            options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
             options.Password.RequiredLength = 6;
             options.Password.RequiredUniqueChars = 1;
