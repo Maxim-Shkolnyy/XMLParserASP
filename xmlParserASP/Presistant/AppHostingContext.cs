@@ -2,22 +2,16 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.AppHosting;
+using xmlParserASP.Entities.Users;
 
 namespace xmlParserASP.Presistant
 {
-    public class AppHostingContext : IdentityDbContext
+    public class AppHostingContext : IdentityDbContext<User>
     {
         public AppHostingContext(DbContextOptions<AppHostingContext> contextOptions) : base(contextOptions)
         {
             
         }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    //optionsBuilder
-        //    //    .UseSqlServer("AppHostingConnection")
-        //    //    .LogTo(Console.WriteLine, LogLevel.Information);
-        //} 
 
         public virtual DbSet<MmSupplier> MmSuppliers { get; set; }
 
