@@ -37,7 +37,7 @@ public class Program
         builder.Services.AddDbContext<AppHostingContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
 
-        builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AppHostingContext>().Add;
+        builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AppHostingContext>().AddDefaultUI();
 
         //builder.Services.AddIdentity<User, IdentityRole>(options =>
         //{
@@ -102,6 +102,7 @@ public class Program
             app.UseHsts();
         }
 
+        app.MapControllers<User>();
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
