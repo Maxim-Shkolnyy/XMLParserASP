@@ -4,6 +4,7 @@ namespace xmlParserASP.Entities.AppHosting;
 
 public partial class MmProductsSetQuantityWhenMin
 {
+    [Key]
     public int Id { get; set; }
     [StringLength(7)]
     public string Sku { get; set; } = null!;

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace xmlParserASP.Entities.AppHosting;
 
 public partial class MmSupplierXmlSetting
 {
+    [Key]
     public int SupplierXmlSettingId { get; set; }
 
     public string SettingName { get; set; } = null!;

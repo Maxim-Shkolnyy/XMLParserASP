@@ -36,6 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Migrations\AppHosting\" />
 	  <Folder Include="xmlParserASP.Entities.AppHosting\" />
 	</ItemGroup>
 

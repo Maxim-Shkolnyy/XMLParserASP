@@ -102,7 +102,7 @@ public class Program
             app.UseHsts();
         }
 
-        app.MapControllers<User>();
+        app.MapRazorPages();
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 

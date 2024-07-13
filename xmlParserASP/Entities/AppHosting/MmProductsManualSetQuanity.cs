@@ -5,6 +5,7 @@ namespace xmlParserASP.Entities.AppHosting;
 
 public partial class MmProductsManualSetQuanity
 {
+    [Key]
     public int Id { get; set; }
     [StringLength(7)]
     public string Sku { get; set; } = null!;
