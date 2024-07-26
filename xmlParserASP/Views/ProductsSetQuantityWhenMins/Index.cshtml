@@ -1,4 +1,4 @@
-﻿@model IEnumerable<xmlParserASP.Entities.Gamma.MmProductsSetQuantityWhenMin>
+﻿@model IEnumerable<xmlParserASP.Models.ProductSetQtyWhenMinWithNameViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -23,6 +23,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Sku)
             </th>
+            <th>@Html.DisplayNameFor(model => model.ProductName)</th>
             <th>
                 @Html.DisplayNameFor(model => model.MinQuantity)
             </th>
@@ -39,6 +40,9 @@
                 @Html.DisplayFor(modelItem => item.Sku)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td> 
                 @Html.DisplayFor(modelItem => item.MinQuantity)
             </td>
             <td>

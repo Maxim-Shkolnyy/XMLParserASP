@@ -19,15 +19,7 @@ public class ProductsSetQuantityWhenMinsController : BaseController
     // GET: ProductsSetQuantityWhenMins
     public async Task<IActionResult> Index()
     {
-        var productNames = _context.NgProductDescriptions.Where(p => p.LanguageId == 4).Select(p => p.Name).ToListAsync();
-
-        //var jl = _context.ProductsSetQuantityWhenMin.Join(_context.NgProducts, 
-        //    psq => psq.Sku,
-        //    prod => prod.Sku,
-        //    (psq, prod) =>
-        //    {
-        //        psq, prod.ProductId
-        //    })
+        var productNames = await _context.NgProductDescriptions.Where(p => p.LanguageId == 4).Select(p => p.Name).ToListAsync();
 
         var result = await _context.ProductsSetQuantityWhenMin
     .Join(_context.NgProducts,
@@ -39,14 +31,18 @@ public class ProductsSetQuantityWhenMinsController : BaseController
           npd => npd.ProductId,             // Порівнюємо поле ProductId у таблиці NgProductDescription
           (np2, npd) => new ProductSetQtyWhenMinWithNameViewModel
           {
-              ProductSetQtyWhenMinWithNameViewModel  = np2.psq,  // Зберігаємо об'єкт psq у новий об'єкт
-              ProductName = npd.Name                // Зберігаємо поле Name з NgProductDescription
+              Id = np2.psq.Id,
+              Sku = np2.psq.Sku,
+              MinQuantity = np2.psq.MinQuantity,
+              SetQuantity = np2.psq.SetQuantity,
+              ProductId = np2.ProductId,
+              ProductName = npd.Name
           })
     .ToListAsync();
 
 
         return result != null ? 
-            View(await _context.ProductsSetQuantityWhenMin.ToListAsync()) :
+            View(result) :
             Problem("Entity set 'GammaContext.ProductsSetQuantityWhenMin'  is null.");
     }
 
@@ -87,7 +83,7 @@ public class ProductsSetQuantityWhenMinsController : BaseController
 
     private MmProductsSetQuantityWhenMin MapExcelRowToEntity(string excelRow)
     {
-        var columns = excelRow.Split(';'); // Припустимо, що дані розділені символом ";"
+        var columns = excelRow.Split(';');
 
         if (columns.Length != 4)
         {
