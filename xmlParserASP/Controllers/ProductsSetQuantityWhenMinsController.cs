@@ -60,7 +60,7 @@ public class ProductsSetQuantityWhenMinsController : BaseController
 
     private MmProductsSetQuantityWhenMin MapExcelRowToEntity(string excelRow)
     {
-        var columns = excelRow.Split(';'); // Припустимо, що дані розділені символом ";"
+        var columns = excelRow.Split(';');
 
         if (columns.Length != 4)
         {
