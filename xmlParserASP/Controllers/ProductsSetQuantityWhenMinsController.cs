@@ -41,9 +41,9 @@ public class ProductsSetQuantityWhenMinsController : BaseController
     .ToListAsync();
 
 
-        return result != null ? 
+        return result != null ?
             View(result) :
-            Problem("Entity set 'GammaContext.ProductsSetQuantityWhenMin'  is null.") 
+            Problem("Entity set 'GammaContext.ProductsSetQuantityWhenMin'  is null.");
     }
 
     public async Task<IActionResult> ExportToExcel()
