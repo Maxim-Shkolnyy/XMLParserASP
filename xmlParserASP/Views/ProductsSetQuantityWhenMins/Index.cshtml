@@ -20,6 +20,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>№</th>
             <th>
                 @Html.DisplayNameFor(model => model.Sku)
             </th>
@@ -34,8 +35,12 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            int counter = 1;
+        }
 @foreach (var item in Model) {
         <tr>
+            <td>@counter</td>            
             <td>
                 @Html.DisplayFor(modelItem => item.Sku)
             </td>
@@ -54,6 +59,7 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
+            counter++;
 }
     </tbody>
 </table>
