@@ -18,7 +18,7 @@ public class Program
 
         builder.Configuration.AddUserSecrets<Program>();
         
-        builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")), ServiceLifetime.Transient);
+        builder.Services.AddDbContext<GammaContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection"))); //, ServiceLifetime.Transient
         builder.Services.AddAntiforgery(options => { });
         
         builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);

@@ -586,8 +586,12 @@ public partial class GammaContext : DbContext
             entity.Property(e => e.QuantityDbStock4).HasColumnName("quantity_db_stock4");
             entity.Property(e => e.QuantityDbStock5).HasColumnName("quantity_db_stock5");
             entity.Property(e => e.QuantityLongTermNode).HasColumnName("quantity_long_term_node");
+
+
             entity.Property(e => e.QuantityNode).HasColumnName("quantity_node");
             entity.Property(e => e.SettingName).HasColumnName("setting_name");
+            entity.Property(e => e.Markup).HasColumnName("markup");
+            entity.Property(e => e.ExchangeRate).HasColumnName("exchange_rate");
             entity.Property(e => e.SupplierId)
                 .HasColumnType("int(11)")
                 .HasColumnName("supplier_id");
