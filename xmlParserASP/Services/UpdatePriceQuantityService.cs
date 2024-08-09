@@ -545,29 +545,31 @@ public class UpdatePriceQuantityService
         foreach (var dbModel in _dc.DbCodeModelPriceList)
         {
             string sku = dbModel.Item1;
+            string model = dbModel.Item2;
+            decimal dbPrice = dbModel.Item3;
             var productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == sku);
             if (productToUpdate == null)
             {
                 continue;
             }
 
-            if (_dc.XmlModelPriceList.TryGetValue(dbModel.Item2, out var xmlPrice))
+            if (_dc.XmlModelPriceList.TryGetValue(model, out var xmlPrice))
             {
                 _dc.FoundItemsInXmlForCurrentSupp++;
                 
                 if (markup > 0 || exchangeRate > 1)
                 {
-                    xmlPrice = Math.Round((xmlPrice + (xmlPrice * markup)) * exchangeRate, 2);
+                    xmlPrice = Math.Round((xmlPrice + (xmlPrice * markup)) * exchangeRate, 2); //більшу точність ставити не можна, бо не співпаде з системою округлення опенкарт у дешевих товарах (1018581)
                 }
 
-                if (dbModel.Item3 != xmlPrice)
+                if (dbPrice != xmlPrice)
                 {
                     try
                     {
-                        if (dbModel.Item3 < xmlPrice)
+                        if (dbPrice < xmlPrice)
                         {
                             _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlPrice });
-                            _dc.StateMessages.Add(($"+_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price increased. {CutString(dbModel.Item5)}_Old - new:_{dbModel.Item3}_{xmlPrice}", "purple"));
+                            _dc.StateMessages.Add(($"+_{sku}_{model}_{_dc.SuppName}_ price increased. {CutString(dbModel.Item5)}_Old - new:_{dbPrice}_{xmlPrice}", "purple"));
 
                         }
                         else
@@ -575,7 +577,7 @@ public class UpdatePriceQuantityService
                             if (xmlPrice != 0)
                             {
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlPrice });
-                                _dc.StateMessages.Add(($"-_{sku}_{dbModel.Item2}_{_dc.SuppName}_ price decreased. {CutString(dbModel.Item5)} Old - new:_{dbModel.Item3}_{xmlPrice}", "blue"));
+                                _dc.StateMessages.Add(($"-_{sku}_{model}_{_dc.SuppName}_ price decreased. {CutString(dbModel.Item5)} Old - new:_{dbPrice}_{xmlPrice}", "blue"));
                             }
                         }
                         _dc.ProductsWasChanged++;
@@ -583,7 +585,7 @@ public class UpdatePriceQuantityService
                     catch (Exception e)
                     {
                         _dc.StateMessages.Add((
-                            $"Error {e.Message} occurred while price of {_dc.SuppName}  updated. DB data: {sku} {dbModel.Item2} _{CutString(dbModel.Item5)} {dbModel.Item3}. XML data {xmlPrice} ", "red"));
+                            $"Error {e.Message} occurred while price of {_dc.SuppName}  updated. DB data: {sku} {model} _{CutString(dbModel.Item5)} {dbPrice}. XML data {xmlPrice} ", "red"));
                     }
                 }
                 else
@@ -594,7 +596,7 @@ public class UpdatePriceQuantityService
             else
             {
                 _dc.NotFoundItemsInXmlForCurrentSupp++;
-                //_dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{sku}_{dbModel.Item2}_{dbModel.Item3}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
+                //_dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{sku}_{model}_{dbPrice}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
             }
         }
         _dbContextGamma.SaveChanges();
