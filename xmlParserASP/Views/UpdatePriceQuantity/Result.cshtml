@@ -20,8 +20,9 @@
     {
         <text>No one product was found or updated. Check your settings</text>
     }
-    
-    <table border="1" style="table-layout: fixed; width: 100%; border-collapse: collapse;">
+
+    <table border="1" style="table-layout: fixed; width: 100%; border-collapse: collapse;" id="myTable">
+    <thead>
         <tr>
             <th>SuppName</th>
             <th>What</th>
@@ -32,7 +33,9 @@
             <th>Value in DB was correct</th>
             <th>Set manually</th>
             
-        </tr>
+            </tr>
+        </thead>
+        <tbody>
         @foreach (var message in totalStateMessages)
         {
             <tr>
@@ -42,6 +45,7 @@
                 }
             </tr>
         }
+        </tbody>
     </table>
 
     <br />
@@ -56,5 +60,15 @@
             <div style="color: @qty.Item2">@count _@qty.Item1</div>
         }
     }
+    
+}
 
+@section scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
 }
