@@ -37,10 +37,6 @@ public class Program
         builder.Services.AddDbContext<AppHostingContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
 
-
-        //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-        //.AddEntityFrameworkStores<AppHostingContext>();        
-
         builder.Services.AddIdentityCore<IdentityUser>()
             .AddEntityFrameworkStores<AppHostingContext>()
             .AddDefaultUI();
