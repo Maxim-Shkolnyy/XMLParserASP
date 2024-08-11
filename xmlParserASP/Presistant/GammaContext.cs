@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using xmlParserASP.Entities.Users;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace xmlParserASP.Presistant;

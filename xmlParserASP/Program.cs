@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 
 using xmlParserASP.Controllers;
 using xmlParserASP.Entities.Gamma;
-using xmlParserASP.Entities.Users;
 using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 using xmlParserASP.Services;
@@ -32,21 +31,20 @@ public class Program
 
         builder.Services.AddAuthorizationBuilder();
 
+
         builder.Services.AddDbContext<GammaContext>(options =>
             options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
-
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-        .AddEntityFrameworkStores<AppHostingContext>();
-
         builder.Services.AddDbContext<AppHostingContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
 
-        // Replace User with IdentityUser
+
+        //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        //.AddEntityFrameworkStores<AppHostingContext>();        
+
         builder.Services.AddIdentityCore<IdentityUser>()
             .AddEntityFrameworkStores<AppHostingContext>()
             .AddDefaultUI();
 
-        // Replace User with IdentityUser, IdentityRole remains the same
         builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
         {
             options.SignIn.RequireConfirmedAccount = true;

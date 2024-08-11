@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.AppHosting;
-using xmlParserASP.Entities.Users;
+
 
 namespace xmlParserASP.Presistant
 {

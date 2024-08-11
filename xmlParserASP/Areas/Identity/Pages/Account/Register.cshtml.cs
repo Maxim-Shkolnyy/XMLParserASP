@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using xmlParserASP.Entities.Users;
 
 namespace xmlParserASP.Areas.Identity.Pages.Account
 {
