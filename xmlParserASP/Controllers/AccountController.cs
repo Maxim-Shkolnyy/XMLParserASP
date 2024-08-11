@@ -16,11 +16,11 @@ namespace xmlParserASP.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -71,7 +71,7 @@ namespace xmlParserASP.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = new User { UserName = model.Username, Email = model.Email };
+            var user = new IdentityUser { UserName = model.Username, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -108,7 +108,7 @@ namespace xmlParserASP.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(IdentityUser user)
         {
             var authClaims = new[]
             {

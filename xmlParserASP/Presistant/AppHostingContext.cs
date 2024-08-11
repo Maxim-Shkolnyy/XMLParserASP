@@ -6,7 +6,7 @@ using xmlParserASP.Entities.Users;
 
 namespace xmlParserASP.Presistant
 {
-    public class AppHostingContext : IdentityDbContext<User>
+    public class AppHostingContext : IdentityDbContext<IdentityUser>
     {
         public AppHostingContext(DbContextOptions<AppHostingContext> contextOptions) : base(contextOptions)
         {

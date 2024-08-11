@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
@@ -34,47 +34,55 @@ public class Program
 
         builder.Services.AddDbContext<GammaContext>(options =>
             options.UseMySQL(builder.Configuration.GetConnectionString("GammaConnection")));
+
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<AppHostingContext>();
+
         builder.Services.AddDbContext<AppHostingContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("AppHostingConnection")));
 
-        builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AppHostingContext>().AddDefaultUI();
+        // Replace User with IdentityUser
+        builder.Services.AddIdentityCore<IdentityUser>()
+            .AddEntityFrameworkStores<AppHostingContext>()
+            .AddDefaultUI();
 
-        //builder.Services.AddIdentity<User, IdentityRole>(options =>
-        //{
-        //    options.SignIn.RequireConfirmedAccount = true;
-        //})
-        //.AddEntityFrameworkStores<AppHostingContext>()
-        //.AddDefaultTokenProviders();
+        // Replace User with IdentityUser, IdentityRole remains the same
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = true;
+        })
+        .AddEntityFrameworkStores<AppHostingContext>()
+        .AddDefaultTokenProviders();
 
-        //builder.Services.Configure<IdentityOptions>(options =>
-        //{
-        //    options.Password.RequireDigit = true;
-        //    options.Password.RequireLowercase = true;
-        //    options.Password.RequireUppercase = true;
-        //    options.Password.RequiredLength = 6;
-        //    options.Password.RequiredUniqueChars = 1;
+        builder.Services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 6;
+            options.Password.RequiredUniqueChars = 1;
 
-        //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-        //    options.Lockout.MaxFailedAccessAttempts = 5;
-        //    options.Lockout.AllowedForNewUsers = true;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
 
-        //    options.User.AllowedUserNameCharacters =
-        //    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
-        //    options.User.RequireUniqueEmail = false;
-        //});
+            options.User.AllowedUserNameCharacters =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+            options.User.RequireUniqueEmail = true;
+        });
 
-        //builder.Services.ConfigureApplicationCookie(options =>
-        //{
-        //    options.Cookie.HttpOnly = true;
-        //    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); 
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 
-        //    options.LoginPath = "/Identity/Account/Login";
-        //    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-        //    options.SlidingExpiration = true;
+            options.LoginPath = "/Identity/Account/Login";
+            options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            options.SlidingExpiration = true;
 
-        //    // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Обязательно использовать защищенные куки
-        //    // options.Cookie.SameSite = SameSiteMode.Strict; // Конфигурация политики SameSite
-        //});
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+            options.Cookie.SameSite = SameSiteMode.Strict; 
+        });
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<MmSupplierXmlSetting>();
