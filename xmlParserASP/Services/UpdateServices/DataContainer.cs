@@ -33,5 +33,6 @@ public class DataContainer
     public List<ProductMinInfoModel>? Products { get; set; }
     public int WhatToUpdate { get; set; } = 0;
     public List<string> SkusToUpdate { get; set; } = new();
-
+    public float? ExchangeRate { get; set; }
+    public float? Markup { get; set; }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xmlParserASP.Entities.Gamma;
+using xmlParserASP.Models;
 using xmlParserASP.Presistant;
 
 namespace xmlParserASP.Controllers;
@@ -18,8 +19,30 @@ public class ProductsSetQuantityWhenMinsController : BaseController
     // GET: ProductsSetQuantityWhenMins
     public async Task<IActionResult> Index()
     {
-        return _context.ProductsSetQuantityWhenMin != null ? 
-            View(await _context.ProductsSetQuantityWhenMin.ToListAsync()) :
+        var productNames = await _context.NgProductDescriptions.Where(p => p.LanguageId == 4).Select(p => p.Name).ToListAsync();
+
+        var result = await _context.ProductsSetQuantityWhenMin
+    .Join(_context.NgProducts,
+          psq => psq.Sku,                   // Порівнюємо поле Sku у таблиці ProductsSetQuantityWhenMin
+          np => np.Sku,                     // Порівнюємо поле Sku у таблиці NgProduct
+          (psq, np) => new { psq, np.ProductId })  // Створюємо анонімний об'єкт, що містить psq і ProductId
+    .Join(_context.NgProductDescriptions,
+          np2 => np2.ProductId,             // Порівнюємо поле ProductId з результату першого JOIN
+          npd => npd.ProductId,             // Порівнюємо поле ProductId у таблиці NgProductDescription
+          (np2, npd) => new ProductSetQtyWhenMinWithNameViewModel
+          {
+              Id = np2.psq.Id,
+              Sku = np2.psq.Sku,
+              MinQuantity = np2.psq.MinQuantity,
+              SetQuantity = np2.psq.SetQuantity,
+              ProductId = np2.ProductId,
+              ProductName = npd.Name
+          })
+    .ToListAsync();
+
+
+        return result != null ?
+            View(result) :
             Problem("Entity set 'GammaContext.ProductsSetQuantityWhenMin'  is null.");
     }
 
@@ -60,7 +83,7 @@ public class ProductsSetQuantityWhenMinsController : BaseController
 
     private MmProductsSetQuantityWhenMin MapExcelRowToEntity(string excelRow)
     {
-        var columns = excelRow.Split(';'); // Припустимо, що дані розділені символом ";"
+        var columns = excelRow.Split(';');
 
         if (columns.Length != 4)
         {

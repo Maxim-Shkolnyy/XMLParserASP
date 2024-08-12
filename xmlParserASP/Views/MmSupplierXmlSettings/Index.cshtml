@@ -105,6 +105,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.QtyInBoxColumnNumber)
             </th>
+            <th>
+                Курс
+            </th>
+            <th>
+                Націнка
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -203,6 +209,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.QtyInBoxColumnNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExchangeRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Markup)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.SupplierXmlSettingId">Edit</a> |

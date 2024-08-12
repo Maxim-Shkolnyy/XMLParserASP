@@ -1,4 +1,4 @@
-﻿@model IEnumerable<xmlParserASP.Entities.Gamma.MmProductsSetQuantityWhenMin>
+﻿@model IEnumerable<xmlParserASP.Models.ProductSetQtyWhenMinWithNameViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -17,12 +17,14 @@
 <p>
     <a asp-action="Create">Створити новий запис</a>
 </p>
-<table class="table">
+<table class="table" id="myTable">
     <thead>
         <tr>
+            <th>№</th>
             <th>
                 @Html.DisplayNameFor(model => model.Sku)
             </th>
+            <th>@Html.DisplayNameFor(model => model.ProductName)</th>
             <th>
                 @Html.DisplayNameFor(model => model.MinQuantity)
             </th>
@@ -33,12 +35,19 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            int counter = 1;
+        }
 @foreach (var item in Model) {
         <tr>
+            <td>@counter</td>            
             <td>
                 @Html.DisplayFor(modelItem => item.Sku)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td> 
                 @Html.DisplayFor(modelItem => item.MinQuantity)
             </td>
             <td>
@@ -50,6 +59,20 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
+            counter++;
 }
     </tbody>
 </table>
+
+@section scripts {
+    @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> *@
+    <link href="https://cdn.datatables.net/v/dt/dt-2.1.3/af-2.7.0/kt-2.12.1/sp-2.3.1/sl-2.0.4/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/dt/dt-2.1.3/af-2.7.0/kt-2.12.1/sp-2.3.1/sl-2.0.4/datatables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+}
