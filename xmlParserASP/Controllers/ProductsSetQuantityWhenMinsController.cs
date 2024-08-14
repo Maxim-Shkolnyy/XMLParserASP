@@ -23,20 +23,20 @@ public class ProductsSetQuantityWhenMinsController : BaseController
 
         var result = await _context.ProductsSetQuantityWhenMin
     .Join(_context.NgProducts,
-          psq => psq.Sku,                   // Порівнюємо поле Sku у таблиці ProductsSetQuantityWhenMin
-          np => np.Sku,                     // Порівнюємо поле Sku у таблиці NgProduct
-          (psq, np) => new { psq, np.ProductId })  // Створюємо анонімний об'єкт, що містить psq і ProductId
+          setQty => setQty.Sku,                   // Порівнюємо поле Sku у таблиці ProductsSetQuantityWhenMin
+          products => products.Sku,                     // Порівнюємо поле Sku у таблиці NgProduct
+          (setQty, products) => new { setQty, products.ProductId })  // Створюємо анонімний об'єкт, що містить setQty і ProductId
     .Join(_context.NgProductDescriptions,
-          np2 => np2.ProductId,             // Порівнюємо поле ProductId з результату першого JOIN
-          npd => npd.ProductId,             // Порівнюємо поле ProductId у таблиці NgProductDescription
-          (np2, npd) => new ProductSetQtyWhenMinWithNameViewModel
+          products2 => products2.ProductId,             // Порівнюємо поле ProductId з результату першого JOIN
+          productDescr => productDescr.ProductId,             // Порівнюємо поле ProductId у таблиці NgProductDescription
+          (products2, productDescr) => new ProductSetQtyWhenMinWithNameViewModel
           {
-              Id = np2.psq.Id,
-              Sku = np2.psq.Sku,
-              MinQuantity = np2.psq.MinQuantity,
-              SetQuantity = np2.psq.SetQuantity,
-              ProductId = np2.ProductId,
-              ProductName = npd.Name
+              Id = products2.setQty.Id,
+              Sku = products2.setQty.Sku,
+              MinQuantity = products2.setQty.MinQuantity,
+              SetQuantity = products2.setQty.SetQuantity,
+              ProductId = products2.ProductId,
+              ProductName = productDescr.Name
           })
     .ToListAsync();
 
