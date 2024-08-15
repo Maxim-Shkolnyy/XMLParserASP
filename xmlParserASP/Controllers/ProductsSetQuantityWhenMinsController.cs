@@ -38,7 +38,7 @@ public class ProductsSetQuantityWhenMinsController : BaseController
               ProductId = products2.ProductId,
               ProductName = productDescr.Name
           })
-    .ToListAsync(); //
+    .ToListAsync();
 
 
         return result != null ?
