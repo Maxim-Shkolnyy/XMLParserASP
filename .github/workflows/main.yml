@@ -1,0 +1,52 @@
+# Назва GitHub Actions workflow
+name: Deploy ASP.NET Core 8 App
+
+# Визначаємо умови, коли запускати workflow. У цьому випадку він запускається при пуші в гілку `master`.
+on:
+  push:
+    branches:
+      - Authorization
+
+# Описуємо завдання (job), яке буде виконуватись.
+jobs:
+  build:
+    # Вказуємо, що завдання буде виконуватись на останній версії Windows Server.
+    runs-on: windows-latest
+
+    steps:
+    # Перший крок — це клонування коду з репозиторію. Використовується офіційна action для цього.
+    - name: Checkout code
+      uses: actions/checkout@v3
+      # `uses: actions/checkout@v3` означає, що ми використовуємо версію 3 офіційної GitHub Action, яка відповідає за завантаження (клонування) коду з поточного репозиторію.
+
+    # Налаштування .NET Core SDK на агенті, щоб мати можливість компілювати і запускати .NET додатки.
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'  # Вказуємо, що ми хочемо використовувати .NET Core версії 8.0.
+      # `uses: actions/setup-dotnet@v3` означає, що ми використовуємо GitHub Action для установки певної версії .NET SDK.
+
+    # Відновлюємо всі залежності проекту, які вказані в `*.csproj` або `*.sln` файлах.
+    - name: Restore dependencies
+      run: dotnet restore
+      # `run: dotnet restore` виконує команду `dotnet restore`, яка завантажує всі необхідні залежності для проекту.
+
+    # Компілюємо (build) проект в режимі Release (для продуктивного середовища).
+    - name: Build the project
+      run: dotnet build --configuration Release --no-restore
+      # `run: dotnet build --configuration Release --no-restore` виконує компіляцію проекту без повторного відновлення залежностей. 
+
+    # Публікуємо (збираємо) проект в папку `publish`.
+    - name: Publish the project
+      run: dotnet publish -c Release -o ${{ github.workspace }}/publish
+      # `run: dotnet publish -c Release -o ${{ github.workspace }}/publish` компілює і розміщує виконувані файли додатка в директорії `publish`.
+      # `${{ github.workspace }}` - це папка, в якій зберігається код репозиторію під час виконання workflow.
+
+    # Деплоїмо зібраний додаток на хостинг.
+   # - name: Deploy to Hosting
+   #   uses: your-hosting-deploy-action
+    #  with:
+     #   github_token: ${{ secrets.GITHUB_TOKEN }} # Токен доступу для деплою на хостинг.
+      #  publish_dir: ${{ github.workspace }}/publish # Вказуємо директорію з публікованими файлами, яку будемо деплоїти.
+      # `uses: your-hosting-deploy-action` означає використання GitHub Action, яка відповідає за деплой на конкретний хостинг.
+      # `${{ secrets.GITHUB_TOKEN }}` використовується для автентифікації і надається автоматично GitHub для публічних репозиторіїв.
