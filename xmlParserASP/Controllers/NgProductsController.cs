@@ -23,6 +23,7 @@ public class NgProductsController : BaseController
 
     public async Task<IActionResult> Index()
     {
+
         return View(await _context.NgCategoryDescriptions.Where(m => m.LanguageId == 3).ToListAsync());
     }
 

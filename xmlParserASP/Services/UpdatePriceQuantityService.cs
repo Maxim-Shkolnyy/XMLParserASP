@@ -559,7 +559,7 @@ public class UpdatePriceQuantityService
                 
                 if (markup > 0 || exchangeRate > 1)
                 {
-                    xmlPrice = Math.Round((xmlPrice + (xmlPrice * markup)) * exchangeRate, 2); //більшу точність ставити не можна, бо не співпаде з системою округлення опенкарт у дешевих товарах (1018581)
+                    xmlPrice = Math.Round(xmlPrice * exchangeRate * (1 + markup), 2); //більшу точність ставити не можна, бо не співпаде з системою округлення опенкарт у дешевих товарах (1018581)
                 }
 
                 if (dbPrice != xmlPrice)
