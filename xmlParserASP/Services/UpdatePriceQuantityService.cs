@@ -547,6 +547,7 @@ public class UpdatePriceQuantityService
             string sku = dbModel.Item1;
             string model = dbModel.Item2;
             decimal dbPrice = dbModel.Item3;
+            int roundedPrice = (int)Math.Round(dbModel.Item3, 0);
             var productToUpdate = _dc.Products.FirstOrDefault(p => p.Sku == sku);
             if (productToUpdate == null)
             {
@@ -569,7 +570,7 @@ public class UpdatePriceQuantityService
                         if (dbPrice < xmlPrice)
                         {
                             _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlPrice });
-                            _dc.StateMessages.Add(($"+_{sku}_{model}_{_dc.SuppName}_ price increased. {CutString(dbModel.Item5)}_Old - new:_{dbPrice}_{xmlPrice}", "purple"));
+                            _dc.StateMessages.Add(($"+_{sku}_{model}_{_dc.SuppName}_{CutString(dbModel.Item5)} _PRICE INCREASED_ Old_{roundedPrice}_New_{xmlPrice}", "purple"));
 
                         }
                         else
@@ -577,7 +578,7 @@ public class UpdatePriceQuantityService
                             if (xmlPrice != 0)
                             {
                                 _dbContextGamma.NgProducts.Where(x => x.Sku == sku).Update(x => new NgProduct { Price = xmlPrice });
-                                _dc.StateMessages.Add(($"-_{sku}_{model}_{_dc.SuppName}_ price decreased. {CutString(dbModel.Item5)} Old - new:_{dbPrice}_{xmlPrice}", "blue"));
+                                _dc.StateMessages.Add(($"-_{sku}_{model}_{_dc.SuppName}_{CutString(dbModel.Item5)} _PRICE DECREASED_ Old_{roundedPrice}_New_{xmlPrice}", "blue"));
                             }
                         }
                         _dc.ProductsWasChanged++;
@@ -585,7 +586,7 @@ public class UpdatePriceQuantityService
                     catch (Exception e)
                     {
                         _dc.StateMessages.Add((
-                            $"Error {e.Message} occurred while price of {_dc.SuppName}  updated. DB data: {sku} {model} _{CutString(dbModel.Item5)} {dbPrice}. XML data {xmlPrice} ", "red"));
+                            $"Error {e.Message} occurred while price of {_dc.SuppName}  updated. DB data: {sku} {model} _{CutString(dbModel.Item5)} {roundedPrice}. XML data {xmlPrice} ", "red"));
                     }
                 }
                 else
@@ -596,7 +597,7 @@ public class UpdatePriceQuantityService
             else
             {
                 _dc.NotFoundItemsInXmlForCurrentSupp++;
-                //_dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{sku}_{model}_{dbPrice}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
+                //_dc.StateMessages.Add(($"notUpd_{_dc.SuppName}_{sku}_{model}_{roundedPrice}_{dbModel.Item5}_{_dc.CurrentTableDbColumnToUpdate} NotFound in xml", "red"));
             }
         }
         _dbContextGamma.SaveChanges();
@@ -651,11 +652,11 @@ public class UpdatePriceQuantityService
                                 _dc.ProductsWasChanged++;
                                 if (dbQtyValue < xmlQtyValue)
                                 {
-                                    _dc.StateMessages.Add(($"+ {_dc.CurrentTableDbColumnToUpdate}_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "purple"));
+                                    _dc.StateMessages.Add(($"+_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}_QUANTITY INCREASED_ Old_{dbQtyValue}_New_{xmlQtyValue}", "purple"));
                                 }
                                 else
                                 {
-                                    _dc.StateMessages.Add(($"- {_dc.CurrentTableDbColumnToUpdate}_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}. Old - new:_{dbQtyValue}_{xmlQtyValue}", "blue"));
+                                    _dc.StateMessages.Add(($"-_{sku}_{model}_{_dc.SuppName}_{CutString(productName)}_QUANTITY DECREASED_ Old_{dbQtyValue}_New_{xmlQtyValue}", "blue"));
                                 }
                             }
                         }
