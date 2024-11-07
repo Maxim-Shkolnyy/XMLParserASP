@@ -436,7 +436,7 @@ public class UpdatePriceQuantityService
                         }
                         else if (cell.DataType == XLDataType.Text && decimal.TryParse(cell.GetValue<string>(), out decimal parsedPrice))
                         {
-                            price = parsedPrice; // Якщо текст і його можна конвертувати в число
+                            price = parsedPrice; 
                         }
                         else
                         {
