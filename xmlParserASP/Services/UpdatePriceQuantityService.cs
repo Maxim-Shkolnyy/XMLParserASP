@@ -24,6 +24,11 @@ public class UpdatePriceQuantityService
 
     public async Task MasterUpdate(int settingsId)
     {
+        if (_dc.SupplierXmlSetting == null)
+        {
+            _dc.StateMessages.Add(("1_Supplier setting was not found in DB", "red"));
+        }
+
         await GetProductsFromDb(settingsId);
 
         if (_dc.SuppName == "Kanlux")
@@ -37,14 +42,26 @@ public class UpdatePriceQuantityService
             {
                 GetExcelValues("", "", "");
             }
-        }
-        else if (_dc.SupplierXmlSetting.SettingName == "Feron_excel")
-        {
-            GetExcelValues("", "", "");
-        }
+        }        
         else
         {
-            GetXmlValues();
+            if (_dc.SupplierXmlSetting.Path.EndsWith(".xml"))
+            {
+                GetXmlValues();
+            }
+            else if (_dc.SupplierXmlSetting.Path.EndsWith(".xlsx"))
+            {
+                GetExcelValues("", "", "");
+            }
+            else if (_dc.SupplierXmlSetting.Path.EndsWith(".xls"))
+            {
+                _dc.StateMessages.Add(($"Вигрузка {_dc.SupplierXmlSetting.SettingName} у застарілому форматі .xls не підтримується! Збережіть файл у .xlsx та змініть посилання на нього у 'Налаштуваннях постачальників'", "red"));
+                return;
+            }
+            else 
+            {
+                GetXmlValues();
+            }
         }
 
         if (_dc.CurrentTableDbColumnToUpdate == "Price")
@@ -71,12 +88,7 @@ public class UpdatePriceQuantityService
         }
 
         _dc.SupplierXmlSetting = _dc.SuppSettingList
-            .FirstOrDefault(m => m.SupplierXmlSettingId == settingsId);
-
-        if (_dc.SupplierXmlSetting == null)
-        {
-            _dc.StateMessages.Add(("1_Supplier setting was not found in DB", "red"));
-        }
+            .FirstOrDefault(m => m.SupplierXmlSettingId == settingsId);        
 
         _dc.SuppName = (_dc.SuppliersList.FirstOrDefault(m =>
             m.SupplierId == _dc.SupplierXmlSetting.SupplierId))?.SupplierName;
@@ -415,14 +427,33 @@ public class UpdatePriceQuantityService
 
                     if (_dc.WhatToUpdate == 1)
                     {
-                        if (row.Cell(priceColumn).DataType == XLDataType.Number)
+
+                        var cell = row.Cell(priceColumn);
+
+                        if (cell.DataType == XLDataType.Number)
                         {
-                            price = row.Cell(priceColumn).GetValue<decimal>();
+                            price = cell.GetValue<decimal>();
+                        }
+                        else if (cell.DataType == XLDataType.Text && decimal.TryParse(cell.GetValue<string>(), out decimal parsedPrice))
+                        {
+                            price = parsedPrice; // Якщо текст і його можна конвертувати в число
                         }
                         else
                         {
-                            continue;
+                            continue; // Якщо значення не можна обробити як число
                         }
+
+
+
+
+                        //if (row.Cell(priceColumn).DataType == XLDataType.Number)
+                        //{
+                        //    price = row.Cell(priceColumn).GetValue<decimal>();
+                        //}
+                        //else
+                        //{
+                        //    continue;
+                        //}
 
 
                         if (!_dc.XmlModelPriceList.TryAdd(model, price))
